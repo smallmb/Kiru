@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/media_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import '../../services/theme/design_tokens.dart';
 import 'player_glass.dart';
@@ -82,7 +85,7 @@ class PlayerTopBar extends StatelessWidget {
             size: 44,
             iconSize: 26,
             icon: const Icon(Icons.chevron_left_rounded),
-            tooltip: 'Back',
+            tooltip: l10nOf(context).uiPlayerTopBarBack,
             backgroundColor: tokens.bg.withValues(alpha: 0.20),
             borderRadius: ZplayRadius.full,
             onPressed: onBack,
@@ -175,7 +178,7 @@ class PlayerTopBar extends StatelessWidget {
               if (onToggleEpisodes != null)
                 _TopBarBadge(
                   icon: Icons.video_library_rounded,
-                  label: 'Episodes',
+                  label: l10nOf(context).uiPlayerTopBarEpisodes,
                   active: isEpisodesActive,
                   onTap: onToggleEpisodes!,
                 ),
@@ -183,7 +186,7 @@ class PlayerTopBar extends StatelessWidget {
                 const SizedBox(width: 10),
                 _TopBarBadge(
                   icon: Icons.playlist_play_rounded,
-                  label: 'Sources',
+                  label: l10nOf(context).uiPlayerTopBarSources,
                   active: isSourcesActive,
                   onTap: onShowSources!,
                 ),
@@ -193,7 +196,7 @@ class PlayerTopBar extends StatelessWidget {
                   size: 40,
                   iconSize: 20,
                   icon: const Icon(Icons.link_rounded),
-                  tooltip: 'Copy Stream URL',
+                  tooltip: l10nOf(context).uiPlayerTopBarCopyStreamUrl,
                   backgroundColor: tokens.bg.withValues(alpha: 0.13),
                   onPressed: onCopyStreamUrl,
                 ),
@@ -204,7 +207,7 @@ class PlayerTopBar extends StatelessWidget {
                   size: 40,
                   iconSize: 20,
                   icon: const Icon(Icons.camera_alt_outlined),
-                  tooltip: 'Screenshot',
+                  tooltip: l10nOf(context).uiPlayerTopBarScreenshot,
                   backgroundColor: tokens.bg.withValues(alpha: 0.13),
                   onPressed: onScreenshot,
                 ),
@@ -224,7 +227,7 @@ class PlayerTopBar extends StatelessWidget {
                           ),
                         )
                       : const Icon(Icons.file_download_outlined),
-                  tooltip: isDownloading ? 'Downloading...' : 'Download Media',
+                  tooltip: mediaLabel(context, isDownloading ? 'Downloading...' : 'Download Media'),
                   backgroundColor: isDownloading
                       ? tokens.success.withValues(alpha: 0.2)
                       : tokens.bg.withValues(alpha: 0.13),
@@ -237,7 +240,7 @@ class PlayerTopBar extends StatelessWidget {
                   size: 40,
                   iconSize: 20,
                   icon: const Icon(Icons.lock_outline_rounded),
-                  tooltip: 'Lock Screen',
+                  tooltip: l10nOf(context).uiPlayerTopBarLockScreen,
                   backgroundColor: tokens.bg.withValues(alpha: 0.13),
                   onPressed: onLock,
                 ),
@@ -248,7 +251,7 @@ class PlayerTopBar extends StatelessWidget {
                   size: 40,
                   iconSize: 20,
                   icon: const Icon(Icons.cast_rounded),
-                  tooltip: 'Cast',
+                  tooltip: l10nOf(context).uiPlayerTopBarCast,
                   backgroundColor: tokens.bg.withValues(alpha: 0.13),
                   onPressed: onCast,
                 ),

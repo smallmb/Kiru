@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
@@ -354,7 +356,7 @@ class _IptvHeroSlide extends StatelessWidget {
                         ),
                         const SizedBox(width: 5),
                         Text(
-                          'LIVE BROADCAST',
+                          l10nOf(context).channelLiveBroadcast,
                           style: ZplayType.caption.toStyle(
                             color: tokens.textPrimary,
                           ),
@@ -422,7 +424,7 @@ class _IptvHeroSlide extends StatelessWidget {
 
               // Description / stream info
               Text(
-                'Instant live multi-source streaming with real-time stream resolution & high-framerate playback.',
+                l10nOf(context).auxIptvHeroCarouselInstantLiveMultiSourceStreamingWithReal,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: ZplayType.body.toStyle(color: tokens.textEmphasis),
@@ -467,7 +469,7 @@ class _IptvHeroSlide extends StatelessWidget {
                             ),
                             const SizedBox(width: ZplaySpacing.s8),
                             Text(
-                              'Watch Live',
+                              l10nOf(context).auxIptvHeroCarouselWatchLive,
                               style: ZplayType.subtitle.toStyle(
                                 color: tokens.onAccent,
                               ),
@@ -508,7 +510,7 @@ class _IptvHeroSlide extends StatelessWidget {
                             ),
                             const SizedBox(width: ZplaySpacing.s8),
                             Text(
-                              'Stream Feeds',
+                              l10nOf(context).auxIptvHeroCarouselStreamFeeds,
                               style: ZplayType.subtitle.toStyle(
                                 color: tokens.textPrimary,
                               ),

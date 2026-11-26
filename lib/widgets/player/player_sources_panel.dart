@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -149,7 +151,7 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
               (e) => e.number == epNum,
               orElse: () => ArabicEpisode(
                 number: epNum,
-                title: 'الحلقة $epNum',
+                title: l10nOf(context).dynamicPlayerSourcesPanelEpisode((epNum).toString()),
                 encodedHref: '',
                 watchPath: '/e/$slug-$epNum#tok',
               ),
@@ -368,7 +370,7 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
               size: 36,
               iconSize: 20,
               icon: const Icon(Icons.chevron_left_rounded),
-              tooltip: 'Back to Episodes',
+              tooltip: l10nOf(context).uiPlayerSourcesPanelBackToEpisodes,
               backgroundColor: tokens.textPrimary.withValues(
                 alpha: ZplayOpacity.borderDefault,
               ),
@@ -396,7 +398,7 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
                         ),
                       ),
                       child: Text(
-                        'S$sNum : E$eNum',
+                        l10nOf(context).dynamicPlayerSourcesPanelSE((sNum).toString(), (eNum).toString()),
                         style: ZplayType.caption
                             .copyWith(
                               weight: FontWeight.w800,
@@ -425,7 +427,7 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'All providers · watching via ${widget.currentAddonName}',
+                  l10nOf(context).dynamicPlayerSourcesPanelAllProvidersWatchingVia((widget.currentAddonName).toString()),
                   style: ZplayType.bodySmall
                       .copyWith(weight: FontWeight.w500)
                       .toStyle(color: tokens.textSecondary),
@@ -439,7 +441,7 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
             size: 36,
             iconSize: 18,
             icon: const Icon(Icons.close_rounded),
-            tooltip: 'Close',
+            tooltip: l10nOf(context).uiPlayerSourcesPanelClose,
             backgroundColor: tokens.textPrimary.withValues(
               alpha: ZplayOpacity.borderDefault,
             ),
@@ -503,7 +505,7 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
           ),
           const SizedBox(height: ZplaySpacing.s16),
           Text(
-            'Searching every provider…',
+            l10nOf(context).uiPlayerSourcesPanelSearchingEveryProvider,
             style: ZplayType.label
                 .copyWith(weight: FontWeight.w600)
                 .toStyle(color: tokens.textEmphasis),
@@ -543,7 +545,7 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
             ElevatedButton.icon(
               onPressed: _startScraping,
               icon: const Icon(Icons.refresh_rounded, size: 16),
-              label: const Text('Rescrape Sources'),
+              label: Text(l10nOf(context).uiPlayerSourcesPanelRescrapeSources),
               style: ElevatedButton.styleFrom(
                 backgroundColor: PlayerTheme.accent,
                 foregroundColor: tokens.onAccent,
@@ -588,7 +590,7 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  'Scraping additional sources...',
+                  l10nOf(context).uiPlayerSourcesPanelScrapingAdditionalSources,
                   style: ZplayType.bodySmall.toStyle(
                     color: tokens.textSecondary,
                   ),
@@ -777,7 +779,7 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
                               ),
                               const SizedBox(width: ZplaySpacing.s8),
                               Text(
-                                'Magnet link copied to clipboard',
+                                l10nOf(context).uiPlayerSourcesPanelMagnetLinkCopiedToClipboard,
                                 style: ZplayType.label
                                     .copyWith(weight: FontWeight.w600)
                                     .toStyle(color: tokens.textPrimary),

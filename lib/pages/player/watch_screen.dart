@@ -1,3 +1,5 @@
+import '../../l10n/l10n.dart';
+
 import 'dart:async';
 import 'dart:ui';
 
@@ -962,7 +964,7 @@ class _WatchScreenState extends State<WatchScreen>
                             ),
                             const SizedBox(width: ZplaySpacing.s8),
                             Text(
-                              'Watch Sources',
+                              l10nOf(context).sourcesTitle,
                               style: ZplayType.title.toStyle(
                                 color: context.tokens.textPrimary,
                               ),
@@ -1121,7 +1123,7 @@ class _WatchScreenState extends State<WatchScreen>
             ),
             child: Text(
               _isCollection
-                  ? 'PART ${ep.episode ?? 1}'
+                  ? l10nOf(context).mediaCollectionPart((ep.episode ?? 1).toString())
                   : 'S${ep.season ?? '?'}E${ep.episode ?? '?'}',
               style: ZplayType.label
                   .copyWith(weight: FontWeight.w700, letterSpacing: 0.5)
@@ -1384,7 +1386,7 @@ class _WatchScreenState extends State<WatchScreen>
               onTap: () =>
                   setState(() => _synopsisExpanded = !_synopsisExpanded),
               builder: (context, _) => Text(
-                _synopsisExpanded ? 'Show less' : 'Read more',
+                _synopsisExpanded ? l10nOf(context).mediaLabelShowLess : l10nOf(context).mediaLabelReadMore,
                 style: ZplayType.label
                     .copyWith(weight: FontWeight.w600)
                     .toStyle(color: context.tokens.accent),
@@ -1582,7 +1584,7 @@ class _WatchScreenState extends State<WatchScreen>
                 ),
                 const SizedBox(width: ZplaySpacing.s8),
                 Text(
-                  'Watch Sources',
+                  l10nOf(context).sourcesTitle,
                   style: ZplayType.title.toStyle(
                     color: context.tokens.textPrimary,
                   ),
@@ -1787,26 +1789,26 @@ class _WatchScreenState extends State<WatchScreen>
   /// "Most Seeds (High to Low)" is right in a 230 px popover and too wide for a
   /// 36 px chip.
   _FilterMenu<String> get _seederFilterMenu => _FilterMenu<String>(
-    title: 'Seeders Filter',
+    title: l10nOf(context).sourcesSeederFilter,
     accent: context.tokens.success,
     icon: Icons.people_alt_rounded,
     value: _selectedSeederFilter,
     onChanged: (value) => setState(() => _selectedSeederFilter = value),
-    options: const [
-      _FilterOption<String>('all', label: 'All Seeds'),
+    options: [
+      _FilterOption<String>('all', label: l10nOf(context).sourcesAllSeeds),
       _FilterOption<String>(
         'most',
-        label: 'Most Seeds (High to Low)',
-        short: 'Most Seeds',
+        label: l10nOf(context).sourcesMostSeeds,
+        short: l10nOf(context).sourcesMostSeedsShort,
         dividerBefore: true,
       ),
-      _FilterOption<String>('50+', label: '50+ Seeds'),
-      _FilterOption<String>('20+', label: '20+ Seeds'),
-      _FilterOption<String>('5+', label: '5+ Seeds'),
+      _FilterOption<String>('50+', label: l10nOf(context).sourcesSeeds50),
+      _FilterOption<String>('20+', label: l10nOf(context).sourcesSeeds20),
+      _FilterOption<String>('5+', label: l10nOf(context).sourcesSeeds5),
       _FilterOption<String>(
         '1+',
-        label: 'Active Seeds (>0)',
-        short: 'Active Seeds',
+        label: l10nOf(context).sourcesActiveSeeds,
+        short: l10nOf(context).sourcesActiveSeedsShort,
       ),
     ],
   );
@@ -1815,34 +1817,34 @@ class _WatchScreenState extends State<WatchScreen>
   /// popover has always ruled a hairline between them, and both surfaces now
   /// read the same order so they cannot drift apart again.
   _FilterMenu<String?> get _sizeFilterMenu => _FilterMenu<String?>(
-    title: 'File Size Filter',
+    title: l10nOf(context).sourcesSizeFilter,
     accent: context.tokens.info,
     icon: Icons.data_usage_rounded,
     sheetIcon: Icons.folder_open_rounded,
     highlights: false,
     value: _selectedSizeFilter,
     onChanged: (value) => setState(() => _selectedSizeFilter = value),
-    options: const [
-      _FilterOption<String?>(null, label: 'All Sizes'),
-      _FilterOption<String?>('<1gb', label: '< 1 GB', dividerBefore: true),
-      _FilterOption<String?>('1-5gb', label: '1 GB – 5 GB', short: '1–5 GB'),
-      _FilterOption<String?>('5-15gb', label: '5 GB – 15 GB', short: '5–15 GB'),
-      _FilterOption<String?>(
+    options: [
+      _FilterOption<String?>(null, label: l10nOf(context).sourcesAllSizes),
+      const _FilterOption<String?>('<1gb', label: '< 1 GB', dividerBefore: true),
+      const _FilterOption<String?>('1-5gb', label: '1 GB – 5 GB', short: '1–5 GB'),
+      const _FilterOption<String?>('5-15gb', label: '5 GB – 15 GB', short: '5–15 GB'),
+      const _FilterOption<String?>(
         '15-30gb',
         label: '15 GB – 30 GB',
         short: '15–30 GB',
       ),
-      _FilterOption<String?>('>30gb', label: '> 30 GB', short: '> 30 GB'),
+      const _FilterOption<String?>('>30gb', label: '> 30 GB', short: '> 30 GB'),
       _FilterOption<String?>(
         'largest',
-        label: 'Largest First',
-        short: 'Largest',
+        label: l10nOf(context).sourcesLargestFirst,
+        short: l10nOf(context).sourcesLargest,
         dividerBefore: true,
       ),
       _FilterOption<String?>(
         'smallest',
-        label: 'Smallest First',
-        short: 'Smallest',
+        label: l10nOf(context).sourcesSmallestFirst,
+        short: l10nOf(context).sourcesSmallest,
       ),
     ],
   );
@@ -1854,14 +1856,14 @@ class _WatchScreenState extends State<WatchScreen>
     if (addons.isEmpty) return null;
 
     return _FilterMenu<String?>(
-      title: 'Source Provider',
+      title: l10nOf(context).sourcesProvider,
       accent: context.tokens.textPrimary,
       sheetIcon: Icons.extension_rounded,
       highlights: false,
       value: _selectedAddonFilter,
       onChanged: (value) => setState(() => _selectedAddonFilter = value),
       options: [
-        const _FilterOption<String?>(null, label: 'All Sources'),
+        _FilterOption<String?>(null, label: l10nOf(context).sourcesAll),
         for (final addon in addons)
           _FilterOption<String?>(
             addon,
@@ -1875,62 +1877,62 @@ class _WatchScreenState extends State<WatchScreen>
   /// The audio/dub filter. Every language keeps the token the sheet has always
   /// tinted it with, so this list is per-frame rather than const.
   _FilterMenu<String> get _audioFilterMenu => _FilterMenu<String>(
-    title: 'Audio & Dub Language',
+    title: l10nOf(context).sourcesAudioLanguage,
     accent: context.tokens.accent,
     icon: Icons.audiotrack_rounded,
     value: _selectedAudioFilter,
     onChanged: (value) => setState(() => _selectedAudioFilter = value),
     options: [
-      const _FilterOption<String>('all', label: 'All Audio'),
-      const _FilterOption<String>(
+      _FilterOption<String>('all', label: l10nOf(context).sourcesAllAudio),
+      _FilterOption<String>(
         'multi',
-        label: '🌐 Multi-Audio',
+        label: l10nOf(context).sourcesMultiAudio,
         dividerBefore: true,
       ),
-      const _FilterOption<String>('english', label: '🇺🇸 English / Orig'),
+      _FilterOption<String>('english', label: l10nOf(context).sourcesEnglishAudio),
       _FilterOption<String>(
         'hindi',
-        label: '🇮🇳 Hindi / Indian',
+        label: l10nOf(context).sourcesHindiAudio,
         tint: context.tokens.warning,
       ),
       _FilterOption<String>(
         'german',
-        label: '🇩🇪 German',
+        label: l10nOf(context).sourcesGermanAudio,
         tint: context.tokens.warning,
       ),
       _FilterOption<String>(
         'french',
-        label: '🇫🇷 French',
+        label: l10nOf(context).sourcesFrenchAudio,
         tint: context.tokens.info,
       ),
       _FilterOption<String>(
         'spanish_castilian',
-        label: '🇪🇸 Spanish (Castilian)',
+        label: l10nOf(context).sourcesSpanishSpain,
         tint: context.tokens.warning,
       ),
       _FilterOption<String>(
         'spanish_latino',
-        label: '🇲🇽 Spanish (Latin)',
+        label: l10nOf(context).sourcesSpanishLatin,
         tint: context.tokens.success,
       ),
       _FilterOption<String>(
         'spanish',
-        label: '🌎 All Spanish',
+        label: l10nOf(context).sourcesSpanishAll,
         tint: context.tokens.warning,
       ),
       _FilterOption<String>(
         'russian',
-        label: '🇷🇺 Russian',
+        label: l10nOf(context).sourcesRussianAudio,
         tint: context.tokens.info,
       ),
       _FilterOption<String>(
         'japanese',
-        label: '🇯🇵 Japanese',
+        label: l10nOf(context).sourcesJapaneseAudio,
         tint: context.tokens.danger,
       ),
       _FilterOption<String>(
         'italian',
-        label: '🇮🇹 Italian',
+        label: l10nOf(context).sourcesItalianAudio,
         tint: context.tokens.success,
       ),
     ],
@@ -2445,7 +2447,7 @@ class _FilterMenu<T> {
 
   /// The chip text: the compact form where there is one, the row label
   /// otherwise. A value that names no option — an addon that dropped out of
-  /// the list — falls back to the value itself, as `?? 'All Sources'` did.
+  /// the list — falls back to the value itself, as `?? l10nOf(context).sourcesAll` did.
   String get buttonLabel {
     for (final option in options) {
       if (option.value == value) return option.short ?? option.label;
@@ -3096,7 +3098,7 @@ class _CopyMagnetButtonState extends State<_CopyMagnetButton> {
             ),
             const SizedBox(width: ZplaySpacing.s8),
             Text(
-              'Magnet link copied to clipboard',
+              l10nOf(context).sourcesMagnetCopied,
               style: ZplayType.label
                   .copyWith(weight: FontWeight.w600)
                   .toStyle(color: context.tokens.textPrimary),
@@ -3125,7 +3127,7 @@ class _CopyMagnetButtonState extends State<_CopyMagnetButton> {
             onEnter: (_) => setState(() => _hovered = true),
             onExit: (_) => setState(() => _hovered = false),
             child: Tooltip(
-              message: _copied ? 'Copied!' : 'Copy Magnet Link',
+              message: _copied ? l10nOf(context).finalWatchScreenCopied : 'Copy Magnet Link',
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
@@ -3366,7 +3368,7 @@ class _EmptySourcesStateWidgetState extends State<_EmptySourcesStateWidget>
           ),
           const SizedBox(height: ZplaySpacing.s24),
           Text(
-            'No sources found',
+            l10nOf(context).sourcesEmpty,
             style: ZplayType.title
                 .copyWith(weight: FontWeight.w500)
                 .toStyle(color: context.tokens.textPrimary),
@@ -3375,7 +3377,7 @@ class _EmptySourcesStateWidgetState extends State<_EmptySourcesStateWidget>
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 280),
             child: Text(
-              'No streams found. Install more addons from Settings or try another title.',
+              l10nOf(context).sourcesEmptyHint,
               textAlign: TextAlign.center,
               style: ZplayType.body
                   .copyWith(height: 1.5)
@@ -3426,7 +3428,7 @@ class _EmptySourcesStateWidgetState extends State<_EmptySourcesStateWidget>
                       ),
                       const SizedBox(width: ZplaySpacing.s8),
                       Text(
-                        'Install Addons',
+                        l10nOf(context).sourcesInstallAddons,
                         style: ZplayType.body
                             .copyWith(weight: FontWeight.w600)
                             .toStyle(color: context.tokens.textPrimary),

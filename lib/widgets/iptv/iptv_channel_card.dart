@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../../services/theme/design_tokens.dart';
@@ -218,7 +220,7 @@ class IptvChannelCard extends StatelessWidget {
                                         ),
                                         const SizedBox(width: ZplaySpacing.s4),
                                         Text(
-                                          'LIVE',
+                                          l10nOf(context).channelLiveBadge,
                                           style: ZplayType.overline.toStyle(
                                             color: tokens.textPrimary,
                                           ),
@@ -299,7 +301,7 @@ class IptvChannelCard extends StatelessWidget {
                       ),
                     ],
                     Text(
-                      'HD Live',
+                      l10nOf(context).auxIptvChannelCardHdLive,
                       style: ZplayType.caption.toStyle(color: primaryColor),
                     ),
                   ],

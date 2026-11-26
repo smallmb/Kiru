@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -169,7 +171,7 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
             children: [
               Icon(Icons.check_circle_rounded, color: tokens.onAccent, size: 18),
               const SizedBox(width: 8),
-              Expanded(child: Text('${repo.name} added successfully!')),
+              Expanded(child: Text(l10nOf(context).dynamicCloudstreamMarketplaceModalAddedSuccessfully((repo.name).toString()))),
             ],
           ),
           backgroundColor: tokens.success,
@@ -183,7 +185,7 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
         builder: (ctx) => AlertDialog(
           backgroundColor: tokens.surfaceOverlay,
           shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.mdAll),
-          title: Text('Install ${repo.name} Plugins?'),
+          title: Text(l10nOf(context).dynamicCloudstreamMarketplaceModalInstallPlugins((repo.name).toString())),
           content: Text(
             repo.plugins.isNotEmpty
                 ? 'This repository includes ${repo.plugins.length} plugins (${repo.plugins.take(3).join(', ')}...). Install all plugins now so their stream sources appear immediately?'
@@ -194,7 +196,7 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
             TextButton(
               onPressed: () => Navigator.pop(ctx, false),
               child: Text(
-                'Later',
+                l10nOf(context).uiCloudstreamMarketplaceModalLater,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
             ),
@@ -206,7 +208,7 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
                 shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
               ),
               child: Text(
-                'Install All Now',
+                l10nOf(context).uiCloudstreamMarketplaceModalInstallAllNow,
                 style: ZplayType.label.toStyle(),
               ),
             ),
@@ -243,7 +245,7 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
           backgroundColor: tokens.surfaceOverlay,
           shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.mdAll),
           title: Text(
-            'Installing Repository Plugins',
+            l10nOf(context).uiCloudstreamMarketplaceModalInstallingRepositoryPlugins,
             style: ZplayType.title.toStyle(color: tokens.textPrimary),
           ),
           content: Column(
@@ -273,7 +275,7 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('$count plugins installed and ready!'),
+          content: Text(l10nOf(context).dynamicCloudstreamMarketplaceModalPluginsInstalledAndReady((count).toString())),
           backgroundColor: tokens.success,
           behavior: SnackBarBehavior.floating,
         ),
@@ -284,7 +286,7 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Installation error: $e'),
+          content: Text(l10nOf(context).dynamicCloudstreamMarketplaceModalInstallationError((e).toString())),
           backgroundColor: tokens.danger,
           behavior: SnackBarBehavior.floating,
         ),
@@ -312,14 +314,14 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
         ),
         child: Icon(Icons.hub_rounded, color: tokens.accent, size: 20),
       ),
-      title: 'Marketplace',
+      title: l10nOf(context).uiCloudstreamMarketplaceModalMarketplace,
       subtitle:
-          '${_repos.length} repos · Direct install links & verified providers',
+          l10nOf(context).dynamicCloudstreamMarketplaceModalReposDirectInstallLinksVerifiedProviders((_repos.length).toString()),
       status: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            tooltip: 'Refresh list from web',
+            tooltip: l10nOf(context).uiCloudstreamMarketplaceModalRefreshListFromWeb,
             icon: _isRefreshing
                 ? SizedBox(
                     width: 16,
@@ -359,7 +361,7 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
                 style: ZplayType.body.toStyle(color: tokens.textPrimary),
                 onChanged: (val) => setState(() => _searchQuery = val),
                 decoration: InputDecoration(
-                  hintText: 'Search repository or plugin (e.g. Turkish, 3rabi, DiziBox, Shahid)...',
+                  hintText: l10nOf(context).uiCloudstreamMarketplaceModalSearchRepositoryOrPluginEG,
                   hintStyle: ZplayType.bodySmall.toStyle(color: tokens.textDisabled),
                   prefixIcon: Icon(
                     Icons.search_rounded,
@@ -562,7 +564,7 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
                             ),
                             const SizedBox(height: 12),
                             Text(
-                              'No repositories found for "$_searchQuery"',
+                              l10nOf(context).dynamicCloudstreamMarketplaceModalNoRepositoriesFoundFor((_searchQuery).toString()),
                               style: ZplayType.body.toStyle(color: tokens.textSecondary),
                             ),
                           ],
@@ -645,7 +647,7 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
                                                       borderRadius: ZplayRadius.xsAll,
                                                     ),
                                                     child: Text(
-                                                      '${repo.plugins.length} Plugins',
+                                                      l10nOf(context).dynamicCloudstreamMarketplaceModalPlugins((repo.plugins.length).toString()),
                                                       style: ZplayType.caption.toStyle(
                                                         color: tokens.textEmphasis,
                                                       ),
@@ -681,7 +683,7 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
                                               ),
                                               const SizedBox(width: 4),
                                               Text(
-                                                'Added',
+                                                l10nOf(context).uiCloudstreamMarketplaceModalAdded,
                                                 style: ZplayType.caption.toStyle(
                                                   color: tokens.success,
                                                 ),
@@ -721,7 +723,7 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
                                             Clipboard.setData(ClipboardData(text: repo.url));
                                             ScaffoldMessenger.of(context).showSnackBar(
                                               SnackBar(
-                                                content: Text('Copied link: ${repo.url}'),
+                                                content: Text(l10nOf(context).dynamicCloudstreamMarketplaceModalCopiedLink((repo.url).toString())),
                                                 duration: const Duration(seconds: 2),
                                                 behavior: SnackBarBehavior.floating,
                                               ),
@@ -759,7 +761,7 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
                                           const SizedBox(width: 6),
                                           Expanded(
                                             child: Text(
-                                              'Contains: ${matchingPlugins.join(', ')}',
+                                              l10nOf(context).addonsContainsPlugins(matchingPlugins.join(', ')),
                                               style: ZplayType.caption.toStyle(color: tokens.accent),
                                               overflow: TextOverflow.ellipsis,
                                             ),
@@ -788,7 +790,7 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
                                         child: Row(
                                           children: [
                                             Text(
-                                              isExpanded ? 'Hide plugins' : 'View all ${repo.plugins.length} plugins',
+                                              isExpanded ? l10nOf(context).finalCloudstreamMarketplaceModalHidePlugins : 'View all ${repo.plugins.length} plugins',
                                               style: ZplayType.caption.toStyle(
                                                 color: tokens.accent,
                                                 opacity: ZplayOpacity.textPrimary,
@@ -866,7 +868,7 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
                                                   )
                                                 : const Icon(Icons.add_circle_outline_rounded, size: 16),
                                             label: Text(
-                                              isAdding ? 'Adding Repository...' : 'Install Repository',
+                                              isAdding ? l10nOf(context).finalCloudstreamMarketplaceModalAddingRepository : 'Install Repository',
                                               style: ZplayType.label.toStyle(),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -885,7 +887,7 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
                                             onPressed: () => _installAllPlugins(repo.url),
                                             icon: const Icon(Icons.download_for_offline_rounded, size: 16),
                                             label: Text(
-                                              'Install All Plugins',
+                                              l10nOf(context).uiCloudstreamMarketplaceModalInstallAllPlugins,
                                               style: ZplayType.label.toStyle(),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
@@ -906,7 +908,7 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
                                           },
                                           icon: const Icon(Icons.manage_search_rounded, size: 16),
                                           label: Text(
-                                            'Browse',
+                                            l10nOf(context).uiCloudstreamMarketplaceModalBrowse,
                                             style: ZplayType.bodySmall.toStyle(),
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,

@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -340,7 +342,7 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
         children: [
           _iconAction(
             icon: Icons.arrow_back_ios_new_rounded,
-            tooltip: 'Back',
+            tooltip: l10nOf(context).uiPlayerTopBarBack,
             onTap: () => Navigator.pop(context),
           ),
           const SizedBox(width: ZplaySpacing.s8),
@@ -348,7 +350,7 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
           const SizedBox(width: ZplaySpacing.s8),
           Expanded(
             child: Text(
-              'Recommendation Quiz',
+              l10nOf(context).auxWewatchQuizPageRecommendationQuiz,
               style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -356,7 +358,7 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
           ),
           if (_recommendations != null)
             PillButton(
-              label: 'Retake',
+              label: l10nOf(context).auxWewatchQuizPageRetake,
               icon: Icons.refresh_rounded,
               variant: PillVariant.secondary,
               onPressed: () => setState(() => _recommendations = null),
@@ -419,14 +421,14 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'What do you like to watch?',
+                    l10nOf(context).auxWewatchQuizPageWhatDoYouLikeToWatch,
                     style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                   ),
                   // A muted count, not a badge: the rail headers say their
                   // count the same way. It turns green only once the quiz is
                   // actually ready to submit.
                   Text(
-                    '$rated/3 rated',
+                    l10nOf(context).dynamicWewatchQuizPage3Rated((rated).toString()),
                     style: ZplayType.caption
                         .copyWith(weight: FontWeight.w700)
                         .toStyle(
@@ -439,7 +441,7 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
               ),
               const SizedBox(height: 6),
               Text(
-                'Rate 3 or more movies or TV shows. Choose what you liked or disliked, and select key elements to generate pinpoint AI recommendations.',
+                l10nOf(context).auxWewatchQuizPageRate3OrMoreMoviesOrTv,
                 style: ZplayType.body
                     .copyWith(size: 13)
                     .toStyle(color: tokens.textEmphasis),
@@ -493,7 +495,7 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
         if (_picks.length < 8)
           Center(
             child: PillButton(
-              label: 'Add Another Title',
+              label: l10nOf(context).auxWewatchQuizPageAddAnotherTitle,
               icon: Icons.add_rounded,
               variant: PillVariant.secondary,
               onPressed: _addAnotherTitle,
@@ -510,8 +512,8 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
         // says without pretending the control is live.
         PillButton(
           label: _canSubmit
-              ? 'Discover Recommendations ($rated Titles)'
-              : 'Rate 3 Titles to Unlock Recommendations',
+              ? l10nOf(context).aiDiscoverRated(rated)
+              : l10nOf(context).uiFinalWewatchQuizPageRate3TitlesToUnlockRecommendations,
           icon: Icons.auto_awesome_rounded,
           variant: _canSubmit ? PillVariant.primary : PillVariant.secondary,
           expand: true,
@@ -586,7 +588,7 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
               const SizedBox(width: ZplaySpacing.s4),
               _iconAction(
                 icon: Icons.close_rounded,
-                tooltip: 'Remove this title',
+                tooltip: l10nOf(context).auxWewatchQuizPageRemoveThisTitle,
                 onTap: () => _removeTitle(index),
               ),
             ],
@@ -606,7 +608,7 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
                 style: ZplayType.body.toStyle(color: tokens.textPrimary),
                 onChanged: (q) => _onSearchChanged(index, q),
                 decoration: InputDecoration(
-                  hintText: 'Search movie or TV series...',
+                  hintText: l10nOf(context).auxWewatchQuizPageSearchMovieOrTvSeries,
                   hintStyle: ZplayType.body
                       .copyWith(size: 13)
                       .toStyle(color: tokens.textMuted),
@@ -716,7 +718,7 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
                       Icon(Icons.lightbulb_outline_rounded, size: 14, color: tokens.accent),
                       const SizedBox(width: 6),
                       Text(
-                        'Need ideas?',
+                        l10nOf(context).auxWewatchQuizPageNeedIdeas,
                         style: ZplayType.label
                             .copyWith(size: 12, weight: FontWeight.bold)
                             .toStyle(color: tokens.textPrimary),
@@ -812,7 +814,7 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'How was your experience with it?',
+                        l10nOf(context).auxWewatchQuizPageHowWasYourExperienceWithIt,
                         style: ZplayType.label
                             .copyWith(
                               size: 12,
@@ -843,7 +845,7 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
             if (pick.sentiment != null) ...[
               const SizedBox(height: 14),
               Text(
-                'What stood out? (Pick key elements or write a note):',
+                l10nOf(context).auxWewatchQuizPageWhatStoodOutPickKeyElementsOr,
                 style: ZplayType.label
                     .copyWith(size: 12, weight: FontWeight.w600)
                     .toStyle(color: tokens.textEmphasis),
@@ -868,7 +870,7 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'Fetching reason tags...',
+                            l10nOf(context).auxWewatchQuizPageFetchingReasonTags,
                             style: ZplayType.caption.toStyle(
                               color: tokens.textSecondary,
                             ),
@@ -934,7 +936,7 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
                 maxLines: 2,
                 onChanged: (val) => pick.reason = val,
                 decoration: InputDecoration(
-                  hintText: 'Additional notes or specifics (optional)...',
+                  hintText: l10nOf(context).auxWewatchQuizPageAdditionalNotesOrSpecificsOptional,
                   hintStyle: ZplayType.bodySmall.toStyle(color: tokens.textDisabled),
                   filled: true,
                   fillColor: PillButton.scrim(tokens),
@@ -1026,7 +1028,7 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Synthesizing taste vectors with multi-signal AI...',
+                l10nOf(context).auxWewatchQuizPageSynthesizingTasteVectorsWithMultiSignalAi,
                 style: ZplayType.bodySmall
                     .copyWith(size: 12.5)
                     .toStyle(color: tokens.textSecondary),
@@ -1046,12 +1048,12 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
       padding: EdgeInsets.symmetric(horizontal: isMobile ? 16 : 20, vertical: 16),
       children: [
         Text(
-          'Your Personalized Matches',
+          l10nOf(context).auxWewatchQuizPageYourPersonalizedMatches,
           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
         ),
         const SizedBox(height: ZplaySpacing.s4),
         Text(
-          '${recs.length} cinema picks tailored to your taste profile',
+          l10nOf(context).dynamicWewatchQuizPageCinemaPicksTailoredToYourTaste((recs.length).toString()),
           style: ZplayType.caption.toStyle(color: tokens.textMuted),
         ),
 
@@ -1115,7 +1117,7 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
                                 // score is a fact about the row, not a state
                                 // the user is in.
                                 Text(
-                                  '${rec.matchConfidence}% match',
+                                  l10nOf(context).dynamicWewatchQuizPageMatch((rec.matchConfidence).toString()),
                                   style: ZplayType.overline
                                       .copyWith(
                                         size: 10.5,
@@ -1139,7 +1141,7 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
                                 if (rec.mediaType.isNotEmpty) ...[
                                   const SizedBox(width: 6),
                                   Text(
-                                    '•  ${rec.mediaType == 'movie' ? 'Movie' : 'TV Series'}',
+                                    '•  ${rec.mediaType == 'movie' ? l10nOf(context).mediaTypeMovie : l10nOf(context).aiRecMediaSeries}',
                                     style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                                   ),
                                 ],

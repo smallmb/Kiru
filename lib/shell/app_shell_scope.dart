@@ -170,6 +170,11 @@ class AppShellController {
     _onSelect(ShellSlot.browse);
   }
 
+  /// Keeps the shared desktop navigation in sync with a local Browse tab.
+  void reportBrowseVertical(BrowseVertical vertical) {
+    if (_browseVertical.value != vertical) _browseVertical.request(vertical);
+  }
+
   /// A page that wants the next back press for itself, while it is up.
   ///
   /// **Why this exists.** `ShellBackGuard` is the root route's only pop entry,

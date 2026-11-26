@@ -1,3 +1,4 @@
+import 'package:zplay/l10n/config_labels.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,8 @@ import '../../services/storage/app_image_cache.dart';
 import '../../services/config/service_credentials.dart';
 
 import 'appearance_settings_page.dart';
+import 'anime_source_settings_page.dart';
+import '../../services/anime/anime_source_settings.dart';
 import 'video_settings_page.dart';
 import 'debrid_settings_page.dart';
 import 'addons_settings_page.dart';
@@ -493,7 +496,7 @@ class _SettingsPageState extends State<SettingsPage> {
     final simklAuth = await SimklService.instance.isAuthenticated();
     final pkg = await PackageInfo.fromPlatform().catchError(
       (_) => PackageInfo(
-        appName: 'ZPlay',
+        appName: 'Kiru',
         packageName: 'io.github.tzero86.zplay',
         version: '1.1.6',
         buildNumber: '2019',
@@ -1101,8 +1104,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                       context,
                                     ).settingsAppearanceSubtitle,
                                     valueText: glassEnabled
-                                        ? '${currentPalette.name} · ${l10nOf(context).settingsGlassOn}'
-                                        : currentPalette.name,
+                                        ? '${configLabel(context, currentPalette.name)} · ${l10nOf(context).settingsGlassOn}'
+                                        : configLabel(context, currentPalette.name),
                                     onTap: () => _navigateTo(
                                       const AppearanceSettingsPage(),
                                     ),
@@ -1118,7 +1121,17 @@ class _SettingsPageState extends State<SettingsPage> {
                         context,
                         'CONTENT',
                         rows: [
-                          // TV Airing Calendar Toggle
+                          ValueListenableBuilder<AnimeSource>(
+  valueListenable: AnimeSourceSettings.source,
+  builder: (context, source, _) => SettingsNavRow(
+    icon: Icons.storage_rounded,
+    title: l10nOf(context).animeSourceSettingsTitle,
+    subtitle: l10nOf(context).animeSourceSettingsSubtitle,
+    valueText: source == AnimeSource.bangumi ? 'Bangumi' : 'AniList',
+    onTap: () => _navigateTo(const AnimeSourceSettingsPage()),
+  ),
+),
+// TV Airing Calendar Toggle
                           ValueListenableBuilder<bool>(
                             valueListenable: HomePageSettings.enableCalendar,
                             builder: (context, isCalEnabled, _) {

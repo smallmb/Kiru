@@ -1,3 +1,5 @@
+import 'localized_movie_title.dart';
+import 'package:zplay/l10n/media_labels.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -313,15 +315,13 @@ String _formatRating(String raw) {
 /// what keeps the separators honest: joining the list that exists cannot draw
 /// a dot next to nothing. The type always exists - a missing type reads as a
 /// film - so the line is never empty.
-String _metaLine(Movie movie) => [
+String _metaLine(BuildContext context, Movie movie) => [
   if (movie.imdbRating != null &&
       movie.imdbRating!.isNotEmpty &&
       HomePageSettings.showRating.value)
     '★ ${_formatRating(movie.imdbRating!)}',
   if (movie.year != null && movie.year!.isNotEmpty) movie.year!,
-  movie.type == 'series'
-      ? 'Series'
-      : (movie.type == 'anime' ? 'Anime' : 'Movie'),
+  mediaLabel(context, movie.type == 'series' ? 'Series' : (movie.type == 'anime' ? 'Anime' : 'Movie')),
 ].join(' · ');
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -497,12 +497,12 @@ class MovieCard extends StatelessWidget {
                             ? CardRankBadge(rank: rank!)
                             : null,
                         bottomCenter: switch (CardFreshness.of(movie)) {
-                          final tag? => CardStatusTag(label: tag.label),
+                          final tag? => CardStatusTag(label: mediaLabel(context, tag.label)),
                           null => null,
                         },
                         topLeft:
                             rank == null && state.focused && typeLabel != null
-                            ? CardTypeBadge(label: typeLabel)
+                            ? CardTypeBadge(label: mediaLabel(context, typeLabel))
                             : null,
                         // Rating badge (top-right). Present in every state -
                         // the prototype's resting card already shows the score.
@@ -548,12 +548,15 @@ class MovieCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: ZplaySpacing.s8),
-                          Text(
-                            movie.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: ZplayType.subtitle.toStyle(
-                              color: tokens.textPrimary,
+                          LocalizedMovieTitle(
+                            movie: movie,
+                            builder: (context, title, localized) => Text(
+                              title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: ZplayType.subtitle.toStyle(
+                                color: tokens.textPrimary,
+                              ),
                             ),
                           ),
 
@@ -570,7 +573,7 @@ class MovieCard extends StatelessWidget {
                           // an ellipsis, and the separators can only exist
                           // between terms that were actually supplied.
                           Text(
-                            _metaLine(movie),
+                            _metaLine(context, movie),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: ZplayType.label.toStyle(
@@ -713,9 +716,9 @@ class _CardFocusDetailsState extends State<_CardFocusDetails> {
     // what a bare `join` produces whenever a field is absent.
     final facts = <String>[
       if (movie.year != null && movie.year!.isNotEmpty) movie.year!,
-      movie.type == 'series'
+      mediaLabel(context, movie.type == 'series'
           ? 'Series'
-          : (movie.type == 'anime' ? 'Anime' : 'Movie'),
+          : (movie.type == 'anime' ? 'Anime' : 'Movie')),
       if (runtime != null && runtime.isNotEmpty) runtime,
       if (movie.imdbRating != null && movie.imdbRating!.isNotEmpty)
         '★ ${_formatRating(movie.imdbRating!)}',
@@ -738,11 +741,14 @@ class _CardFocusDetailsState extends State<_CardFocusDetails> {
           // The name is printed unconditionally: the card's own caption is gone
           // by the time this panel is up (it fades as the card is selected), so
           // this is the one title the user reads.
-          Text(
-            movie.name,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+          LocalizedMovieTitle(
+            movie: movie,
+            builder: (context, title, localized) => Text(
+              title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+            ),
           ),
           const SizedBox(height: ZplaySpacing.s4),
           // The facts line is secondary text, not accent.
@@ -765,7 +771,7 @@ class _CardFocusDetailsState extends State<_CardFocusDetails> {
           if (genres.isNotEmpty && !tight) ...[
             const SizedBox(height: ZplaySpacing.s4),
             Text(
-              genres.take(3).join(' · '),
+              genres.take(3).map((g) => mediaLabel(context, g)).join(' · '),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: ZplayType.caption.toStyle(color: tokens.textMuted),

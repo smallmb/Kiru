@@ -1,3 +1,6 @@
+import '../movie/localized_movie_title.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'dart:math' as math;
 
@@ -1723,9 +1726,11 @@ class _HeroSlideState extends State<HeroSlide>
                     // Title / clearlogo, and the block leads with it: the logo
                     // when the detail carries one, the plain name otherwise -
                     // never both. See `_HeroTitle`.
-                    _HeroTitle(
-                      title: movie.name,
-                      logoUrl: logo,
+                    LocalizedMovieTitle(
+                      movie: movie,
+                      builder: (context, title, localized) => _HeroTitle(
+                      title: title,
+                      logoUrl: localized ? null : logo,
                       isCompact: isCompact || heroStyle == HeroStyle.minimalist,
                       // A short band gets the smaller title, so the name is never
                       // the thing that gets cut. The 46 px title is two lines of
@@ -1733,7 +1738,7 @@ class _HeroSlideState extends State<HeroSlide>
                       // difference between the slide fitting and the name
                       // disappearing off the top of the band.
                       shrink: shrinkTitle,
-                    ),
+                    )),
 
                     SizedBox(
                       height: heroStyle == HeroStyle.minimalist
@@ -1852,7 +1857,7 @@ class _HeroSlideState extends State<HeroSlide>
                                   // Television only: on a pointer device the
                                   // ring on a button nobody chose is noise.
                                   autofocus: FormFactorService.hasRemoteInput,
-                                  label: 'Play',
+                                  label: l10nOf(context).uiHeroBannerPlay,
                                   icon: Icons.play_arrow_rounded,
                                   onPressed: () => _openDetails(context),
                                 );
@@ -1863,7 +1868,7 @@ class _HeroSlideState extends State<HeroSlide>
                             child: Builder(
                               builder: (context) {
                                 return PillButton(
-                                  label: 'More Info',
+                                  label: l10nOf(context).uiHeroBannerMoreInfo,
                                   icon: Icons.info_outline_rounded,
                                   variant: PillVariant.secondary,
                                   onPressed: () => _openDetails(context),
@@ -1977,7 +1982,7 @@ class _TrailerButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PillButton(
-      label: 'Trailer',
+      label: l10nOf(context).uiHeroBannerTrailer,
       icon: Icons.play_circle_outline_rounded,
       variant: PillVariant.secondary,
       onPressed: () =>

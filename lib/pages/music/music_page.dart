@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;
@@ -367,7 +369,7 @@ class _MusicPageState extends State<MusicPage> {
             Icon(Icons.playlist_add_rounded, color: tokens.accent, size: 26),
             const SizedBox(width: ZplaySpacing.s8),
             Text(
-              'New Playlist',
+              l10nOf(context).auxMusicPageNewPlaylist,
               style: ZplayType.title.toStyle(color: tokens.textPrimary),
             ),
           ],
@@ -423,7 +425,7 @@ class _MusicPageState extends State<MusicPage> {
               autofocus: true,
               style: ZplayType.body.toStyle(color: tokens.textPrimary),
               decoration: InputDecoration(
-                hintText: 'Enter playlist title...',
+                hintText: l10nOf(context).auxMusicPageEnterPlaylistTitle,
                 hintStyle: ZplayType.body.toStyle(color: tokens.textMuted),
                 filled: true,
                 fillColor: tokens.surface,
@@ -441,12 +443,12 @@ class _MusicPageState extends State<MusicPage> {
         ),
         actions: [
           PillButton(
-            label: 'Cancel',
+            label: l10nOf(context).actionCancel,
             variant: PillVariant.secondary,
             onPressed: () => Navigator.pop(ctx),
           ),
           PillButton(
-            label: 'Create',
+            label: l10nOf(context).auxMusicPageCreate,
             onPressed: () async {
               final name = controller.text.trim();
               if (name.isNotEmpty) {
@@ -593,10 +595,10 @@ class _MusicPageState extends State<MusicPage> {
                             Expanded(
                               child: Text(
                                 isDownloaded
-                                    ? 'Downloaded Offline (Tap to Remove)'
+                                    ? l10nOf(context).uiFinalMusicPageDownloadedOfflineTapToRemove
                                     : (isQueued
-                                          ? 'Downloading / Queued...'
-                                          : 'Download Track Offline'),
+                                          ? l10nOf(context).uiFinalMusicPageDownloadingQueued
+                                          : l10nOf(context).uiFinalMusicPageDownloadTrackOffline),
                                 style: ZplayType.label.toStyle(
                                   color: isDownloaded
                                       ? tokens.info
@@ -620,12 +622,12 @@ class _MusicPageState extends State<MusicPage> {
                 Row(
                   children: [
                     Text(
-                      'Save to Playlist',
+                      l10nOf(context).auxMusicPageSaveToPlaylist,
                       style: ZplayType.title.toStyle(color: tokens.textPrimary),
                     ),
                     const Spacer(),
                     PillButton(
-                      label: 'New Playlist',
+                      label: l10nOf(context).auxMusicPageNewPlaylist,
                       variant: PillVariant.secondary,
                       icon: Icons.add_rounded,
                       onPressed: () {
@@ -651,14 +653,14 @@ class _MusicPageState extends State<MusicPage> {
                           ),
                           const SizedBox(height: ZplaySpacing.s8),
                           Text(
-                            'No custom playlists yet',
+                            l10nOf(context).auxMusicPageNoCustomPlaylistsYet,
                             style: ZplayType.body.toStyle(
                               color: tokens.textEmphasis,
                             ),
                           ),
                           const SizedBox(height: ZplaySpacing.s12),
                           PillButton(
-                            label: 'Create First Playlist',
+                            label: l10nOf(context).auxMusicPageCreateFirstPlaylist,
                             onPressed: () {
                               Navigator.pop(ctx);
                               _showCreatePlaylistDialog(initialTrack: track);
@@ -737,7 +739,7 @@ class _MusicPageState extends State<MusicPage> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       Text(
-                                        '${pl.tracks.length} tracks',
+                                        l10nOf(context).dynamicMusicPageTracks((pl.tracks.length).toString()),
                                         style: ZplayType.bodySmall.toStyle(
                                           color: tokens.textSecondary,
                                         ),
@@ -1107,13 +1109,13 @@ class _MusicPageState extends State<MusicPage> {
             ),
           if (_newReleases.isNotEmpty)
             _MusicAlbumsRow(
-              title: 'New Album Releases',
+              title: l10nOf(context).auxMusicPageNewAlbumReleases,
               albums: _newReleases,
               onAlbumTap: (album) => _openAlbumModal(album.id),
             ),
           if (_curatedPlaylists.isNotEmpty)
             _MusicPlaylistsRow(
-              title: 'Curated Charts & Mixes',
+              title: l10nOf(context).auxMusicPageCuratedChartsMixes,
               playlists: _curatedPlaylists,
               onPlaylistTap: (pl) => _openCuratedPlaylistModal(pl.id),
             ),
@@ -1169,27 +1171,27 @@ class _MusicPageState extends State<MusicPage> {
         _gutter(
           TabStrip<String>(
             options: [
-              const TabStripOption<String>(value: 'All', label: 'All'),
+              TabStripOption<String>(value: 'All', label: l10nOf(context).uiPlayerSubtitleMenuAll),
               TabStripOption<String>(
                 value: 'Tracks',
-                label: 'Tracks (${_searchData.tracks.length})',
+                label: l10nOf(context).dynamicMusicPageTracks2((_searchData.tracks.length).toString()),
               ),
               TabStripOption<String>(
                 value: 'Artists',
-                label: 'Artists (${_searchData.artists.length})',
+                label: l10nOf(context).dynamicMusicPageArtists((_searchData.artists.length).toString()),
               ),
               TabStripOption<String>(
                 value: 'Albums',
-                label: 'Albums (${_searchData.albums.length})',
+                label: l10nOf(context).dynamicMusicPageAlbums((_searchData.albums.length).toString()),
               ),
               TabStripOption<String>(
                 value: 'Playlists',
-                label: 'Playlists (${_searchData.playlists.length})',
+                label: l10nOf(context).dynamicMusicPagePlaylists((_searchData.playlists.length).toString()),
               ),
             ],
             selected: _selectedFilter,
             onSelected: (value) => setState(() => _selectedFilter = value),
-            semanticsLabel: 'Search results',
+            semanticsLabel: l10nOf(context).auxMusicPageSearchResults,
             height: 40,
           ),
         ),
@@ -1236,7 +1238,7 @@ class _MusicPageState extends State<MusicPage> {
                   _selectedFilter.startsWith('Tracks')) &&
               _searchData.tracks.isNotEmpty) ...[
             SectionHeader(
-              title: 'Songs',
+              title: l10nOf(context).auxMusicPageSongs,
               count: _searchData.tracks.length.clamp(0, 15),
             ),
             const SizedBox(height: ZplaySpacing.s12),
@@ -1269,7 +1271,7 @@ class _MusicPageState extends State<MusicPage> {
           if ((_selectedFilter == 'All' ||
                   _selectedFilter.startsWith('Artists')) &&
               _searchData.artists.isNotEmpty) ...[
-            SectionHeader(title: 'Artists', count: _searchData.artists.length),
+            SectionHeader(title: l10nOf(context).auxMusicPageArtists, count: _searchData.artists.length),
             const SizedBox(height: ZplaySpacing.s12),
             SizedBox(
               height: 130,
@@ -1297,7 +1299,7 @@ class _MusicPageState extends State<MusicPage> {
                   _selectedFilter.startsWith('Albums')) &&
               _searchData.albums.isNotEmpty) ...[
             SectionHeader(
-              title: 'Albums',
+              title: l10nOf(context).auxMusicPageAlbums,
               count: _searchData.albums.length.clamp(0, 12),
             ),
             const SizedBox(height: ZplaySpacing.s12),
@@ -1324,7 +1326,7 @@ class _MusicPageState extends State<MusicPage> {
                   _selectedFilter.startsWith('Playlists')) &&
               _searchData.playlists.isNotEmpty) ...[
             SectionHeader(
-              title: 'Playlists',
+              title: l10nOf(context).auxMultinutzChannelSheetPlaylists,
               count: _searchData.playlists.length.clamp(0, 12),
             ),
             const SizedBox(height: ZplaySpacing.s12),
@@ -1339,7 +1341,7 @@ class _MusicPageState extends State<MusicPage> {
                   return _MusicCoverCard(
                     imageUrl: pl.coverUrl,
                     title: pl.title,
-                    subtitle: '${pl.trackCount} tracks',
+                    subtitle: l10nOf(context).dynamicMusicPageTracks((pl.trackCount).toString()),
                     onTap: () => _openCuratedPlaylistModal(pl.id),
                   );
                 },
@@ -1370,7 +1372,7 @@ class _MusicPageState extends State<MusicPage> {
       controller: _scrollController,
       padding: _viewListPadding(context),
       children: [
-        SectionHeader(title: 'Browse Moods & Genres', count: genres.length),
+        SectionHeader(title: l10nOf(context).auxMusicPageBrowseMoodsGenres, count: genres.length),
         const SizedBox(height: ZplaySpacing.s12),
         _gutter(
           GridView.builder(
@@ -1437,9 +1439,9 @@ class _MusicPageState extends State<MusicPage> {
       controller: _scrollController,
       padding: _viewListPadding(context),
       children: [
-        const SectionHeader(
-          title: 'Radio Stations & Live Streams',
-          subtitle: 'Continuous music channels tuned to your mood.',
+        SectionHeader(
+          title: l10nOf(context).auxMusicPageRadioStationsLiveStreams,
+          subtitle: l10nOf(context).auxMusicPageContinuousMusicChannelsTunedToYourMood,
         ),
         const SizedBox(height: ZplaySpacing.s12),
         _gutter(
@@ -1518,9 +1520,9 @@ class _MusicPageState extends State<MusicPage> {
       padding: _viewListPadding(context),
       children: [
         SectionHeader(
-          title: 'Your Library',
+          title: l10nOf(context).auxMusicPageYourLibrary,
           trailing: PillButton(
-            label: 'New Playlist',
+            label: l10nOf(context).auxMusicPageNewPlaylist,
             icon: Icons.add_rounded,
             onPressed: () => _showCreatePlaylistDialog(),
           ),
@@ -1579,14 +1581,14 @@ class _MusicPageState extends State<MusicPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'Liked Songs',
+                                l10nOf(context).auxMusicPageLikedSongs,
                                 style: ZplayType.title.toStyle(
                                   color: tokens.textPrimary,
                                 ),
                               ),
                               const SizedBox(height: ZplaySpacing.s4),
                               Text(
-                                '${liked.length} favourite tracks',
+                                l10nOf(context).dynamicMusicPageFavouriteTracks((liked.length).toString()),
                                 style: ZplayType.bodySmall.toStyle(
                                   color: tokens.textSecondary,
                                 ),
@@ -1672,7 +1674,7 @@ class _MusicPageState extends State<MusicPage> {
                                   children: [
                                     Flexible(
                                       child: Text(
-                                        'Downloaded Songs',
+                                        l10nOf(context).auxMusicPageDownloadedSongs,
                                         style: ZplayType.title.toStyle(
                                           color: tokens.textPrimary,
                                         ),
@@ -1683,7 +1685,7 @@ class _MusicPageState extends State<MusicPage> {
                                     if (queue.isNotEmpty) ...[
                                       const SizedBox(width: ZplaySpacing.s8),
                                       Text(
-                                        'Queue (${queue.length})',
+                                        l10nOf(context).dynamicMusicPageQueue((queue.length).toString()),
                                         style: ZplayType.overline.toStyle(
                                           color: tokens.textMuted,
                                         ),
@@ -1693,7 +1695,7 @@ class _MusicPageState extends State<MusicPage> {
                                 ),
                                 const SizedBox(height: ZplaySpacing.s4),
                                 Text(
-                                  '${downloaded.length} offline tracks • $sizeMb MB',
+                                  l10nOf(context).dynamicMusicPageOfflineTracksMb((downloaded.length).toString(), (sizeMb).toString()),
                                   style: ZplayType.bodySmall.toStyle(
                                     color: tokens.textSecondary,
                                   ),
@@ -1728,7 +1730,7 @@ class _MusicPageState extends State<MusicPage> {
 
         // User Playlists Section
         if (playlists.isNotEmpty) ...[
-          SectionHeader(title: 'Custom Playlists', count: playlists.length),
+          SectionHeader(title: l10nOf(context).auxMusicPageCustomPlaylists, count: playlists.length),
           const SizedBox(height: ZplaySpacing.s12),
           _gutter(
             GridView.builder(
@@ -1785,7 +1787,7 @@ class _MusicPageState extends State<MusicPage> {
                               overflow: TextOverflow.ellipsis,
                             ),
                             Text(
-                              '${pl.tracks.length} tracks',
+                              l10nOf(context).dynamicMusicPageTracks((pl.tracks.length).toString()),
                               style: ZplayType.bodySmall.toStyle(
                                 color: tokens.textSecondary,
                               ),
@@ -1805,7 +1807,7 @@ class _MusicPageState extends State<MusicPage> {
         // Recent History Section
         if (recent.isNotEmpty) ...[
           SectionHeader(
-            title: 'Recently Played',
+            title: l10nOf(context).auxMusicPageRecentlyPlayed,
             count: recent.length.clamp(0, 10),
           ),
           const SizedBox(height: ZplaySpacing.s12),
@@ -2111,7 +2113,7 @@ class _MusicTopHeader extends StatelessWidget {
                           .toStyle(color: tokens.textPrimary),
                       decoration: InputDecoration(
                         hintText: isVeryNarrow
-                            ? 'Search…'
+                            ? l10nOf(context).finalMusicPageSearch
                             : (isMobile
                                   ? 'Search music…'
                                   : 'Search songs, artists, albums, playlists...'),
@@ -2143,7 +2145,7 @@ class _MusicTopHeader extends StatelessWidget {
           if (!isMobile) ...[
             SizedBox(width: isMobile ? ZplaySpacing.s4 : ZplaySpacing.s8),
             IconButton(
-              tooltip: 'Music Player Studio',
+              tooltip: l10nOf(context).auxMusicPageMusicPlayerStudio,
               icon: const Icon(
                 Icons.dashboard_customize_rounded,
                 shadows: [_iconShadow],
@@ -2162,7 +2164,7 @@ class _MusicTopHeader extends StatelessWidget {
             ),
             SizedBox(width: isMobile ? ZplaySpacing.s2 : ZplaySpacing.s4),
             IconButton(
-              tooltip: 'Music Atmosphere Settings',
+              tooltip: l10nOf(context).auxMusicPageMusicAtmosphereSettings,
               icon: const Icon(Icons.palette_rounded, shadows: [_iconShadow]),
               color: tokens.textEmphasis,
               iconSize: 20,
@@ -2177,7 +2179,7 @@ class _MusicTopHeader extends StatelessWidget {
           ],
           SizedBox(width: isMobile ? ZplaySpacing.s2 : ZplaySpacing.s4),
           IconButton(
-            tooltip: 'App Settings',
+            tooltip: l10nOf(context).auxMusicPageAppSettings,
             icon: const Icon(Icons.settings_rounded, shadows: [_iconShadow]),
             color: tokens.textEmphasis,
             iconSize: 20,
@@ -2226,7 +2228,7 @@ class _MusicViewBand extends StatelessWidget {
           options: _viewOptions,
           selected: view,
           onSelected: onSelected,
-          semanticsLabel: 'Music view',
+          semanticsLabel: l10nOf(context).auxMusicPageMusicView,
           height: television ? ZplaySpacing.s48 : 40,
         ),
       ),
@@ -2369,14 +2371,14 @@ class _AudioSourceSelectorButton extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Audio Source & Quality',
+                              l10nOf(context).auxMusicPageAudioSourceQuality,
                               style: ZplayType.title.toStyle(
                                 color: tokens.textPrimary,
                               ),
                             ),
                             const SizedBox(height: ZplaySpacing.s2),
                             Text(
-                              'Choose your preferred music extraction engine',
+                              l10nOf(context).auxMusicPageChooseYourPreferredMusicExtractionEngine,
                               style: ZplayType.bodySmall.toStyle(
                                 color: tokens.textSecondary,
                               ),
@@ -2388,9 +2390,9 @@ class _AudioSourceSelectorButton extends StatelessWidget {
                     const SizedBox(height: ZplaySpacing.s20),
                     _sourceOptionCard(
                       context: context,
-                      title: 'FLAC Lossless (Qobuz Hi-Res)',
+                      title: l10nOf(context).auxMusicPageFlacLosslessQobuzHiRes,
                       subtitle:
-                          'Studio master quality up to 24-bit/192kHz with zero compression',
+                          l10nOf(context).auxMusicPageStudioMasterQualityUpTo24Bit,
                       icon: Icons.diamond_rounded,
                       isSelected: isFlac,
                       badge: 'LOSSLESS',
@@ -2402,9 +2404,9 @@ class _AudioSourceSelectorButton extends StatelessWidget {
                     const SizedBox(height: ZplaySpacing.s12),
                     _sourceOptionCard(
                       context: context,
-                      title: 'YouTube Audio',
+                      title: l10nOf(context).auxMusicPageYoutubeAudio,
                       subtitle:
-                          'High-speed audio extraction with intelligent track & duration matching',
+                          l10nOf(context).auxMusicPageHighSpeedAudioExtractionWithIntelligentTrack,
                       icon: Icons.play_circle_fill_rounded,
                       isSelected: !isFlac,
                       badge: 'FAST',
@@ -2622,7 +2624,7 @@ class _MusicHeroBillboard extends StatelessWidget {
                     // pill's box is identical in every state.
                     Builder(
                       builder: (context) => PillButton(
-                        label: 'Play Now',
+                        label: l10nOf(context).auxMusicPagePlayNow,
                         icon: Icons.play_arrow_rounded,
                         onPressed: onPlayTap,
                       ),
@@ -2739,7 +2741,7 @@ class _MusicTrendingArtists extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _MusicHorizontalScrollSection(
-      title: 'Trending Artists',
+      title: l10nOf(context).auxMusicPageTrendingArtists,
       height: 130,
       itemCount: artists.length,
       itemBuilder: (context, index) {
@@ -2805,7 +2807,7 @@ class _MusicPlaylistsRow extends StatelessWidget {
         return _MusicCoverCard(
           imageUrl: pl.coverUrl,
           title: pl.title,
-          subtitle: '${pl.trackCount} tracks',
+          subtitle: l10nOf(context).dynamicMusicPageTracks((pl.trackCount).toString()),
           onTap: () => onPlaylistTap(pl),
         );
       },
@@ -3124,7 +3126,7 @@ class _MusicTrackRow extends StatelessWidget {
 
     if (isDownloaded) {
       return Tooltip(
-        message: 'Downloaded (Offline)',
+        message: l10nOf(context).auxMusicPageDownloadedOffline,
         child: Container(
           padding: const EdgeInsets.all(ZplaySpacing.s4),
           child: Icon(
@@ -3138,7 +3140,7 @@ class _MusicTrackRow extends StatelessWidget {
 
     if (isDownloading) {
       return Tooltip(
-        message: 'Downloading ${(task.progress * 100).toInt()}%',
+        message: l10nOf(context).dynamicMusicPageDownloading(((task.progress * 100).toInt()).toString()),
         child: Container(
           width: 28,
           height: 28,
@@ -3154,7 +3156,7 @@ class _MusicTrackRow extends StatelessWidget {
 
     if (isQueued) {
       return Tooltip(
-        message: 'Queued for download',
+        message: l10nOf(context).auxMusicPageQueuedForDownload,
         child: Container(
           padding: const EdgeInsets.all(ZplaySpacing.s4),
           child: Icon(
@@ -3168,12 +3170,12 @@ class _MusicTrackRow extends StatelessWidget {
 
     return IconButton(
       icon: Icon(Icons.download_rounded, color: tokens.textMuted, size: 18),
-      tooltip: 'Download Track',
+      tooltip: l10nOf(context).auxMusicPageDownloadTrack,
       onPressed: () {
         MusicDownloadService.instance.queueTrack(track);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Added "${track.title}" to download queue'),
+            content: Text(l10nOf(context).dynamicMusicPageAddedToDownloadQueue((track.title).toString())),
             duration: const Duration(seconds: 2),
           ),
         );
@@ -3237,7 +3239,7 @@ class _MusicLyricsDrawer extends StatelessWidget {
                 ),
                 const SizedBox(width: ZplaySpacing.s8),
                 Text(
-                  'Synced Lyrics',
+                  l10nOf(context).auxMusicPageSyncedLyrics,
                   style: ZplayType.title.toStyle(color: tokens.textPrimary),
                 ),
                 const Spacer(),
@@ -3262,7 +3264,7 @@ class _MusicLyricsDrawer extends StatelessWidget {
               Expanded(
                 child: Center(
                   child: Text(
-                    'No lyrics found for this track.',
+                    l10nOf(context).auxMusicPageNoLyricsFoundForThisTrack,
                     style: ZplayType.label.toStyle(color: tokens.textMuted),
                   ),
                 ),
@@ -3350,13 +3352,13 @@ class _MusicQueueDrawer extends StatelessWidget {
                 Icon(Icons.queue_music_rounded, color: tokens.accent, size: 22),
                 const SizedBox(width: ZplaySpacing.s8),
                 Text(
-                  'Queue (${queue.length})',
+                  l10nOf(context).dynamicMusicPageQueue((queue.length).toString()),
                   style: ZplayType.title.toStyle(color: tokens.textPrimary),
                 ),
                 const Spacer(),
                 if (queue.isNotEmpty)
                   PillButton(
-                    label: 'Clear',
+                    label: l10nOf(context).settingsClear,
                     variant: PillVariant.secondary,
                     onPressed: controller.clearQueue,
                   ),
@@ -3376,7 +3378,7 @@ class _MusicQueueDrawer extends StatelessWidget {
               Expanded(
                 child: Center(
                   child: Text(
-                    'Queue is empty',
+                    l10nOf(context).auxMusicPageQueueIsEmpty,
                     style: ZplayType.label.toStyle(color: tokens.textMuted),
                   ),
                 ),
@@ -3553,7 +3555,7 @@ class _MusicArtistDetailModal extends StatelessWidget {
                           const SizedBox(width: ZplaySpacing.s16),
                           if (details.topTracks.isNotEmpty)
                             PillButton(
-                              label: 'Play All',
+                              label: l10nOf(context).auxMusicPagePlayAll,
                               icon: Icons.play_arrow_rounded,
                               onPressed: () => onPlayTrack(
                                 details.topTracks.first,
@@ -3574,7 +3576,7 @@ class _MusicArtistDetailModal extends StatelessWidget {
                     children: [
                       if (details.topTracks.isNotEmpty) ...[
                         Text(
-                          'Top Songs',
+                          l10nOf(context).auxMusicPageTopSongs,
                           style: ZplayType.title.toStyle(
                             color: tokens.textPrimary,
                           ),
@@ -3603,7 +3605,7 @@ class _MusicArtistDetailModal extends StatelessWidget {
                       ],
                       if (details.albums.isNotEmpty) ...[
                         Text(
-                          'Albums & Discography',
+                          l10nOf(context).auxMusicPageAlbumsDiscography,
                           style: ZplayType.title.toStyle(
                             color: tokens.textPrimary,
                           ),
@@ -3758,13 +3760,13 @@ class _MusicAlbumDetailModal extends StatelessWidget {
                                 runSpacing: ZplaySpacing.s8,
                                 children: [
                                   PillButton(
-                                    label: 'Play Album',
+                                    label: l10nOf(context).auxMusicPagePlayAlbum,
                                     icon: Icons.play_arrow_rounded,
                                     onPressed: () =>
                                         onPlayTrack(tracks.first, tracks),
                                   ),
                                   PillButton(
-                                    label: 'Download Album',
+                                    label: l10nOf(context).auxMusicPageDownloadAlbum,
                                     variant: PillVariant.secondary,
                                     icon: Icons.download_rounded,
                                     onPressed: () {
@@ -3777,7 +3779,7 @@ class _MusicAlbumDetailModal extends StatelessWidget {
                                       ).showSnackBar(
                                         SnackBar(
                                           content: Text(
-                                            'Added ${tracks.length} tracks from "${album.title}" to download queue',
+                                            l10nOf(context).dynamicMusicPageAddedTracksFromToDownloadQueue((tracks.length).toString(), (album.title).toString()),
                                           ),
                                           duration: const Duration(seconds: 2),
                                         ),
@@ -3894,7 +3896,7 @@ class _MusicCuratedPlaylistDetailModal extends StatelessWidget {
                           ),
                           const SizedBox(height: ZplaySpacing.s4),
                           Text(
-                            'Curated by ${playlist.creatorName} • ${tracks.length} tracks',
+                            l10nOf(context).dynamicMusicPageCuratedByTracks((playlist.creatorName).toString(), (tracks.length).toString()),
                             style: ZplayType.label.toStyle(
                               color: tokens.textSecondary,
                             ),
@@ -3906,13 +3908,13 @@ class _MusicCuratedPlaylistDetailModal extends StatelessWidget {
                               runSpacing: ZplaySpacing.s8,
                               children: [
                                 PillButton(
-                                  label: 'Play Playlist',
+                                  label: l10nOf(context).auxMusicPagePlayPlaylist,
                                   icon: Icons.play_arrow_rounded,
                                   onPressed: () =>
                                       onPlayTrack(tracks.first, tracks),
                                 ),
                                 PillButton(
-                                  label: 'Download Playlist',
+                                  label: l10nOf(context).auxMusicPageDownloadPlaylist,
                                   variant: PillVariant.secondary,
                                   icon: Icons.download_rounded,
                                   onPressed: () {
@@ -3923,7 +3925,7 @@ class _MusicCuratedPlaylistDetailModal extends StatelessWidget {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text(
-                                          'Added ${tracks.length} tracks from "${playlist.title}" to download queue',
+                                          l10nOf(context).dynamicMusicPageAddedTracksFromToDownloadQueue2((tracks.length).toString(), (playlist.title).toString()),
                                         ),
                                         duration: const Duration(seconds: 2),
                                       ),
@@ -4039,7 +4041,7 @@ class _MusicUserPlaylistDetailModal extends StatelessWidget {
                           ),
                           const SizedBox(height: ZplaySpacing.s4),
                           Text(
-                            'Custom Playlist • ${tracks.length} tracks',
+                            l10nOf(context).dynamicMusicPageCustomPlaylistTracks((tracks.length).toString()),
                             style: ZplayType.label.toStyle(
                               color: tokens.textSecondary,
                             ),
@@ -4051,13 +4053,13 @@ class _MusicUserPlaylistDetailModal extends StatelessWidget {
                               runSpacing: ZplaySpacing.s8,
                               children: [
                                 PillButton(
-                                  label: 'Play Playlist',
+                                  label: l10nOf(context).auxMusicPagePlayPlaylist,
                                   icon: Icons.play_arrow_rounded,
                                   onPressed: () =>
                                       onPlayTrack(tracks.first, tracks),
                                 ),
                                 PillButton(
-                                  label: 'Download All',
+                                  label: l10nOf(context).auxMusicPageDownloadAll,
                                   variant: PillVariant.secondary,
                                   icon: Icons.download_rounded,
                                   onPressed: () {
@@ -4068,7 +4070,7 @@ class _MusicUserPlaylistDetailModal extends StatelessWidget {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text(
-                                          'Added ${tracks.length} tracks from "${playlist.title}" to download queue',
+                                          l10nOf(context).dynamicMusicPageAddedTracksFromToDownloadQueue2((tracks.length).toString(), (playlist.title).toString()),
                                         ),
                                         duration: const Duration(seconds: 2),
                                       ),
@@ -4094,7 +4096,7 @@ class _MusicUserPlaylistDetailModal extends StatelessWidget {
                   child: tracks.isEmpty
                       ? Center(
                           child: Text(
-                            'No tracks in this playlist yet',
+                            l10nOf(context).auxMusicPageNoTracksInThisPlaylistYet,
                             style: ZplayType.body.toStyle(
                               color: tokens.textMuted,
                             ),
@@ -4509,7 +4511,7 @@ class _MusicExpandedPlayerState extends State<_MusicExpandedPlayer>
               border: Border.all(color: tokens.info.withValues(alpha: 0.4)),
             ),
             child: Text(
-              '${widget.playerController.currentQualityLabel.toUpperCase()} • HI-RES LOSSLESS AUDIO',
+              l10nOf(context).musicLosslessQuality(widget.playerController.currentQualityLabel.toUpperCase()),
               style: ZplayType.overline.toStyle(color: tokens.info),
             ),
           ),
@@ -4562,7 +4564,7 @@ class _MusicExpandedPlayerState extends State<_MusicExpandedPlayer>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               PillButton(
-                label: 'Playing Queue',
+                label: l10nOf(context).auxMusicPagePlayingQueue,
                 variant: PillVariant.secondary,
                 icon: Icons.queue_music_rounded,
                 onPressed: widget.onQueueTap,
@@ -4972,7 +4974,7 @@ class _MusicShortcutsModal extends StatelessWidget {
                     ),
                     const SizedBox(width: ZplaySpacing.s8),
                     Text(
-                      'Keyboard Shortcuts',
+                      l10nOf(context).auxMusicPageKeyboardShortcuts,
                       style: ZplayType.title.toStyle(color: tokens.textPrimary),
                     ),
                     const Spacer(),
@@ -5126,7 +5128,7 @@ class _MusicDownloadedTracksModalState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Downloaded Songs',
+                            l10nOf(context).auxMusicPageDownloadedSongs,
                             style:
                                 (isMobile
                                         ? ZplayType.title
@@ -5135,7 +5137,7 @@ class _MusicDownloadedTracksModalState
                           ),
                           const SizedBox(height: ZplaySpacing.s2),
                           Text(
-                            '${allDownloaded.length} offline tracks • $sizeMb MB storage',
+                            l10nOf(context).dynamicMusicPageOfflineTracksMbStorage((allDownloaded.length).toString(), (sizeMb).toString()),
                             style: ZplayType.bodySmall.toStyle(
                               color: tokens.textSecondary,
                             ),
@@ -5166,7 +5168,7 @@ class _MusicDownloadedTracksModalState
                   children: [
                     if (filtered.isNotEmpty) ...[
                       PillButton(
-                        label: 'Play All',
+                        label: l10nOf(context).auxMusicPagePlayAll,
                         icon: Icons.play_arrow_rounded,
                         onPressed: () {
                           final tracks = filtered
@@ -5177,7 +5179,7 @@ class _MusicDownloadedTracksModalState
                       ),
                       const SizedBox(width: ZplaySpacing.s8),
                       PillButton(
-                        label: 'Shuffle',
+                        label: l10nOf(context).auxMusicPageShuffle,
                         variant: PillVariant.secondary,
                         icon: Icons.shuffle_rounded,
                         onPressed: () {
@@ -5199,7 +5201,7 @@ class _MusicDownloadedTracksModalState
                           color: tokens.textPrimary,
                         ),
                         decoration: InputDecoration(
-                          hintText: 'Search offline...',
+                          hintText: l10nOf(context).auxMusicPageSearchOffline,
                           hintStyle: ZplayType.bodySmall.toStyle(
                             color: tokens.textMuted,
                           ),
@@ -5356,7 +5358,7 @@ class _MusicDownloadedTracksModalState
                                       color: tokens.textMuted,
                                       size: 20,
                                     ),
-                                    tooltip: 'Delete from downloads',
+                                    tooltip: l10nOf(context).auxMusicPageDeleteFromDownloads,
                                     onPressed: () async {
                                       final confirm = await showDialog<bool>(
                                         context: context,
@@ -5364,26 +5366,26 @@ class _MusicDownloadedTracksModalState
                                           backgroundColor:
                                               tokens.surfaceOverlay,
                                           title: Text(
-                                            'Delete Downloaded Song',
+                                            l10nOf(context).auxMusicPageDeleteDownloadedSong,
                                             style: ZplayType.title.toStyle(
                                               color: tokens.textPrimary,
                                             ),
                                           ),
                                           content: Text(
-                                            'Delete "${item.title}" from offline storage?',
+                                            l10nOf(context).dynamicMusicPageDeleteFromOfflineStorage((item.title).toString()),
                                             style: ZplayType.body.toStyle(
                                               color: tokens.textEmphasis,
                                             ),
                                           ),
                                           actions: [
                                             PillButton(
-                                              label: 'Cancel',
+                                              label: l10nOf(context).actionCancel,
                                               variant: PillVariant.secondary,
                                               onPressed: () =>
                                                   Navigator.pop(c, false),
                                             ),
                                             PillButton(
-                                              label: 'Delete',
+                                              label: l10nOf(context).uiDownloadsPageDelete,
                                               onPressed: () =>
                                                   Navigator.pop(c, true),
                                             ),
@@ -5492,8 +5494,8 @@ class _MusicDownloadedTracksModalState
               Expanded(
                 child: Text(
                   isExtracting
-                      ? 'Extracting stream for "${activeTask.track.title}"...'
-                      : 'Downloading "${activeTask.track.title}" (${(progress * 100).toInt()}%)',
+                      ? l10nOf(context).musicExtractingTrack(activeTask.track.title)
+                      : l10nOf(context).musicDownloadingTrack(activeTask.track.title, (progress * 100).toInt()),
                   style: ZplayType.caption.toStyle(color: tokens.textPrimary),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -5501,7 +5503,7 @@ class _MusicDownloadedTracksModalState
               ),
               const SizedBox(width: ZplaySpacing.s8),
               Text(
-                '${queue.length} in queue',
+                l10nOf(context).dynamicMusicPageInQueue((queue.length).toString()),
                 style: ZplayType.caption.toStyle(color: tokens.info),
               ),
               const SizedBox(width: ZplaySpacing.s4),

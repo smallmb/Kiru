@@ -45,6 +45,8 @@
 /// the only one of the two that a widget test can drive without a fake clock.
 library;
 
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -279,7 +281,7 @@ class _PressAgainPill extends StatelessWidget {
                 vertical: ZplaySpacing.s12,
               ),
               child: Text(
-                'Press back again to exit',
+                l10nOf(context).auxShellBackGuardPressBackAgainToExit,
                 style: TextStyle(
                   color: tokens.textPrimary,
                   fontSize: 14,

@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/media_labels.dart';
+import '../../l10n/l10n.dart';
+
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +12,7 @@ import '../../models/my_list/my_list_item.dart';
 import '../../services/metadata/bestsimilar_scraper.dart';
 import '../../services/layout/form_factor.dart';
 import '../../services/metadata/metadata_service.dart';
+import '../../services/metadata/localized_movie_metadata.dart';
 import '../../services/my_list/my_list_service.dart';
 import '../../services/cloudstream/cloudstream_manager.dart';
 import '../../utils/navigation/route_transitions.dart';
@@ -73,6 +77,9 @@ class DetailsPage extends StatefulWidget {
 class _DetailsPageState extends State<DetailsPage>
     with SingleTickerProviderStateMixin {
   MovieDetail? _detail;
+  LocalizedMovieText? _localizedText;
+  String? _displayLocale;
+  int _localizedRequest = 0;
   bool _isLoading = true;
 
   /// The remote's landing place on this page, and the page's own node for it.
@@ -130,8 +137,8 @@ class _DetailsPageState extends State<DetailsPage>
   /// before it can size the column, so a second copy of these strings there
   /// would let the button and its own budget name different actions.
   String get _playLabel => _isCollection
-      ? 'Play First Movie'
-      : (_isSeries ? 'Play Episodes' : 'Play Movie');
+      ? l10nOf(context).detailsPlayFirst
+      : (_isSeries ? l10nOf(context).detailsPlayEpisodes : l10nOf(context).detailsPlayMovie);
 
   late AnimationController _animController;
   late Animation<double> _fadeAnimation;
@@ -197,6 +204,30 @@ class _DetailsPageState extends State<DetailsPage>
 
     _fetchDetails();
   }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final locale = Localizations.localeOf(context).languageCode;
+    if (_displayLocale != locale) {
+      _displayLocale = locale;
+      _localizedText = null;
+      _refreshLocalizedText();
+    }
+  }
+
+  Future<void> _refreshLocalizedText() async {
+    final request = ++_localizedRequest;
+    final detail = _detail;
+    final locale = _displayLocale;
+    if (detail == null || locale != 'zh') return;
+    final localized = await LocalizedMovieMetadata.lookup(detail, locale!);
+    if (!mounted || request != _localizedRequest || !identical(detail, _detail)) return;
+    if (localized != null) setState(() => _localizedText = localized);
+  }
+
+  String? _displaySynopsis(MovieDetail meta) =>
+      _localizedText?.overview ?? meta.description;
 
   @override
   void dispose() {
@@ -369,6 +400,7 @@ class _DetailsPageState extends State<DetailsPage>
               }
             });
 
+            _refreshLocalizedText();
             _fetchSimilarContent();
           }
           return;
@@ -463,6 +495,7 @@ class _DetailsPageState extends State<DetailsPage>
       });
 
       // Fire off similar content fetch in background
+      _refreshLocalizedText();
       _fetchSimilarContent();
     }
   }
@@ -701,7 +734,7 @@ class _DetailsPageState extends State<DetailsPage>
           ),
           const SizedBox(height: ZplaySpacing.s16),
           Text(
-            'Details unavailable.',
+            l10nOf(context).detailsUnavailable,
             style: ZplayType.title.toStyle(color: tokens.textSecondary),
           ),
           const SizedBox(height: ZplaySpacing.s24),
@@ -711,7 +744,7 @@ class _DetailsPageState extends State<DetailsPage>
               backgroundColor: tokens.surface,
               foregroundColor: tokens.textPrimary,
             ),
-            child: const Text('Go Back'),
+            child: Text(l10nOf(context).detailsGoBack),
           ),
         ],
       ),
@@ -803,8 +836,8 @@ class _DetailsPageState extends State<DetailsPage>
                             ] else ...[
                               _railHeader(
                                 _isCollection
-                                    ? 'Movies in Collection'
-                                    : 'Episodes',
+                                    ? l10nOf(context).detailsCollectionMovies
+                                    : l10nOf(context).detailsEpisodes,
                               ),
                               const SizedBox(height: ZplaySpacing.s12),
                             ],
@@ -890,7 +923,7 @@ class _DetailsPageState extends State<DetailsPage>
                             _buildSimilarRow(),
                             const SizedBox(height: ZplaySpacing.s32),
                           ] else if (_isFetchingSimilar) ...[
-                            _railHeader('Similar Content'),
+                            _railHeader(l10nOf(context).detailsSimilar),
                             const SizedBox(height: ZplaySpacing.s12),
                             // Card-shaped placeholders rather than a spinner:
                             // the row is a film rail, so it arrives at the
@@ -1159,9 +1192,9 @@ class _DetailsPageState extends State<DetailsPage>
               _buildLogoOrTitle(meta, isDesktop: true),
               const SizedBox(height: ZplaySpacing.s16),
               _buildMetadataRow(meta),
-              if (meta.description != null && meta.description!.isNotEmpty) ...[
+              if (_displaySynopsis(meta)?.isNotEmpty == true) ...[
                 const SizedBox(height: ZplaySpacing.s24),
-                _buildSynopsis(meta.description!),
+                _buildSynopsis(_displaySynopsis(meta)!),
               ],
               if (meta.genres.isNotEmpty) ...[
                 const SizedBox(height: ZplaySpacing.s24),
@@ -1230,9 +1263,9 @@ class _DetailsPageState extends State<DetailsPage>
             _buildLibraryButton(fullWidth: false),
           ],
         ),
-        if (meta.description != null && meta.description!.isNotEmpty) ...[
+        if (_displaySynopsis(meta)?.isNotEmpty == true) ...[
           const SizedBox(height: ZplaySpacing.s24),
-          _buildSynopsis(meta.description!),
+          _buildSynopsis(_displaySynopsis(meta)!),
         ],
         if (meta.genres.isNotEmpty) ...[
           const SizedBox(height: ZplaySpacing.s16),
@@ -1246,6 +1279,8 @@ class _DetailsPageState extends State<DetailsPage>
   // poster next to it the way it did before (that's what made the poster
   // look like an afterthought in the screenshot).
   Widget _buildLogoOrTitle(MovieDetail meta, {required bool isDesktop}) {
+    final localizedTitle = _localizedText?.title;
+    if (localizedTitle != null) return _buildTextTitle(localizedTitle, isDesktop);
     if (meta.logo != null && meta.logo!.isNotEmpty) {
       return ConstrainedBox(
         constraints: BoxConstraints(
@@ -1321,7 +1356,7 @@ class _DetailsPageState extends State<DetailsPage>
                 border: Border.all(color: tokens.borderStrong),
               ),
               child: Text(
-                g,
+                mediaLabel(context, g),
                 style: ZplayType.label
                     .copyWith(weight: FontWeight.w600)
                     .toStyle(color: tokens.textEmphasis),
@@ -1355,7 +1390,7 @@ class _DetailsPageState extends State<DetailsPage>
       if (seasonCount > 0) {
         items.add(
           Text(
-            '$seasonCount Season${seasonCount > 1 ? "s" : ""}',
+            l10nOf(context).detailsSeasonCount(seasonCount),
             style: ZplayType.body.toStyle(color: tokens.textEmphasis),
           ),
         );
@@ -1402,7 +1437,7 @@ class _DetailsPageState extends State<DetailsPage>
     if (meta.genres.isNotEmpty) {
       items.add(
         Text(
-          meta.genres.take(3).join(' · '),
+          meta.genres.take(3).map((g) => mediaLabel(context, g)).join(' · '),
           style: ZplayType.body.toStyle(color: tokens.textEmphasis),
         ),
       );
@@ -1496,7 +1531,7 @@ class _DetailsPageState extends State<DetailsPage>
             );
 
         return PillButton(
-          label: inList ? 'In Library' : 'Library',
+          label: mediaLabel(context, inList ? 'In Library' : 'Library'),
           variant: PillVariant.secondary,
           icon: inList ? Icons.favorite_rounded : Icons.favorite_border_rounded,
           expand: fullWidth,
@@ -1571,7 +1606,7 @@ class _DetailsPageState extends State<DetailsPage>
                   focused: state.focused,
                   radius: ZplayRadius.xsAll,
                   child: Text(
-                    _isSynopsisExpanded ? 'Show less' : 'Read more',
+                    mediaLabel(context, _isSynopsisExpanded ? 'Show less' : 'Read more'),
                     style: ZplayType.body
                         .copyWith(weight: FontWeight.w700)
                         .toStyle(color: tokens.textPrimary),
@@ -1613,7 +1648,7 @@ class _DetailsPageState extends State<DetailsPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _railHeader('Top Cast & Characters'),
+          _railHeader(l10nOf(context).detailsCast),
           const SizedBox(height: ZplaySpacing.s12),
           SizedBox(
             height: 116,
@@ -1822,7 +1857,7 @@ class _DetailsPageState extends State<DetailsPage>
                           ),
                         ),
                         child: Text(
-                          'Season $season',
+                          l10nOf(context).detailsSeasonLabel(season),
                           style: ZplayType.subtitle
                               .copyWith(
                                 weight: isSelected
@@ -1963,7 +1998,7 @@ class _DetailsPageState extends State<DetailsPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _railHeader('More Like This'),
+          _railHeader(l10nOf(context).detailsRecommendations),
           const SizedBox(height: ZplaySpacing.s12),
           SizedBox(
             height: sizing.totalHeight,
@@ -2050,7 +2085,7 @@ class _DetailsPageState extends State<DetailsPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _railHeader('Similar Content'),
+          _railHeader(l10nOf(context).detailsSimilar),
           const SizedBox(height: ZplaySpacing.s12),
           SizedBox(
             height: sizing.totalHeight,
@@ -2274,7 +2309,7 @@ class _EpisodeCard extends StatelessWidget {
                                 ),
                                 child: Text(
                                   isCollection
-                                      ? 'PART ${ep.episode ?? "?"}'
+                                      ? l10nOf(context).mediaCollectionPart((ep.episode ?? "?").toString())
                                       : 'E${ep.episode ?? "?"}',
                                   style: ZplayType.caption
                                       .copyWith(weight: FontWeight.w700)

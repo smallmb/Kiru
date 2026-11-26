@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -764,7 +766,7 @@ class _IptvPlayerPageState extends State<IptvPlayerPage>
                               _initPlayer();
                             },
                             icon: const Icon(Icons.refresh_rounded),
-                            label: const Text('Try again'),
+                            label: Text(l10nOf(context).actionTryAgain),
                             style: FilledButton.styleFrom(
                               backgroundColor: tokens.accent,
                               foregroundColor: tokens.onAccent,
@@ -820,7 +822,7 @@ class _IptvPlayerPageState extends State<IptvPlayerPage>
                             ),
                             const SizedBox(width: ZplaySpacing.s12),
                             Text(
-                              _isMuted ? 'MUTED' : '${(_volume * 100).toInt()}%',
+                              _isMuted ? l10nOf(context).finalIptvPlayerPageMuted : '${(_volume * 100).toInt()}%',
                               style: ZplayType.labelNumeric.toStyle(
                                 color: _isMuted ? tokens.danger : tokens.textPrimary,
                               ),
@@ -911,7 +913,7 @@ class _IptvPlayerPageState extends State<IptvPlayerPage>
                                             ),
                                             child: Text(
                                               isLive
-                                                  ? 'LIVE'
+                                                  ? l10nOf(context).channelLiveBadge
                                                   : (ch.category.isNotEmpty ? ch.category.toUpperCase() : 'VOD'),
                                               style: ZplayType.overline
                                                   .copyWith(weight: FontWeight.w700)
@@ -935,8 +937,8 @@ class _IptvPlayerPageState extends State<IptvPlayerPage>
                                         const SizedBox(height: ZplaySpacing.s2),
                                         Text(
                                           isCategoryList
-                                              ? 'Channel ${_activeHitIndex + 1}/${_hits.length} · ${currentHit.portal.name}'
-                                              : 'Source ${_activeHitIndex + 1}/${_hits.length} · ${currentHit.portal.name}',
+                                              ? l10nOf(context).iptvCurrentChannel(_activeHitIndex + 1, _hits.length, currentHit.portal.name)
+                                              : l10nOf(context).iptvCurrentSource(_activeHitIndex + 1, _hits.length, currentHit.portal.name),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: ZplayType.bodySmall.toStyle(color: tokens.textEmphasis),
@@ -969,7 +971,7 @@ class _IptvPlayerPageState extends State<IptvPlayerPage>
                                           color: tokens.textPrimary,
                                           size: 24,
                                         ),
-                                        tooltip: isFullscreen ? 'Exit Fullscreen (F11)' : 'Fullscreen (F11)',
+                                        tooltip: isFullscreen ? l10nOf(context).shellExitFullscreenTooltip : 'Fullscreen (F11)',
                                         onPressed: () => WindowService.instance.toggleFullscreen(),
                                       );
                                     },
@@ -1030,13 +1032,13 @@ class _IptvPlayerPageState extends State<IptvPlayerPage>
                                       // Replay -10s
                                       IconButton(
                                         icon: Icon(Icons.replay_10_rounded, color: tokens.textPrimary, size: 24),
-                                        tooltip: 'Seek -10s',
+                                        tooltip: l10nOf(context).playerSeekBack,
                                         onPressed: () => _seekRelative(-10),
                                       ),
                                       // Forward +10s
                                       IconButton(
                                         icon: Icon(Icons.forward_10_rounded, color: tokens.textPrimary, size: 24),
-                                        tooltip: 'Seek +10s',
+                                        tooltip: l10nOf(context).playerSeekForward,
                                         onPressed: () => _seekRelative(10),
                                       ),
                                       const SizedBox(width: ZplaySpacing.s8),
@@ -1145,7 +1147,7 @@ class _IptvPlayerPageState extends State<IptvPlayerPage>
                                               color: tokens.textPrimary,
                                               size: 24,
                                             ),
-                                            tooltip: isFullscreen ? 'Exit Fullscreen (F11)' : 'Fullscreen (F11)',
+                                            tooltip: isFullscreen ? l10nOf(context).shellExitFullscreenTooltip : 'Fullscreen (F11)',
                                             onPressed: () => WindowService.instance.toggleFullscreen(),
                                           );
                                         },

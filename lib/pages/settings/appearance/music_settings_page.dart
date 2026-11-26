@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import '../../../services/theme/app_theme_service.dart';
 import '../../../services/theme/design_tokens.dart';
@@ -24,7 +27,7 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
     final palette = AppThemeService.currentPalette.value;
 
     return SettingsScaffold(
-      title: 'Music UI & Player Atmosphere',
+      title: l10nOf(context).auxMusicSettingsPageMusicUiPlayerAtmosphere,
       maxWidth: 820,
       child: ListView(
         padding: const EdgeInsets.symmetric(
@@ -38,31 +41,31 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
           const SizedBox(height: 28),
 
           // 2. Visual Theme Palette
-          _buildSectionHeader('VISUAL THEME PALETTE'),
+          _buildSectionHeader(l10nOf(context).finalMusicSettingsPageVisualThemePalette),
           const SizedBox(height: 12),
           _buildThemesGrid(),
           const SizedBox(height: 28),
 
           // 3. Ambient Moving Background Lights
-          _buildSectionHeader('AMBIENT ATMOSPHERE & GLOW'),
+          _buildSectionHeader(l10nOf(context).finalMusicSettingsPageAmbientAtmosphereGlow),
           const SizedBox(height: 12),
           _buildAmbientLightsCard(palette),
           const SizedBox(height: 28),
 
           // 4. Discovery & Layout Settings
-          _buildSectionHeader('DISCOVERY & CATALOG CONFIGURATION'),
+          _buildSectionHeader(l10nOf(context).finalMusicSettingsPageDiscoveryCatalogConfiguration),
           const SizedBox(height: 12),
           _buildDiscoveryConfigCard(palette),
           const SizedBox(height: 28),
 
           // 5. Fullscreen Player Presets
-          _buildSectionHeader('FULLSCREEN PLAYER PRESETS'),
+          _buildSectionHeader(l10nOf(context).finalMusicSettingsPageFullscreenPlayerPresets),
           const SizedBox(height: 12),
           _buildFullscreenPlayerPresetSelector(palette),
           const SizedBox(height: 28),
 
           // 6. Custom Player Quick Customizer
-          _buildSectionHeader('CUSTOM PLAYER ENGINE DESIGNER'),
+          _buildSectionHeader(l10nOf(context).finalMusicSettingsPageCustomPlayerEngineDesigner),
           const SizedBox(height: 12),
           _buildCustomPlayerStudioCard(palette),
           const SizedBox(height: 36),
@@ -141,7 +144,7 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            theme.name,
+                            configLabel(context, theme.name),
                             style: ZplayType.label.toStyle(
                               color: isSelected
                                   ? tokens.textPrimary
@@ -175,11 +178,11 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
                 title: Text(
-                  'Moving Background Ambient Lighting',
+                  l10nOf(context).auxMusicSettingsPageMovingBackgroundAmbientLighting,
                   style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                 ),
                 subtitle: Text(
-                  'Dynamic moving glowing orbs reacting with your theme accent colors',
+                  l10nOf(context).auxMusicSettingsPageDynamicMovingGlowingOrbsReactingWithYour,
                   style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                 ),
                 value: enabled,
@@ -193,7 +196,7 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
           const SizedBox(height: 12),
 
           Text(
-            'Ambient Light Pattern',
+            l10nOf(context).auxMusicSettingsPageAmbientLightPattern,
             style: ZplayType.label.toStyle(color: tokens.textEmphasis),
           ),
           const SizedBox(height: 8),
@@ -207,7 +210,7 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                 },
                 options: [
                   for (final p in AmbientLightPattern.values)
-                    SegmentedTabOption(value: p, label: p.label),
+                    SegmentedTabOption(value: p, label: configLabel(context, p.label)),
                 ],
               );
             },
@@ -223,7 +226,7 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Glow Strength / Opacity', style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
+                      Text(l10nOf(context).auxAudiobookSettingsPageGlowStrengthOpacity, style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
                       Text('${(intensity * 100).round()}%', style: ZplayType.labelNumeric.toStyle(color: palette.primaryColor)),
                     ],
                   ),
@@ -263,8 +266,8 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
             builder: (context, enabled, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Show Hero Spotlight Showcase', style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
-                subtitle: Text('Featured bestselling album & track showcase at the top of the music page', style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
+                title: Text(l10nOf(context).auxMusicSettingsPageShowHeroSpotlightShowcase, style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
+                subtitle: Text(l10nOf(context).auxMusicSettingsPageFeaturedBestsellingAlbumTrackShowcaseAtThe, style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
                 value: enabled,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => MusicSettings.setEnableSpotlight(val),
@@ -277,8 +280,8 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
             builder: (context, enabled, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Show Lossless Hi-Res Audio Badges', style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
-                subtitle: Text('Displays FLAC / Hi-Res lossless stream indicators on music cards and player', style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
+                title: Text(l10nOf(context).auxMusicSettingsPageShowLosslessHiResAudioBadges, style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
+                subtitle: Text(l10nOf(context).auxMusicSettingsPageDisplaysFlacHiResLosslessStreamIndicators, style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
                 value: enabled,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => MusicSettings.setShowLosslessBadge(val),
@@ -287,7 +290,7 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
           ),
           Divider(color: tokens.borderDefault),
           const SizedBox(height: 8),
-          Text('Music Card & Grid Density', style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
+          Text(l10nOf(context).auxMusicSettingsPageMusicCardGridDensity, style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
           const SizedBox(height: 8),
           ValueListenableBuilder<MusicCardDensity>(
             valueListenable: MusicSettings.cardDensity,
@@ -299,7 +302,7 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                 },
                 options: [
                   for (final d in MusicCardDensity.values)
-                    SegmentedTabOption(value: d, label: d.label),
+                    SegmentedTabOption(value: d, label: configLabel(context, d.label)),
                 ],
               );
             },
@@ -352,11 +355,11 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                   ),
                 ),
                 title: Text(
-                  preset.label,
+                  configLabel(context, preset.label),
                   style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                 ),
                 subtitle: Text(
-                  preset.description,
+                  configLabel(context, preset.description),
                   style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                 ),
                 trailing: isSelected
@@ -412,7 +415,7 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                   Row(
                     children: [
                       Text(
-                        'Custom Music Player Studio',
+                        l10nOf(context).auxMusicPlayerStudioPageCustomMusicPlayerStudio,
                         style: ZplayType.title.toStyle(color: tokens.textPrimary),
                       ),
                       const SizedBox(width: 8),
@@ -423,7 +426,7 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                           borderRadius: ZplayRadius.xsAll,
                         ),
                         child: Text(
-                          'FULL PLAYER ENGINE',
+                          l10nOf(context).auxMusicSettingsPageFullPlayerEngine,
                           style: ZplayType.overline.toStyle(color: palette.primaryColor),
                         ),
                       ),
@@ -431,7 +434,7 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    'Customize the Fullscreen Player. Drag & drop blocks, waveform equalizers, vinyl turntable & liquid glass buttons.',
+                    l10nOf(context).auxMusicSettingsPageCustomizeTheFullscreenPlayerDragDropBlocks,
                     style: ZplayType.bodySmall.toStyle(color: tokens.textEmphasis),
                   ),
                   const SizedBox(height: 14),
@@ -444,7 +447,7 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                     },
                     icon: Icon(Icons.tune_rounded, size: 18, color: tokens.textPrimary),
                     label: Text(
-                      'Enter Custom Player Studio',
+                      l10nOf(context).auxAudiobookSettingsPageEnterCustomPlayerStudio,
                       style: ZplayType.label.toStyle(color: tokens.textPrimary),
                     ),
                     style: ElevatedButton.styleFrom(
@@ -473,7 +476,7 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Live Waveform & Controls Preview', style: ZplayType.label.toStyle(color: palette.primaryColor)),
+              Text(l10nOf(context).auxMusicSettingsPageLiveWaveformControlsPreview, style: ZplayType.label.toStyle(color: palette.primaryColor)),
               TextButton(
                 onPressed: () {
                   Navigator.push(
@@ -481,7 +484,7 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                     MaterialPageRoute(builder: (_) => const MusicPlayerStudioPage()),
                   );
                 },
-                child: Text('Open Full Studio ➔', style: ZplayType.label.toStyle()),
+                child: Text(l10nOf(context).auxMusicSettingsPageOpenFullStudio, style: ZplayType.label.toStyle()),
               ),
             ],
           ),
@@ -505,7 +508,7 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
               );
             },
             icon: Icon(Icons.dashboard_customize_rounded, size: 18, color: tokens.textPrimary),
-            label: Text('Launch Full Custom Player Studio', style: ZplayType.label.toStyle(color: tokens.textPrimary)),
+            label: Text(l10nOf(context).auxAudiobookSettingsPageLaunchFullCustomPlayerStudio, style: ZplayType.label.toStyle(color: tokens.textPrimary)),
             style: ElevatedButton.styleFrom(
               backgroundColor: palette.primaryColor,
               shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),

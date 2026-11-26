@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +101,7 @@ class _BookDetailSheetState extends State<BookDetailSheet> {
       setState(() => _isDownloading = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to download book: $e'),
+          content: Text(l10nOf(context).dynamicBookDetailSheetFailedToDownloadBook((e).toString())),
           backgroundColor: context.tokens.danger,
         ),
       );
@@ -320,7 +322,7 @@ class _BookDetailSheetState extends State<BookDetailSheet> {
                               .toStyle(color: tokens.textEmphasis),
                         ),
                         Text(
-                          '${(progress.progressPercent * 100).round()}% Completed',
+                          l10nOf(context).dynamicBookDetailSheetCompleted(((progress.progressPercent * 100).round()).toString()),
                           style: ZplayType.bodySmall
                               .copyWith(weight: FontWeight.bold)
                               .toStyle(color: tokens.accent),
@@ -352,10 +354,10 @@ class _BookDetailSheetState extends State<BookDetailSheet> {
                       Expanded(
                         child: PillButton(
                           label: _isDownloading
-                              ? 'Downloading ${(_downloadProgress * 100).round()}%...'
+                              ? l10nOf(context).bookDownloadingProgress((_downloadProgress * 100).round())
                               : hasProgress
-                              ? 'Resume Reading'
-                              : 'Read Now',
+                              ? l10nOf(context).uiFinalBookDetailSheetResumeReading
+                              : l10nOf(context).uiFinalBookDetailSheetReadNow,
                           icon: hasProgress
                               ? Icons.play_arrow_rounded
                               : Icons.auto_stories_rounded,
@@ -370,7 +372,7 @@ class _BookDetailSheetState extends State<BookDetailSheet> {
                         const SizedBox(width: ZplaySpacing.s12),
                         _SheetIconAction(
                           icon: Icons.record_voice_over_rounded,
-                          tooltip: 'Generate AI Audiobook (TTS)',
+                          tooltip: l10nOf(context).auxBookDetailSheetGenerateAiAudiobookTts,
                           onTap: () async {
                             Navigator.pop(context);
                             Navigator.push(
@@ -387,7 +389,7 @@ class _BookDetailSheetState extends State<BookDetailSheet> {
                         const SizedBox(width: ZplaySpacing.s12),
                         _SheetIconAction(
                           icon: Icons.delete_outline_rounded,
-                          tooltip: 'Delete downloaded file',
+                          tooltip: l10nOf(context).auxBookDetailSheetDeleteDownloadedFile,
                           danger: true,
                           onTap: () async {
                             await BookDownloadService.instance.deleteBook(
@@ -413,7 +415,7 @@ class _BookDetailSheetState extends State<BookDetailSheet> {
                       book.series.isNotEmpty) ...[
                     Transform.translate(
                       offset: const Offset(-ZplaySpacing.s16, 0),
-                      child: const SectionHeader(title: 'Information'),
+                      child: SectionHeader(title: l10nOf(context).auxBookDetailSheetInformation),
                     ),
                     const SizedBox(height: ZplaySpacing.s4),
                     if (book.publisher.isNotEmpty)
@@ -436,7 +438,7 @@ class _BookDetailSheetState extends State<BookDetailSheet> {
                   if (book.description.isNotEmpty) ...[
                     Transform.translate(
                       offset: const Offset(-ZplaySpacing.s16, 0),
-                      child: const SectionHeader(title: 'Overview'),
+                      child: SectionHeader(title: l10nOf(context).auxBookDetailSheetOverview),
                     ),
                     const SizedBox(height: ZplaySpacing.s4),
                     Text(

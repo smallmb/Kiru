@@ -1,3 +1,4 @@
+import 'package:zplay/l10n/config_labels.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/theme/design_tokens.dart';
@@ -288,7 +289,7 @@ class _Pill<T> extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(bottom: ZplaySpacing.s4),
                       child: Text(
-                        option.label,
+                        configLabel(context, option.label),
                         maxLines: 1,
                         softWrap: false,
                         overflow: TextOverflow.ellipsis,

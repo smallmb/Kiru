@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -142,7 +144,7 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
                         Icon(Icons.tune_rounded, color: ReaderTokens.accent, size: 18),
                         const SizedBox(width: ReaderTokens.space8),
                         Text(
-                          'Appearance',
+                          l10nOf(context).auxReaderCustomizationSheetAppearance,
                           style: ZplayType.title.toStyle(
                             color: ReaderTokens.textPrimary,
                           ),
@@ -195,10 +197,10 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
                   labelColor: ReaderTokens.accent,
                   unselectedLabelColor: ReaderTokens.textSecondary,
                   labelStyle: ReaderTokens.tabLabel,
-                  tabs: const [
-                    Tab(text: 'Typography'),
-                    Tab(text: 'Theme'),
-                    Tab(text: 'Layout'),
+                  tabs: [
+                    Tab(text: l10nOf(context).finalPlayerSubStyleModalTypography),
+                    Tab(text: l10nOf(context).finalReaderCustomizationSheetTheme),
+                    Tab(text: l10nOf(context).finalReaderCustomizationSheetLayout),
                   ],
                 ),
               ),
@@ -265,7 +267,7 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
                               ),
                               const SizedBox(width: ReaderTokens.space8),
                               Text(
-                                _showResetSuccess ? 'Reset ✓' : 'Reset to Defaults',
+                                _showResetSuccess ? l10nOf(context).finalReaderCustomizationSheetReset : 'Reset to Defaults',
                                 style: ZplayType.label.toStyle(
                                   color: _showResetSuccess
                                       ? ReaderTokens.success
@@ -346,7 +348,7 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.all(ReaderTokens.space24),
       children: [
-        _buildSectionTitle('Font Family'),
+        _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetFontFamily),
         const SizedBox(height: ReaderTokens.space8),
         Wrap(
           spacing: ReaderTokens.space8,
@@ -384,7 +386,7 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildSectionTitle('Font Size'),
+            _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetFontSize),
             Text(
               '${settings.fontSize.round()} px',
               style: ZplayType.label
@@ -415,7 +417,7 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildSectionTitle('Line Height'),
+            _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetLineHeight),
             Text(
               '${settings.lineSpacing.toStringAsFixed(2)}×',
               style: ZplayType.label
@@ -441,7 +443,7 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('Alignment'),
+                  _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetAlignment),
                   const SizedBox(height: ReaderTokens.space8),
                   Row(
                     children: [
@@ -457,7 +459,7 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle('First-Line Indent'),
+                  _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetFirstLineIndent),
                   const SizedBox(height: ReaderTokens.space8),
                   Switch.adaptive(
                     value: settings.firstLineIndent,
@@ -485,12 +487,12 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.all(ReaderTokens.space24),
       children: [
-        _buildSectionTitle('Reading Themes'),
+        _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetReadingThemes),
         const SizedBox(height: ReaderTokens.space12),
         Row(
           children: [
             _buildThemeSwatchCard(
-              label: 'Light',
+              label: l10nOf(context).auxReaderCustomizationSheetLight,
               theme: ReaderTheme.light,
               current: settings.theme,
               bg: const Color(0xFFFAFAFA),
@@ -499,7 +501,7 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
             ),
             const SizedBox(width: ReaderTokens.space8),
             _buildThemeSwatchCard(
-              label: 'Sepia',
+              label: l10nOf(context).auxReaderCustomizationSheetSepia,
               theme: ReaderTheme.sepia,
               current: settings.theme,
               bg: const Color(0xFFF4ECD8),
@@ -508,7 +510,7 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
             ),
             const SizedBox(width: ReaderTokens.space8),
             _buildThemeSwatchCard(
-              label: 'Dark',
+              label: l10nOf(context).auxReaderCustomizationSheetDark,
               theme: ReaderTheme.dark,
               current: settings.theme,
               bg: const Color(0xFF141419),
@@ -532,7 +534,7 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildSectionTitle('Reader Brightness'),
+            _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetReaderBrightness),
             Text(
               '${(settings.brightness * 100).round()}%',
               style: ZplayType.label
@@ -570,7 +572,7 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.all(ReaderTokens.space24),
       children: [
-        _buildSectionTitle('Page Margins'),
+        _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetPageMargins),
         const SizedBox(height: ReaderTokens.space12),
         Row(
           children: [
@@ -583,14 +585,14 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
         ),
         const SizedBox(height: ReaderTokens.space24),
 
-        _buildSectionTitle('Reading Mode'),
+        _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetReadingMode),
         const SizedBox(height: ReaderTokens.space12),
         Row(
           children: [
             Expanded(
               child: _buildModeButton(
                 icon: Icons.unfold_more_rounded,
-                label: 'Continuous Scroll',
+                label: l10nOf(context).auxReaderCustomizationSheetContinuousScroll,
                 mode: ReaderMode.scroll,
                 settings: settings,
               ),
@@ -599,7 +601,7 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
             Expanded(
               child: _buildModeButton(
                 icon: Icons.auto_stories_rounded,
-                label: 'Paginated Turns',
+                label: l10nOf(context).auxReaderCustomizationSheetPaginatedTurns,
                 mode: ReaderMode.paginated,
                 settings: settings,
               ),

@@ -1,3 +1,7 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/media_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import '../../services/theme/design_tokens.dart';
 import '../../services/player/player_settings.dart';
@@ -18,7 +22,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
     final tokens = context.tokens;
 
     return SettingsScaffold(
-      title: 'Video & Upscaling',
+      title: l10nOf(context).uiVideoSettingsPageVideoUpscaling,
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         children: [
@@ -46,15 +50,14 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'GPU Upscaling',
+                        l10nOf(context).uiVideoSettingsPageGpuUpscaling,
                         style: ZplayType.subtitle.toStyle(
                           color: tokens.textPrimary,
                         ),
                       ),
                       const SizedBox(height: 3),
                       Text(
-                        'Real-time GLSL upscaling on the video engine. Anime4K reconstructs line art; '
-                        'AMD FSR upscales live action and film. Pick one family — they are never combined.',
+                        l10nOf(context).videoUpscalingExplanation,
                         style: ZplayType.bodySmall.toStyle(
                           color: tokens.textSecondary,
                         ),
@@ -70,7 +73,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
 
           // ── Section: Presets ──
           Text(
-            'UPSCALING PRESETS',
+            l10nOf(context).uiVideoSettingsPageUpscalingPresets,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -82,9 +85,9 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                 children: [
                   _buildPresetCard(
                     preset: Anime4KPreset.off,
-                    title: 'Disabled (Off)',
+                    title: l10nOf(context).uiVideoSettingsPageDisabledOff,
                     subtitle:
-                        'Standard video playback without GLSL neural filters. Lowest GPU overhead.',
+                        l10nOf(context).uiVideoSettingsPageStandardVideoPlaybackWithoutGlsl,
                     tag: 'Standard',
                     tagColor: tokens.textMuted,
                     icon: Icons.block_rounded,
@@ -95,9 +98,9 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   const SizedBox(height: 10),
                   _buildPresetCard(
                     preset: Anime4KPreset.modeAFast,
-                    title: 'Mode A — Fast / Balanced',
+                    title: l10nOf(context).uiVideoSettingsPageModeAFastBalanced,
                     subtitle:
-                        'Sharp line restoration & 2x CNN upscale. Best for 1080p anime and balanced GPU power.',
+                        l10nOf(context).uiVideoSettingsPageSharpLineRestoration2xCnn,
                     tag: 'Recommended',
                     tagColor: tokens.success,
                     icon: Icons.speed_rounded,
@@ -109,9 +112,9 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   const SizedBox(height: 10),
                   _buildPresetCard(
                     preset: Anime4KPreset.modeAHQ,
-                    title: 'Mode A — High Quality (Ultra)',
+                    title: l10nOf(context).uiVideoSettingsPageModeAHighQualityUltra,
                     subtitle:
-                        'Maximum perceptual fidelity using Very Large CNNs. Recommended for discrete GPUs (RTX/Radeon).',
+                        l10nOf(context).uiVideoSettingsPageMaximumPerceptualFidelityUsingVery,
                     tag: 'Ultra Quality',
                     tagColor: tokens.accent,
                     icon: Icons.diamond_rounded,
@@ -123,9 +126,9 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   const SizedBox(height: 10),
                   _buildPresetCard(
                     preset: Anime4KPreset.modeB,
-                    title: 'Mode B — Soft / Denoise',
+                    title: l10nOf(context).uiVideoSettingsPageModeBSoftDenoise,
                     subtitle:
-                        'Smooth line reconstruction and artifact reduction. Best for blurry, compressed, or older anime.',
+                        l10nOf(context).uiVideoSettingsPageSmoothLineReconstructionAndArtifact,
                     tag: 'Denoise',
                     tagColor: tokens.accent,
                     icon: Icons.blur_linear_rounded,
@@ -137,9 +140,9 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   const SizedBox(height: 10),
                   _buildPresetCard(
                     preset: Anime4KPreset.modeC,
-                    title: 'Mode C — Deblur & Scale',
+                    title: l10nOf(context).uiVideoSettingsPageModeCDeblurScale,
                     subtitle:
-                        'Aggressive deblurring and scaling. Best for 480p and 720p low-resolution anime episodes.',
+                        l10nOf(context).uiVideoSettingsPageAggressiveDeblurringAndScalingBest,
                     tag: 'Deblur',
                     tagColor: tokens.warning,
                     icon: Icons.high_quality_rounded,
@@ -151,12 +154,10 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   const SizedBox(height: 10),
                   _buildPresetCard(
                     preset: Anime4KPreset.fsrEasu,
-                    title: 'FSR 1.0 — Smooth',
+                    title: l10nOf(context).uiVideoSettingsPageFsr10Smooth,
                     subtitle:
-                        'AMD FidelityFX edge-adaptive upscaling, for live action and film. '
-                        'Upscales without sharpening, so it is the safe FSR option. Runs on '
-                        'any GPU, unlike NVIDIA RTX Video.',
-                    tag: 'Live action',
+                        l10nOf(context).videoFsrSmoothExplanation,
+                    tag: mediaLabel(context, 'Live action'),
                     tagColor: tokens.success,
                     icon: Icons.filter_none_rounded,
                     isSelected: currentPreset == Anime4KPreset.fsrEasu,
@@ -167,11 +168,10 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   const SizedBox(height: 10),
                   _buildPresetCard(
                     preset: Anime4KPreset.fsrEasuRcas,
-                    title: 'FSR 1.0 — Sharp',
+                    title: l10nOf(context).uiVideoSettingsPageFsr10Sharp,
                     subtitle:
-                        'FSR with contrast-adaptive sharpening. Adds bite to soft or low-bitrate '
-                        'video. On a 2K or 4K source this can look worse than no upscaling at all.',
-                    tag: 'Use with care',
+                        l10nOf(context).videoFsrSharpExplanation,
+                    tag: mediaLabel(context, 'Use with care'),
                     tagColor: tokens.warning,
                     icon: Icons.filter_alt_rounded,
                     isSelected: currentPreset == Anime4KPreset.fsrEasuRcas,
@@ -188,7 +188,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
 
           // ── Section: Details & Performance Note ──
           Text(
-            'PIPELINE & COMPATIBILITY',
+            l10nOf(context).uiVideoSettingsPagePipelineCompatibility,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -199,21 +199,21 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
               children: [
                 _buildInfoRow(
                   icon: Icons.info_outline_rounded,
-                  title: 'Playback Start Application',
+                  title: l10nOf(context).uiVideoSettingsPagePlaybackStartApplication,
                   description:
                       'Shaders are configured before playback begins. Changing a preset applies to the next opened stream or video.',
                 ),
                 Divider(color: tokens.borderStrong, height: 24),
                 _buildInfoRow(
                   icon: Icons.memory_rounded,
-                  title: 'Hardware Decoder Acceleration',
+                  title: l10nOf(context).uiVideoSettingsPageHardwareDecoderAcceleration,
                   description:
                       'media_kit uses native auto-safe hardware decoding to feed GPU texture memory directly into the GLSL shader pass.',
                 ),
                 Divider(color: tokens.borderStrong, height: 24),
                 _buildInfoRow(
                   icon: Icons.devices_rounded,
-                  title: 'Platform Recommendation',
+                  title: l10nOf(context).uiVideoSettingsPagePlatformRecommendation,
                   description:
                       'For desktop (Windows/macOS/Linux), Mode A HQ provides crystal-clear lines. For mobile devices, Mode A Fast offers smooth 60fps playback.',
                 ),
@@ -226,7 +226,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
           Row(
             children: [
               Text(
-                'HARDWARE ACCELERATION & DECODING',
+                l10nOf(context).uiVideoSettingsPageHardwareAccelerationDecoding,
                 style: ZplayType.overline.toStyle(color: tokens.accent),
               ),
               const SizedBox(width: 8),
@@ -242,7 +242,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   borderRadius: ZplayRadius.xsAll,
                 ),
                 child: Text(
-                  'All Platforms',
+                  l10nOf(context).uiVideoSettingsPageAllPlatforms,
                   style: ZplayType.caption.toStyle(color: tokens.accent),
                 ),
               ),
@@ -258,9 +258,9 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   _buildChoiceCard<HardwareAccelerationMode>(
                     option: HardwareAccelerationMode.autoSafe,
                     current: currentMode,
-                    title: 'Auto-Safe (Recommended)',
+                    title: l10nOf(context).uiVideoSettingsPageAutoSafeRecommended,
                     subtitle:
-                        'GPU hardware decoding with safe driver fallbacks. Best efficiency for most PCs and devices.',
+                        l10nOf(context).uiVideoSettingsPageGpuHardwareDecodingWithSafe,
                     badgeText: 'Default',
                     badgeColor: tokens.accent,
                     icon: Icons.speed_rounded,
@@ -270,9 +270,9 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   _buildChoiceCard<HardwareAccelerationMode>(
                     option: HardwareAccelerationMode.software,
                     current: currentMode,
-                    title: 'Software Decoding (Crash-Proof)',
+                    title: l10nOf(context).uiVideoSettingsPageSoftwareDecodingCrashProof,
                     subtitle:
-                        'Pure CPU decoding via FFmpeg libavcodec. Eliminates black screens and driver lockups on older GPUs or virtual machines.',
+                        l10nOf(context).uiVideoSettingsPagePureCpuDecodingViaFfmpeg,
                     badgeText: '100% Reliable',
                     badgeColor: tokens.success,
                     icon: Icons.memory_rounded,
@@ -282,9 +282,9 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   _buildChoiceCard<HardwareAccelerationMode>(
                     option: HardwareAccelerationMode.forceHardware,
                     current: currentMode,
-                    title: 'Direct Hardware',
+                    title: l10nOf(context).uiVideoSettingsPageDirectHardware,
                     subtitle:
-                        'Direct GPU decoding (Direct3D 11 / MediaCodec / VAAPI). Fastest on modern high-end graphics.',
+                        l10nOf(context).uiVideoSettingsPageDirectGpuDecodingDirect3d11,
                     badgeText: 'Max GPU',
                     badgeColor: tokens.warning,
                     icon: Icons.bolt_rounded,
@@ -300,7 +300,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
           Row(
             children: [
               Text(
-                'PLAYBACK ENGINE',
+                l10nOf(context).uiVideoSettingsPagePlaybackEngine,
                 style: ZplayType.overline.toStyle(color: tokens.accent),
               ),
               const SizedBox(width: 8),
@@ -331,10 +331,10 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   _buildChoiceCard<PlaybackEngine>(
                     option: PlaybackEngine.media3,
                     current: currentEngine,
-                    title: "Android's ExoPlayer (Fastest at 4K)",
+                    title: l10nOf(context).auxVideoSettingsPageAndroidSExoplayerFastestAt4k,
                     subtitle:
-                        'Decodes straight into a surface, so 4K arrives without being copied out of the decoder first. On a 2 GB television that is the difference between 904 ms and over 1,900 ms of delay, and between no dropped frames and one and a half a second. Subtitles are rendered by Android, so the styling options below do not apply here.',
-                    badgeText: 'Faster at 4K',
+                        l10nOf(context).videoMedia3Explanation,
+                    badgeText: mediaLabel(context, 'Faster at 4K'),
                     badgeColor: tokens.success,
                     icon: Icons.bolt_rounded,
                     onSelect: PlayerSettings.setPlaybackEngine,
@@ -343,10 +343,10 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   _buildChoiceCard<PlaybackEngine>(
                     option: PlaybackEngine.mpv,
                     current: currentEngine,
-                    title: 'mpv (Full subtitle control)',
+                    title: l10nOf(context).auxVideoSettingsPageMpvFullSubtitleControl,
                     subtitle:
-                        'The bundled engine. Plays torrents and live streams, offers the complete subtitle styling surface below, and supports the upscaling presets. Decoded frames are copied through a texture, which is what makes 4K stutter on small televisions.',
-                    badgeText: 'Most features',
+                        l10nOf(context).videoMpvExplanation,
+                    badgeText: mediaLabel(context, 'Most features'),
                     badgeColor: tokens.accent,
                     icon: Icons.tune_rounded,
                     onSelect: PlayerSettings.setPlaybackEngine,
@@ -354,7 +354,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   const SizedBox(height: 8),
                   _buildInfoRow(
                     icon: Icons.info_outline_rounded,
-                    title: 'Torrents and live TV always use mpv',
+                    title: l10nOf(context).uiVideoSettingsPageTorrentsAndLiveTvAlways,
                     description:
                         "Whichever engine you pick here, torrent sources and live channels play through mpv, because Android's player cannot open them. The choice applies to films, series and anything else fetched over plain HTTP.",
                   ),
@@ -412,7 +412,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  'Auto-Recover Black Screens',
+                                  l10nOf(context).uiVideoSettingsPageAutoRecoverBlackScreens,
                                   style: ZplayType.subtitle.toStyle(
                                     color: tokens.textPrimary,
                                   ),
@@ -430,7 +430,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                                   borderRadius: ZplayRadius.smAll,
                                 ),
                                 child: Text(
-                                  'Active Watchdog',
+                                  l10nOf(context).uiVideoSettingsPageActiveWatchdog,
                                   style: ZplayType.caption.toStyle(
                                     color: tokens.success,
                                   ),
@@ -440,7 +440,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            'Monitors stream startup. If audio plays for 2.5s without video frames, or a GPU decoder error occurs, the player recovers automatically. On Android it switches to software decoding only up to 1080p and re-syncs the hardware decoder above that, because a software 4K decoder needs more memory than the device has. A source that is merely not delivering data yet is waited on rather than treated as a decoder fault.',
+                            l10nOf(context).videoWatchdogExplanation,
                             style: ZplayType.bodySmall.toStyle(
                               color: tokens.textSecondary,
                             ),
@@ -467,7 +467,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
           Row(
             children: [
               Text(
-                'ANDROID RENDERING ENGINE',
+                l10nOf(context).uiVideoSettingsPageAndroidRenderingEngine,
                 style: ZplayType.overline.toStyle(color: tokens.accent),
               ),
               const SizedBox(width: 8),
@@ -535,7 +535,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  'Direct Surface (SurfaceView)',
+                                  l10nOf(context).uiVideoSettingsPageDirectSurfaceSurfaceview,
                                   style: ZplayType.subtitle.toStyle(
                                     color: tokens.textPrimary,
                                   ),
@@ -559,8 +559,8 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                                 ),
                                 child: Text(
                                   isSurface
-                                      ? 'Zero-Copy'
-                                      : 'Off (TextureView)',
+                                      ? l10nOf(context).videoZeroCopy
+                                      : l10nOf(context).videoTextureViewOff,
                                   style: ZplayType.caption.toStyle(
                                     color: isSurface
                                         ? tokens.success
@@ -572,7 +572,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            'Uses Flutter SurfaceProducer to render frames directly to hardware surface without texture blitting. Significantly boosts 4K/60fps playback and reduces battery usage on Android. (Keep disabled if your device experiences display glitches).',
+                            l10nOf(context).auxVideoSettingsPageUsesFlutterSurfaceproducerToRenderFramesDirectly,
                             style: ZplayType.bodySmall.toStyle(
                               color: tokens.textSecondary,
                             ),
@@ -651,7 +651,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                     children: [
                       Expanded(
                         child: Text(
-                          title,
+                          configLabel(context, title),
                           style: ZplayType.subtitle.toStyle(
                             color: tokens.textPrimary,
                           ),
@@ -669,7 +669,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                           borderRadius: ZplayRadius.smAll,
                         ),
                         child: Text(
-                          tag,
+                          configLabel(context, tag),
                           style: ZplayType.caption.toStyle(color: tagColor),
                         ),
                       ),
@@ -677,7 +677,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    subtitle,
+                    configLabel(context, subtitle),
                     style: ZplayType.bodySmall.toStyle(
                       color: tokens.textSecondary,
                     ),
@@ -768,7 +768,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                         children: [
                           Expanded(
                             child: Text(
-                              title,
+                              configLabel(context, title),
                               style: ZplayType.subtitle.toStyle(
                                 color: tokens.textPrimary,
                               ),
@@ -786,7 +786,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                               borderRadius: ZplayRadius.smAll,
                             ),
                             child: Text(
-                              badgeText,
+                              configLabel(context, badgeText),
                               style: ZplayType.caption.toStyle(
                                 color: badgeColor,
                               ),
@@ -796,7 +796,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                       ),
                       const SizedBox(height: 5),
                       Text(
-                        subtitle,
+                        configLabel(context, subtitle),
                         style: ZplayType.bodySmall.toStyle(
                           color: tokens.textSecondary,
                         ),
@@ -853,7 +853,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                title,
+                configLabel(context, title),
                 style: ZplayType.label.toStyle(color: tokens.textPrimary),
               ),
               const SizedBox(height: 3),

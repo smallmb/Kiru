@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:math' as math;
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -48,11 +51,11 @@ class CollectionsPage extends StatelessWidget {
                 const SliverToBoxAdapter(child: _PageHeader()),
                 if (sagas.isNotEmpty)
                   SliverToBoxAdapter(
-                    child: _Group(label: 'Franchises', collections: sagas),
+                    child: _Group(label: l10nOf(context).auxCollectionsPageFranchises, collections: sagas),
                   ),
                 if (eras.isNotEmpty)
                   SliverToBoxAdapter(
-                    child: _Group(label: 'Memory Lane', collections: eras),
+                    child: _Group(label: l10nOf(context).auxCollectionsPageMemoryLane, collections: eras),
                   ),
                 SliverToBoxAdapter(
                   child: SizedBox(
@@ -98,12 +101,12 @@ class _PageHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Curated Franchises & Eras',
+            l10nOf(context).auxCollectionsPageCuratedFranchisesEras,
             style: ZplayType.titleLarge.toStyle(color: tokens.textPrimary),
           ),
           const SizedBox(height: ZplaySpacing.s4),
           Text(
-            'Hand-picked film packs, in watch order.',
+            l10nOf(context).auxCollectionsPageHandPickedFilmPacksInWatchOrder,
             style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
           ),
         ],
@@ -229,7 +232,7 @@ class CollectionTile extends StatelessWidget {
                   SizedBox(
                     height: titleBlock,
                     child: Text(
-                      collection.title,
+                      configLabel(context, collection.title),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: ZplayType.subtitle
@@ -241,7 +244,7 @@ class CollectionTile extends StatelessWidget {
                   SizedBox(
                     height: metaBlock,
                     child: Text(
-                      collection.subtitle,
+                      configLabel(context, collection.subtitle),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: ZplayType.caption.toStyle(color: tokens.textMuted),

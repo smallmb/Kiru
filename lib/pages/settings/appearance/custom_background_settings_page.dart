@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../services/theme/design_tokens.dart';
@@ -38,10 +41,11 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
   Future<void> _handlePickImage() async {
     setState(() => _isUploading = true);
     final success = await CustomBackgroundService.pickAndSetImage();
+    if (!mounted) return;
     setState(() => _isUploading = false);
 
     if (success) {
-      _showSnack('Background image uploaded and applied across all UI!');
+      _showSnack(l10nOf(context).appearanceDetailBackgroundImageUploadedAndAppliedAcrossAllUi);
     }
   }
 
@@ -50,13 +54,14 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
     if (text.isEmpty) return;
 
     if (!text.startsWith('http://') && !text.startsWith('https://')) {
-      _showSnack('Please enter a valid HTTP or HTTPS image URL.', isError: true);
+      _showSnack(l10nOf(context).appearanceDetailPleaseEnterAValidHttpOrHttpsImage, isError: true);
       return;
     }
 
     await CustomBackgroundService.setImageUrl(text);
+    if (!mounted) return;
     _urlController.clear();
-    _showSnack('Custom background URL applied!');
+    _showSnack(l10nOf(context).appearanceDetailCustomBackgroundUrlApplied);
   }
 
   @override
@@ -71,7 +76,7 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
             final hasWallpaper = customBg.hasCustomBackground;
 
             return SettingsScaffold(
-              title: 'Custom Background & Wallpaper',
+              title: l10nOf(context).appearanceCustomWallpaper,
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                 children: [
@@ -79,7 +84,7 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                   Padding(
                     padding: const EdgeInsets.only(bottom: 16),
                     child: Text(
-                      'Upload your own photo or choose a curated wallpaper. Theme colors and moving ambient lights softly blend into the background for a unified look.',
+                      l10nOf(context).auxCustomBackgroundSettingsPageUploadYourOwnPhotoOrChooseA,
                       style: ZplayType.body.toStyle(color: tokens.textSecondary),
                     ),
                   ),
@@ -129,14 +134,14 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Live Atmosphere Preview',
+                                        l10nOf(context).auxAudiobookSettingsPageLiveAtmospherePreview,
                                         style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                                       ),
                                       const SizedBox(height: 3),
                                       Text(
                                         hasWallpaper
-                                            ? 'Wallpaper active with ${palette.name} ambient lighting'
-                                            : 'Default ${palette.name} theme background',
+                                            ? l10nOf(context).wallpaperActivePalette(configLabel(context, palette.name))
+                                            : l10nOf(context).wallpaperDefaultPalette(configLabel(context, palette.name)),
                                         style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                                       ),
                                     ],
@@ -166,7 +171,7 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                                 )
                               : const Icon(Icons.add_photo_alternate_rounded, size: 20),
                           label: Text(
-                            _isUploading ? 'Uploading...' : 'Upload Photo from Device',
+                            _isUploading ? l10nOf(context).finalCustomBackgroundSettingsPageUploading : l10nOf(context).appearanceDetailUploadPhotoFromDevice,
                             style: ZplayType.label.toStyle(),
                           ),
                           style: ElevatedButton.styleFrom(
@@ -181,7 +186,7 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                       if (hasWallpaper) ...[
                         const SizedBox(width: 12),
                         IconButton.filledTonal(
-                          tooltip: 'Reset to Default Background',
+                          tooltip: l10nOf(context).auxCustomBackgroundSettingsPageResetToDefaultBackground,
                           icon: Icon(Icons.delete_outline_rounded, color: tokens.danger),
                           style: IconButton.styleFrom(
                             backgroundColor: tokens.danger.withValues(alpha: ZplayOpacity.borderStrong),
@@ -190,7 +195,8 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                           ),
                           onPressed: () async {
                             await CustomBackgroundService.clearBackground();
-                            _showSnack('Background reset to default theme.');
+                            if (!context.mounted) return;
+                            _showSnack(l10nOf(context).appearanceDetailBackgroundResetToDefaultTheme);
                           },
                         ),
                       ],
@@ -216,7 +222,7 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                             controller: _urlController,
                             style: ZplayType.label.toStyle(color: tokens.textPrimary),
                             decoration: InputDecoration(
-                              hintText: 'Or paste image URL (https://...)',
+                              hintText: l10nOf(context).auxCustomBackgroundSettingsPageOrPasteImageUrlHttps,
                               hintStyle: ZplayType.bodySmall.toStyle(color: tokens.textDisabled),
                               border: InputBorder.none,
                               isDense: true,
@@ -226,7 +232,7 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                         ),
                         IconButton(
                           icon: Icon(Icons.content_paste_rounded, color: tokens.textSecondary, size: 18),
-                          tooltip: 'Paste from Clipboard',
+                          tooltip: l10nOf(context).commonPasteClipboard,
                           onPressed: () async {
                             final data = await Clipboard.getData(Clipboard.kTextPlain);
                             if (data?.text != null) {
@@ -237,7 +243,7 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                         TextButton(
                           onPressed: _handleApplyUrl,
                           child: Text(
-                            'Apply',
+                            l10nOf(context).uiDiscoverPageApply,
                             style: ZplayType.label.toStyle(color: palette.primaryColor),
                           ),
                         ),
@@ -249,7 +255,7 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
 
                   // ── 3. Curated Wallpaper Presets ──
                   Text(
-                    'CURATED DARK WALLPAPERS',
+                    l10nOf(context).auxCustomBackgroundSettingsPageCuratedDarkWallpapers,
                     style: ZplayType.overline.toStyle(color: tokens.textMuted),
                   ),
                   const SizedBox(height: 12),
@@ -275,7 +281,8 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                         onTap: () async {
                           HapticFeedback.selectionClick();
                           await CustomBackgroundService.applyPreset(preset);
-                          _showSnack('Applied "${preset.title}" wallpaper');
+                          if (!context.mounted) return;
+                          _showSnack(l10nOf(context).appearanceDetailAppliedWallpaperName(configLabel(context, preset.title)));
                         },
                         borderRadius: ZplayRadius.smAll,
                         child: Container(
@@ -327,7 +334,7 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                                 left: 8,
                                 right: 8,
                                 child: Text(
-                                  preset.title,
+                                  configLabel(context, preset.title),
                                   style: ZplayType.caption.toStyle(color: tokens.textPrimary),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -346,7 +353,7 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
 
                   // ── 4. Atmosphere & Blending Controls ──
                   Text(
-                    'WALLPAPER & LIGHT BLENDING CONTROLS',
+                    l10nOf(context).auxCustomBackgroundSettingsPageWallpaperLightBlendingControls,
                     style: ZplayType.overline.toStyle(color: tokens.textMuted),
                   ),
                   const SizedBox(height: 12),
@@ -358,7 +365,7 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                         // Opacity / Visibility Slider
                         _buildSliderTile(
                           icon: Icons.opacity_rounded,
-                          title: 'Photo Visibility / Darkness',
+                          title: l10nOf(context).auxCustomBackgroundSettingsPagePhotoVisibilityDarkness,
                           valueText: '${(customBg.opacity * 100).round()}%',
                           value: customBg.opacity,
                           min: 0.10,
@@ -371,7 +378,7 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                         // Blur Slider
                         _buildSliderTile(
                           icon: Icons.blur_on_rounded,
-                          title: 'Photo Soft Blur',
+                          title: l10nOf(context).auxCustomBackgroundSettingsPagePhotoSoftBlur,
                           valueText: '${customBg.blur.toStringAsFixed(1)} px',
                           value: customBg.blur,
                           min: 0.0,
@@ -384,7 +391,7 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                         // Theme Tint Slider
                         _buildSliderTile(
                           icon: Icons.color_lens_outlined,
-                          title: 'Theme Color Tint Overlay',
+                          title: l10nOf(context).auxCustomBackgroundSettingsPageThemeColorTintOverlay,
                           valueText: '${(customBg.themeTintOpacity * 100).round()}%',
                           value: customBg.themeTintOpacity,
                           min: 0.0,
@@ -399,11 +406,11 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                           contentPadding: EdgeInsets.zero,
                           activeColor: palette.primaryColor,
                           title: Text(
-                            'Blend Moving Ambient Lights',
+                            l10nOf(context).auxCustomBackgroundSettingsPageBlendMovingAmbientLights,
                             style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                           ),
                           subtitle: Text(
-                            'Softly illuminates and animates theme lights over your wallpaper',
+                            l10nOf(context).auxCustomBackgroundSettingsPageSoftlyIlluminatesAndAnimatesThemeLightsOver,
                             style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                           ),
                           value: customBg.blendThemeLights,

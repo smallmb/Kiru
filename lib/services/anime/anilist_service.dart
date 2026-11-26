@@ -4,7 +4,9 @@ import 'package:http/http.dart' as http;
 import '../../models/anime/anime_media.dart';
 import '../content/content_settings.dart';
 
-class AnilistService {
+import 'anime_metadata_provider.dart';
+
+class AnilistService implements AnimeMetadataProvider {
   static final AnilistService instance = AnilistService._internal();
   AnilistService._internal();
 

@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +61,7 @@ class _DownloadsPageState extends State<DownloadsPage> {
     final file = File(task.targetFilePath);
     if (!file.existsSync()) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('File not found on disk. It may have been moved or deleted.')),
+        SnackBar(content: Text(l10nOf(context).uiDownloadsPageFileNotFoundOnDisk)),
       );
       return;
     }
@@ -105,18 +107,18 @@ class _DownloadsPageState extends State<DownloadsPage> {
         backgroundColor: tokens.surfaceOverlay,
         shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.mdAll),
         title: Text(
-          'Delete Download',
+          l10nOf(context).uiDownloadsPageDeleteDownload,
           style: ZplayType.title.toStyle(color: tokens.textPrimary),
         ),
         content: Text(
-          'Are you sure you want to delete "${task.title}" and remove the file from storage?',
+          l10nOf(context).downloadsDeleteConfirm(task.title),
           style: ZplayType.body.toStyle(color: tokens.textEmphasis),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: Text(
-              'Cancel',
+              l10nOf(context).uiDownloadsPageCancel,
               style: ZplayType.label.toStyle(color: tokens.textSecondary),
             ),
           ),
@@ -130,7 +132,7 @@ class _DownloadsPageState extends State<DownloadsPage> {
               Navigator.pop(ctx);
               DownloadService.instance.deleteDownload(task.id);
             },
-            child: const Text('Delete'),
+            child: Text(l10nOf(context).uiDownloadsPageDelete),
           ),
         ],
       ),
@@ -175,18 +177,18 @@ class _DownloadsPageState extends State<DownloadsPage> {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: SegmentedTabs<DownloadTab>(
-                            semanticsLabel: 'Download list',
+                            semanticsLabel: l10nOf(context).uiDownloadsPageDownloadList,
                             selected: _tab,
                             onSelected: (tab) => setState(() => _tab = tab),
                             options: [
                               SegmentedTabOption(
                                 value: DownloadTab.active,
-                                label: 'Active',
+                                label: l10nOf(context).uiDownloadsPageActive,
                                 count: activeCount,
                               ),
                               SegmentedTabOption(
                                 value: DownloadTab.downloaded,
-                                label: 'Downloaded',
+                                label: l10nOf(context).uiDownloadsPageDownloaded,
                                 count: completedCount,
                               ),
                             ],
@@ -226,12 +228,12 @@ class _DownloadsPageState extends State<DownloadsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Downloads',
+                  l10nOf(context).uiDownloadsPageDownloads,
                   style: ZplayType.titleLarge.toStyle(color: tokens.textPrimary),
                 ),
                 const SizedBox(height: ZplaySpacing.s2),
                 Text(
-                  '$activeCount active • $completedCount downloaded',
+                  l10nOf(context).downloadsSummary(activeCount, completedCount),
                   style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
                 ),
               ],
@@ -243,13 +245,13 @@ class _DownloadsPageState extends State<DownloadsPage> {
               color: tokens.textSecondary,
               size: 22,
             ),
-            tooltip: 'Open Downloads Folder',
+            tooltip: l10nOf(context).uiDownloadsPageOpenDownloadsFolder,
             onPressed: () async {
               final dir = await DownloadPathHelper.getDownloadsDirectoryPath();
               final opened = await OpenFileLocationHelper.openLocation(dir);
               if (!opened && mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Folder path: $dir')),
+                  SnackBar(content: Text(l10nOf(context).downloadsFolderPath(dir))),
                 );
               }
             },
@@ -275,12 +277,12 @@ class _DownloadsPageState extends State<DownloadsPage> {
               ),
               const SizedBox(height: ZplaySpacing.s16),
               Text(
-                'No active downloads',
+                l10nOf(context).uiDownloadsPageNoActiveDownloads,
                 style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
               ),
               const SizedBox(height: ZplaySpacing.s8),
               Text(
-                'Media you download from the video player will show up here.',
+                l10nOf(context).uiDownloadsPageMediaYouDownloadFromThe,
                 style: ZplayType.body.toStyle(color: tokens.textMuted),
               ),
             ],
@@ -408,7 +410,7 @@ class _DownloadsPageState extends State<DownloadsPage> {
                             if (task.peers > 0) ...[
                               const SizedBox(width: ZplaySpacing.s8),
                               Text(
-                                '${task.peers} peers',
+                                l10nOf(context).dynamicDownloadsPagePeers((task.peers).toString()),
                                 style: ZplayType.caption.toStyle(
                                   color: tokens.textSecondary,
                                 ),
@@ -419,9 +421,9 @@ class _DownloadsPageState extends State<DownloadsPage> {
                         const SizedBox(height: ZplaySpacing.s4),
                         Text(
                           isFailed
-                              ? 'Failed: ${task.error ?? "Unknown error"}'
+                              ? l10nOf(context).downloadFailedDetail(task.error ?? l10nOf(context).downloadUnknownError)
                               : isPaused
-                                  ? 'Paused (${(progress * 100).toStringAsFixed(1)}%)'
+                                  ? l10nOf(context).downloadPausedProgress((progress * 100).toStringAsFixed(1))
                                   : '${(progress * 100).toStringAsFixed(1)}% • ${task.speedLabel} • ETA: ${task.etaLabel}',
                           style: ZplayType.bodySmall.toStyle(
                             color: isFailed
@@ -444,13 +446,13 @@ class _DownloadsPageState extends State<DownloadsPage> {
                             color: tokens.warning,
                             size: 26,
                           ),
-                          tooltip: 'Pause',
+                          tooltip: l10nOf(context).uiDownloadsPagePause,
                           onPressed: () => DownloadService.instance.pauseDownload(task.id),
                         )
                       else if (isPaused)
                         IconButton(
                           icon: Icon(Icons.play_circle_fill_rounded, color: palette.primaryColor, size: 26),
-                          tooltip: 'Resume',
+                          tooltip: l10nOf(context).uiDownloadsPageResume,
                           onPressed: () => DownloadService.instance.resumeDownload(task.id),
                         )
                       else if (isFailed)
@@ -460,7 +462,7 @@ class _DownloadsPageState extends State<DownloadsPage> {
                             color: tokens.warning,
                             size: 26,
                           ),
-                          tooltip: 'Retry / Reconnect',
+                          tooltip: l10nOf(context).uiDownloadsPageRetryReconnect,
                           onPressed: () => DownloadService.instance.resumeDownload(task.id),
                         ),
                       IconButton(
@@ -469,12 +471,12 @@ class _DownloadsPageState extends State<DownloadsPage> {
                           color: tokens.textSecondary,
                           size: 22,
                         ),
-                        tooltip: 'Open Folder Location',
+                        tooltip: l10nOf(context).uiDownloadsPageOpenFolderLocation,
                         onPressed: () async {
                           final opened = await OpenFileLocationHelper.openLocation(task.targetFilePath);
                           if (!opened && context.mounted) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Folder: ${File(task.targetFilePath).parent.path}')),
+                              SnackBar(content: Text(l10nOf(context).dynamicDownloadsPageFolder((File(task.targetFilePath).parent.path).toString()))),
                             );
                           }
                         },
@@ -485,7 +487,7 @@ class _DownloadsPageState extends State<DownloadsPage> {
                           color: tokens.textMuted,
                           size: 22,
                         ),
-                        tooltip: 'Cancel',
+                        tooltip: l10nOf(context).uiDownloadsPageCancel,
                         onPressed: () => _confirmDelete(task),
                       ),
                     ],
@@ -550,12 +552,12 @@ class _DownloadsPageState extends State<DownloadsPage> {
               ),
               const SizedBox(height: ZplaySpacing.s16),
               Text(
-                'No downloaded media',
+                l10nOf(context).uiDownloadsPageNoDownloadedMedia,
                 style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
               ),
               const SizedBox(height: ZplaySpacing.s8),
               Text(
-                'Completed downloads will appear here for offline playback.',
+                l10nOf(context).uiDownloadsPageCompletedDownloadsWillAppearHere,
                 style: ZplayType.body.toStyle(color: tokens.textMuted),
               ),
             ],
@@ -678,7 +680,7 @@ class _DownloadsPageState extends State<DownloadsPage> {
                             final opened = await OpenFileLocationHelper.openLocation(task.targetFilePath);
                             if (!opened && context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Path: ${task.targetFilePath}')),
+                                SnackBar(content: Text(l10nOf(context).dynamicDownloadsPagePath((task.targetFilePath).toString()))),
                               );
                             }
                           },
@@ -838,7 +840,7 @@ class _StorageBreakdownBar extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Device Storage: ${DownloadTask.formatBytes(usedBytes)} Used of ${info.totalFormatted}',
+                    l10nOf(context).dynamicDownloadsPageDeviceStorageUsedOf((DownloadTask.formatBytes(usedBytes)).toString(), (info.totalFormatted).toString()),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: ZplayType.label.toStyle(color: tokens.textPrimary),
@@ -846,7 +848,7 @@ class _StorageBreakdownBar extends StatelessWidget {
                 ),
                 const SizedBox(width: ZplaySpacing.s12),
                 Text(
-                  '${info.freeFormatted} Free',
+                  l10nOf(context).dynamicDownloadsPageFree((info.freeFormatted).toString()),
                   style: ZplayType.caption.toStyle(color: tokens.textMuted),
                 ),
               ],

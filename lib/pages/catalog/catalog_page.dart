@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/media_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../models/addon/addon.dart';
@@ -245,7 +248,7 @@ class _CatalogPageState extends State<CatalogPage> {
           else if (_items.isEmpty)
             Center(
               child: Text(
-                'No items found',
+                l10nOf(context).auxCatalogPageNoItemsFound,
                 style: ZplayType.subtitle.toStyle(color: tokens.textSecondary),
               ),
             )
@@ -320,7 +323,7 @@ class _CatalogPageState extends State<CatalogPage> {
                           if (!_isSearching)
                             Expanded(
                               child: Text(
-                                widget.section.title,
+                                mediaLabel(context, widget.section.title),
                                 style: ZplayType.title.toStyle(
                                   color: tokens.textPrimary,
                                 ),
@@ -343,7 +346,7 @@ class _CatalogPageState extends State<CatalogPage> {
                                   textInputAction: TextInputAction.search,
                                   onSubmitted: _onSearchSubmitted,
                                   decoration: InputDecoration(
-                                    hintText: 'Search...',
+                                    hintText: l10nOf(context).auxCatalogPageSearch,
                                     hintStyle: ZplayType.subtitle.toStyle(
                                       color: tokens.textMuted,
                                     ),
@@ -427,7 +430,7 @@ class _CatalogPageState extends State<CatalogPage> {
                     if (!singleExtra.isRequired) {
                       if (index == 0) {
                         return _GenreChip(
-                          label: 'All',
+                          label: l10nOf(context).uiPlayerSubtitleMenuAll,
                           isSelected: _selectedExtras[singleExtra.name] == null,
                           onTap: () => _onExtraSelected(singleExtra.name, null),
                         );
@@ -510,7 +513,7 @@ class _CatalogPageState extends State<CatalogPage> {
                   PopupMenuItem<String?>(
                     value: null,
                     child: Text(
-                      'All',
+                      l10nOf(context).uiPlayerSubtitleMenuAll,
                       style: ZplayType.body.toStyle(color: tokens.textPrimary),
                     ),
                   ),
@@ -518,7 +521,7 @@ class _CatalogPageState extends State<CatalogPage> {
                   (opt) => PopupMenuItem<String?>(
                     value: opt,
                     child: Text(
-                      opt,
+                      mediaLabel(context, opt),
                       style: ZplayType.body.toStyle(
                         color: opt == currentVal
                             ? AppThemeService.currentPalette.value.primaryColor
@@ -544,7 +547,7 @@ class _CatalogPageState extends State<CatalogPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      '${extra.name.toUpperCase()}: $label',
+                      '${mediaLabel(context, extra.name)}: ${mediaLabel(context, label)}',
                       style: ZplayType.label.toStyle(
                         color: currentVal != null
                             ? tokens.onAccent

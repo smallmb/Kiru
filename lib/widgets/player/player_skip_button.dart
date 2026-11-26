@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../models/player/skip_segment_model.dart';
@@ -248,7 +250,7 @@ class _PlayerSkipButtonState extends State<PlayerSkipButton>
                                 alpha: 0.25,
                               ),
                               child: Tooltip(
-                                message: 'Dismiss (✕)',
+                                message: l10nOf(context).auxPlayerSkipButtonDismiss,
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: isCompact ? 9 : 12,

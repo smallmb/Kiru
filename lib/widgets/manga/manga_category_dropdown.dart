@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import '../../services/theme/design_tokens.dart';
 import '../common/focusable_card.dart';
@@ -462,7 +464,7 @@ class _DropdownOverlayContentState extends State<_DropdownOverlayContent> {
                         // itself, muted and tabular, because a count is not a
                         // state for the accent to mark.
                         SectionHeader(
-                          title: 'Manga Categories',
+                          title: l10nOf(context).auxMangaCategoryDropdownMangaCategories,
                           count: widget.genres.length,
                         ),
                         Padding(
@@ -491,7 +493,7 @@ class _DropdownOverlayContentState extends State<_DropdownOverlayContent> {
                                 color: tokens.textPrimary,
                               ),
                               decoration: InputDecoration(
-                                hintText: 'Filter categories...',
+                                hintText: l10nOf(context).auxMangaCategoryDropdownFilterCategories,
                                 hintStyle: ZplayType.bodySmall.toStyle(
                                   color: tokens.textMuted,
                                 ),
@@ -559,7 +561,7 @@ class _DropdownOverlayContentState extends State<_DropdownOverlayContent> {
                                       ),
                                       const SizedBox(height: ZplaySpacing.s8),
                                       Text(
-                                        'No matching categories',
+                                        l10nOf(context).auxMangaCategoryDropdownNoMatchingCategories,
                                         style: ZplayType.bodySmall.toStyle(
                                           color: tokens.textMuted,
                                         ),
@@ -623,7 +625,7 @@ class _DropdownOverlayContentState extends State<_DropdownOverlayContent> {
                               ZplaySpacing.s12,
                             ),
                             child: PillButton(
-                              label: 'Reset to All Categories',
+                              label: l10nOf(context).auxMangaCategoryDropdownResetToAllCategories,
                               variant: PillVariant.secondary,
                               icon: Icons.refresh_rounded,
                               expand: true,

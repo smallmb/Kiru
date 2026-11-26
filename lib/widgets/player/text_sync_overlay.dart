@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -325,7 +327,7 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Error saving sync: $e')));
+        ).showSnackBar(SnackBar(content: Text(l10nOf(context).dynamicTextSyncOverlayErrorSavingSync((e).toString()))));
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -419,16 +421,16 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                             children: [
                               Text(
                                 _sectionMode
-                                    ? 'FIX SECTION'
-                                    : 'SUBTITLE TIMING',
+                                    ? l10nOf(context).uiFinalTextSyncOverlayFixSection
+                                    : l10nOf(context).uiFinalTextSyncOverlaySubtitleTiming,
                                 style: ZplayType.overline
                                     .copyWith(weight: FontWeight.w800)
                                     .toStyle(color: PlayerTheme.inkSubtle),
                               ),
                               Text(
                                 _sectionMode
-                                    ? 'Select Range & Sync'
-                                    : 'Speech Dialogue Sync',
+                                    ? l10nOf(context).uiFinalTextSyncOverlaySelectRangeSync
+                                    : l10nOf(context).uiFinalTextSyncOverlaySpeechDialogueSync,
                                 style: ZplayType.body
                                     .copyWith(
                                       size: isLandscapeMobile ? 14 : 16,
@@ -445,7 +447,7 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                           size: 30,
                           iconSize: 15,
                           icon: const Icon(Icons.close_rounded),
-                          tooltip: 'Close',
+                          tooltip: l10nOf(context).uiTextSyncOverlayClose,
                           onPressed: widget.onClose,
                         ),
                       ],
@@ -508,7 +510,7 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                                   .toStyle(color: PlayerTheme.ink),
                               onSubmitted: (_) => _goToNextMatch(),
                               decoration: InputDecoration(
-                                hintText: 'Search dialogue...',
+                                hintText: l10nOf(context).uiTextSyncOverlaySearchDialogue,
                                 hintStyle: ZplayType.bodySmall.toStyle(
                                   color: PlayerTheme.inkSubtle,
                                 ),
@@ -834,7 +836,7 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                                                       ZplayRadius.xsAll,
                                                 ),
                                                 child: Text(
-                                                  'NOW',
+                                                  l10nOf(context).uiTextSyncOverlayNow,
                                                   style: ZplayType.overline
                                                       .copyWith(
                                                         weight: FontWeight.w800,
@@ -888,7 +890,7 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                                               size: 14,
                                             ),
                                             label: Text(
-                                              'Sync from here',
+                                              l10nOf(context).uiTextSyncOverlaySyncFromHere,
                                               style: ZplayType.caption
                                                   .copyWith(
                                                     weight: FontWeight.w600,
@@ -922,7 +924,7 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                                               size: 14,
                                             ),
                                             label: Text(
-                                              'Jump here',
+                                              l10nOf(context).uiTextSyncOverlayJumpHere,
                                               style: ZplayType.caption
                                                   .toStyle(),
                                             ),
@@ -963,7 +965,7 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                                     size: 13,
                                   ),
                                   label: Text(
-                                    'Jump to now',
+                                    l10nOf(context).uiTextSyncOverlayJumpToNow,
                                     style: ZplayType.caption
                                         .copyWith(weight: FontWeight.bold)
                                         .toStyle(),
@@ -1047,7 +1049,7 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                 ),
                 icon: const Icon(Icons.content_cut_rounded, size: 12),
                 label: Text(
-                  _sectionMode ? 'Selecting' : 'Fix section',
+                  _sectionMode ? l10nOf(context).finalTextSyncOverlaySelecting : 'Fix section',
                   style: ZplayType.caption.toStyle(),
                 ),
                 onPressed: () {
@@ -1066,7 +1068,7 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                     size: 15,
                     color: PlayerTheme.inkSubtle,
                   ),
-                  tooltip: 'Reset timing',
+                  tooltip: l10nOf(context).uiTextSyncOverlayResetTiming,
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(
                     minWidth: 26,
@@ -1103,7 +1105,7 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                     size: 15,
                   ),
                   label: Text(
-                    _isPlaying ? 'Pause' : 'Play',
+                    _isPlaying ? l10nOf(context).playerPause : 'Play',
                     style: ZplayType.caption
                         .copyWith(size: isLandscapeMobile ? 11 : 12)
                         .toStyle(),
@@ -1148,7 +1150,7 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                         )
                       : const Icon(Icons.check_rounded, size: 15),
                   label: Text(
-                    _isSaving ? 'Saving...' : 'Save Timing',
+                    _isSaving ? l10nOf(context).finalTextSyncOverlaySaving : 'Save Timing',
                     style: ZplayType.caption
                         .copyWith(
                           size: isLandscapeMobile ? 11 : 12,

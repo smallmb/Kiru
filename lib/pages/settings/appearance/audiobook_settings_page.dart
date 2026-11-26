@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import '../palette_picker.dart';
 import 'package:liquid_glass_easy/liquid_glass_easy.dart';
@@ -32,27 +35,27 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
     final palette = AppThemeService.currentPalette.value;
 
     return SettingsScaffold(
-      title: 'Audiobook UI & Player Studio',
+      title: l10nOf(context).uiAppearanceSettingsPageAudiobookUiPlayerStudio,
       maxWidth: 820,
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         children: [
           // ── 1. Color Themes & Accents ──
-          _buildSectionHeader('COLOR THEMES & ACCENTS'),
+          _buildSectionHeader(l10nOf(context).auxHomeUiSettingsPageColorThemesAccents),
           const SizedBox(height: 12),
           const PalettePicker(),
 
           const SizedBox(height: 28),
 
           // ── 2. Ambient Background Lighting ──
-          _buildSectionHeader('AMBIENT BACKGROUND LIGHTING & MOVING GLOWS'),
+          _buildSectionHeader(l10nOf(context).finalAudiobookSettingsPageAmbientBackgroundLightingMovingGlows),
           const SizedBox(height: 12),
           _buildAmbientLightsCard(palette),
 
           const SizedBox(height: 28),
 
           // ── 3. Discovery & Posters ──
-          _buildSectionHeader('DISCOVERY & AUDIOBOOK POSTERS'),
+          _buildSectionHeader(l10nOf(context).finalAudiobookSettingsPageDiscoveryAudiobookPosters),
           const SizedBox(height: 12),
           _buildDiscoveryConfigCard(palette),
 
@@ -64,14 +67,14 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
           const SizedBox(height: 28),
 
           // ── 4. Player Presets ──
-          _buildSectionHeader('CHOOSE AUDIO PLAYER PRESET'),
+          _buildSectionHeader(l10nOf(context).finalAudiobookSettingsPageChooseAudioPlayerPreset),
           const SizedBox(height: 12),
           _buildPlayerPresetSelector(palette),
 
           const SizedBox(height: 28),
 
           // ── 5. Make Your Custom Player Studio ──
-          _buildSectionHeader('MAKE YOUR CUSTOM AUDIOBOOK PLAYER (DRAG & DROP STUDIO)'),
+          _buildSectionHeader(l10nOf(context).finalAudiobookSettingsPageMakeYourCustomAudiobookPlayerDragDrop),
           const SizedBox(height: 12),
           _buildCustomPlayerStudioCard(palette),
 
@@ -103,11 +106,11 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
                 title: Text(
-                  'Enable Moving Ambient Atmosphere',
+                  l10nOf(context).auxAudiobookSettingsPageEnableMovingAmbientAtmosphere,
                   style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                 ),
                 subtitle: Text(
-                  'Soft flowing glowing orbs and aurora waves themed to ${palette.name}',
+                  l10nOf(context).dynamicAudiobookSettingsPageSoftFlowingGlowingOrbsAndAurora((palette.name).toString()),
                   style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                 ),
                 value: enabled,
@@ -122,7 +125,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
           const SizedBox(height: 12),
 
           Text(
-            'Lighting Flow Pattern',
+            l10nOf(context).auxAudiobookSettingsPageLightingFlowPattern,
             style: ZplayType.label.toStyle(color: tokens.textEmphasis),
           ),
           const SizedBox(height: 8),
@@ -136,7 +139,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
                 },
                 options: [
                   for (final p in AmbientLightPattern.values)
-                    SegmentedTabOption(value: p, label: p.label),
+                    SegmentedTabOption(value: p, label: configLabel(context, p.label)),
                 ],
               );
             },
@@ -154,7 +157,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Glow Strength / Opacity', style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
+                      Text(l10nOf(context).auxAudiobookSettingsPageGlowStrengthOpacity, style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
                       Text('${(intensity * 100).round()}%', style: ZplayType.labelNumeric.toStyle(color: palette.primaryColor)),
                     ],
                   ),
@@ -188,7 +191,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Motion Drift Speed', style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
+                      Text(l10nOf(context).auxAudiobookSettingsPageMotionDriftSpeed, style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
                       Text('${speed.toStringAsFixed(1)}x', style: ZplayType.labelNumeric.toStyle(color: palette.primaryColor)),
                     ],
                   ),
@@ -240,7 +243,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
                         children: [
                           Icon(Icons.headphones_rounded, color: palette.primaryColor, size: 14),
                           const SizedBox(width: 6),
-                          Text('Live Atmosphere Preview', style: ZplayType.caption.toStyle(color: tokens.textPrimary)),
+                          Text(l10nOf(context).auxAudiobookSettingsPageLiveAtmospherePreview, style: ZplayType.caption.toStyle(color: tokens.textPrimary)),
                         ],
                       ),
                     ),
@@ -267,8 +270,8 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
             builder: (context, enabled, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Show Hero Spotlight Carousel', style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
-                subtitle: Text('Featured bestselling audiobook showcase at the top of the hub', style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
+                title: Text(l10nOf(context).auxAudiobookSettingsPageShowHeroSpotlightCarousel, style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
+                subtitle: Text(l10nOf(context).auxAudiobookSettingsPageFeaturedBestsellingAudiobookShowcaseAtTheTop, style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
                 value: enabled,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => AudiobookSettings.setEnableSpotlight(val),
@@ -281,8 +284,8 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
             builder: (context, show, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Show "Continue Listening" Carousel', style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
-                subtitle: Text('Quick resume cards with chapter progress bar and direct play', style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
+                title: Text(l10nOf(context).auxAudiobooksPageShowContinueListeningCarousel, style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
+                subtitle: Text(l10nOf(context).auxAudiobookSettingsPageQuickResumeCardsWithChapterProgressBar, style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
                 value: show,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => AudiobookSettings.setShowContinueListening(val),
@@ -294,7 +297,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
           Divider(color: tokens.borderDefault),
           const SizedBox(height: 12),
 
-          Text('Audiobook Poster Card Density', style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
+          Text(l10nOf(context).auxAudiobookSettingsPageAudiobookPosterCardDensity, style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
           const SizedBox(height: 8),
           ValueListenableBuilder<AudiobookCardDensity>(
             valueListenable: AudiobookSettings.cardDensity,
@@ -306,7 +309,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
                 },
                 options: [
                   for (final d in AudiobookCardDensity.values)
-                    SegmentedTabOption(value: d, label: d.label),
+                    SegmentedTabOption(value: d, label: configLabel(context, d.label)),
                 ],
               );
             },
@@ -319,7 +322,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
             builder: (context, show, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Show Quick Genre & Category Badges', style: ZplayType.body.toStyle(color: tokens.textPrimary)),
+                title: Text(l10nOf(context).auxAudiobookSettingsPageShowQuickGenreCategoryBadges, style: ZplayType.body.toStyle(color: tokens.textPrimary)),
                 value: show,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => AudiobookSettings.setShowCategoryPills(val),
@@ -332,7 +335,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
             builder: (context, show, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Show Audiobook Runtime / Total Duration', style: ZplayType.body.toStyle(color: tokens.textPrimary)),
+                title: Text(l10nOf(context).auxAudiobookSettingsPageShowAudiobookRuntimeTotalDuration, style: ZplayType.body.toStyle(color: tokens.textPrimary)),
                 value: show,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => AudiobookSettings.setShowDurationBadge(val),
@@ -345,7 +348,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
             builder: (context, show, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Poster Card Hover Glow & Elevation', style: ZplayType.body.toStyle(color: tokens.textPrimary)),
+                title: Text(l10nOf(context).auxAudiobookSettingsPagePosterCardHoverGlowElevation, style: ZplayType.body.toStyle(color: tokens.textPrimary)),
                 value: show,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => AudiobookSettings.setCardHoverGlow(val),
@@ -401,11 +404,11 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
                   ),
                 ),
                 title: Text(
-                  preset.label,
+                  configLabel(context, preset.label),
                   style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                 ),
                 subtitle: Text(
-                  preset.description,
+                  configLabel(context, preset.description),
                   style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                 ),
                 trailing: Row(
@@ -423,7 +426,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
                           },
                           icon: Icon(Icons.tune_rounded, size: 14, color: palette.primaryColor),
                           label: Text(
-                            'Open Studio',
+                            l10nOf(context).auxAudiobooksPageOpenStudio,
                             style: ZplayType.label.toStyle(color: palette.primaryColor),
                           ),
                           style: OutlinedButton.styleFrom(
@@ -491,7 +494,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
                   Row(
                     children: [
                       Text(
-                        'Visual Custom Player Studio',
+                        l10nOf(context).auxAudiobookSettingsPageVisualCustomPlayerStudio,
                         style: ZplayType.title.toStyle(color: tokens.textPrimary),
                       ),
                       const SizedBox(width: 8),
@@ -502,7 +505,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
                           borderRadius: ZplayRadius.xsAll,
                         ),
                         child: Text(
-                          'FULL STUDIO',
+                          l10nOf(context).auxAudiobookSettingsPageFullStudio,
                           style: ZplayType.overline.toStyle(color: palette.primaryColor),
                         ),
                       ),
@@ -510,7 +513,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    'Drag & drop layout elements, procedural waveform canvases, liquid glass buttons, and premade chapters panel in real-time.',
+                    l10nOf(context).auxAudiobookSettingsPageDragDropLayoutElementsProceduralWaveformCanvases,
                     style: ZplayType.bodySmall.toStyle(color: tokens.textEmphasis),
                   ),
                   const SizedBox(height: 14),
@@ -523,7 +526,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
                     },
                     icon: Icon(Icons.tune_rounded, size: 18, color: tokens.onAccent),
                     label: Text(
-                      'Enter Custom Player Studio',
+                      l10nOf(context).auxAudiobookSettingsPageEnterCustomPlayerStudio,
                       style: ZplayType.label.toStyle(color: tokens.onAccent),
                     ),
                     style: ElevatedButton.styleFrom(
@@ -567,7 +570,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
                       children: [
                         Icon(Icons.auto_fix_high_rounded, color: palette.primaryColor, size: 16),
                         const SizedBox(width: 6),
-                        Text('Interactive Studio Preview', style: ZplayType.label.toStyle(color: tokens.textPrimary)),
+                        Text(l10nOf(context).auxAudiobookSettingsPageInteractiveStudioPreview, style: ZplayType.label.toStyle(color: tokens.textPrimary)),
                       ],
                     ),
                     Container(
@@ -577,7 +580,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
                         borderRadius: ZplayRadius.xsAll,
                       ),
                       child: Text(
-                        'LIVE',
+                        l10nOf(context).channelLiveBadge,
                         style: ZplayType.overline.toStyle(color: palette.primaryColor),
                       ),
                     ),
@@ -626,12 +629,12 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
 
                 const SizedBox(height: 12),
                 Text(
-                  'The Way of Kings',
+                  l10nOf(context).appearanceDetailTheWayOfKings,
                   style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Brandon Sanderson • Chapter 1: Stormblessed',
+                  l10nOf(context).appearanceDetailBrandonSandersonChapter1Stormblessed,
                   style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                 ),
 
@@ -725,7 +728,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
           const SizedBox(height: 20),
 
           // ── Customize Seek Bar Style ──
-          Text('Seek Bar / Scrubber Style', style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
+          Text(l10nOf(context).auxAudiobookSettingsPageSeekBarScrubberStyle, style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
           const SizedBox(height: 8),
           ValueListenableBuilder<AudiobookSeekbarStyle>(
             valueListenable: AudiobookSettings.customSeekbarStyle,
@@ -737,7 +740,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
                 },
                 options: [
                   for (final s in AudiobookSeekbarStyle.values)
-                    SegmentedTabOption(value: s, label: s.label),
+                    SegmentedTabOption(value: s, label: configLabel(context, s.label)),
                 ],
               );
             },
@@ -746,7 +749,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
           const SizedBox(height: 16),
 
           // ── Customize Play / Pause Button Style ──
-          Text('Play / Pause Button Styling', style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
+          Text(l10nOf(context).auxAudiobookSettingsPagePlayPauseButtonStyling, style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
           const SizedBox(height: 8),
           ValueListenableBuilder<AudiobookPlayButtonStyle>(
             valueListenable: AudiobookSettings.customPlayButtonStyle,
@@ -758,7 +761,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
                 },
                 options: [
                   for (final s in AudiobookPlayButtonStyle.values)
-                    SegmentedTabOption(value: s, label: s.label),
+                    SegmentedTabOption(value: s, label: configLabel(context, s.label)),
                 ],
               );
             },
@@ -767,7 +770,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
           const SizedBox(height: 16),
 
           // ── Customize Artwork Display ──
-          Text('Artwork Display Style', style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
+          Text(l10nOf(context).auxAudiobookSettingsPageArtworkDisplayStyle, style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
           const SizedBox(height: 8),
           ValueListenableBuilder<AudiobookArtworkStyle>(
             valueListenable: AudiobookSettings.customArtworkStyle,
@@ -779,7 +782,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
                 },
                 options: [
                   for (final s in AudiobookArtworkStyle.values)
-                    SegmentedTabOption(value: s, label: s.label),
+                    SegmentedTabOption(value: s, label: configLabel(context, s.label)),
                 ],
               );
             },
@@ -788,7 +791,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
           const SizedBox(height: 16),
 
           // ── Hover & Touch Physics ──
-          Text('Button Hover & Touch Physics', style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
+          Text(l10nOf(context).auxAudiobookSettingsPageButtonHoverTouchPhysics, style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
           const SizedBox(height: 8),
           ValueListenableBuilder<AudiobookHoverEffect>(
             valueListenable: AudiobookSettings.customHoverEffect,
@@ -800,7 +803,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
                 },
                 options: [
                   for (final e in AudiobookHoverEffect.values)
-                    SegmentedTabOption(value: e, label: e.label),
+                    SegmentedTabOption(value: e, label: configLabel(context, e.label)),
                 ],
               );
             },
@@ -815,7 +818,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Player Layout Components (Drag to Arrange)',
+                l10nOf(context).auxAudiobookSettingsPagePlayerLayoutComponentsDragToArrange,
                 style: ZplayType.label.toStyle(color: tokens.textPrimary),
               ),
               Icon(Icons.drag_indicator_rounded, color: palette.primaryColor, size: 18),
@@ -823,7 +826,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Hold and drag any block to reorder how controls appear inside your player',
+            l10nOf(context).auxAudiobookSettingsPageHoldAndDragAnyBlockToReorder,
             style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
           ),
           const SizedBox(height: 10),
@@ -866,7 +869,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
             builder: (context, enabled, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Liquid Glass Player Blur & Refraction', style: ZplayType.body.toStyle(color: tokens.textPrimary)),
+                title: Text(l10nOf(context).auxAudiobookSettingsPageLiquidGlassPlayerBlurRefraction, style: ZplayType.body.toStyle(color: tokens.textPrimary)),
                 value: enabled,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => AudiobookSettings.setEnableLiquidGlass(val),
@@ -879,7 +882,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
             builder: (context, show, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Show Playback Speed Selector (0.5x - 2.5x)', style: ZplayType.body.toStyle(color: tokens.textPrimary)),
+                title: Text(l10nOf(context).auxAudiobookSettingsPageShowPlaybackSpeedSelector05x2, style: ZplayType.body.toStyle(color: tokens.textPrimary)),
                 value: show,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => AudiobookSettings.setShowSpeedControl(val),
@@ -892,7 +895,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
             builder: (context, show, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Show Skip Forward/Rewind Buttons (±10s)', style: ZplayType.body.toStyle(color: tokens.textPrimary)),
+                title: Text(l10nOf(context).auxAudiobookSettingsPageShowSkipForwardRewindButtons10s, style: ZplayType.body.toStyle(color: tokens.textPrimary)),
                 value: show,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => AudiobookSettings.setShowSkip10Buttons(val),
@@ -905,7 +908,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
             builder: (context, show, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Show Quick Chapters Sliding Drawer Button', style: ZplayType.body.toStyle(color: tokens.textPrimary)),
+                title: Text(l10nOf(context).auxAudiobookSettingsPageShowQuickChaptersSlidingDrawerButton, style: ZplayType.body.toStyle(color: tokens.textPrimary)),
                 value: show,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => AudiobookSettings.setShowChaptersQuickButton(val),
@@ -928,7 +931,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
               },
               icon: Icon(Icons.dashboard_customize_rounded, size: 18, color: tokens.onAccent),
               label: Text(
-                'Launch Full Custom Player Studio',
+                l10nOf(context).auxAudiobookSettingsPageLaunchFullCustomPlayerStudio,
                 style: ZplayType.label.toStyle(color: tokens.onAccent),
               ),
               style: ElevatedButton.styleFrom(
@@ -1025,7 +1028,7 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
             Icon(icon, color: tokens.onAccent, size: 22),
             const SizedBox(width: 6),
             Text(
-              isPlaying ? 'PAUSE' : 'PLAY',
+              isPlaying ? l10nOf(context).finalAudiobookPlayerScreenPause : l10nOf(context).appearanceDetailPlay,
               style: ZplayType.label.toStyle(color: tokens.onAccent),
             ),
           ],
@@ -1055,17 +1058,17 @@ class _AudiobookSettingsPageState extends State<AudiobookSettingsPage> {
   String _getComponentLabel(String key) {
     switch (key) {
       case 'artwork':
-        return 'Audiobook Cover Artwork Deck';
+        return l10nOf(context).appearanceDetailAudiobookCoverArtworkDeck;
       case 'title':
-        return 'Title, Author & Chapter Label';
+        return l10nOf(context).appearanceDetailTitleAuthorChapterLabel;
       case 'seekbar':
-        return 'Seek Bar & Waveform Canvas Scrubber';
+        return l10nOf(context).appearanceDetailSeekBarWaveformCanvasScrubber;
       case 'mainControls':
-        return 'Main Play / Pause / Skip (±10s) Cluster';
+        return l10nOf(context).appearanceDetailMainPlayPauseSkip10sCluster;
       case 'secondaryControls':
-        return 'Speed Selector & Volume Controls';
+        return l10nOf(context).appearanceDetailSpeedSelectorVolumeControls;
       case 'chaptersButton':
-        return 'Premade Sliding Chapters Panel Trigger';
+        return l10nOf(context).appearanceDetailPremadeSlidingChaptersPanelTrigger;
       default:
         return key;
     }

@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -213,7 +215,7 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
                                           borderRadius: ZplayRadius.xsAll,
                                         ),
                                         child: Text(
-                                          'PRIVACY & NETWORK ADVISORY',
+                                          l10nOf(context).p2pPrivacyHeading,
                                           style: ZplayType.overline.toStyle(
                                             color: warning,
                                           ),
@@ -223,7 +225,7 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
                                   ),
                                   const SizedBox(height: ZplaySpacing.s4),
                                   Text(
-                                    'P2P Torrent Streaming Notice',
+                                    l10nOf(context).auxP2PWarningDialogP2pTorrentStreamingNotice,
                                     style: ZplayType.title.toStyle(
                                       color: tokens.textPrimary,
                                     ),
@@ -259,7 +261,7 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
                                   Icons.close_rounded,
                                   color: tokens.textSecondary,
                                 ),
-                                tooltip: 'Exit',
+                                tooltip: l10nOf(context).auxP2PWarningDialogExit,
                                 onPressed: () => Navigator.of(context).pop(),
                               ),
                             ),
@@ -332,7 +334,7 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
                                           ),
                                           Expanded(
                                             child: Text(
-                                              'Would you like to turn off the built-in ZPlay P2P torrent source and use only direct HTTP streaming?',
+                                              l10nOf(context).auxP2PWarningDialogWouldYouLikeToTurnOffThe,
                                               style: ZplayType.subtitle.toStyle(
                                                 color: tokens.textPrimary,
                                               ),
@@ -344,7 +346,7 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
                                     const SizedBox(height: ZplaySpacing.s12),
                                     // Main advisory text
                                     Text(
-                                      'P2P (peer-to-peer torrent) streaming connects directly to public torrent swarms to download and seed video pieces. In certain countries and regions, unencrypted torrent activity may be monitored and could result in warning letters or notices from your Internet Service Provider (ISP).',
+                                      l10nOf(context).auxP2PWarningDialogP2pPeerToPeerTorrentStreamingConnects,
                                       style: ZplayType.body.toStyle(
                                         color: tokens.textPrimary,
                                       ),
@@ -369,9 +371,9 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
                                             context,
                                             icon: Icons.cloud_done_rounded,
                                             iconColor: tokens.success,
-                                            title: 'ZPlayHTTP (Direct Stream)',
+                                            title: l10nOf(context).auxP2PWarningDialogZplayhttpDirectStream,
                                             subtitle:
-                                                'Safe direct HTTPS web streams. No torrenting or peer uploading.',
+                                                l10nOf(context).auxP2PWarningDialogSafeDirectHttpsWebStreamsNoTorrenting,
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
@@ -386,9 +388,9 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
                                             context,
                                             icon: Icons.hub_rounded,
                                             iconColor: warning,
-                                            title: 'ZPlay (Torrent Engine)',
+                                            title: l10nOf(context).auxP2PWarningDialogZplayTorrentEngine,
                                             subtitle:
-                                                'P2P swarms (Knaben, TorrentGalaxy). Involves peer data sharing.',
+                                                l10nOf(context).auxP2PWarningDialogP2pSwarmsKnabenTorrentgalaxyInvolvesPeerData,
                                           ),
                                         ],
                                       ),
@@ -398,7 +400,7 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
 
                                     // Prompt question
                                     Text(
-                                      'Note: You can easily toggle the built-in P2P source back on or off anytime in Settings.',
+                                      l10nOf(context).auxP2PWarningDialogNoteYouCanEasilyToggleTheBuilt,
                                       style: ZplayType.caption
                                           .toStyle(color: tokens.textSecondary)
                                           .copyWith(
@@ -498,7 +500,7 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
             ),
             foregroundColor: tokens.textSecondary,
           ),
-          child: Text('Exit', style: ZplayType.label.toStyle()),
+          child: Text(l10nOf(context).auxP2PWarningDialogExit, style: ZplayType.label.toStyle()),
         ),
         const Spacer(),
 
@@ -519,7 +521,7 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
               borderRadius: ZplayRadius.smAll,
             ),
           ),
-          child: Text("Don't Show Again", style: ZplayType.label.toStyle()),
+          child: Text(l10nOf(context).auxP2PWarningDialogDonTShowAgain, style: ZplayType.label.toStyle()),
         ),
         const SizedBox(width: ZplaySpacing.s12),
 
@@ -531,8 +533,8 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: const Text(
-                    'P2P torrent source turned off. ZPlayHTTP will be used.',
+                  content: Text(
+                    l10nOf(context).auxP2PWarningDialogP2pTorrentSourceTurnedOffZplayhttpWill,
                   ),
                   backgroundColor: tokens.success,
                   behavior: SnackBarBehavior.floating,
@@ -542,7 +544,7 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
             }
           },
           icon: const Icon(Icons.check_circle_outline_rounded, size: 18),
-          label: Text('Yes, Turn Off P2P', style: ZplayType.label.toStyle()),
+          label: Text(l10nOf(context).auxP2PWarningDialogYesTurnOffP2p, style: ZplayType.label.toStyle()),
           style: ElevatedButton.styleFrom(
             backgroundColor: tokens.warning,
             foregroundColor: Colors.black,
@@ -575,8 +577,8 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: const Text(
-                    'P2P torrent source turned off. ZPlayHTTP will be used.',
+                  content: Text(
+                    l10nOf(context).auxP2PWarningDialogP2pTorrentSourceTurnedOffZplayhttpWill,
                   ),
                   backgroundColor: tokens.success,
                   behavior: SnackBarBehavior.floating,
@@ -586,7 +588,7 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
             }
           },
           icon: const Icon(Icons.check_circle_outline_rounded, size: 18),
-          label: Text('Yes, Turn Off P2P', style: ZplayType.label.toStyle()),
+          label: Text(l10nOf(context).auxP2PWarningDialogYesTurnOffP2p, style: ZplayType.label.toStyle()),
           style: ElevatedButton.styleFrom(
             backgroundColor: tokens.warning,
             foregroundColor: Colors.black,
@@ -618,7 +620,7 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
                   ),
                 ),
                 child: Text(
-                  "Don't Show Again",
+                  l10nOf(context).auxP2PWarningDialogDonTShowAgain,
                   style: ZplayType.label.toStyle(),
                 ),
               ),
@@ -633,7 +635,7 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
                 ),
                 foregroundColor: tokens.textSecondary,
               ),
-              child: Text('Exit', style: ZplayType.label.toStyle()),
+              child: Text(l10nOf(context).auxP2PWarningDialogExit, style: ZplayType.label.toStyle()),
             ),
           ],
         ),

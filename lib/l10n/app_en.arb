@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appTitle": "ZPlay",
+  "appTitle": "Kiru",
   "navHome": "Home",
   "navBrowse": "Browse",
   "navSearch": "Search",
@@ -159,7 +159,7 @@
       }
     }
   },
-  "settingsChooseProfile": "Choose a ZPlay profile",
+  "settingsChooseProfile": "Choose a Kiru profile",
   "settingsClearCacheTitle": "Clear cache",
   "settingsClearCacheSubtitle": "Drop cached artwork & metadata. Sign-in, addons, My List & history stay",
   "settingsClearCacheConfirmTitle": "Clear cache?",
@@ -203,8 +203,8 @@
   "settingsUpdatesSubtitle": "Check for latest software versions and patches",
   "settingsUpdatesCheck": "Check",
   "settingsDiagnosticsSubtitle": "App, device and player state (redacted) you can copy or save",
-  "settingsLanguageSubtitle": "English, Arabic, or follow the device",
-  "settingsAboutTitle": "About ZPlay",
+  "settingsLanguageSubtitle": "Simplified Chinese, English, Arabic, or follow the device",
+  "settingsAboutTitle": "About Kiru",
   "settingsAboutSubtitle": "Architecture, video engine, and credits",
   "diagnosticsTitle": "Diagnostics",
   "diagnosticsSubtitle": "Local app, device and player report (no telemetry)",
@@ -242,7 +242,7 @@
   "searchHintTv": "Search for a movie or series",
   "searchHint": "Search movies, series, or paste links",
   "searchVoice": "Search by voice",
-  "searchVoiceDenied": "Microphone access is off. Allow it for ZPlay to search by voice.",
+  "searchVoiceDenied": "Microphone access is off. Allow it for Kiru to search by voice.",
   "searchAiQuiz": "AI Taste Quiz",
   "searchPaste": "Paste from clipboard",
   "searchFailureTitle": "Search could not reach its sources",
@@ -348,7 +348,3623 @@
   "languageSystem": "System",
   "languageEnglish": "English",
   "languageArabic": "Arabic",
+  "languageChinese": "Simplified Chinese",
   "a11yResumePlayback": "Resume playback",
   "playerPlaybackPosition": "Playback position",
-  "playerVolumeLabel": "Volume"
+  "playerVolumeLabel": "Volume",
+  "browseVerticalMoviesAndTv": "Movies & TV",
+  "browseVerticalCollections": "Collections",
+  "browseVerticalLiveTv": "Live TV",
+  "browseVerticalAnime": "Anime",
+  "browseVerticalManga": "Manga",
+  "browseVerticalBooks": "Books",
+  "browseVerticalAudiobooks": "Audiobooks",
+  "browseVerticalMusic": "Music",
+  "browseVerticalAdult": "18+",
+  "homeAiTasteQuiz": "AI Taste Quiz",
+  "homeTvCalendar": "TV Airing Calendar",
+  "homeContinueWatching": "Continue Watching",
+  "homeTopTenMovies": "Top 10 Movies",
+  "homeSkipIntro": "Skip intro",
+  "homeCinemaUniverse": "Your Cinema Universe",
+  "discoverNoTitles": "No titles found in this catalog",
+  "discoverRequiredFilter": "Select Required Filter",
+  "discoverSearchCatalog": "Search catalog",
+  "discoverPageTitle": "Discover",
+  "detailsUnavailable": "Details unavailable.",
+  "detailsGoBack": "Go Back",
+  "animeLoadFailed": "Could not load anime",
+  "animeContinueWatching": "Continue Watching",
+  "animeTrending": "Trending on AniList",
+  "animeTrendingDescription": "Top popular and trending series",
+  "animeSeasonPopular": "Popular This Season (AniList Sync)",
+  "animeMasterpieces": "All-Time Masterpieces",
+  "animeMasterpiecesDescription": "Critically acclaimed top rated anime",
+  "animeNextSeason": "Anticipated Next Season",
+  "animeNextSeasonDescription": "Upcoming anime you cannot miss",
+  "animeAction": "Action & Adventure",
+  "animeActionDescription": "High octane battles and epic journeys",
+  "animeRomance": "Romance & Drama",
+  "animeRomanceDescription": "Heartfelt emotional stories",
+  "animeFantasy": "Fantasy & Isekai",
+  "animeFantasyDescription": "Magical realms and alternate worlds",
+  "animeSciFi": "Sci-Fi & Cyberpunk",
+  "animeSciFiDescription": "Futuristic technologies and dystopian worlds",
+  "sourcesTitle": "Watch Sources",
+  "sourcesSeederFilter": "Seeders Filter",
+  "sourcesAllSeeds": "All Seeds",
+  "sourcesMostSeeds": "Most Seeds (High to Low)",
+  "sourcesMostSeedsShort": "Most Seeds",
+  "sourcesSeeds50": "50+ Seeds",
+  "sourcesSeeds20": "20+ Seeds",
+  "sourcesSeeds5": "5+ Seeds",
+  "sourcesActiveSeeds": "Active Seeds (>0)",
+  "sourcesActiveSeedsShort": "Active Seeds",
+  "sourcesSizeFilter": "File Size Filter",
+  "sourcesAllSizes": "All Sizes",
+  "sourcesLargestFirst": "Largest First",
+  "sourcesLargest": "Largest",
+  "sourcesSmallestFirst": "Smallest First",
+  "sourcesSmallest": "Smallest",
+  "sourcesProvider": "Source Provider",
+  "sourcesAll": "All Sources",
+  "sourcesAudioLanguage": "Audio & Dub Language",
+  "sourcesAllAudio": "All Audio",
+  "sourcesMultiAudio": "🌐 Multi-Audio",
+  "sourcesEnglishAudio": "🇺🇸 English / Orig",
+  "sourcesHindiAudio": "🇮🇳 Hindi / Indian",
+  "sourcesGermanAudio": "🇩🇪 German",
+  "sourcesFrenchAudio": "🇫🇷 French",
+  "sourcesSpanishSpain": "🇪🇸 Spanish (Castilian)",
+  "sourcesSpanishLatin": "🇲🇽 Spanish (Latin)",
+  "sourcesSpanishAll": "🌎 All Spanish",
+  "sourcesRussianAudio": "🇷🇺 Russian",
+  "sourcesJapaneseAudio": "🇯🇵 Japanese",
+  "sourcesItalianAudio": "🇮🇹 Italian",
+  "sourcesEmpty": "No sources found",
+  "sourcesEmptyHint": "No streams found. Install more addons from Settings or try another title.",
+  "sourcesInstallAddons": "Install Addons",
+  "sourcesMagnetCopied": "Magnet link copied to clipboard",
+  "uiHeroBannerPlay": "Play",
+  "uiHeroBannerMoreInfo": "More Info",
+  "uiHeroBannerTrailer": "Trailer",
+  "uiContinueWatchingSliderHoldOkForOptions": "Hold OK for options",
+  "uiContinueWatchingSliderViewDetails": "View Details",
+  "uiContinueWatchingSliderViewDetails3": "View details",
+  "uiContinueWatchingSliderRemoveFromContinueWatching": "Remove from Continue Watching",
+  "uiContinueWatchingSliderResume": "Resume",
+  "uiPlayerTopBarBack": "Back",
+  "uiPlayerTopBarEpisodes": "Episodes",
+  "uiPlayerTopBarSources": "Sources",
+  "uiPlayerTopBarCopyStreamUrl": "Copy Stream URL",
+  "uiPlayerTopBarScreenshot": "Screenshot",
+  "uiPlayerTopBarLockScreen": "Lock Screen",
+  "uiPlayerTopBarCast": "Cast",
+  "uiPlayerSpeedMenuPlaybackSpeed": "PLAYBACK SPEED",
+  "uiPlayerAspectMenuAspectRatio": "ASPECT RATIO",
+  "uiPlayerAspectMenuSubtitleSizeScale": "Subtitle Size Scale",
+  "uiPlayerAudioMenuAudioTracks": "AUDIO TRACKS",
+  "uiPlayerAudioMenuClose": "Close",
+  "uiPlayerAudioMenuDefaultAudioStreamPlaying": "Default audio stream playing.",
+  "uiPlayerAudioMenuAudioSyncOffset": "Audio Sync Offset",
+  "uiPlayerEpisodesPanelScrollUp": "Scroll Up",
+  "uiPlayerEpisodesPanelScrollDown": "Scroll Down",
+  "uiPlayerEpisodesPanelEpisodes": "Episodes",
+  "uiPlayerEpisodesPanelClose": "Close",
+  "uiPlayerEpisodesPanelPreviousSeasons": "Previous Seasons",
+  "uiPlayerEpisodesPanelNextSeasons": "Next Seasons",
+  "uiPlayerEpisodesPanelPlaying": "PLAYING",
+  "uiPlayerEpisodesPanelSelectSources": "Select Sources",
+  "uiPlayerLoadingOverlayPlaybackIssue": "PLAYBACK ISSUE",
+  "uiPlayerLoadingOverlayThisSourceIsnTResponding": "This source isn't responding",
+  "uiPlayerLoadingOverlayChooseAnotherSource": "Choose another source",
+  "uiPlayerLoadingOverlayGoBack": "Go back",
+  "uiPlayerLoadingOverlayCopyDiagnostic": "Copy diagnostic",
+  "uiPlayerMenuRowsClose": "Close",
+  "uiPlayerSourcesPanelBackToEpisodes": "Back to Episodes",
+  "uiPlayerSourcesPanelClose": "Close",
+  "uiPlayerSourcesPanelSearchingEveryProvider": "Searching every provider…",
+  "uiPlayerSourcesPanelRescrapeSources": "Rescrape Sources",
+  "uiPlayerSourcesPanelScrapingAdditionalSources": "Scraping additional sources...",
+  "uiPlayerSourcesPanelMagnetLinkCopiedToClipboard": "Magnet link copied to clipboard",
+  "uiPlayerSubtitleMenuSubtitles": "Subtitles",
+  "uiPlayerSubtitleMenuRefreshOnlineSubtitles": "Refresh Online Subtitles",
+  "uiPlayerSubtitleMenuSubtitleSyncBar": "Subtitle Sync Bar",
+  "uiPlayerSubtitleMenuSubtitleAppearance": "Subtitle Appearance",
+  "uiPlayerSubtitleMenuSpeechTextSync": "Speech Text Sync",
+  "uiPlayerSubtitleMenuClose": "Close",
+  "uiPlayerSubtitleMenuOff": "Off",
+  "uiPlayerSubtitleMenuEmbedded": "Embedded",
+  "uiPlayerSubtitleMenuAll": "All",
+  "uiPlayerSubtitleMenuForced": "Forced",
+  "uiPlayerSubtitleMenuSearchOnline": "Search Online",
+  "uiPlayerSubtitleMenuEmbedded12": "EMBEDDED",
+  "uiPlayerSubtitleMenuSearchingSubtitles": "Searching subtitles...",
+  "uiPlayerSubtitleMenuNoSubtitlesAvailable": "No subtitles available.",
+  "uiPlayerSubtitleMenuSearchOnlineProviders": "Search Online Providers",
+  "uiPlayerSubtitleMenuSearchingAdditionalSubtitlesOnline": "Searching additional subtitles online...",
+  "uiPlayerSubtitleMenuForced17": "FORCED",
+  "uiPlayerSubtitleMenuFindMoreSubtitles": "Find more subtitles",
+  "uiPlayerSubStyleModalSubtitleAppearance": "Subtitle Appearance",
+  "uiPlayerSubStyleModalLibassLibmpvHardwareRenderedSubtitles": "libass / libmpv hardware-rendered subtitles",
+  "uiPlayerSubStyleModalResetSubtitleDefaults": "Reset Subtitle Defaults",
+  "uiPlayerSubStyleModalClose": "Close",
+  "uiPlayerSubStyleModalZplaySampleSubtitlePreview": "Kiru • Sample Subtitle Preview",
+  "uiPlayerSubStyleModalBoldText": "Bold Text",
+  "uiPlayerSubStyleModalItalicText": "Italic Text",
+  "uiPlayerSubStyleModalFlutterSubtitleEngineRecommended": "Flutter Subtitle Engine (Recommended)",
+  "uiPlayerSubStyleModalNativeMpvLibassEngine": "Native MPV libass Engine",
+  "uiPlayerSubStyleModal100ReliableHardwareAcceleratedSubtitle": "100% reliable hardware-accelerated subtitle overlay across Android, iOS, Windows, Mac, and Linux with full styling support.",
+  "uiPlayerSubStyleModalDirectGpuVideoTextureRendering": "Direct GPU video texture rendering powered by libass with bundled Poppins font and SSA/ASS script layout support.",
+  "uiSubSyncBarTextSync": "Text Sync",
+  "uiSubSyncBarDiscardChanges": "Discard changes",
+  "uiSubSyncBarDone": "Done",
+  "uiSubSyncBarClose": "Close",
+  "uiTextSyncOverlayClose": "Close",
+  "uiTextSyncOverlaySearchDialogue": "Search dialogue...",
+  "uiTextSyncOverlayNow": "NOW",
+  "uiTextSyncOverlaySyncFromHere": "Sync from here",
+  "uiTextSyncOverlayJumpHere": "Jump here",
+  "uiTextSyncOverlayJumpToNow": "Jump to now",
+  "uiTextSyncOverlayResetTiming": "Reset timing",
+  "uiPlayerScreenFailedToDownloadSubtitle": "Failed to download subtitle",
+  "uiPlayerScreenSubtitleTimingSynchronizedAndSaved": "Subtitle timing synchronized and saved!",
+  "uiPlayerScreenScreenIsLockedTapThe": "Screen is locked. Tap the lock icon to unlock.",
+  "uiPlayerScreenTestingOtherSourcesForYou": "Testing other sources for you",
+  "uiPlayerScreenChooseASourceMyself": "Choose a source myself",
+  "uiPlayerScreenDownloadAlreadyInProgressIn": "Download already in progress in background.",
+  "uiPlayerScreenThisMediaIsAlreadyDownloaded": "This media is already downloaded.",
+  "uiPlayerScreenDownloadStartedInBackgroundTrack": "Download started in background. Track progress in Downloads tab.",
+  "uiPlayerScreenStreamUrlCopiedToClipboard": "Stream URL copied to clipboard",
+  "uiPlayerScreenNoActiveStreamUrlAvailable": "No active stream URL available to copy.",
+  "uiPlayerScreenSubtitleSyncIsNotSupported": "Subtitle sync is not supported for embedded subtitles. Please select an external subtitle.",
+  "uiPlayerScreenPleaseLoadAnExternalSubtitle": "Please load an external subtitle to use subtitle sync.",
+  "uiPlayerScreenSubtitleSyncIsNotSupported13": "Subtitle sync is not supported for embedded subtitles.",
+  "uiPlayerScreenSpeechSyncRequiresAnExternal": "Speech sync requires an external subtitle file.",
+  "uiPlayerScreen2xSpeed": "2X Speed",
+  "uiPlayerScreenUnlock": "Unlock",
+  "uiAnimeSearchPageClear": "Clear",
+  "uiAnimeSearchPageReleaseYear": "Release Year",
+  "uiAnimeSearchPageSearchAnimeMoviesOvas": "Search anime, movies, OVAs...",
+  "uiAnimeSearchPageSortBy": "Sort By",
+  "uiAnimeSearchPageGenre": "Genre",
+  "uiAnimeSearchPageSeason": "Season",
+  "uiAnimeSearchPageFormat": "Format",
+  "uiAnimeSearchPageStatus": "Status",
+  "uiAnimeSearchPageReset": "Reset",
+  "uiAnimeSearchPageNoAnimeFoundMatchingYour": "No anime found matching your criteria",
+  "uiAnimeSearchPageTryDifferentKeywordsOrClearing": "Try different keywords or clearing filters",
+  "uiAnimeSearchPageAnimeTvSeries": "Anime TV Series",
+  "uiAnimeSearchPageAnimeMovies": "Anime Movies",
+  "uiAnimeSearchPageOvasOnasSpecials": "OVAs, ONAs & Specials",
+  "uiAnimeSearchPageTrendingAnime": "Trending Anime",
+  "uiAnimeSearchPagePopularThisSeason": "Popular This Season",
+  "uiAnimeSearchPageAllTimeTopRated": "All-Time Top Rated",
+  "uiAnimeDetailsPageEpisodes": "Episodes",
+  "uiAnimeDetailsPageWatching": "Watching",
+  "uiAnimeDetailsPagePlanToWatch": "Plan to Watch",
+  "uiAnimeDetailsPageCompleted": "Completed",
+  "uiAnimeDetailsPageDropped": "Dropped",
+  "uiAnimeDetailsPageSub": "SUB",
+  "uiAnimeDetailsPageDub": "DUB",
+  "uiAnimeDetailsPageJumpToEp": "Jump to ep #",
+  "uiAnimeStreamSheetSubtitleOrDub": "Subtitle or dub",
+  "uiAnimeStreamSheetAll": "All",
+  "uiAnimeStreamSheetSub": "Sub",
+  "uiAnimeStreamSheetDub": "Dub",
+  "uiAnimeStreamSheetSources": "Sources",
+  "uiAnimeStreamSheetRetryScraping": "Retry Scraping",
+  "uiMyListPageRemoveFromMyList": "Remove from My List?",
+  "uiMyListPageCancel": "Cancel",
+  "uiMyListPageRemove": "Remove",
+  "uiMyListPageMyList": "My List",
+  "uiMyListPageAll": "All",
+  "uiMyListPageMovies": "Movies",
+  "uiMyListPageTvShows": "TV Shows",
+  "uiMyListPageFilterSavedTitles": "Filter saved titles",
+  "uiMyListPageRecentlyAdded": "Recently Added",
+  "uiMyListPageAlphabetical": "Alphabetical",
+  "uiMyListPageReleaseYear": "Release Year",
+  "uiMyListPageSearchSavedTitles": "Search saved titles...",
+  "uiMyListPageResetFilters": "Reset Filters",
+  "uiDownloadsPageFileNotFoundOnDisk": "File not found on disk. It may have been moved or deleted.",
+  "uiDownloadsPageDeleteDownload": "Delete Download",
+  "uiDownloadsPageCancel": "Cancel",
+  "uiDownloadsPageDelete": "Delete",
+  "uiDownloadsPageDownloadList": "Download list",
+  "uiDownloadsPageActive": "Active",
+  "uiDownloadsPageDownloaded": "Downloaded",
+  "uiDownloadsPageDownloads": "Downloads",
+  "uiDownloadsPageOpenDownloadsFolder": "Open Downloads Folder",
+  "uiDownloadsPageNoActiveDownloads": "No active downloads",
+  "uiDownloadsPageMediaYouDownloadFromThe": "Media you download from the video player will show up here.",
+  "uiDownloadsPagePause": "Pause",
+  "uiDownloadsPageResume": "Resume",
+  "uiDownloadsPageRetryReconnect": "Retry / Reconnect",
+  "uiDownloadsPageOpenFolderLocation": "Open Folder Location",
+  "uiDownloadsPageNoDownloadedMedia": "No downloaded media",
+  "uiDownloadsPageCompletedDownloadsWillAppearHere": "Completed downloads will appear here for offline playback.",
+  "uiDiscoverPageCancel": "Cancel",
+  "uiDiscoverPageApply": "Apply",
+  "uiVideoSettingsPageVideoUpscaling": "Video & Upscaling",
+  "uiVideoSettingsPageGpuUpscaling": "GPU Upscaling",
+  "uiVideoSettingsPageUpscalingPresets": "UPSCALING PRESETS",
+  "uiVideoSettingsPageDisabledOff": "Disabled (Off)",
+  "uiVideoSettingsPageStandardVideoPlaybackWithoutGlsl": "Standard video playback without GLSL neural filters. Lowest GPU overhead.",
+  "uiVideoSettingsPageModeAFastBalanced": "Mode A — Fast / Balanced",
+  "uiVideoSettingsPageSharpLineRestoration2xCnn": "Sharp line restoration & 2x CNN upscale. Best for 1080p anime and balanced GPU power.",
+  "uiVideoSettingsPageModeAHighQualityUltra": "Mode A — High Quality (Ultra)",
+  "uiVideoSettingsPageMaximumPerceptualFidelityUsingVery": "Maximum perceptual fidelity using Very Large CNNs. Recommended for discrete GPUs (RTX/Radeon).",
+  "uiVideoSettingsPageModeBSoftDenoise": "Mode B — Soft / Denoise",
+  "uiVideoSettingsPageSmoothLineReconstructionAndArtifact": "Smooth line reconstruction and artifact reduction. Best for blurry, compressed, or older anime.",
+  "uiVideoSettingsPageModeCDeblurScale": "Mode C — Deblur & Scale",
+  "uiVideoSettingsPageAggressiveDeblurringAndScalingBest": "Aggressive deblurring and scaling. Best for 480p and 720p low-resolution anime episodes.",
+  "uiVideoSettingsPageFsr10Smooth": "FSR 1.0 — Smooth",
+  "uiVideoSettingsPageFsr10Sharp": "FSR 1.0 — Sharp",
+  "uiVideoSettingsPagePipelineCompatibility": "PIPELINE & COMPATIBILITY",
+  "uiVideoSettingsPagePlaybackStartApplication": "Playback Start Application",
+  "uiVideoSettingsPageHardwareDecoderAcceleration": "Hardware Decoder Acceleration",
+  "uiVideoSettingsPagePlatformRecommendation": "Platform Recommendation",
+  "uiVideoSettingsPageHardwareAccelerationDecoding": "HARDWARE ACCELERATION & DECODING",
+  "uiVideoSettingsPageAllPlatforms": "All Platforms",
+  "uiVideoSettingsPageAutoSafeRecommended": "Auto-Safe (Recommended)",
+  "uiVideoSettingsPageGpuHardwareDecodingWithSafe": "GPU hardware decoding with safe driver fallbacks. Best efficiency for most PCs and devices.",
+  "uiVideoSettingsPageSoftwareDecodingCrashProof": "Software Decoding (Crash-Proof)",
+  "uiVideoSettingsPagePureCpuDecodingViaFfmpeg": "Pure CPU decoding via FFmpeg libavcodec. Eliminates black screens and driver lockups on older GPUs or virtual machines.",
+  "uiVideoSettingsPageDirectHardware": "Direct Hardware",
+  "uiVideoSettingsPageDirectGpuDecodingDirect3d11": "Direct GPU decoding (Direct3D 11 / MediaCodec / VAAPI). Fastest on modern high-end graphics.",
+  "uiVideoSettingsPagePlaybackEngine": "PLAYBACK ENGINE",
+  "uiVideoSettingsPageTorrentsAndLiveTvAlways": "Torrents and live TV always use mpv",
+  "uiVideoSettingsPageAutoRecoverBlackScreens": "Auto-Recover Black Screens",
+  "uiVideoSettingsPageActiveWatchdog": "Active Watchdog",
+  "uiVideoSettingsPageAndroidRenderingEngine": "ANDROID RENDERING ENGINE",
+  "uiVideoSettingsPageDirectSurfaceSurfaceview": "Direct Surface (SurfaceView)",
+  "uiAppearanceSettingsPageAppearanceInterface": "Appearance & Interface",
+  "uiAppearanceSettingsPageFineTuneTheVisualAtmosphere": "Fine-tune the visual atmosphere, custom wallpaper background, color palettes, and interface layouts.",
+  "uiAppearanceSettingsPageInterfaceAtmosphere": "INTERFACE & ATMOSPHERE",
+  "uiAppearanceSettingsPageCustomBackgroundWallpaper": "Custom Background & Wallpaper",
+  "uiAppearanceSettingsPageLiquidGlassSetup": "Liquid Glass Setup",
+  "uiAppearanceSettingsPageHomePageUiThemes": "Home Page UI & Themes",
+  "uiAppearanceSettingsPageLiveTvSportsUi": "Live TV & Sports UI",
+  "uiAppearanceSettingsPageContent": "CONTENT",
+  "uiAppearanceSettingsPageMangaUiReaderAtmosphere": "Manga UI & Reader Atmosphere",
+  "uiAppearanceSettingsPagePlayback": "PLAYBACK",
+  "uiAppearanceSettingsPageAudiobookUiPlayerStudio": "Audiobook UI & Player Studio",
+  "uiAppearanceSettingsPageMusicUiPlayerStudio": "Music UI & Player Studio",
+  "uiAppearanceSettingsPageDiagnostics": "DIAGNOSTICS",
+  "uiAppearanceSettingsPageGraphicsBackend": "Graphics Backend",
+  "uiAppearanceSettingsPageRestartTheAppToApply": "Restart the app to apply — the backend is fixed when the engine starts.",
+  "uiAboutSettingsPageAboutZplay": "About Kiru",
+  "uiAboutSettingsPageUniversalEntertainmentEcosystem": "Universal Entertainment Ecosystem",
+  "uiAboutSettingsPageCoreTechnologies": "CORE TECHNOLOGIES",
+  "uiAboutSettingsPageHighPerformanceVideoEngine": "High-Performance Video Engine",
+  "uiAboutSettingsPagePoweredByEmbeddedMediaKitLibmpv": "Powered by embedded media_kit / libmpv with hardware-accelerated decoding.",
+  "uiAboutSettingsPageCreditsLicence": "CREDITS & LICENCE",
+  "uiAboutSettingsPageIndependentForkMaintainedByTzero86": "Independent fork maintained by tzero86",
+  "uiAboutSettingsPageBasedOnPlaytorrioV3": "Based on PlayTorrio V3",
+  "uiAboutSettingsPageOriginalProjectByAymanAyman708Ux": "Original project by Ayman (@ayman708-UX)",
+  "uiAboutSettingsPageThisProductUsesTheTmdbApi": "This product uses the TMDB API but is not endorsed or certified by TMDB.",
+  "uiAddonsSettingsPageShareYourDebridKey": "Share your Debrid key?",
+  "uiAddonsSettingsPageCancel": "Cancel",
+  "uiAddonsSettingsPageContinue": "Continue",
+  "uiAddonsSettingsPageAddStremioAddon": "Add Stremio Addon",
+  "uiAddonsSettingsPagePasteTheStremioAddonManifestJson": "Paste the Stremio addon manifest.json URL to install catalogs, metadata, streams, or subtitles.",
+  "uiAddonsSettingsPageInstall": "Install",
+  "uiAddonsSettingsPageRemove": "Remove",
+  "uiAddonsSettingsPageRepositoryAddedSuccessfully": "Repository added successfully!",
+  "uiAddonsSettingsPageInstallRepositoryPlugins": "Install Repository Plugins?",
+  "uiAddonsSettingsPageBrowseLater": "Browse Later",
+  "uiAddonsSettingsPageInstallAllNow": "Install All Now",
+  "uiAddonsSettingsPageInstallingPlugins": "Installing Plugins",
+  "uiAddonsSettingsPageAddCloudstreamRepository": "Add CloudStream Repository",
+  "uiAddonsSettingsPageBrowseMarketplace": "Browse Marketplace",
+  "uiAddonsSettingsPageAddRepository": "Add Repository",
+  "uiAddonsSettingsPageAddonsExtensions": "Addons & Extensions",
+  "uiAddonsSettingsPageStremioAddons": "Stremio Addons",
+  "uiAddonsSettingsPageAddonsProvideMetadataCatalogsAndStreaming": "Addons provide metadata, catalogs, and streaming sources. Hold and drag to reorder priority. Providers higher up load and appear first in watch sources.",
+  "uiAddonsSettingsPageInstalledProvidersAddons": "INSTALLED PROVIDERS & ADDONS",
+  "uiAddonsSettingsPageNoAddonsInstalled": "No Addons Installed",
+  "uiAddonsSettingsPageClickAddAddonAboveToInstall": "Click \"Add Addon\" above to install a Stremio manifest URL.",
+  "uiAddonsSettingsPageDebridAddons": "DEBRID ADDONS",
+  "uiAddonsSettingsPageRepositoryMarketplace": "Repository Marketplace",
+  "uiAddonsSettingsPageBrowseAvailablePlugins": "Browse Available Plugins",
+  "uiAddonsSettingsPageInstalledExtensions": "INSTALLED EXTENSIONS",
+  "uiAddonsSettingsPageInstalledCloudstreamExtensions": "INSTALLED CLOUDSTREAM EXTENSIONS",
+  "uiAddonsSettingsPageNoExtensionsInstalled": "No Extensions Installed",
+  "uiAddonsSettingsPageClickBrowseAvailablePluginsToFind": "Click \"Browse Available Plugins\" to find and install extensions.",
+  "uiAddonsSettingsPageRepositories": "REPOSITORIES",
+  "uiAddonsSettingsPageNoCustomRepositoriesAddedClickAdd": "No custom repositories added. Click \"Add Repository\" to subscribe to a CloudStream repository.",
+  "uiAddonsSettingsPageInstallAllPluginsFromThisRepository": "Install all plugins from this repository",
+  "uiAddonsSettingsPageBrowseRepositoryPlugins": "Browse repository plugins",
+  "uiAddonsSettingsPageRemoveRepository": "Remove repository",
+  "uiAddonsSettingsPageSetupEngine": "Setup Engine",
+  "uiAddonsSettingsPageMoveUpInPriority": "Move up in priority",
+  "uiAddonsSettingsPageMoveDownInPriority": "Move down in priority",
+  "uiAddonsSettingsPageRemoveAddon": "Remove addon",
+  "uiAddonsSettingsPageFunctions": "FUNCTIONS",
+  "uiAddonsSettingsPageCatalogs": "Catalogs",
+  "uiAddonsSettingsPageSearch": "Search",
+  "uiAddonsSettingsPageSources": "Sources",
+  "uiAddonsSettingsPageSubtitles": "Subtitles",
+  "uiAddonsSettingsPageDisconnect": "Disconnect",
+  "uiAddonsSettingsPageConnected": "Connected",
+  "uiBuiltinProvidersSettingsPageBuiltInProviders": "Built-in Providers",
+  "uiBuiltinProvidersSettingsPageReset": "Reset",
+  "uiBuiltinProvidersSettingsPageResetProvidersOrder": "Reset Providers Order?",
+  "uiBuiltinProvidersSettingsPageCancel": "Cancel",
+  "uiBuiltinProvidersSettingsPageDefaultMode": "Default Mode",
+  "uiBuiltinProvidersSettingsPageCustomMode": "Custom Mode",
+  "uiBuiltinProvidersSettingsPageManualProviderOrderTogglesPriorityScraping": "Manual provider order, toggles & priority scraping",
+  "uiBuiltinProvidersSettingsPageDefault": "Default",
+  "uiBuiltinProvidersSettingsPageStandardAutoSorting": "Standard auto-sorting",
+  "uiBuiltinProvidersSettingsPageCustom": "Custom",
+  "uiBuiltinProvidersSettingsPageManualOrderToggles": "Manual order & toggles",
+  "uiBuiltinProvidersSettingsPageDefaultModeActive": "Default Mode Active",
+  "uiBuiltinProvidersSettingsPageSwitchToCustomMode": "Switch to Custom Mode",
+  "uiBuiltinProvidersSettingsPagePriorityScrapeResultSorting": "Priority Scrape & Result Sorting",
+  "uiBuiltinProvidersSettingsPageSearchProvidersEGCinesrc": "Search providers (e.g. CineSrc)...",
+  "uiBuiltinProvidersSettingsPageEnableAll": "Enable All",
+  "uiBuiltinProvidersSettingsPageDisableAll": "Disable All",
+  "uiBuiltinProvidersSettingsPageSearchProvidersEGCinesrcDulo": "Search providers (e.g. CineSrc, Dulo)...",
+  "uiBuiltinProvidersSettingsPageClearSearchToDragReorder": "Clear search to drag & reorder",
+  "uiBuiltinProvidersSettingsPageOff": "Off",
+  "uiBuiltinProvidersSettingsPageMoveUp": "Move Up",
+  "uiBuiltinProvidersSettingsPageMoveDown": "Move Down",
+  "uiCloudstreamMarketplaceModalLater": "Later",
+  "uiCloudstreamMarketplaceModalInstallAllNow": "Install All Now",
+  "uiCloudstreamMarketplaceModalInstallingRepositoryPlugins": "Installing Repository Plugins",
+  "uiCloudstreamMarketplaceModalMarketplace": "Marketplace",
+  "uiCloudstreamMarketplaceModalRefreshListFromWeb": "Refresh list from web",
+  "uiCloudstreamMarketplaceModalSearchRepositoryOrPluginEG": "Search repository or plugin (e.g. Turkish, 3rabi, DiziBox, Shahid)...",
+  "uiCloudstreamMarketplaceModalAdded": "Added",
+  "uiCloudstreamMarketplaceModalInstallAllPlugins": "Install All Plugins",
+  "uiCloudstreamMarketplaceModalBrowse": "Browse",
+  "uiCloudstreamRepoModalAllMatchingPluginsAreAlreadyInstalled": "All matching plugins are already installed!",
+  "uiCloudstreamRepoModalCancel": "Cancel",
+  "uiCloudstreamRepoModalAvailablePlugins": "Available Plugins",
+  "uiCloudstreamRepoModalAvailableCloudstreamPlugins": "Available CloudStream Plugins",
+  "uiCloudstreamRepoModalSearchPluginsEGSflixSuperstream": "Search plugins (e.g. Sflix, SuperStream)...",
+  "uiCloudstreamRepoModalInstalled": "Installed",
+  "uiCloudstreamRepoModalUninstall": "Uninstall",
+  "uiCloudstreamRepoModalInstall": "Install",
+  "uiDebridSettingsPageDismiss": "Dismiss",
+  "uiDebridSettingsPageDebridCloudStreaming": "Debrid & Cloud Streaming",
+  "uiDebridSettingsPageUseDebridForStreams": "Use Debrid for Streams",
+  "uiDebridSettingsPageRouteTorrentLinksThroughCloudServers": "Route torrent links through cloud servers",
+  "uiDebridSettingsPageActiveProvider": "ACTIVE PROVIDER",
+  "uiDebridSettingsPageSelectDefaultDebridProvider": "Select Default Debrid Provider",
+  "uiDebridSettingsPageZplayWillSendRequestsToThis": "Kiru will send requests to this provider when streaming.",
+  "uiDebridSettingsPageProviderCredentials": "PROVIDER CREDENTIALS",
+  "uiDebridSettingsPageActive": "ACTIVE",
+  "uiDebridSettingsPagePasteApiKeyToken": "Paste API Key / Token",
+  "uiDebridSettingsPageClear": "Clear",
+  "uiDebridSettingsPagePasteFromClipboard": "Paste from Clipboard",
+  "uiDebridSettingsPageSave": "Save",
+  "uiServiceKeysSettingsPageDismiss": "Dismiss",
+  "uiServiceKeysSettingsPageServiceApiKeys": "Service API Keys",
+  "uiServiceKeysSettingsPageKeysYouCanObtain": "KEYS YOU CAN OBTAIN",
+  "uiServiceKeysSettingsPageBorrowedCredentials": "BORROWED CREDENTIALS",
+  "uiServiceKeysSettingsPageRelated": "RELATED",
+  "uiServiceKeysSettingsPageSaved": "SAVED",
+  "uiServiceKeysSettingsPagePasteFromClipboard": "Paste from Clipboard",
+  "uiServiceKeysSettingsPageSave": "Save",
+  "uiServiceKeysSettingsPageClearKey": "Clear key",
+  "uiServiceKeysSettingsPageTmdbApiKey": "TMDb API Key",
+  "uiSimklSettingsPageFailedToRequestSimklPinCode": "Failed to request Simkl PIN code.",
+  "uiSimklSettingsPageSimklSynchronization": "Simkl Synchronization",
+  "uiSimklSettingsPageDisconnect": "Disconnect",
+  "uiSimklSettingsPageConnectSimkl": "Connect Simkl",
+  "uiSimklSettingsPageEnterThisPinCodeAtSimkl": "Enter this PIN code at simkl.com/pin:",
+  "uiSimklSettingsPagePinCopiedToClipboard": "PIN copied to clipboard!",
+  "uiSimklSettingsPageOpenSimklComPin": "Open simkl.com/pin",
+  "uiSimklSettingsPageWaitingForPinApprovalOnSimkl": "Waiting for PIN approval on simkl.com...",
+  "uiSimklSettingsPageCloudSyncControls": "Cloud Sync Controls",
+  "uiSimklSettingsPageSyncSimklWatchlistContinueWatching": "Sync Simkl Watchlist & Continue Watching",
+  "uiSimklSettingsPageManuallyTriggersAnImmediatePullFrom": "Manually triggers an immediate pull from Simkl",
+  "uiSimklSettingsPageSyncingWithSimkl": "Syncing with Simkl...",
+  "uiSimklSettingsPageSimklSyncComplete": "Simkl sync complete!",
+  "uiTmdbSettingsPageDismiss": "Dismiss",
+  "uiTmdbSettingsPageTmdbApiKey": "TMDb API Key",
+  "uiTmdbSettingsPageTmdbCredential": "TMDB CREDENTIAL",
+  "uiTmdbSettingsPageCredits": "CREDITS",
+  "uiTmdbSettingsPageSaved": "SAVED",
+  "uiTmdbSettingsPagePasteYourTmdbApiKey": "Paste your TMDb API key",
+  "uiTmdbSettingsPagePasteFromClipboard": "Paste from Clipboard",
+  "uiTmdbSettingsPageSaveAndTest": "Save and test",
+  "uiTmdbSettingsPageClearKey": "Clear key",
+  "uiTraktSettingsPageTraktTvSynchronization": "Trakt.tv Synchronization",
+  "uiTraktSettingsPageDisconnect": "Disconnect",
+  "uiTraktSettingsPagePairAccount": "Pair Account",
+  "uiTraktSettingsPageEnterThisActivationCodeAtTrakt": "Enter this activation code at trakt.tv/activate:",
+  "uiTraktSettingsPageCodeCopiedToClipboard": "Code copied to clipboard!",
+  "uiTraktSettingsPageOpenTraktTvActivate": "Open trakt.tv/activate",
+  "uiTraktSettingsPageWaitingForAuthorizationOnTraktTv": "Waiting for authorization on trakt.tv...",
+  "uiTraktSettingsPageCloudSyncControls": "Cloud Sync Controls",
+  "uiTraktSettingsPageSyncWatchlistContinueWatchingNow": "Sync Watchlist & Continue Watching Now",
+  "uiTraktSettingsPageManuallyTriggersAnImmediatePullFrom": "Manually triggers an immediate pull from Trakt",
+  "uiTraktSettingsPageSyncingWithTraktTv": "Syncing with Trakt.tv...",
+  "uiTraktSettingsPageTraktSyncComplete": "Trakt sync complete!",
+  "uiUpdatesSettingsPageZplayIsUpToDate": "Kiru is up to date!",
+  "uiUpdatesSettingsPageAppUpdatesSystem": "App Updates & System",
+  "uiUpdatesSettingsPageKeepZplayUpToDateWith": "Keep Kiru up to date with the latest features, security patches, and performance improvements.",
+  "uiUpdatesSettingsPageReleaseChannels": "RELEASE CHANNELS",
+  "uiUpdatesSettingsPageOfficialStableChannel": "Official Stable Channel",
+  "uiUpdatesSettingsPageDirectGithubReleaseDistributionWithAutomated": "Direct GitHub release distribution with automated checksum verification.",
+  "uiUpdatesSettingsPageSeamlessInAppPatching": "Seamless In-App Patching",
+  "uiUpdatesSettingsPageDownloadsAndAppliesExecutableUpdatesDirectly": "Downloads and applies executable updates directly without manual file downloads.",
+  "libraryMyList": "My List",
+  "libraryDownloads": "Downloads",
+  "librarySection": "Library section",
+  "mediaTypeMovie": "Movie",
+  "mediaTypeSeries": "Series",
+  "mediaTypeAnime": "Anime",
+  "mediaTypeOther": "Other",
+  "aspectFit": "Fit to screen (Contain)",
+  "aspectCover": "Fill screen (Crop/Zoom)",
+  "aspectStretch": "Stretch to fill",
+  "detailsPlayFirst": "Play First Movie",
+  "detailsPlayEpisodes": "Play Episodes",
+  "detailsPlayMovie": "Play Movie",
+  "detailsCollectionMovies": "Movies in Collection",
+  "detailsEpisodes": "Episodes",
+  "detailsSimilar": "Similar Content",
+  "detailsCast": "Top Cast & Characters",
+  "detailsRecommendations": "More Like This",
+  "detailsSeasonCount": "{count, plural, one{1 Season} other{{count} Seasons}}",
+  "@detailsSeasonCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "detailsSeasonLabel": "Season {season}",
+  "@detailsSeasonLabel": {
+    "placeholders": {
+      "season": {
+        "type": "int"
+      }
+    }
+  },
+  "playerSubtitleSwitched": "Switched to embedded subtitle: {title}",
+  "@playerSubtitleSwitched": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "playerSubtitleDownloading": "Downloading {language} subtitle...",
+  "@playerSubtitleDownloading": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "playerSubtitleLoaded": "{language} subtitle loaded ({count} lines)",
+  "@playerSubtitleLoaded": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "playerSubtitleLoadError": "Could not load subtitle: {error}",
+  "@playerSubtitleLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "playerSourceAttempt": "{source} • Attempt {attempt} of {total}",
+  "@playerSourceAttempt": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      },
+      "attempt": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "playerDownloadError": "Download failed to start: {error}",
+  "@playerDownloadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "animeTotalEpisodes": "({count} total)",
+  "@animeTotalEpisodes": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "animeSearchResultCount": "{count, plural, one{1 result} other{{count} results}}",
+  "@animeSearchResultCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "libraryRemoveTitle": "Remove \"{title}\" from your list?",
+  "@libraryRemoveTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "downloadsSummary": "{active} active • {completed} downloaded",
+  "@downloadsSummary": {
+    "placeholders": {
+      "active": {
+        "type": "int"
+      },
+      "completed": {
+        "type": "int"
+      }
+    }
+  },
+  "downloadsFolderPath": "Folder path: {path}",
+  "@downloadsFolderPath": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "downloadsDeleteConfirm": "Delete \"{title}\" and remove its file from storage?",
+  "@downloadsDeleteConfirm": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "auxShellBackGuardPressBackAgainToExit": "Press back again to exit",
+  "auxSectionHeaderSeeAll": "See All",
+  "auxTrailerModalTrailerUnavailable": "Trailer unavailable",
+  "auxTrailerModalThisTrailerCouldNotBePlayedIn": "This trailer could not be played in the app.",
+  "auxTrailerModalWatchOnYoutube": "Watch on YouTube",
+  "auxTrailerModalCloseTrailer": "Close trailer",
+  "auxIptvChannelCardHdLive": "HD Live",
+  "auxIptvHeroCarouselInstantLiveMultiSourceStreamingWithReal": "Instant live multi-source streaming with real-time stream resolution & high-framerate playback.",
+  "auxIptvHeroCarouselWatchLive": "Watch Live",
+  "auxIptvHeroCarouselStreamFeeds": "Stream Feeds",
+  "auxMultinutzChannelSheetSearchChannels": "Search channels...",
+  "auxMultinutzChannelSheetPortals": "Portals",
+  "auxMultinutzChannelSheetCopyLoginUrlUserPass": "Copy Login (url:user:pass)",
+  "auxMultinutzChannelSheetRemovePortal": "Remove Portal",
+  "auxMultinutzChannelSheetNoLiveChannelsAvailableForThisPortal": "No live channels available for this portal",
+  "auxMultinutzChannelSheetPlaylists": "Playlists",
+  "auxMultinutzChannelSheetCopyPlaylistUrl": "Copy Playlist URL",
+  "auxMultinutzChannelSheetRemovePlaylist": "Remove Playlist",
+  "auxMultinutzChannelSheetNoChannelsInThisPlaylist": "No channels in this playlist",
+  "auxMangaCategoryDropdownMangaCategories": "Manga Categories",
+  "auxMangaCategoryDropdownFilterCategories": "Filter categories...",
+  "auxMangaCategoryDropdownNoMatchingCategories": "No matching categories",
+  "auxMangaCategoryDropdownResetToAllCategories": "Reset to All Categories",
+  "auxMovieSliderSectionCalendar": "Calendar",
+  "auxP2PWarningDialogP2pTorrentStreamingNotice": "P2P Torrent Streaming Notice",
+  "auxP2PWarningDialogExit": "Exit",
+  "auxP2PWarningDialogWouldYouLikeToTurnOffThe": "Would you like to turn off the built-in ZPlay P2P torrent source and use only direct HTTP streaming?",
+  "auxP2PWarningDialogP2pPeerToPeerTorrentStreamingConnects": "P2P (peer-to-peer torrent) streaming connects directly to public torrent swarms to download and seed video pieces. In certain countries and regions, unencrypted torrent activity may be monitored and could result in warning letters or notices from your Internet Service Provider (ISP).",
+  "auxP2PWarningDialogZplayhttpDirectStream": "ZPlayHTTP (Direct Stream)",
+  "auxP2PWarningDialogSafeDirectHttpsWebStreamsNoTorrenting": "Safe direct HTTPS web streams. No torrenting or peer uploading.",
+  "auxP2PWarningDialogZplayTorrentEngine": "ZPlay (Torrent Engine)",
+  "auxP2PWarningDialogP2pSwarmsKnabenTorrentgalaxyInvolvesPeerData": "P2P swarms (Knaben, TorrentGalaxy). Involves peer data sharing.",
+  "auxP2PWarningDialogNoteYouCanEasilyToggleTheBuilt": "Note: You can easily toggle the built-in P2P source back on or off anytime in Settings.",
+  "auxP2PWarningDialogDonTShowAgain": "Don't Show Again",
+  "auxP2PWarningDialogP2pTorrentSourceTurnedOffZplayhttpWill": "P2P torrent source turned off. ZPlayHTTP will be used.",
+  "auxP2PWarningDialogYesTurnOffP2p": "Yes, Turn Off P2P",
+  "auxPlayerSkipButtonDismiss": "Dismiss (✕)",
+  "auxMagnetFilesViewGatheringFileListStreamMetadata": "Gathering file list & stream metadata",
+  "auxMagnetFilesViewFailedToReadMagnet": "Failed to Read Magnet",
+  "auxMagnetFilesViewTryAgain": "Try Again",
+  "auxMagnetFilesViewNoFilesMatchFilter": "No files match filter",
+  "auxMagnetFilesViewFilterFilesByName": "Filter files by name...",
+  "auxMagnetFilesViewNonVideo": "Non-video",
+  "auxTvOnScreenKeyboardSpace": "Space",
+  "auxUpdateDialogCurrent": "Current",
+  "auxUpdateDialogLatest": "Latest",
+  "auxUpdateDialogDownloading": "Downloading...",
+  "auxUpdateDialogUpdateNow": "Update Now",
+  "auxUpdateDialogUpdateCouldNotBeVerified": "Update could not be verified",
+  "auxUpdateDialogOpenReleasePage": "Open release page",
+  "auxUpdateDialogPleaseEnableInstallUnknownAppsPermissionFor": "Please enable \"Install unknown apps\" permission for Kiru in Android settings.",
+  "auxUpdateDialogDownloadComplete": "Download Complete",
+  "auxUpdateDialogOpenFolder": "Open Folder",
+  "auxAdultPageCouldNotLoad18Sources": "Could not load 18+ sources",
+  "auxAdultPageTitlesFromTheAddonsMarked18Or": "Titles from the addons marked 18+ or hybrid.",
+  "auxWewatchQuizPageRecommendationQuiz": "Recommendation Quiz",
+  "auxWewatchQuizPageRetake": "Retake",
+  "auxWewatchQuizPageWhatDoYouLikeToWatch": "What do you like to watch?",
+  "auxWewatchQuizPageRate3OrMoreMoviesOrTv": "Rate 3 or more movies or TV shows. Choose what you liked or disliked, and select key elements to generate pinpoint AI recommendations.",
+  "auxWewatchQuizPageAddAnotherTitle": "Add Another Title",
+  "auxWewatchQuizPageRemoveThisTitle": "Remove this title",
+  "auxWewatchQuizPageSearchMovieOrTvSeries": "Search movie or TV series...",
+  "auxWewatchQuizPageNeedIdeas": "Need ideas?",
+  "auxWewatchQuizPageHowWasYourExperienceWithIt": "How was your experience with it?",
+  "auxWewatchQuizPageWhatStoodOutPickKeyElementsOr": "What stood out? (Pick key elements or write a note):",
+  "auxWewatchQuizPageFetchingReasonTags": "Fetching reason tags...",
+  "auxWewatchQuizPageAdditionalNotesOrSpecificsOptional": "Additional notes or specifics (optional)...",
+  "auxWewatchQuizPageSynthesizingTasteVectorsWithMultiSignalAi": "Synthesizing taste vectors with multi-signal AI...",
+  "auxWewatchQuizPageYourPersonalizedMatches": "Your Personalized Matches",
+  "auxAnimePageAnimeCatalogue": "Anime catalogue",
+  "auxAnimePageWatchS1E1": "Watch S1:E1",
+  "auxAnimePageAnilistDetails": "AniList Details",
+  "auxAnimeStreamSheetExtractingMegaplayVidwishAllanimeMiruroStreams": "Extracting MegaPlay, VidWish, AllAnime & Miruro streams...",
+  "auxAudiobooksPageCustomizeAudiobookSection": "Customize Audiobook Section",
+  "auxAudiobooksPagePosterCardDensity": "Poster Card Density",
+  "auxAudiobooksPageAudiobookPosterCardDensity": "Audiobook poster card density",
+  "auxAudiobooksPageFeaturedHeroSpotlightCarousel": "Featured Hero Spotlight Carousel",
+  "auxAudiobooksPageMovingAmbientBackgroundGlow": "Moving Ambient Background Glow",
+  "auxAudiobooksPageShowContinueListeningCarousel": "Show \"Continue Listening\" Carousel",
+  "auxAudiobooksPageOpenPlayerStudioThemes": "Open Player Studio & Themes",
+  "auxAudiobooksPageAudiobookHub": "Audiobook Hub",
+  "auxAudiobooksPageExploreStreamListenToThousandsOfStories": "Explore, stream & listen to thousands of stories",
+  "auxAudiobooksPageAudiobookGeneratorStudio": "Audiobook Generator & Studio",
+  "auxAudiobooksPageAudiobookCustomizer": "Audiobook Customizer",
+  "auxAudiobooksPageSearchAudiobooksByTitleAuthorOrGenre": "Search audiobooks by title, author, or genre...",
+  "auxAudiobooksPageAudiobookGenres": "Audiobook genres",
+  "auxAudiobooksPageScrapingHighQualityAudiobookSources": "Scraping high-quality audiobook sources...",
+  "auxAudiobooksPageCouldNotLoadAudiobooks": "Could not load audiobooks",
+  "auxAudiobooksPageNoAudiobooksFoundTryAnotherSearchQuery": "No audiobooks found. Try another search query.",
+  "auxAudiobooksPageContinueListening": "Continue Listening",
+  "auxAudiobooksPageAiAudiobookStudioEpubGenerator": "AI Audiobook Studio & EPUB Generator",
+  "auxAudiobooksPageGenerateAudiobooksFromEpubsOrImportYour": "Generate audiobooks from EPUBs or import your own MP3/M4B audiobooks.",
+  "auxAudiobooksPageOpenStudio": "Open Studio",
+  "auxAudiobooksPageMyGeneratedUploadedAudiobooks": "My Generated & Uploaded Audiobooks",
+  "auxAudiobooksPageStudio": "Studio",
+  "auxAudiobookDetailPageAudiobookDetails": "Audiobook Details",
+  "auxAudiobookDetailPageChaptersAudioFiles": "Chapters & Audio Files",
+  "auxAudiobookDetailPageCouldNotLoadChapters": "Could not load chapters",
+  "auxAudiobookDetailPageNoPlayableChaptersFound": "No playable chapters found.",
+  "auxAudiobookDetailPagePlayFirstChapter": "Play First Chapter",
+  "auxAudiobookPlayerScreenAudioPlayerStyleStudio": "Audio Player Style & Studio",
+  "auxAudiobookPlayerScreenSelectPlayerDesignPreset": "Select Player Design Preset",
+  "auxAudiobookPlayerScreenAudioPlayerDesignPreset": "Audio player design preset",
+  "auxAudiobookPlayerScreenSeekBarScrubberStyle": "Seek Bar Scrubber Style",
+  "auxAudiobookPlayerScreenSeekBarScrubberStyle2": "Seek bar scrubber style",
+  "auxAudiobookPlayerScreenPlayPauseButtonStyle": "Play / Pause Button Style",
+  "auxAudiobookPlayerScreenPlayPauseButtonStyle2": "Play pause button style",
+  "auxAudiobookPlayerScreenOpenDragDropPlayerStudio": "Open Drag & Drop Player Studio",
+  "auxAudiobookPlayerScreenAutoplay": "Autoplay",
+  "auxAudiobookPlayerScreenCustomizeAudioPlayer": "Customize Audio Player",
+  "auxAudiobookPlayerScreenChaptersList": "Chapters List",
+  "auxAudiobookPlayerScreenRetryChapter": "Retry Chapter",
+  "auxAudiobookPlayerScreenOpenChaptersPanel": "Open Chapters Panel",
+  "auxAudiobookPlayerScreenPreviousChapter": "Previous Chapter",
+  "auxAudiobookPlayerScreenRewind10s": "Rewind 10s",
+  "auxAudiobookPlayerScreenForward10s": "Forward 10s",
+  "auxAudiobookPlayerScreenNextChapter": "Next Chapter",
+  "auxAudiobookPlayerScreenAudiobookChapters": "Audiobook Chapters",
+  "auxAudiobookPlayerScreenFilterChaptersByName": "Filter chapters by name...",
+  "auxGenerateAudiobookScreenEpubExceeds250kWords": "EPUB Exceeds 250k Words",
+  "auxGenerateAudiobookScreenSplitGenerate": "Split & Generate",
+  "auxGenerateAudiobookScreenStreamUrlCopiedToClipboard": "Stream URL copied to clipboard!",
+  "auxGenerateAudiobookScreenRemoveGenerationJob": "Remove Generation Job?",
+  "auxGenerateAudiobookScreenAddPersonalAudiobook": "Add Personal Audiobook",
+  "auxGenerateAudiobookScreenImportToLibrary": "Import to Library",
+  "auxGenerateAudiobookScreenAudiobookStudioGenerator": "Audiobook Studio & Generator",
+  "auxGenerateAudiobookScreenAudiobookStudioTabs": "Audiobook studio tabs",
+  "auxGenerateAudiobookScreenAiEpubGeneratorTts": "AI EPUB Generator (TTS)",
+  "auxGenerateAudiobookScreenMyUploadedAudiobooks": "My Uploaded Audiobooks",
+  "auxGenerateAudiobookScreenRefreshStatus": "Refresh Status",
+  "auxGenerateAudiobookScreenNoGeneratedAudiobooksYet": "No generated audiobooks yet",
+  "auxGenerateAudiobookScreenPickAnEpubAboveToSynthesizeHigh": "Pick an EPUB above to synthesize high-quality voice narrations.",
+  "auxGenerateAudiobookScreenAiNarratorVoiceKokoroEngine": "AI Narrator Voice (Kokoro Engine)",
+  "auxGenerateAudiobookScreenRescanBooks": "Rescan Books",
+  "auxGenerateAudiobookScreenGenerate": "Generate",
+  "auxGenerateAudiobookScreenPickAnyEpubFileFromYourDevice": "Pick any .epub file from your device. Large books (>250k words) are auto-split.",
+  "auxGenerateAudiobookScreenPlayInApp": "Play in App",
+  "auxGenerateAudiobookScreenUploadPersonalAudiobookFiles": "Upload Personal Audiobook Files",
+  "auxGenerateAudiobookScreenImportYourOwnMp3M4bM4aOr": "Import your own .mp3, .m4b, .m4a, or .flac audiobooks to listen offline.",
+  "auxGenerateAudiobookScreenNoPersonalAudiobooksAddedYet": "No personal audiobooks added yet",
+  "auxGenerateAudiobookScreenTapTheBannerAboveToImportAudio": "Tap the banner above to import audio files from your device.",
+  "auxGenerateAudiobookScreenDeleteAudiobook": "Delete Audiobook?",
+  "auxBooksPageCouldNotLoadBooks": "Could not load books",
+  "auxBooksPageNoBooksFound": "No books found",
+  "auxBooksPageTrySearchingForAnotherTitleAuthorOr": "Try searching for another title, author, or language",
+  "auxBooksPageSearchMillionsOfBooksAuthors": "Search millions of books & authors...",
+  "auxBooksPageFontEngine": "Font Engine:",
+  "auxBooksPageReaderFontEngine": "Reader font engine",
+  "auxBooksPageAllFormats": "All Formats",
+  "auxBooksPageBookFormats": "Book formats",
+  "auxBookDetailSheetGenerateAiAudiobookTts": "Generate AI Audiobook (TTS)",
+  "auxBookDetailSheetDeleteDownloadedFile": "Delete downloaded file",
+  "auxBookDetailSheetInformation": "Information",
+  "auxBookDetailSheetOverview": "Overview",
+  "auxEpubReaderPageBackToLibrary": "Back to Library",
+  "auxEpubReaderPageTableOfContentsT": "Table of Contents (T)",
+  "auxEpubReaderPageFocusModeLineByLine": "Focus Mode (Line-by-Line)",
+  "auxEpubReaderPageAppearanceCustomization": "Appearance & Customization",
+  "auxEpubReaderPageToggleFullscreenF": "Toggle Fullscreen (F)",
+  "auxEpubReaderPagePreviousChapterLeftArrow": "Previous Chapter (Left Arrow)",
+  "auxEpubReaderPageNextChapterRightArrow": "Next Chapter (Right Arrow)",
+  "auxEpubReaderPageNoReadableChaptersFound": "No readable chapters found.",
+  "auxEpubReaderPageTableOfContents": "Table of Contents",
+  "auxEpubReaderPageNoTableOfContentsAvailable": "No table of contents available",
+  "auxPdfReaderPageZoomIn": "Zoom In",
+  "auxPdfReaderPageZoomOut": "Zoom Out",
+  "auxPdfReaderPagePreviousPage": "Previous Page",
+  "auxPdfReaderPageNextPage": "Next Page",
+  "auxBrowsePageBrowseVerticals": "Browse verticals",
+  "auxTvCalendarPageTvShowsAiringCalendar": "TV Shows Airing Calendar",
+  "auxTvCalendarPageUpcomingBroadcastStreamingEpisodesWithLiveNetwork": "Upcoming broadcast & streaming episodes with live network filters",
+  "auxTvCalendarPageFilterShows": "Filter shows...",
+  "auxTvCalendarPageNetwork": "Network:",
+  "auxTvCalendarPageShowAllNetworks": "Show All Networks",
+  "auxCatalogPageNoItemsFound": "No items found",
+  "auxCatalogPageSearch": "Search...",
+  "auxCollectionsPageFranchises": "Franchises",
+  "auxCollectionsPageMemoryLane": "Memory Lane",
+  "auxCollectionsPageCuratedFranchisesEras": "Curated Franchises & Eras",
+  "auxCollectionsPageHandPickedFilmPacksInWatchOrder": "Hand-picked film packs, in watch order.",
+  "auxIptvChannelSheetStop": "Stop",
+  "auxIptvChannelSheetScanningAllVerifiedPortalsInParallel": "Scanning all verified portals in parallel…",
+  "auxIptvChannelSheetNoAliveStreamsDiscoveredYet": "No alive streams discovered yet.",
+  "auxIptvChannelSheetTapScanMorePortalsToDiscoverFresh": "Tap \"Scan More Portals\" to discover fresh feeds.",
+  "auxIptvChannelSheetClearSearch": "Clear Search",
+  "auxIptvChannelSheetScanMore": "Scan More",
+  "auxIptvPageChannelListAndProgrammeSchedule": "Channel list and programme schedule",
+  "auxIptvPageMultiStreamsMultiViewWindow": "Multi Streams (Multi-View Window)",
+  "auxIptvPageMultiStreams": "Multi Streams",
+  "auxIptvPageManagePortalsPlaylists": "Manage Portals & Playlists",
+  "auxIptvPageSearchChannels": "Search Channels",
+  "auxIptvPageQuickChannels": "Quick Channels",
+  "auxIptvPageAddQuickChannel": "Add Quick Channel",
+  "auxIptvPageAddChannel": "Add Channel",
+  "auxIptvPageEGCnnNewsInternational": "e.g. cnn, news, international",
+  "auxIptvPageGradient": "Gradient",
+  "auxIptvPortalsModalPortalDisplaySettings": "Portal Display Settings",
+  "auxIptvPortalsModalChoosePortalSource": "Choose Portal Source",
+  "auxIptvPortalsModalCloudVault": "Cloud Vault",
+  "auxIptvPortalsModalHighSpeedCloudDatabaseWithLiveIptv": "High-speed cloud database with live IPTV servers",
+  "auxIptvPortalsModalRedditCommunities": "Reddit Communities",
+  "auxIptvPortalsModalScrapesLiveSharedPastesFromSubreddits": "Scrapes live shared pastes from subreddits",
+  "auxIptvPortalsModalDeleteAll": "Delete All",
+  "auxIptvPortalsModalAddXtreamCodesPortal": "Add Xtream Codes Portal",
+  "auxIptvPortalsModalVerifySave": "Verify & Save",
+  "auxIptvPortalsModalAddM3uPlaylistSubscription": "Add M3U Playlist Subscription",
+  "auxIptvPortalsModalFetchSave": "Fetch & Save",
+  "auxIptvPortalsModalNoM3uPlaylistsSaved": "No M3U playlists saved.",
+  "auxIptvPortalBrowserPageCustomizePortalBrowser": "Customize Portal Browser",
+  "auxIptvPortalBrowserPageChannelStreamLayoutMode": "Channel Stream Layout Mode",
+  "auxIptvPortalBrowserPageGridStreamColumns": "Grid Stream Columns",
+  "auxIptvPortalBrowserPageShowChannelStreamLogos": "Show Channel Stream Logos",
+  "auxIptvPortalBrowserPageShowEpgNowPlayingSnippet": "Show EPG \"Now Playing\" Snippet",
+  "auxIptvPortalBrowserPageShowCategoryStreamCounts": "Show Category Stream Counts",
+  "auxIptvPortalBrowserPageSelectCategory": "Select Category",
+  "auxIptvPortalBrowserPageCustomizePortalBrowserLayout": "Customize Portal Browser Layout",
+  "auxIptvPortalBrowserPageCheckHealth": "Check Health",
+  "auxIptvPortalBrowserPageCustomize": "Customize",
+  "auxIptvPortalBrowserPageCouldNotLoadThisPortal": "Could not load this portal",
+  "auxIptvPortalBrowserPageNoFavoritedChannels": "No Favorited Channels",
+  "auxIptvPortalBrowserPageTapTheStarIconOnAnyChannel": "Tap the star icon on any channel to save it to your Favorites.",
+  "auxIptvPortalBrowserPageLiveStreamFeed": "Live Stream Feed",
+  "auxIptvPortalBrowserPageCouldNotLoadEpisodes": "Could not load episodes",
+  "auxIptvSearchPageSearch60LiveChannelsLeaguesNetworks": "Search 60+ live channels, leagues, networks…",
+  "auxIptvSearchPageChannelCategories": "Channel categories",
+  "auxIptvSearchPageNoChannelsMatchYourSearch": "No channels match your search.",
+  "auxMangaDetailsPageSynopsis": "Synopsis",
+  "auxMangaDetailsPageChapters": "Chapters",
+  "auxMangaDetailsPageSearchChapters": "Search chapters...",
+  "auxMangaDetailsPageStartReading": "Start Reading",
+  "auxMangaPageCustomizeMangaSection": "Customize Manga Section",
+  "auxMangaPageMangaPosterCardDensity": "Manga poster card density",
+  "auxMangaPageShowContinueReadingSlider": "Show \"Continue Reading\" Slider",
+  "auxMangaPageShowContentTypeBadgeOnPosters": "Show Content Type Badge on Posters",
+  "auxMangaPageMoreAppearanceReaderSettings": "More Appearance & Reader Settings",
+  "auxMangaPageContinueReading": "Continue Reading",
+  "auxMangaPageNoMangaFound": "No manga found",
+  "auxMangaPageSearchMangaManhwaManhua": "Search Manga, Manhwa, Manhua...",
+  "auxMangaPageRemoveFromContinueReading": "Remove from Continue Reading",
+  "auxMangaReaderPageReaderSettingsLayout": "Reader Settings & Layout",
+  "auxMangaReaderPageReadingOrientationMode": "Reading Orientation Mode",
+  "auxMangaReaderPageReadingOrientationMode2": "Reading orientation mode",
+  "auxMangaReaderPagePageReadingWidthConstraint": "Page Reading Width Constraint",
+  "auxMangaReaderPagePageReadingWidthConstraint2": "Page reading width constraint",
+  "auxMangaReaderPageReaderBackgroundAtmosphere": "Reader Background Atmosphere",
+  "auxMangaReaderPageShowPageDeckPreviewsDrawer": "Show Page Deck Previews Drawer",
+  "auxMangaReaderPageShowNextChapterDeckCard": "Show Next Chapter Deck Card",
+  "auxMangaReaderPageNoPagesFoundForThisChapter": "No pages found for this chapter.",
+  "auxMangaReaderPageReadNextChapter": "Read Next Chapter",
+  "auxMangaReaderPageBackToMangaDetails": "Back to Manga Details",
+  "auxMangaReaderPagePageDeckPreview": "Page Deck Preview",
+  "auxMultinutzPageSelectChannel": "Select Channel",
+  "auxMultinutzPageStreamDetails": "Stream Details",
+  "auxMultinutzPageAddLiveStreamFeed": "Add Live Stream Feed",
+  "auxMultinutzPageBackToLiveTv": "Back to Live TV",
+  "auxMultinutzPagePreviousLayout": "Previous Layout",
+  "auxMultinutzPageNextLayout": "Next Layout",
+  "auxMultinutzPageMuteAll": "Mute All",
+  "auxMultinutzPageClearAllWindows": "Clear All Windows",
+  "auxMusicPageNewPlaylist": "New Playlist",
+  "auxMusicPageEnterPlaylistTitle": "Enter playlist title...",
+  "auxMusicPageCreate": "Create",
+  "auxMusicPageSaveToPlaylist": "Save to Playlist",
+  "auxMusicPageNoCustomPlaylistsYet": "No custom playlists yet",
+  "auxMusicPageCreateFirstPlaylist": "Create First Playlist",
+  "auxMusicPageNewAlbumReleases": "New Album Releases",
+  "auxMusicPageCuratedChartsMixes": "Curated Charts & Mixes",
+  "auxMusicPageSearchResults": "Search results",
+  "auxMusicPageSongs": "Songs",
+  "auxMusicPageArtists": "Artists",
+  "auxMusicPageAlbums": "Albums",
+  "auxMusicPageBrowseMoodsGenres": "Browse Moods & Genres",
+  "auxMusicPageRadioStationsLiveStreams": "Radio Stations & Live Streams",
+  "auxMusicPageContinuousMusicChannelsTunedToYourMood": "Continuous music channels tuned to your mood.",
+  "auxMusicPageYourLibrary": "Your Library",
+  "auxMusicPageLikedSongs": "Liked Songs",
+  "auxMusicPageDownloadedSongs": "Downloaded Songs",
+  "auxMusicPageCustomPlaylists": "Custom Playlists",
+  "auxMusicPageRecentlyPlayed": "Recently Played",
+  "auxMusicPageMusicPlayerStudio": "Music Player Studio",
+  "auxMusicPageMusicAtmosphereSettings": "Music Atmosphere Settings",
+  "auxMusicPageAppSettings": "App Settings",
+  "auxMusicPageMusicView": "Music view",
+  "auxMusicPageAudioSourceQuality": "Audio Source & Quality",
+  "auxMusicPageChooseYourPreferredMusicExtractionEngine": "Choose your preferred music extraction engine",
+  "auxMusicPageFlacLosslessQobuzHiRes": "FLAC Lossless (Qobuz Hi-Res)",
+  "auxMusicPageStudioMasterQualityUpTo24Bit": "Studio master quality up to 24-bit/192kHz with zero compression",
+  "auxMusicPageYoutubeAudio": "YouTube Audio",
+  "auxMusicPageHighSpeedAudioExtractionWithIntelligentTrack": "High-speed audio extraction with intelligent track & duration matching",
+  "auxMusicPagePlayNow": "Play Now",
+  "auxMusicPageTrendingArtists": "Trending Artists",
+  "auxMusicPageDownloadedOffline": "Downloaded (Offline)",
+  "auxMusicPageQueuedForDownload": "Queued for download",
+  "auxMusicPageDownloadTrack": "Download Track",
+  "auxMusicPageSyncedLyrics": "Synced Lyrics",
+  "auxMusicPageNoLyricsFoundForThisTrack": "No lyrics found for this track.",
+  "auxMusicPageQueueIsEmpty": "Queue is empty",
+  "auxMusicPagePlayAll": "Play All",
+  "auxMusicPageTopSongs": "Top Songs",
+  "auxMusicPageAlbumsDiscography": "Albums & Discography",
+  "auxMusicPagePlayAlbum": "Play Album",
+  "auxMusicPageDownloadAlbum": "Download Album",
+  "auxMusicPagePlayPlaylist": "Play Playlist",
+  "auxMusicPageDownloadPlaylist": "Download Playlist",
+  "auxMusicPageDownloadAll": "Download All",
+  "auxMusicPageNoTracksInThisPlaylistYet": "No tracks in this playlist yet",
+  "auxMusicPagePlayingQueue": "Playing Queue",
+  "auxMusicPageKeyboardShortcuts": "Keyboard Shortcuts",
+  "auxMusicPageShuffle": "Shuffle",
+  "auxMusicPageSearchOffline": "Search offline...",
+  "auxMusicPageDeleteFromDownloads": "Delete from downloads",
+  "auxMusicPageDeleteDownloadedSong": "Delete Downloaded Song",
+  "auxAboutSettingsPageZplayIsAnAllInOneEntertainment": "Kiru is an all-in-one entertainment client bringing together movies, TV series, anime, live IPTV, music, manga, and audiobooks into a unified, high-performance interface with custom Liquid Glass visuals.",
+  "auxAboutSettingsPageDebridMultiSourceScrapers": "Debrid & Multi-Source Scrapers",
+  "auxAboutSettingsPageDirectHighSpeedCloudPlaybackViaReal": "Direct high-speed cloud playback via Real-Debrid, TorBox, and Stremio addons.",
+  "auxAboutSettingsPageLiquidGlassGlslShaders": "Liquid Glass GLSL Shaders",
+  "auxAboutSettingsPageCustomRealTimeOpticalRefractionLensesAnd": "Custom real-time optical refraction, lenses, and fluid physics.",
+  "auxAboutSettingsPageTraktCloudSynchronization": "Trakt & Cloud Synchronization",
+  "auxAboutSettingsPageCrossPlatformWatchlistEpisodeTrackingAndPlayback": "Cross-platform watchlist, episode tracking, and playback scrobbling.",
+  "auxAboutSettingsPagePoppinsIsBundledUnderTheSilOpen": "Poppins is bundled under the SIL Open Font License 1.1.",
+  "auxAddonsSettingsPageItsCatalogsAndMetadataWillBeRemoved": "Its catalogs and metadata will be removed from your home page.",
+  "auxAddonsSettingsPageWouldYouLikeToInstallAllPlugins": "Would you like to install all plugins from this repository now so their streaming sources become available immediately on the watch screen?",
+  "auxAddonsSettingsPagePasteTheRepositoryUrlSupportsCloudstreamrepoRepo": "Paste the repository URL (supports cloudstreamrepo://, repo.json, or plugins.json).",
+  "auxAddonsSettingsPageThisCloudstreamExtensionWillBeUninstalled": "This CloudStream extension will be uninstalled.",
+  "auxAddonsSettingsPagePluginsFromThisRepositoryWillNotBe": "Plugins from this repository will not be deleted, but repository updates will no longer be fetched.",
+  "auxAddonsSettingsPageInstallsTheAddonForTheDebridProvider": "Installs the addon for the Debrid provider selected in Settings and fills your saved key in at request time, so the key is never stored twice.",
+  "auxAddonsSettingsPageCloudstreamCs3ExtensionsProvideStreamProvidersDirectly": "CloudStream (.cs3) extensions provide stream providers directly from popular media sites. Extensions run locally in a sandboxed sidecar or native ART engine.",
+  "auxAddonsSettingsPage45Repos": "45+ Repos",
+  "auxAddonsSettingsPageBrowseCuratedTurkish3rabiEnglishHindiGlobal": "Browse curated Turkish, 3rabi, English, Hindi & global repos with direct install links.",
+  "auxAddonsSettingsPageSetUpADebridProviderInSettings": "Set up a Debrid provider in Settings first, then come back to connect it.",
+  "auxAppearanceSettingsPageUploadCustomPhotosChooseCuratedDarkWallpapers": "Upload custom photos, choose curated dark wallpapers, and blend theme ambient lighting",
+  "auxAppearanceSettingsPageAdjustHoverImpactWobbleSpringPhysicsLens": "Adjust hover impact, wobble spring physics, lens refraction, and chromatic aberration",
+  "auxAppearanceSettingsPageColorSchemesBecauseYouHaveOnYour": "Color schemes, \"Because you have on your list\" smart slider, hero spotlight, and card density",
+  "auxAppearanceSettingsPageBroadcastHeroSpotlightChannelCardDensityCategory": "Broadcast hero spotlight, channel card density, category ordering, and live badge styling",
+  "auxAppearanceSettingsPageAmbientMovingLightingCardDensityReadingLayout": "Ambient moving lighting, card density, reading layout widths, webtoon/horizontal modes, and page deck preview",
+  "auxAppearanceSettingsPageHeroSpotlight5DistinctPlayerDesignsDrag": "Hero spotlight, 5 distinct player designs, drag & drop modular studio, waveform canvas scrubber, and custom controls",
+  "auxAppearanceSettingsPageHeroSpotlightLosslessBadgesAndFullscreenPlayer": "Hero spotlight, lossless badges, and fullscreen player studio for layout, seekbar, physics & turntable styling",
+  "auxBuiltinProvidersSettingsPageThisWillRestoreAll45ZplayhttpProviders": "This will restore all 45 ZPlayHTTP providers to their default order and re-enable any disabled providers.",
+  "auxBuiltinProvidersSettingsPageStandardAutoSortingAcrossAll45Providers": "Standard auto-sorting across all 45 providers",
+  "auxBuiltinProvidersSettingsPageInDefaultModeZplayUsesItsNative": "In Default mode, ZPlay uses its native multi-source streaming engine. All providers run simultaneously, and results are smartly sorted by video resolution (4K, 1080p, 720p) and file size.",
+  "auxBuiltinProvidersSettingsPageProvidersAtTheTopScrapeFirstAnd": "Providers at the top scrape first, and their results strictly display at the top of stream results, no matter the file size or quality.",
+  "auxDebridSettingsPageStreamTorrentsAndMagnetLinksInstantlyThrough": "Stream torrents and magnet links instantly through high-speed cloud debrid providers without local peer-to-peer downloading.",
+  "auxDebridSettingsPageWhenEnabledAllTorrentsFromZplayAnd": "When enabled, all torrents from Kiru and Stremio addons are resolved exclusively through your active Debrid provider without touching the local torrent engine.",
+  "auxServiceKeysSettingsPageRanksThe1990sRailsAndCoversThe": "Ranks the 1990s rails and covers the scraper metadata lookups.",
+  "auxSimklSettingsPageConnectYourSimklAccountToSynchronizeMovies": "Connect your Simkl account to synchronize Movies, TV Shows, and Anime watchlists, continue watching progress, and custom lists.",
+  "auxTraktSettingsPageConnectYourTraktTvAccountToSeamlessly": "Connect your Trakt.tv account to seamlessly synchronize your watch history, watchlist, continue watching progress, and ratings across all your devices.",
+  "auxVideoSettingsPageAndroidSExoplayerFastestAt4k": "Android's ExoPlayer (Fastest at 4K)",
+  "auxVideoSettingsPageMpvFullSubtitleControl": "mpv (Full subtitle control)",
+  "auxVideoSettingsPageUsesFlutterSurfaceproducerToRenderFramesDirectly": "Uses Flutter SurfaceProducer to render frames directly to hardware surface without texture blitting. Significantly boosts 4K/60fps playback and reduces battery usage on Android. (Keep disabled if your device experiences display glitches).",
+  "auxAudiobookPlayerStudioPagePlayerStudio": "Player Studio",
+  "auxAudiobookPlayerStudioPageCustomAudiobookPlayerStudio": "Custom Audiobook Player Studio",
+  "auxAudiobookPlayerStudioPageDragComponentsTransformSeekbarsCustomizeButtonPhysics": "Drag components, transform seekbars, customize button physics",
+  "auxAudiobookPlayerStudioPageApplyAsActivePlayer": "Apply As Active Player",
+  "auxAudiobookPlayerStudioPageCustomPlayerStudioLayoutAppliedSetAs": "Custom Player Studio layout applied & set as active player!",
+  "auxAudiobookPlayerStudioPageStudioDesigner": "Studio Designer",
+  "auxAudiobookPlayerStudioPageLivePreviewCanvas": "Live Preview Canvas",
+  "auxAudiobookPlayerStudioPageTestLiveCanvas": "Test Live Canvas",
+  "auxAudiobookPlayerStudioPageBackToCustomizer": "Back to Customizer",
+  "auxAudiobookPlayerStudioPageLiveInteractiveCanvas": "LIVE INTERACTIVE CANVAS",
+  "auxAudiobookPlayerStudioPageCustomStudio": "CUSTOM STUDIO",
+  "auxAudiobookPlayerStudioPagePremadeChaptersPanel": "Premade Chapters Panel",
+  "auxAudiobookPlayerStudioPagePremadeChaptersPanelPreview": "Premade Chapters Panel Preview",
+  "auxAudiobookPlayerStudioPageDragDropComponentArranger": "Drag & Drop Component Arranger",
+  "auxAudiobookPlayerStudioPageHoldAndDragAnyBlockToReorder": "Hold and drag any block to reorder the vertical layout of your audio player in real-time.",
+  "auxAudiobookPlayerStudioPageSeekBarCanvasScrubberStyles": "Seek Bar Canvas & Scrubber Styles",
+  "auxAudiobookPlayerStudioPageSelectHowYourProgressBarAndScrubber": "Select how your progress bar and scrubber render inside your custom player canvas.",
+  "auxAudiobookPlayerStudioPageHoverTouchPhysics": "Hover & Touch Physics",
+  "auxAudiobookPlayerStudioPageLiveTouchHoverPhysicsPlayground": "Live Touch & Hover Physics Playground",
+  "auxAudiobookPlayerStudioPageArtworkDisplayMode": "Artwork Display Mode",
+  "auxAudiobookSettingsPageEnableMovingAmbientAtmosphere": "Enable Moving Ambient Atmosphere",
+  "auxAudiobookSettingsPageLightingFlowPattern": "Lighting Flow Pattern",
+  "auxAudiobookSettingsPageGlowStrengthOpacity": "Glow Strength / Opacity",
+  "auxAudiobookSettingsPageMotionDriftSpeed": "Motion Drift Speed",
+  "auxAudiobookSettingsPageLiveAtmospherePreview": "Live Atmosphere Preview",
+  "auxAudiobookSettingsPageShowHeroSpotlightCarousel": "Show Hero Spotlight Carousel",
+  "auxAudiobookSettingsPageFeaturedBestsellingAudiobookShowcaseAtTheTop": "Featured bestselling audiobook showcase at the top of the hub",
+  "auxAudiobookSettingsPageQuickResumeCardsWithChapterProgressBar": "Quick resume cards with chapter progress bar and direct play",
+  "auxAudiobookSettingsPageAudiobookPosterCardDensity": "Audiobook Poster Card Density",
+  "auxAudiobookSettingsPageShowQuickGenreCategoryBadges": "Show Quick Genre & Category Badges",
+  "auxAudiobookSettingsPageShowAudiobookRuntimeTotalDuration": "Show Audiobook Runtime / Total Duration",
+  "auxAudiobookSettingsPagePosterCardHoverGlowElevation": "Poster Card Hover Glow & Elevation",
+  "auxAudiobookSettingsPageVisualCustomPlayerStudio": "Visual Custom Player Studio",
+  "auxAudiobookSettingsPageFullStudio": "FULL STUDIO",
+  "auxAudiobookSettingsPageDragDropLayoutElementsProceduralWaveformCanvases": "Drag & drop layout elements, procedural waveform canvases, liquid glass buttons, and premade chapters panel in real-time.",
+  "auxAudiobookSettingsPageEnterCustomPlayerStudio": "Enter Custom Player Studio",
+  "auxAudiobookSettingsPageInteractiveStudioPreview": "Interactive Studio Preview",
+  "auxAudiobookSettingsPageSeekBarScrubberStyle": "Seek Bar / Scrubber Style",
+  "auxAudiobookSettingsPagePlayPauseButtonStyling": "Play / Pause Button Styling",
+  "auxAudiobookSettingsPageArtworkDisplayStyle": "Artwork Display Style",
+  "auxAudiobookSettingsPageButtonHoverTouchPhysics": "Button Hover & Touch Physics",
+  "auxAudiobookSettingsPagePlayerLayoutComponentsDragToArrange": "Player Layout Components (Drag to Arrange)",
+  "auxAudiobookSettingsPageHoldAndDragAnyBlockToReorder": "Hold and drag any block to reorder how controls appear inside your player",
+  "auxAudiobookSettingsPageLiquidGlassPlayerBlurRefraction": "Liquid Glass Player Blur & Refraction",
+  "auxAudiobookSettingsPageShowPlaybackSpeedSelector05x2": "Show Playback Speed Selector (0.5x - 2.5x)",
+  "auxAudiobookSettingsPageShowSkipForwardRewindButtons10s": "Show Skip Forward/Rewind Buttons (±10s)",
+  "auxAudiobookSettingsPageShowQuickChaptersSlidingDrawerButton": "Show Quick Chapters Sliding Drawer Button",
+  "auxAudiobookSettingsPageLaunchFullCustomPlayerStudio": "Launch Full Custom Player Studio",
+  "auxCustomBackgroundSettingsPageUploadYourOwnPhotoOrChooseA": "Upload your own photo or choose a curated wallpaper. Theme colors and moving ambient lights softly blend into the background for a unified look.",
+  "auxCustomBackgroundSettingsPageResetToDefaultBackground": "Reset to Default Background",
+  "auxCustomBackgroundSettingsPageOrPasteImageUrlHttps": "Or paste image URL (https://...)",
+  "auxCustomBackgroundSettingsPageCuratedDarkWallpapers": "CURATED DARK WALLPAPERS",
+  "auxCustomBackgroundSettingsPageWallpaperLightBlendingControls": "WALLPAPER & LIGHT BLENDING CONTROLS",
+  "auxCustomBackgroundSettingsPagePhotoVisibilityDarkness": "Photo Visibility / Darkness",
+  "auxCustomBackgroundSettingsPagePhotoSoftBlur": "Photo Soft Blur",
+  "auxCustomBackgroundSettingsPageThemeColorTintOverlay": "Theme Color Tint Overlay",
+  "auxCustomBackgroundSettingsPageBlendMovingAmbientLights": "Blend Moving Ambient Lights",
+  "auxCustomBackgroundSettingsPageSoftlyIlluminatesAndAnimatesThemeLightsOver": "Softly illuminates and animates theme lights over your wallpaper",
+  "auxHomeUiSettingsPageColorThemesAccents": "COLOR THEMES & ACCENTS",
+  "auxHomeUiSettingsPageAmbientBackgroundLightingMovingGlows": "AMBIENT BACKGROUND LIGHTING & MOVING GLOWS",
+  "auxHomeUiSettingsPageCustomBackgroundWallpaper": "CUSTOM BACKGROUND & WALLPAPER",
+  "auxHomeUiSettingsPageCustomWallpaperLightingBlend": "Custom Wallpaper & Lighting Blend",
+  "auxHomeUiSettingsPageSmartRecommendationsBecauseYouHaveOnYour": "SMART RECOMMENDATIONS (\"BECAUSE YOU HAVE ON YOUR LIST\")",
+  "auxHomeUiSettingsPageCuratedCollections": "CURATED COLLECTIONS",
+  "auxHomeUiSettingsPageHeroBannerSpotlight": "HERO BANNER & SPOTLIGHT",
+  "auxHomeUiSettingsPagePosterCardsDensity": "POSTER CARDS & DENSITY",
+  "auxHomeUiSettingsPageHeaderShortcutsButtons": "HEADER SHORTCUTS & BUTTONS",
+  "auxHomeUiSettingsPageLiveLightingEnginePreview": "LIVE LIGHTING ENGINE PREVIEW",
+  "auxHomeUiSettingsPageMovingAmbientLightsGlows": "Moving Ambient Lights & Glows",
+  "auxHomeUiSettingsPageDriftingFadedLightWavesFloatingColorOrbs": "Drifting faded light waves & floating color orbs in background",
+  "auxHomeUiSettingsPageLightingPatternPosition": "Lighting Pattern & Position",
+  "auxHomeUiSettingsPageGlowStrengthIntensity": "Glow Strength / Intensity",
+  "auxHomeUiSettingsPageMotionFlowSpeed": "Motion Flow Speed",
+  "auxHomeUiSettingsPageSmartRecommendations": "Smart Recommendations",
+  "auxHomeUiSettingsPageConfigurePersonalizedAlgorithmicRecommendationSliders": "Configure personalized & algorithmic recommendation sliders",
+  "auxHomeUiSettingsPageBecauseYouHaveMyList": "\"Because You Have...\" (My List)",
+  "auxHomeUiSettingsPageBestsimilarRecommendationsBasedOnTitlesSavedIn": "BestSimilar recommendations based on titles saved in My List",
+  "auxHomeUiSettingsPageBestsimilarRecommendationsBasedOnActiveContinueWatching": "BestSimilar recommendations based on active Continue Watching titles",
+  "auxHomeUiSettingsPageHideRailsWithNoArtwork": "Hide Rails With No Artwork",
+  "auxHomeUiSettingsPageTraktRecommendations": "Trakt Recommendations",
+  "auxHomeUiSettingsPageSimklRecommendations": "Simkl Recommendations",
+  "auxHomeUiSettingsPageRecommendationSlidersPositionOnHomePage": "Recommendation Sliders Position on Home Page",
+  "auxHomeUiSettingsPageShowCuratedCollectionRailsOnTheHome": "Show curated collection rails on the Home page",
+  "auxHomeUiSettingsPageShowHeroSpotlightBanner": "Show Hero Spotlight Banner",
+  "auxHomeUiSettingsPageFeaturedRotationBannerAtTheTopOf": "Featured rotation banner at the top of the home page",
+  "auxHomeUiSettingsPageSpotlightStyle": "Spotlight Style",
+  "auxHomeUiSettingsPageAutoRotateSpotlight": "Auto-Rotate Spotlight",
+  "auxHomeUiSettingsPageCyclesThroughFeaturedTitlesAutomatically": "Cycles through featured titles automatically",
+  "auxHomeUiSettingsPageAmbientBackdropLighting": "Ambient Backdrop Lighting",
+  "auxHomeUiSettingsPageSoftDiffusedColorGlowBehindActiveHero": "Soft diffused color glow behind active hero poster",
+  "auxHomeUiSettingsPagePosterSizeGridDensity": "Poster Size & Grid Density",
+  "auxHomeUiSettingsPageShowImdbRatingBadges": "Show IMDB Rating Badges",
+  "auxHomeUiSettingsPageDisplayRatingStarPillOnPosterCorners": "Display rating star pill on poster corners",
+  "auxHomeUiSettingsPagePosterHoverZoomScale": "Poster Hover Zoom Scale",
+  "auxHomeUiSettingsPageShowTvCalendarButtonsOnHomeBar": "Show TV Calendar buttons on Home bar & sliders",
+  "auxHomeUiSettingsPageAiRecommendationQuiz": "AI Recommendation Quiz",
+  "auxHomeUiSettingsPageShowAiQuizButtonOnHomeSearch": "Show AI Quiz button on Home & Search bars",
+  "auxLiquidGlassSettingsPageLiquidGlassSettingsResetToDefaults": "Liquid Glass settings reset to defaults.",
+  "auxLiquidGlassSettingsPageEnableLiquidGlass": "Enable Liquid Glass",
+  "auxLiquidGlassSettingsPageRealTimeRefractionShadersJellySpringsAnd": "Real-time refraction shaders, jelly springs, and lenses",
+  "auxLiquidGlassSettingsPagePresets": "PRESETS",
+  "auxLiquidGlassSettingsPagePhysicsOpticalParameters": "PHYSICS & OPTICAL PARAMETERS",
+  "auxLiquidGlassSettingsPageHoverScaleImpact": "Hover Scale Impact",
+  "auxLiquidGlassSettingsPageMagnificationAmountAppliedToThePlayerGlass": "Magnification amount applied to the player glass controls on hover",
+  "auxLiquidGlassSettingsPageWobbleFluidElasticity": "Wobble & Fluid Elasticity",
+  "auxLiquidGlassSettingsPageSpringBounceIntensityAndDeformationResponsiveness": "Spring bounce intensity and deformation responsiveness",
+  "auxLiquidGlassSettingsPageOpticalRefractionIndex": "Optical Refraction Index",
+  "auxLiquidGlassSettingsPageLightBendingAndBackgroundWarpIndexInside": "Light bending and background warp index inside glass lenses",
+  "auxLiquidGlassSettingsPageLensMagnification": "Lens Magnification",
+  "auxLiquidGlassSettingsPageUnderlyingZoomFactorSeenThroughTheGlass": "Underlying zoom factor seen through the glass volume",
+  "auxLiquidGlassSettingsPageChromaticAberrationPrismSplit": "Chromatic Aberration (Prism Split)",
+  "auxLiquidGlassSettingsPageSeparatesRgbSpectrumColorsAlongOpticalGlass": "Separates RGB spectrum colors along optical glass bevels",
+  "auxLiquidGlassSettingsPageFrostedGlassBlur": "Frosted Glass Blur",
+  "auxLiquidGlassSettingsPageGaussianBlurDiffusionAppliedBehindGlassComponents": "Gaussian blur diffusion applied behind glass components",
+  "auxLiquidGlassSettingsPageSpecularLightShimmer": "Specular Light & Shimmer",
+  "auxLiquidGlassSettingsPageGlossySpecularReflectionAndBorderIlluminationIntensity": "Glossy specular reflection and border illumination intensity",
+  "auxLiquidGlassSettingsPageBorderWidth": "Border Width",
+  "auxLiquidGlassSettingsPageThicknessOfTheRefractiveOuterBoundaryEdge": "Thickness of the refractive outer boundary edge",
+  "auxLiquidGlassSettingsPageHoverOrTapTheIconsToPreview": "Hover or tap the icons to preview spring wobble & scale",
+  "auxLiveTvSettingsPageLiveSpotlightHeroBanner": "LIVE SPOTLIGHT & HERO BANNER",
+  "auxLiveTvSettingsPageChannelCardsPosterDensity": "CHANNEL CARDS & POSTER DENSITY",
+  "auxLiveTvSettingsPageSectionsCategoryManager": "SECTIONS & CATEGORY MANAGER",
+  "auxLiveTvSettingsPagePortalsPlaylistsModal": "PORTALS & PLAYLISTS MODAL",
+  "auxLiveTvSettingsPagePortalBrowserChannelGuide": "PORTAL BROWSER & CHANNEL GUIDE",
+  "auxLiveTvSettingsPageStreamSources": "STREAM SOURCES",
+  "auxLiveTvSettingsPageShowLiveSpotlightBanner": "Show Live Spotlight Banner",
+  "auxLiveTvSettingsPageFeaturedChampionshipMatchesAndTopBroadcastChannels": "Featured championship matches and top broadcast channels at the top",
+  "auxLiveTvSettingsPageHeroBannerStyle": "Hero Banner Style",
+  "auxLiveTvSettingsPageAutoRotateChannels": "Auto-Rotate Channels",
+  "auxLiveTvSettingsPageAutomaticallyCycleThroughFeaturedLiveEvents": "Automatically cycle through featured live events",
+  "auxLiveTvSettingsPageRotationInterval": "Rotation Interval",
+  "auxLiveTvSettingsPageChannelCardSize": "Channel Card Size",
+  "auxLiveTvSettingsPageCardHoverScaleZoom": "Card Hover Scale Zoom",
+  "auxLiveTvSettingsPageShowLiveHdStreamBadge": "Show LIVE / HD Stream Badge",
+  "auxLiveTvSettingsPageDisplayRadiantLiveBroadcastBadgeOnChannel": "Display radiant live broadcast badge on channel corners",
+  "auxLiveTvSettingsPageShowChannelCategoryTag": "Show Channel Category Tag",
+  "auxLiveTvSettingsPageShowCategoryLabelBelowChannelName": "Show category label below channel name",
+  "auxLiveTvSettingsPageShowFeedHealthBadge": "Show Feed Health Badge",
+  "auxLiveTvSettingsPageMarkAChannelAsAliveUncheckedOr": "Mark a channel as alive, unchecked or dead on the Boxing row",
+  "auxLiveTvSettingsPageChannelCategoriesSections": "Channel Categories & Sections",
+  "auxLiveTvSettingsPageToggleVisibilityOfLiveTvRows": "Toggle visibility of Live TV rows",
+  "auxLiveTvSettingsPageResetAll": "Reset All",
+  "auxLiveTvSettingsPagePortalCardDisplayStyle": "Portal Card Display Style",
+  "auxLiveTvSettingsPageShowPortalExpiryDate": "Show Portal Expiry Date",
+  "auxLiveTvSettingsPageDisplaySubscriptionExpirationTagOnPortalCards": "Display subscription expiration tag on portal cards",
+  "auxLiveTvSettingsPageShowMaxActiveConnectionsTag": "Show Max Active Connections Tag",
+  "auxLiveTvSettingsPageDisplayCurrentAndMaxConcurrentStreamingConnections": "Display current and max concurrent streaming connections",
+  "auxLiveTvSettingsPageDefaultStartingTab": "Default Starting Tab",
+  "auxLiveTvSettingsPageXtreamPanels": "Xtream Panels",
+  "auxLiveTvSettingsPageM3uPlaylists": "M3U Playlists",
+  "auxLiveTvSettingsPageCategorySidebarWidth": "Category Sidebar Width",
+  "auxLiveTvSettingsPageDisplayChannelPosterAndLogosInStream": "Display channel poster and logos in stream rows",
+  "auxLiveTvSettingsPageDisplayCurrentTelevisionGuideTitleBelowChannel": "Display current television guide title below channel",
+  "auxLiveTvSettingsPageShowNumberOfAvailableStreamsNextTo": "Show number of available streams next to category names",
+  "auxLiveTvSettingsPageIncludeFreePublicSources": "Include Free Public Sources",
+  "auxMangaSettingsPageEnableMovingAmbientLighting": "Enable Moving Ambient Lighting",
+  "auxMangaSettingsPageDisplayYourActiveReadingHistoryAtThe": "Display your active reading history at the top of the Manga page",
+  "auxMangaSettingsPageMangaPosterCardDensity": "Manga Poster Card Density",
+  "auxMangaSettingsPageShowContentTypeBadgeMangaManhwa": "Show Content Type Badge (Manga/Manhwa)",
+  "auxMangaSettingsPageShowPublicationYearOnCards": "Show Publication Year on Cards",
+  "auxMangaSettingsPagePosterCardHoverGlowEffect": "Poster Card Hover Glow Effect",
+  "auxMangaSettingsPageShowDesktopScrollTrack": "Show Desktop Scroll Track",
+  "auxMangaSettingsPageDefaultReadingMode": "Default Reading Mode",
+  "auxMangaSettingsPageControlToolbarStyle": "Control Toolbar Style",
+  "auxMangaSettingsPageVerticalPageGap": "Vertical Page Gap",
+  "auxMangaSettingsPageShowPageDeckThumbnailPreviews": "Show Page Deck / Thumbnail Previews",
+  "auxMangaSettingsPageInteractiveVisualTrayOfThumbnailPreviewsFor": "Interactive visual tray of thumbnail previews for instant page jumping",
+  "auxMangaSettingsPageShowPageScrubberSlider": "Show Page Scrubber Slider",
+  "auxMangaSettingsPageEnableNextChapterPreviewCardDeck": "Enable Next Chapter Preview Card Deck",
+  "auxMangaSettingsPageRichGlassDeckCardAtTheEnd": "Rich glass deck card at the end of each chapter with chapter art and direct launch",
+  "auxMusicPlayerStudioPageCustomMusicPlayerStudio": "Custom Music Player Studio",
+  "auxMusicPlayerStudioPageDesignTheFullscreenPlayerDragComponentsCustomize": "Design the fullscreen player, drag components, customize physics & liquid glass",
+  "auxMusicPlayerStudioPageApplyActive": "Apply Active",
+  "auxMusicPlayerStudioPageCustomFullscreenPlayerStudioLayoutSetAs": "Custom Fullscreen Player Studio layout set as active player!",
+  "auxMusicPlayerStudioPageFullscreenLiveStudio": "FULLSCREEN LIVE STUDIO",
+  "auxMusicPlayerStudioPageFlac24Bit96khzLossless": "FLAC 24-BIT / 96KHZ LOSSLESS",
+  "auxMusicPlayerStudioPageSyncedLyricsSandbox": "Synced Lyrics Sandbox",
+  "auxMusicPlayerStudioPagePlayingQueueSandbox4Tracks": "Playing Queue Sandbox (4 Tracks)",
+  "auxMusicPlayerStudioPageFullscreenPlayerDragDropArranger": "Fullscreen Player Drag & Drop Arranger",
+  "auxMusicPlayerStudioPageHoldAndDragAnyBlockToReorder": "Hold and drag any block to reorder the layout of your fullscreen player in real-time.",
+  "auxMusicPlayerStudioPageSeekBarCanvasScrubberEngine": "Seek Bar Canvas Scrubber Engine",
+  "auxMusicPlayerStudioPageSelectHowAudioWaveformsAndScrubbingTracks": "Select how audio waveforms and scrubbing tracks render across your music player.",
+  "auxMusicPlayerStudioPagePlayButtonAestheticStyle": "Play Button Aesthetic & Style",
+  "auxMusicPlayerStudioPageHoverTouchPhysicsEngine": "Hover & Touch Physics Engine",
+  "auxMusicPlayerStudioPageSelectTheInteractivePhysicsFeedbackAppliedWhen": "Select the interactive physics feedback applied when hovering or pressing controls.",
+  "auxMusicPlayerStudioPageLivePhysicsTestingPad": "Live Physics Testing Pad",
+  "auxMusicPlayerStudioPageArtworkTurntablePresentation": "Artwork & Turntable Presentation",
+  "auxMusicPlayerStudioPageSelectHowAlbumCoversVinylTurntableAnimations": "Select how album covers, vinyl turntable animations, and cards display in the player.",
+  "auxMusicSettingsPageMusicUiPlayerAtmosphere": "Music UI & Player Atmosphere",
+  "auxMusicSettingsPageMovingBackgroundAmbientLighting": "Moving Background Ambient Lighting",
+  "auxMusicSettingsPageDynamicMovingGlowingOrbsReactingWithYour": "Dynamic moving glowing orbs reacting with your theme accent colors",
+  "auxMusicSettingsPageAmbientLightPattern": "Ambient Light Pattern",
+  "auxMusicSettingsPageShowHeroSpotlightShowcase": "Show Hero Spotlight Showcase",
+  "auxMusicSettingsPageFeaturedBestsellingAlbumTrackShowcaseAtThe": "Featured bestselling album & track showcase at the top of the music page",
+  "auxMusicSettingsPageShowLosslessHiResAudioBadges": "Show Lossless Hi-Res Audio Badges",
+  "auxMusicSettingsPageDisplaysFlacHiResLosslessStreamIndicators": "Displays FLAC / Hi-Res lossless stream indicators on music cards and player",
+  "auxMusicSettingsPageMusicCardGridDensity": "Music Card & Grid Density",
+  "auxMusicSettingsPageFullPlayerEngine": "FULL PLAYER ENGINE",
+  "auxMusicSettingsPageCustomizeTheFullscreenPlayerDragDropBlocks": "Customize the Fullscreen Player. Drag & drop blocks, waveform equalizers, vinyl turntable & liquid glass buttons.",
+  "auxMusicSettingsPageLiveWaveformControlsPreview": "Live Waveform & Controls Preview",
+  "auxMusicSettingsPageOpenFullStudio": "Open Full Studio ➔",
+  "auxMangaReaderControlsReaderAtmosphere": "Reader Atmosphere:",
+  "auxLiveGuideBandUpcomingOnThisChannel": "Upcoming On This Channel",
+  "auxLiveGuideBandNothingElseListedForThisChannel": "Nothing else listed for this channel.",
+  "auxLiveGuideBandNoProgrammeGuideForThisChannelYet": "No programme guide for this channel yet.",
+  "auxLiveGuideBandFindLiveStreams": "Find Live Streams",
+  "auxLiveGuideBandWatchLiveStream": "Watch Live Stream",
+  "auxComicReaderViewZoomOutCtrl": "Zoom Out (Ctrl -)",
+  "auxComicReaderViewZoomInCtrl": "Zoom In (Ctrl +)",
+  "auxComicReaderViewResetZoom100": "Reset Zoom (100%)",
+  "auxFocusModeViewFocusModeActive": "Focus Mode Active",
+  "auxFocusModeViewExitFocusMode": "Exit Focus Mode",
+  "auxFocusModeViewExitEsc": "Exit (Esc)",
+  "auxFocusModeViewTapAboveBelowToMoveKeysTo": "Tap above/below to move · ↑ ↓ keys to navigate",
+  "auxFocusModeViewPreviousLineUpArrow": "Previous Line (Up Arrow)",
+  "auxFocusModeViewNextLineDownArrowSpace": "Next Line (Down Arrow / Space)",
+  "auxReaderCustomizationSheetAppearance": "Appearance",
+  "auxReaderCustomizationSheetLight": "Light",
+  "auxReaderCustomizationSheetSepia": "Sepia",
+  "auxReaderCustomizationSheetDark": "Dark",
+  "auxReaderCustomizationSheetContinuousScroll": "Continuous Scroll",
+  "auxReaderCustomizationSheetPaginatedTurns": "Paginated Turns",
+  "dynamicAnimeCardEps": "{v1} EPS",
+  "@dynamicAnimeCardEps": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMultinutzChannelSheetCopied": "Copied: {v1}",
+  "@dynamicMultinutzChannelSheetCopied": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMultinutzChannelSheetExpires": "Expires: {v1}",
+  "@dynamicMultinutzChannelSheetExpires": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMultinutzChannelSheetConnections": "Connections: {v1}/{v2}",
+  "@dynamicMultinutzChannelSheetConnections": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMultinutzChannelSheetLiveChannels": "{v1} live channels",
+  "@dynamicMultinutzChannelSheetLiveChannels": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMultinutzChannelSheetChannels": "{v1} channels",
+  "@dynamicMultinutzChannelSheetChannels": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicPlayerEpisodesPanelEpisodes": "{v1} • {v2} Episodes",
+  "@dynamicPlayerEpisodesPanelEpisodes": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicPlayerEpisodesPanelEp": "EP {v1}",
+  "@dynamicPlayerEpisodesPanelEp": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicPlayerSourcesPanelEpisode": "Episode {v1}",
+  "@dynamicPlayerSourcesPanelEpisode": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicPlayerSourcesPanelSE": "S{v1} : E{v2}",
+  "@dynamicPlayerSourcesPanelSE": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicPlayerSourcesPanelAllProvidersWatchingVia": "All providers · watching via {v1}",
+  "@dynamicPlayerSourcesPanelAllProvidersWatchingVia": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicTextSyncOverlayErrorSavingSync": "Error saving sync: {v1}",
+  "@dynamicTextSyncOverlayErrorSavingSync": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMagnetFilesView": "{v1} {v2}",
+  "@dynamicMagnetFilesView": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMagnetFilesView2": "{v1} {v2}",
+  "@dynamicMagnetFilesView2": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicUpdateDialogVersion": "Version {v1}",
+  "@dynamicUpdateDialogVersion": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicUpdateDialogDownloadFailed": "Download failed: {v1}",
+  "@dynamicUpdateDialogDownloadFailed": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicWewatchQuizPage3Rated": "{v1}/3 rated",
+  "@dynamicWewatchQuizPage3Rated": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicWewatchQuizPageCinemaPicksTailoredToYourTaste": "{v1} cinema picks tailored to your taste profile",
+  "@dynamicWewatchQuizPageCinemaPicksTailoredToYourTaste": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicWewatchQuizPageMatch": "{v1}% match",
+  "@dynamicWewatchQuizPageMatch": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAnimeDetailsPageEp": "{v1} Ep{v2}",
+  "@dynamicAnimeDetailsPageEp": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAnimePageEpisode": "Episode {v1}",
+  "@dynamicAnimePageEpisode": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAnimePageCurrentlyAiringHits": "Currently airing hits · {v1}",
+  "@dynamicAnimePageCurrentlyAiringHits": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAnimeSearchPageSort": "Sort: {v1}",
+  "@dynamicAnimeSearchPageSort": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAnimeStreamSheetEpisode": "{v1} - Episode {v2}",
+  "@dynamicAnimeStreamSheetEpisode": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAnimeStreamSheetEp": "{v1} • Ep {v2}",
+  "@dynamicAnimeStreamSheetEp": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAnimeStreamSheetNoSourcesFound": "No {v1} sources found.",
+  "@dynamicAnimeStreamSheetNoSourcesFound": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAnimeArabicDetailsPageWatchEpisode": "Watch episode {v1}",
+  "@dynamicAnimeArabicDetailsPageWatchEpisode": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAnimeArabicDetailsPageEp": "EP {v1}",
+  "@dynamicAnimeArabicDetailsPageEp": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAnimeArabicStreamSheetEpisode": "{v1} - Episode {v2}",
+  "@dynamicAnimeArabicStreamSheetEpisode": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAudiobooksPageLeft": "{v1} left",
+  "@dynamicAudiobooksPageLeft": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAudiobooksPageLocal": "{v1} • Local",
+  "@dynamicAudiobooksPageLocal": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAudiobooksPageCompleted": "{v1}% completed",
+  "@dynamicAudiobooksPageCompleted": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAudiobookPlayerScreenChapterOf": "Chapter {v1} of {v2} • {v3}",
+  "@dynamicAudiobookPlayerScreenChapterOf": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      },
+      "v3": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAudiobookPlayerScreenChapters": "{v1} CHAPTERS",
+  "@dynamicAudiobookPlayerScreenChapters": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicGenerateAudiobookScreenGenerationFailed": "Generation failed: {v1}",
+  "@dynamicGenerateAudiobookScreenGenerationFailed": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicGenerateAudiobookScreenRemoveFromTheGenerationList": "Remove \"{v1}\" from the generation list?",
+  "@dynamicGenerateAudiobookScreenRemoveFromTheGenerationList": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicGenerateAudiobookScreenSelectedAudioFileS": "Selected {v1} audio file(s):",
+  "@dynamicGenerateAudiobookScreenSelectedAudioFileS": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicGenerateAudiobookScreenGenerationQueueCompleted": "GENERATION QUEUE & COMPLETED ({v1})",
+  "@dynamicGenerateAudiobookScreenGenerationQueueCompleted": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicGenerateAudiobookScreenDownloadedBooksFromLibrary": "DOWNLOADED BOOKS FROM LIBRARY ({v1})",
+  "@dynamicGenerateAudiobookScreenDownloadedBooksFromLibrary": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicGenerateAudiobookScreenSizeMb": "Size: {v1} MB",
+  "@dynamicGenerateAudiobookScreenSizeMb": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicGenerateAudiobookScreenVoice": "Voice: {v1}",
+  "@dynamicGenerateAudiobookScreenVoice": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicGenerateAudiobookScreenImportedAudiobooks": "IMPORTED AUDIOBOOKS ({v1})",
+  "@dynamicGenerateAudiobookScreenImportedAudiobooks": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicGenerateAudiobookScreenPartSMb": "{v1} • {v2} part(s) ({v3} MB)",
+  "@dynamicGenerateAudiobookScreenPartSMb": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      },
+      "v3": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicGenerateAudiobookScreenDeleteFromYourLibrary": "Delete \"{v1}\" from your library?",
+  "@dynamicGenerateAudiobookScreenDeleteFromYourLibrary": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicBookDetailSheetFailedToDownloadBook": "Failed to download book: {v1}",
+  "@dynamicBookDetailSheetFailedToDownloadBook": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicBookDetailSheetCompleted": "{v1}% Completed",
+  "@dynamicBookDetailSheetCompleted": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicEpubReaderPageChOf": "Ch. {v1} of {v2}",
+  "@dynamicEpubReaderPageChOf": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicEpubReaderPageMinLeft": "{v1}% · ~{v2} min left",
+  "@dynamicEpubReaderPageMinLeft": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicPdfReaderPagePageOf": "Page {v1} of {v2}",
+  "@dynamicPdfReaderPagePageOf": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicDiscoverPageSelect": "Select {v1}{v2}",
+  "@dynamicDiscoverPageSelect": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicDiscoverPageEnter": "Enter {v1}",
+  "@dynamicDiscoverPageEnter": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicDiscoverPageTypeHere": "Type {v1} here...",
+  "@dynamicDiscoverPageTypeHere": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicDiscoverPageAll": "All {v1}",
+  "@dynamicDiscoverPageAll": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicDiscoverPageBy": "by {v1}",
+  "@dynamicDiscoverPageBy": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicDiscoverPageNoResultsFoundFor": "No results found for \"{v1}\"",
+  "@dynamicDiscoverPageNoResultsFoundFor": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicDownloadsPagePeers": "{v1} peers",
+  "@dynamicDownloadsPagePeers": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicDownloadsPageFolder": "Folder: {v1}",
+  "@dynamicDownloadsPageFolder": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicDownloadsPagePath": "Path: {v1}",
+  "@dynamicDownloadsPagePath": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicDownloadsPageDeviceStorageUsedOf": "Device Storage: {v1} Used of {v2}",
+  "@dynamicDownloadsPageDeviceStorageUsedOf": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicDownloadsPageFree": "{v1} Free",
+  "@dynamicDownloadsPageFree": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvChannelSheetRemovedStreamFeed": "Removed {v1} stream feed{v2}",
+  "@dynamicIptvChannelSheetRemovedStreamFeed": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvChannelSheetSearchChannelsEG1080p4k": "Search {v1} channels (e.g. 1080p, 4K, feed name)...",
+  "@dynamicIptvChannelSheetSearchChannelsEG1080p4k": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvChannelSheetDelete": "Delete ({v1})",
+  "@dynamicIptvChannelSheetDelete": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvChannelSheetNoFeedsMatch": "No feeds match \"{v1}\"",
+  "@dynamicIptvChannelSheetNoFeedsMatch": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvPageChannels": "{v1} CHANNELS",
+  "@dynamicIptvPageChannels": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvPortalsModalRemovedPortal": "Removed {v1} portal{v2}",
+  "@dynamicIptvPortalsModalRemovedPortal": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvPortalsModalRemovedAllPortals": "Removed all {v1} portals",
+  "@dynamicIptvPortalsModalRemovedAllPortals": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvPortalsModalRemovedPlaylist": "Removed {v1} playlist{v2}",
+  "@dynamicIptvPortalsModalRemovedPlaylist": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvPortalsModalRemovedAllPlaylists": "Removed all {v1} playlists",
+  "@dynamicIptvPortalsModalRemovedAllPlaylists": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvPortalsModalDelete": "Delete ({v1})",
+  "@dynamicIptvPortalsModalDelete": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvPortalsModalCopied": "Copied: {v1}",
+  "@dynamicIptvPortalsModalCopied": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvPortalsModalExpires": "Expires: {v1}",
+  "@dynamicIptvPortalsModalExpires": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvPortalsModalConnections": "Connections: {v1}/{v2}",
+  "@dynamicIptvPortalsModalConnections": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvPortalsModalCh": "{v1} ch",
+  "@dynamicIptvPortalsModalCh": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvPortalBrowserPageCols": "{v1} Cols",
+  "@dynamicIptvPortalBrowserPageCols": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvPortalBrowserPageTotal": "{v1} total",
+  "@dynamicIptvPortalBrowserPageTotal": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvPortalBrowserPageExpiry": "Expiry: {v1}",
+  "@dynamicIptvPortalBrowserPageExpiry": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvPortalBrowserPageConnections": "Connections: {v1}/{v2}",
+  "@dynamicIptvPortalBrowserPageConnections": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicIptvPortalBrowserPageConn": "Conn: {v1}/{v2} • {v3}",
+  "@dynamicIptvPortalBrowserPageConn": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      },
+      "v3": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMangaDetailsPagePageOf": "Page {v1} of {v2}",
+  "@dynamicMangaDetailsPagePageOf": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMangaReaderPagePageOf": "Page {v1} of {v2}",
+  "@dynamicMangaReaderPagePageOf": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMangaReaderPagePage": "Page {v1} / {v2}",
+  "@dynamicMangaReaderPagePage": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMultinutzPageStreamUrlFor": "Stream URL for {v1}",
+  "@dynamicMultinutzPageStreamUrlFor": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMultinutzPageStream": "{v1} Stream{v2}",
+  "@dynamicMultinutzPageStream": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMusicPageTracks": "{v1} tracks",
+  "@dynamicMusicPageTracks": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMusicPageTracks2": "Tracks ({v1})",
+  "@dynamicMusicPageTracks2": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMusicPageArtists": "Artists ({v1})",
+  "@dynamicMusicPageArtists": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMusicPageAlbums": "Albums ({v1})",
+  "@dynamicMusicPageAlbums": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMusicPagePlaylists": "Playlists ({v1})",
+  "@dynamicMusicPagePlaylists": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMusicPageFavouriteTracks": "{v1} favourite tracks",
+  "@dynamicMusicPageFavouriteTracks": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMusicPageQueue": "Queue ({v1})",
+  "@dynamicMusicPageQueue": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMusicPageOfflineTracksMb": "{v1} offline tracks • {v2} MB",
+  "@dynamicMusicPageOfflineTracksMb": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMusicPageDownloading": "Downloading {v1}%",
+  "@dynamicMusicPageDownloading": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMusicPageAddedToDownloadQueue": "Added \"{v1}\" to download queue",
+  "@dynamicMusicPageAddedToDownloadQueue": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMusicPageAddedTracksFromToDownloadQueue": "Added {v1} tracks from \"{v2}\" to download queue",
+  "@dynamicMusicPageAddedTracksFromToDownloadQueue": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMusicPageCuratedByTracks": "Curated by {v1} • {v2} tracks",
+  "@dynamicMusicPageCuratedByTracks": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMusicPageAddedTracksFromToDownloadQueue2": "Added {v1} tracks from \"{v2}\" to download queue",
+  "@dynamicMusicPageAddedTracksFromToDownloadQueue2": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMusicPageCustomPlaylistTracks": "Custom Playlist • {v1} tracks",
+  "@dynamicMusicPageCustomPlaylistTracks": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMusicPageOfflineTracksMbStorage": "{v1} offline tracks • {v2} MB storage",
+  "@dynamicMusicPageOfflineTracksMbStorage": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMusicPageDeleteFromOfflineStorage": "Delete \"{v1}\" from offline storage?",
+  "@dynamicMusicPageDeleteFromOfflineStorage": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMusicPageInQueue": "{v1} in queue",
+  "@dynamicMusicPageInQueue": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicPlayerScreenAudio": "Audio {v1}",
+  "@dynamicPlayerScreenAudio": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAboutSettingsPageVersionNextGenStreamingHub": "Version {v1} • Next-Gen Streaming Hub",
+  "@dynamicAboutSettingsPageVersionNextGenStreamingHub": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAddonsSettingsPageConnectedTo": "{v1} connected to {v2}",
+  "@dynamicAddonsSettingsPageConnectedTo": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAddonsSettingsPageInstalledSuccessfully": "{v1} installed successfully!",
+  "@dynamicAddonsSettingsPageInstalledSuccessfully": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAddonsSettingsPageRemove": "Remove {v1}?",
+  "@dynamicAddonsSettingsPageRemove": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAddonsSettingsPageSuccessfullyInstalledPluginsFromRepository": "Successfully installed {v1} plugins from repository!",
+  "@dynamicAddonsSettingsPageSuccessfullyInstalledPluginsFromRepository": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAddonsSettingsPageInstallationError": "Installation error: {v1}",
+  "@dynamicAddonsSettingsPageInstallationError": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAddonsSettingsPageRemove2": "Remove ({v1})",
+  "@dynamicAddonsSettingsPageRemove2": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAddonsSettingsPageTotal": "{v1} Total",
+  "@dynamicAddonsSettingsPageTotal": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAddonsSettingsPageRepos": "{v1} Repos",
+  "@dynamicAddonsSettingsPageRepos": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAddonsSettingsPageRuntimeSetupError": "Runtime setup error: {v1}",
+  "@dynamicAddonsSettingsPageRuntimeSetupError": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicBuiltinProvidersSettingsPageNoProvidersFoundMatching": "No providers found matching \"{v1}\"",
+  "@dynamicBuiltinProvidersSettingsPageNoProvidersFoundMatching": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicBuiltinProvidersSettingsPageAllZplayhttpProvidersAreActiveAnd": "All {v1} ZPlayHTTP providers are active and queried concurrently.",
+  "@dynamicBuiltinProvidersSettingsPageAllZplayhttpProvidersAreActiveAnd": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicBuiltinProvidersSettingsPageActive": "{v1} / {v2} Active",
+  "@dynamicBuiltinProvidersSettingsPageActive": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicCloudstreamMarketplaceModalAddedSuccessfully": "{v1} added successfully!",
+  "@dynamicCloudstreamMarketplaceModalAddedSuccessfully": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicCloudstreamMarketplaceModalInstallPlugins": "Install {v1} Plugins?",
+  "@dynamicCloudstreamMarketplaceModalInstallPlugins": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicCloudstreamMarketplaceModalPluginsInstalledAndReady": "{v1} plugins installed and ready!",
+  "@dynamicCloudstreamMarketplaceModalPluginsInstalledAndReady": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicCloudstreamMarketplaceModalInstallationError": "Installation error: {v1}",
+  "@dynamicCloudstreamMarketplaceModalInstallationError": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicCloudstreamMarketplaceModalReposDirectInstallLinksVerifiedProviders": "{v1} repos · Direct install links & verified providers",
+  "@dynamicCloudstreamMarketplaceModalReposDirectInstallLinksVerifiedProviders": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicCloudstreamMarketplaceModalNoRepositoriesFoundFor": "No repositories found for \"{v1}\"",
+  "@dynamicCloudstreamMarketplaceModalNoRepositoriesFoundFor": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicCloudstreamMarketplaceModalPlugins": "{v1} Plugins",
+  "@dynamicCloudstreamMarketplaceModalPlugins": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicCloudstreamMarketplaceModalCopiedLink": "Copied link: {v1}",
+  "@dynamicCloudstreamMarketplaceModalCopiedLink": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicCloudstreamRepoModalInstalledSuccessfully": "{v1} installed successfully!",
+  "@dynamicCloudstreamRepoModalInstalledSuccessfully": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicCloudstreamRepoModalUninstalled": "{v1} uninstalled.",
+  "@dynamicCloudstreamRepoModalUninstalled": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicCloudstreamRepoModalSuccessfullyInstalledPlugins": "Successfully installed {v1} plugins!",
+  "@dynamicCloudstreamRepoModalSuccessfullyInstalledPlugins": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicCloudstreamRepoModalInstallationError": "Installation error: {v1}",
+  "@dynamicCloudstreamRepoModalInstallationError": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicCloudstreamRepoModalUninstallAllInstalledPluginsFromThis": "Uninstall all {v1} installed plugins from this list? Their downloaded files will be removed.",
+  "@dynamicCloudstreamRepoModalUninstallAllInstalledPluginsFromThis": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicCloudstreamRepoModalRemoveAll": "Remove All ({v1})",
+  "@dynamicCloudstreamRepoModalRemoveAll": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicCloudstreamRepoModalSuccessfullyUninstalledPlugins": "Successfully uninstalled {v1} plugins.",
+  "@dynamicCloudstreamRepoModalSuccessfullyUninstalledPlugins": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicCloudstreamRepoModalInstallAll": "Install All ({v1})",
+  "@dynamicCloudstreamRepoModalInstallAll": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicServiceKeysSettingsPagePasteYourKey": "Paste your {v1} key",
+  "@dynamicServiceKeysSettingsPagePasteYourKey": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicUpdatesSettingsPageErrorCheckingUpdates": "Error checking updates: {v1}",
+  "@dynamicUpdatesSettingsPageErrorCheckingUpdates": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicUpdatesSettingsPageInstalledVersionVBuild": "Installed Version: v{v1} (Build {v2})",
+  "@dynamicUpdatesSettingsPageInstalledVersionVBuild": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      },
+      "v2": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAudiobookPlayerStudioPageXSpeed": "{v1}x Speed",
+  "@dynamicAudiobookPlayerStudioPageXSpeed": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAudiobookPlayerStudioPagePosition": "Position #{v1}",
+  "@dynamicAudiobookPlayerStudioPagePosition": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAudiobookPlayerStudioPageHoverOrTapBelowToPreview": "Hover or tap below to preview \"{v1}\":",
+  "@dynamicAudiobookPlayerStudioPageHoverOrTapBelowToPreview": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAudiobookPlayerStudioPageTest": "Test \"{v1}\"",
+  "@dynamicAudiobookPlayerStudioPageTest": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicAudiobookSettingsPageSoftFlowingGlowingOrbsAndAurora": "Soft flowing glowing orbs and aurora waves themed to {v1}",
+  "@dynamicAudiobookSettingsPageSoftFlowingGlowingOrbsAndAurora": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicHomeUiSettingsPageIntervalS": "Interval: {v1}s",
+  "@dynamicHomeUiSettingsPageIntervalS": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicLiveTvSettingsPageSeconds": "{v1} seconds",
+  "@dynamicLiveTvSettingsPageSeconds": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicLiveTvSettingsPageColumns": "{v1} Columns",
+  "@dynamicLiveTvSettingsPageColumns": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMangaSettingsPageSoftFlowingGlowingOrbsAndAurora": "Soft flowing glowing orbs and aurora waves themed to {v1}",
+  "@dynamicMangaSettingsPageSoftFlowingGlowingOrbsAndAurora": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMangaReaderControlsPageMode": "Page Mode: {v1}",
+  "@dynamicMangaReaderControlsPageMode": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicMangaReaderControlsAtmosphere": "Atmosphere: {v1}",
+  "@dynamicMangaReaderControlsAtmosphere": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "dynamicLiveGuideBandNowAiringOn": "Now Airing on {v1}",
+  "@dynamicLiveGuideBandNowAiringOn": {
+    "placeholders": {
+      "v1": {
+        "type": "String"
+      }
+    }
+  },
+  "mediaLabelAction": "Action",
+  "mediaLabelAdventure": "Adventure",
+  "mediaLabelComedy": "Comedy",
+  "mediaLabelDrama": "Drama",
+  "mediaLabelEcchi": "Ecchi",
+  "mediaLabelFantasy": "Fantasy",
+  "mediaLabelHentai": "Hentai",
+  "mediaLabelHorror": "Horror",
+  "mediaLabelMahouShoujo": "Mahou Shoujo",
+  "mediaLabelMecha": "Mecha",
+  "mediaLabelMusic": "Music",
+  "mediaLabelMystery": "Mystery",
+  "mediaLabelPsychological": "Psychological",
+  "mediaLabelRomance": "Romance",
+  "mediaLabelSciFi": "Sci-Fi",
+  "mediaLabelScienceFiction": "Science Fiction",
+  "mediaLabelSliceOfLife": "Slice of Life",
+  "mediaLabelSports": "Sports",
+  "mediaLabelSupernatural": "Supernatural",
+  "mediaLabelThriller": "Thriller",
+  "mediaLabelAnimation": "Animation",
+  "mediaLabelDocumentary": "Documentary",
+  "mediaLabelCrime": "Crime",
+  "mediaLabelFamily": "Family",
+  "mediaLabelHistory": "History",
+  "mediaLabelWar": "War",
+  "mediaLabelWestern": "Western",
+  "mediaLabelBiography": "Biography",
+  "mediaLabelSport": "Sport",
+  "mediaLabelMusical": "Musical",
+  "mediaLabelFilmNoir": "Film-Noir",
+  "mediaLabelActionAdventure": "Action & Adventure",
+  "mediaLabelSciFiFantasy": "Sci-Fi & Fantasy",
+  "mediaLabelWarPolitics": "War & Politics",
+  "mediaLabelKids": "Kids",
+  "mediaLabelReality": "Reality",
+  "mediaLabelTalk": "Talk",
+  "mediaLabelNews": "News",
+  "mediaLabelSoap": "Soap",
+  "mediaLabelTvMovie": "TV Movie",
+  "mediaLabelWinter": "WINTER",
+  "mediaLabelSpring": "SPRING",
+  "mediaLabelSummer": "SUMMER",
+  "mediaLabelFall": "FALL",
+  "mediaLabelTv": "TV",
+  "mediaLabelTvShort": "TV_SHORT",
+  "mediaLabelMovie": "MOVIE",
+  "mediaLabelOva": "OVA",
+  "mediaLabelOna": "ONA",
+  "mediaLabelSpecial": "SPECIAL",
+  "mediaLabelMusic50": "MUSIC",
+  "mediaLabelReleasing": "RELEASING",
+  "mediaLabelFinished": "FINISHED",
+  "mediaLabelNotYetReleased": "NOT_YET_RELEASED",
+  "mediaLabelCancelled": "CANCELLED",
+  "mediaLabelHiatus": "HIATUS",
+  "mediaLabelTrending": "Trending",
+  "mediaLabelMostPopular": "Most Popular",
+  "mediaLabelTopRated": "Top Rated",
+  "mediaLabelMostFavorited": "Most Favorited",
+  "mediaLabelNewest": "Newest",
+  "mediaLabelOldest": "Oldest",
+  "mediaLabelTitleAZ": "Title (A-Z)",
+  "mediaLabelNewSeason": "New season",
+  "mediaLabelNewEpisode": "New episode",
+  "mediaLabelNewRelease": "New release",
+  "mediaLabelMovie66": "Movie",
+  "mediaLabelSeries": "Series",
+  "mediaLabelAnime": "Anime",
+  "mediaLabelInLibrary": "In Library",
+  "mediaLabelLibrary": "Library",
+  "mediaLabelShowLess": "Show less",
+  "mediaLabelReadMore": "Read more",
+  "mediaLabelYear": "Year",
+  "mediaLabelMuted": "Muted",
+  "mediaLabelDownloading": "Downloading...",
+  "mediaLabelDownloadMedia": "Download Media",
+  "mediaLabelLiveAction": "Live action",
+  "mediaLabelUseWithCare": "Use with care",
+  "mediaLabelFasterAt4k": "Faster at 4K",
+  "mediaLabelMostFeatures": "Most features",
+  "mediaLabelSortBy": "Sort by",
+  "mediaLabelRequired": "Required *",
+  "mediaLabelEnter": "Enter",
+  "mediaLabelAll": "All",
+  "mediaLabelGenre": "Genre",
+  "mediaLabelSeason": "Season",
+  "mediaLabelFormat": "Format",
+  "mediaLabelStatus": "Status",
+  "mediaLabelClear": "Clear",
+  "mediaLabelRetry": "Retry",
+  "mediaLabelPlay": "Play",
+  "mediaLabelAdd": "Add",
+  "mediaLabelCopyStreamUrl": "Copy Stream URL",
+  "mediaLabelCustomBackgroundWallpaper": "Custom Background & Wallpaper",
+  "mediaLabelHomePageUiThemes": "Home Page UI & Themes",
+  "mediaLabelTvAiringCalendar": "TV Airing Calendar",
+  "mediaLabelLiveTvSportsUi": "Live TV & Sports UI",
+  "mediaLabelMangaUiReaderAtmosphere": "Manga UI & Reader Atmosphere",
+  "mediaLabelPasteFromClipboard": "Paste from Clipboard",
+  "videoUpscalingExplanation": "Real-time GLSL upscaling on the video engine. Anime4K reconstructs line art; AMD FSR upscales live action and film. Pick one family — they are never combined.",
+  "videoFsrSmoothExplanation": "AMD FidelityFX edge-adaptive upscaling, for live action and film. Upscales without sharpening, so it is the safe FSR option. Runs on any GPU, unlike NVIDIA RTX Video.",
+  "videoFsrSharpExplanation": "FSR with contrast-adaptive sharpening. Adds bite to soft or low-bitrate video. On a 2K or 4K source this can look worse than no upscaling at all.",
+  "videoMedia3Explanation": "Decodes straight into a surface, so 4K arrives without being copied out of the decoder first. On a 2 GB television that is the difference between 904 ms and over 1,900 ms of delay, and between no dropped frames and one and a half a second. Subtitles are rendered by Android, so the styling options below do not apply here.",
+  "videoMpvExplanation": "The bundled engine. Plays torrents and live streams, offers the complete subtitle styling surface below, and supports the upscaling presets. Decoded frames are copied through a texture, which is what makes 4K stutter on small televisions.",
+  "videoWatchdogExplanation": "Monitors stream startup. If audio plays for 2.5s without video frames, or a GPU decoder error occurs, the player recovers automatically. On Android it switches to software decoding only up to 1080p and re-syncs the hardware decoder above that, because a software 4K decoder needs more memory than the device has. A source that is merely not delivering data yet is waited on rather than treated as a decoder fault.",
+  "catalogLabelMovies": "Movies",
+  "catalogLabelSeries": "SERIES",
+  "catalogLabelAnime": "ANIME",
+  "catalogLabelChannels": "Channels",
+  "catalogLabelCollections": "Collections",
+  "catalogLabelAdult": "Adult",
+  "catalogLabelBrowse": "Browse",
+  "catalogLabelPopular": "Popular",
+  "catalogLabelTop": "Top",
+  "catalogLabelTrendingMovies": "Trending Movies",
+  "catalogLabelTrendingSeries": "Trending Series",
+  "catalogLabelTrendingAnime": "Trending Anime",
+  "catalogLabelPopularMovies": "Popular Movies",
+  "catalogLabelPopularSeries": "Popular Series",
+  "catalogLabelPopularAnime": "Popular Anime",
+  "catalogLabelPopularTvShows": "Popular TV Shows",
+  "catalogLabelNewMovies": "New Movies",
+  "catalogLabelNewSeries": "New Series",
+  "catalogLabelNewAnime": "New Anime",
+  "catalogLabelTopRatedMovies": "Top Rated Movies",
+  "catalogLabelTopRatedSeries": "Top Rated Series",
+  "catalogLabelTopRatedAnime": "Top Rated Anime",
+  "catalogLabelFeatured": "Featured",
+  "catalogLabelLatest": "Latest",
+  "catalogLabelLatestMovies": "Latest Movies",
+  "catalogLabelLatestSeries": "Latest Series",
+  "catalogLabelRecentlyAdded": "Recently Added",
+  "catalogLabelNewReleases": "New Releases",
+  "catalogLabelContinueWatching": "Continue Watching",
+  "catalogLabelGenres": "Genres",
+  "catalogLabelYears": "Years",
+  "catalogLabelLanguages": "Languages",
+  "catalogLabelCountries": "Countries",
+  "catalogLabelRegions": "Regions",
+  "catalogLabelGenre": "genre",
+  "catalogLabelYear": "year",
+  "catalogLabelLanguage": "language",
+  "catalogLabelCountry": "country",
+  "catalogLabelRegion": "region",
+  "catalogLabelSearch": "search",
+  "catalogLabelSort": "sort",
+  "catalogLabelSortby": "sortBy",
+  "catalogLabelRequired": "Required",
+  "catalogLabelCustom": "Custom",
+  "catalogLabelSearch44": "Search...",
+  "catalogLabelDiscoverTheLatestAndGreatestFilms": "Discover the latest and greatest films",
+  "catalogLabelBingeWorthyShowsAndTheNewestSeasons": "Binge-worthy shows and the newest seasons",
+  "catalogLabelSimulcastsClassicsAndEverythingInBetween": "Simulcasts, classics and everything in between",
+  "catalogLabelLiveChannelsFromYourAddons": "Live channels from your addons",
+  "catalogLabelEverythingYourAddonsHaveToOffer": "Everything your addons have to offer",
+  "catalogLabelAddToList": "ADD TO LIST",
+  "catalogLabelWatching": "WATCHING",
+  "catalogLabelPlantowatch": "PLANTOWATCH",
+  "catalogLabelPlanToWatch": "PLAN_TO_WATCH",
+  "catalogLabelCompleted": "COMPLETED",
+  "catalogLabelDropped": "DROPPED",
+  "catalogLabelFindingAWorkingSource": "Finding a working source…",
+  "catalogLabelFindBestSource": "Find best source",
+  "catalogLabelChooseAnotherSource": "Choose another source",
+  "catalogLabelSub": "Sub",
+  "catalogLabelDub": "Dub",
+  "catalogLabelSub61": "SUB",
+  "catalogLabelDub62": "DUB",
+  "catalogLabelAll": "ALL",
+  "discoverSortCatalog": "Sort by: {name}",
+  "@discoverSortCatalog": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "discoverSearchWithin": "Search within {catalog}...",
+  "@discoverSearchWithin": {
+    "placeholders": {
+      "catalog": {
+        "type": "String"
+      }
+    }
+  },
+  "discoverRequiredFields": "This catalog requires selecting {fields} before loading titles.",
+  "@discoverRequiredFields": {
+    "placeholders": {
+      "fields": {
+        "type": "String"
+      }
+    }
+  },
+  "discoverDefaultCatalog": "catalog",
+  "updateChecksumWarning": "This release does not publish a SHA-256 checksum, so Kiru will not install it automatically. Open the release page and verify the download yourself before installing it.",
+  "playerExternalSubtitleEngine": "External subtitle files need the mpv engine. Pick an embedded track instead.",
+  "aboutUpstreamLicense": "ZPlay is a modified version of PlayTorrio V3, distributed under the GNU General Public License v3.0. Tap to read the licence.",
+  "addonCredentialSharingWarning": "This addon URL contains a Debrid placeholder. Kiru will fill it with your saved key, so the addon server receives that key in the request URL. Only continue if you trust this addon.",
+  "addonCredentialPlaceholderHelp": "Addons that take the key as a plain URL parameter accept a {example} style placeholder. Addons that hide it inside a base64 config blob have to be pasted fully configured instead.",
+  "@addonCredentialPlaceholderHelp": {
+    "placeholders": {
+      "example": {
+        "type": "String"
+      }
+    }
+  },
+  "appearanceSkiaRecommendation": "Skia is recommended on Windows here — Impeller coincided with an NVIDIA driver crash.",
+  "serviceKeysIntroduction": "Kiru talks to several third-party services. Any key you save here replaces the one this build uses and takes effect immediately, with no restart.",
+  "serviceKeysExternalCredentials": "These cannot be obtained: each is a credential for a third-party service that did not issue it to ZPlay, so leave its field blank unless you have your own. A private build can supply its own with --dart-define, and blanking the registry entry in the source disables only that one source.",
+  "serviceKeysStorageNotice": "Every value is stored only on this device and is never shown back in these fields.",
+  "tmdbKeyIntroduction": "Add your own free TMDb key to rank the six \"The 90s\" rails by TMDb vote counts, and to cover the TMDb lookups the built-in scrapers make. Get a key at themoviedb.org.",
+  "tmdbKeyStorageNotice": "The key is stored only on this device. This app ships with no key, and a built-in fallback keeps the scraper lookups working without one. Clearing your key restores the built-in 1990s picks.",
+  "traktPairingRejected": "Trakt rejected the pairing request. Check the Client ID in Settings > Service API Keys - and add the Client Secret if Trakt requires one for your app.",
+  "homeHideArtlessRailsHelp": "Drops a Home rail when none of its titles can show a picture. A landscape tile has no name under it, so such a rail is a row of blank rectangles.",
+  "p2pPrivacyHeading": "PRIVACY & NETWORK ADVISORY",
+  "updateAvailableHeading": "UPDATE AVAILABLE",
+  "updateWhatsNewHeading": "WHAT'S NEW",
+  "cardTopRank": "TOP",
+  "channelLiveBadge": "LIVE",
+  "channelLiveBroadcast": "LIVE BROADCAST",
+  "channelFreeBadge": "FREE",
+  "multiStreamsHeading": "MULTI STREAMS",
+  "copyPlaybackUrl": "Copy Stream URL",
+  "commonAddAction": "Add",
+  "appearanceCustomWallpaper": "Custom Background & Wallpaper",
+  "commonPasteClipboard": "Paste from Clipboard",
+  "appearanceHomeTitle": "Home Page UI & Themes",
+  "homeBecauseWatching": "\"Because You're Watching...\"",
+  "homeAiringCalendar": "TV Airing Calendar",
+  "appearanceLiveTvTitle": "Live TV & Sports UI",
+  "appearancePublicPlaylistHelp": "Add public M3U playlists (e.g. iptv-org) to a channel's stream list",
+  "appearanceMangaTitle": "Manga UI & Reader Atmosphere",
+  "traktPairingClientIdRequired": "Trakt needs a Client ID before it can pair. Create an app at {url}, then paste its Client ID in Settings > Service API Keys. The Client Secret is optional.",
+  "@traktPairingClientIdRequired": {
+    "placeholders": {
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "playerSourceRetrySemantics": "Testing other sources. Trying {source}. Attempt {attempt} of {total}.",
+  "@playerSourceRetrySemantics": {
+    "placeholders": {
+      "source": {
+        "type": "String"
+      },
+      "attempt": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "animeEpisodeCount": "{count, plural, one{1 episode} other{{count} episodes}}",
+  "@animeEpisodeCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "animeTitleDataAttribution": "Chinese anime titles · bangumi-data v0.3.237 · CC BY 4.0",
+  "animeCastHeading": "Characters & Cast",
+  "animeRelationsHeading": "Franchise & Relations",
+  "animeRecommendationsHeading": "You May Also Like",
+  "channelGuideWaiting": "Programme data appears once a verified live feed for {channel} is available.",
+  "@channelGuideWaiting": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "finalPlayerSubStyleModalTypography": "Typography",
+  "finalPlayerSubStyleModalColorsBox": "Colors & Box",
+  "finalPlayerSubStyleModalOutlineShadow": "Outline & Shadow",
+  "finalPlayerSubStyleModalPosition": "Position",
+  "finalPlayerSubStyleModalAdvancedAss": "Advanced / ASS",
+  "finalPlayerSubStyleModalFontFamily": "FONT FAMILY",
+  "finalPlayerSubStyleModalSubtitleTextColor": "SUBTITLE TEXT COLOR",
+  "finalPlayerSubStyleModalBackgroundBoxAccessibilityReadability": "BACKGROUND BOX (ACCESSIBILITY & READABILITY)",
+  "finalPlayerSubStyleModalOutlineBorderColor": "OUTLINE / BORDER COLOR",
+  "finalPlayerSubStyleModalHorizontalAlignment": "HORIZONTAL ALIGNMENT",
+  "finalPlayerSubStyleModalSubtitleRenderingEngine": "SUBTITLE RENDERING ENGINE",
+  "finalPlayerSubStyleModalSsaAssFansubScriptOverrideMode": "SSA / ASS FANSUB SCRIPT OVERRIDE MODE",
+  "finalReaderCustomizationSheetTheme": "Theme",
+  "finalReaderCustomizationSheetLayout": "Layout",
+  "finalReaderCustomizationSheetReset": "Reset ✓",
+  "finalReaderCustomizationSheetFontFamily": "Font Family",
+  "finalReaderCustomizationSheetFontSize": "Font Size",
+  "finalReaderCustomizationSheetLineHeight": "Line Height",
+  "finalReaderCustomizationSheetAlignment": "Alignment",
+  "finalReaderCustomizationSheetFirstLineIndent": "First-Line Indent",
+  "finalReaderCustomizationSheetReadingThemes": "Reading Themes",
+  "finalReaderCustomizationSheetReaderBrightness": "Reader Brightness",
+  "finalReaderCustomizationSheetPageMargins": "Page Margins",
+  "finalReaderCustomizationSheetReadingMode": "Reading Mode",
+  "finalTrailerMuteButtonUnmuteTrailer": "Unmute trailer",
+  "finalTrailerMuteButtonMuteTrailer": "Mute trailer",
+  "finalMultinutzChannelSheetRemoveFavorite": "Remove Favorite",
+  "finalTextSyncOverlaySelecting": "Selecting",
+  "finalTextSyncOverlaySaving": "Saving...",
+  "finalAnimePageGeneral": "🇯🇵 General",
+  "finalAnimePageArabicAnime": "🇸🇦 Arabic Anime",
+  "finalAnimePageSearchAnime": "Search anime",
+  "finalAnimeSearchPageArabic": "🇸🇦 Arabic",
+  "finalAnimeStreamSheetCascadingNativeAnimeExtractors": "Cascading native anime extractors…",
+  "finalAudiobookPlayerScreenPause": "PAUSE",
+  "finalGenerateAudiobookScreenUnknownAuthor": "Unknown Author",
+  "finalGenerateAudiobookScreenAnalyzingUploadingBook": "Analyzing & Uploading Book...",
+  "finalIptvChannelSheetCancelSelection": "Cancel Selection",
+  "finalIptvChannelSheetDeselectAll": "Deselect All",
+  "finalIptvPlayerPageMuted": "MUTED",
+  "finalIptvPortalsModalShowPassword": "Show Password",
+  "finalIptvPortalsModalAddM3u": "Add M3U",
+  "finalMangaReaderPageUpNext": "UP NEXT",
+  "finalMultinutzPageCustomUrl": "Custom URL",
+  "finalMultinutzPageDoneRearranging": "Done Rearranging",
+  "finalMusicPageSearch": "Search…",
+  "finalMyListPageSyncing": "Syncing...",
+  "finalMyListPageYourListIsEmpty": "Your list is empty",
+  "finalWatchScreenCopied": "Copied!",
+  "finalAddonsSettingsPageBuiltInTorrent": "BUILT-IN TORRENT",
+  "finalAddonsSettingsPageInstalling": "Installing...",
+  "finalAddonsSettingsPageConnecting": "Connecting...",
+  "finalCloudstreamMarketplaceModalHidePlugins": "Hide plugins",
+  "finalCloudstreamMarketplaceModalAddingRepository": "Adding Repository...",
+  "finalDebridSettingsPageShowKey": "Show Key",
+  "finalDebridSettingsPageHideKey": "Hide Key",
+  "finalSimklSettingsPageConnected": "CONNECTED",
+  "finalUpdatesSettingsPageCheckingForUpdates": "Checking for updates...",
+  "finalAudiobookSettingsPageAmbientBackgroundLightingMovingGlows": "AMBIENT BACKGROUND LIGHTING & MOVING GLOWS",
+  "finalAudiobookSettingsPageDiscoveryAudiobookPosters": "DISCOVERY & AUDIOBOOK POSTERS",
+  "finalAudiobookSettingsPageChooseAudioPlayerPreset": "CHOOSE AUDIO PLAYER PRESET",
+  "finalAudiobookSettingsPageMakeYourCustomAudiobookPlayerDragDrop": "MAKE YOUR CUSTOM AUDIOBOOK PLAYER (DRAG & DROP STUDIO)",
+  "finalCustomBackgroundSettingsPageUploading": "Uploading...",
+  "finalHomeUiSettingsPagePersonalizedRecommendationsComputedByTrakt": "Personalized recommendations computed by Trakt",
+  "finalHomeUiSettingsPageTopRatedPersonalizedSuggestionsFromSimkl": "Top-rated & personalized suggestions from Simkl",
+  "finalLiquidGlassSettingsPageLiveInteractivePreview": "LIVE INTERACTIVE PREVIEW",
+  "finalMangaSettingsPageDiscoveryPosterCards": "DISCOVERY & POSTER CARDS",
+  "finalMangaSettingsPageMangaReaderChapterViewer": "MANGA READER & CHAPTER VIEWER",
+  "finalMusicSettingsPageVisualThemePalette": "VISUAL THEME PALETTE",
+  "finalMusicSettingsPageAmbientAtmosphereGlow": "AMBIENT ATMOSPHERE & GLOW",
+  "finalMusicSettingsPageDiscoveryCatalogConfiguration": "DISCOVERY & CATALOG CONFIGURATION",
+  "finalMusicSettingsPageFullscreenPlayerPresets": "FULLSCREEN PLAYER PRESETS",
+  "finalMusicSettingsPageCustomPlayerEngineDesigner": "CUSTOM PLAYER ENGINE DESIGNER",
+  "arabicSectionContinueWatching0": "Continue watching",
+  "arabicSectionLatestEpisodes1": "⚡ Latest episodes",
+  "arabicSectionLatestEpisodesWithArabicSubtitles2": "Latest episodes with Arabic subtitles",
+  "arabicSectionTrending3": "🔥 Trending",
+  "arabicSectionMostWatchedAnimeRightNow4": "Most watched anime right now",
+  "arabicSectionPopularFilms5": "🎬 Popular films",
+  "arabicSectionFeaturedAnimeFilms6": "Featured anime films",
+  "arabicSectionTopRatedAnime7": "👑 Top rated anime",
+  "arabicSectionHighlyRatedAnime8": "Highly rated anime",
+  "arabicSectionSeasonalAnime9": "🌟 Seasonal anime",
+  "arabicSectionCurrentSeasonShows10": "Current season shows",
+  "arabicSectionClassicAnime11": "⚔️ Classic anime",
+  "arabicSectionTimelessAnimeClassics12": "Timeless anime classics",
+  "arabicSectionComingSoon13": "🚀 Coming soon",
+  "arabicSectionUpcomingAnime14": "Upcoming anime",
+  "arabicSectionAiringNow15": "Airing now",
+  "arabicSectionShowLess16": "Show less",
+  "arabicSectionShowMore17": "Show more",
+  "arabicSectionEpisodes18": "Episodes",
+  "arabicSectionJumpToEpisode19": "Jump to episode...",
+  "arabicSectionRelatedAnime20": "Related anime",
+  "arabicSectionCheckingServers21": "Checking servers...",
+  "arabicSectionServers22": "Servers",
+  "arabicSectionRetry23": "Retry",
+  "arabicSectionPlaybackServer24": "Playback server",
+  "arabicSectionDirectStreamingHighQuality25": "Direct streaming • High quality",
+  "subtitleBaseFontSize": "BASE FONT SIZE ({value}pt)",
+  "@subtitleBaseFontSize": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "subtitleScaleMultiplier": "SCALE MULTIPLIER ({value}%)",
+  "@subtitleScaleMultiplier": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "subtitleOutlineThickness": "OUTLINE THICKNESS ({value}px)",
+  "@subtitleOutlineThickness": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "subtitleShadowOffset": "DROP SHADOW OFFSET ({value}px)",
+  "@subtitleShadowOffset": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "subtitleBottomMargin": "BOTTOM MARGIN / OFFSET ({value}px)",
+  "@subtitleBottomMargin": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "subtitleVerticalPosition": "VERTICAL POSITION ({value}%)",
+  "@subtitleVerticalPosition": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "arabicEpisodeNumber": "Episode {number}",
+  "@arabicEpisodeNumber": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "downloadFailedDetail": "Failed: {error}",
+  "@downloadFailedDetail": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "downloadUnknownError": "Unknown error",
+  "downloadPausedProgress": "Paused ({progress}%)",
+  "@downloadPausedProgress": {
+    "placeholders": {
+      "progress": {
+        "type": "String"
+      }
+    }
+  },
+  "downloadEtaProgress": "{progress}% · {speed} · ETA: {eta}",
+  "@downloadEtaProgress": {
+    "placeholders": {
+      "progress": {
+        "type": "String"
+      },
+      "speed": {
+        "type": "String"
+      },
+      "eta": {
+        "type": "String"
+      }
+    }
+  },
+  "subtitleOptionWhite0": "White",
+  "subtitleOptionCinemaYellow1": "Cinema Yellow",
+  "subtitleOptionAmberGold2": "Amber Gold",
+  "subtitleOptionElectricCyan3": "Electric Cyan",
+  "subtitleOptionNeonGreen4": "Neon Green",
+  "subtitleOptionVibrantOrange5": "Vibrant Orange",
+  "subtitleOptionSoftRose6": "Soft Rose",
+  "subtitleOptionLightGray7": "Light Gray",
+  "subtitleOptionNone8": "None",
+  "subtitleOption25Dark9": "25% Dark",
+  "subtitleOption50Dark10": "50% Dark",
+  "subtitleOption75Dark11": "75% Dark",
+  "subtitleOption100Solid12": "100% Solid",
+  "subtitleOption50Indigo13": "50% Indigo",
+  "subtitleOptionTransparent14": "Transparent",
+  "subtitleOptionSubtle15": "Subtle",
+  "subtitleOptionStandardBox16": "Standard Box",
+  "subtitleOptionHighContrast17": "High Contrast",
+  "subtitleOptionOpaqueBlack18": "Opaque Black",
+  "subtitleOptionSlateTint19": "Slate Tint",
+  "subtitleOptionBlack20": "Black",
+  "subtitleOptionDarkSlate21": "Dark Slate",
+  "subtitleOptionGold22": "Gold",
+  "subtitleOptionCrimson23": "Crimson",
+  "subtitleOptionNeonCyan24": "Neon Cyan",
+  "subtitleOptionPreserveAnimeSsaAssStylingRecommended25": "Preserve Anime & SSA/ASS Styling (Recommended)",
+  "subtitleOptionLeavesSsaAssAnimeSubtitlesUntouched26": "Leaves SSA/ASS anime subtitles untouched to preserve custom karaoke, styling & positions. Plain SRT/VTT are styled with your custom theme.",
+  "subtitleOptionScaleOnly27": "Scale Only",
+  "subtitleOptionAppliesSizeScalingToSsaAss28": "Applies size scaling to SSA/ASS scripts while preserving their fonts, colors, and author typography.",
+  "subtitleOptionOverrideColorsOutlines29": "Override Colors & Outlines",
+  "subtitleOptionAppliesYourCustomColorsAndOutlines30": "Applies your custom colors and outlines on top of SSA/ASS subtitle scripts.",
+  "uiFinalTextSyncOverlayFixSection": "FIX SECTION",
+  "uiFinalTextSyncOverlaySubtitleTiming": "SUBTITLE TIMING",
+  "uiFinalTextSyncOverlaySelectRangeSync": "Select Range & Sync",
+  "uiFinalTextSyncOverlaySpeechDialogueSync": "Speech Dialogue Sync",
+  "uiFinalAdultPageNo18SourcesYet": "No 18+ sources yet.",
+  "uiFinalAdultPage18SourcesFoundNothingToShow": "18+ sources found nothing to show.",
+  "uiFinalAdultPageMarkAnAddonAs18Or": "Mark an addon as 18+ or hybrid in Settings → Addons, or install one.",
+  "uiFinalAdultPageTheAddonsThisPageListsAnswered": "The addons this page lists answered with no titles. Try again in a moment.",
+  "uiFinalMyListPageSaveYourFavoriteMoviesAndTv": "Save your favorite movies and TV shows to watch anytime",
+  "uiFinalMyListPageTryAdjustingYourSearchQueryOr": "Try adjusting your search query or filter settings",
+  "uiFinalAddonsSettingsPageCloudstreamEngineReady": "CloudStream Engine Ready",
+  "uiFinalAddonsSettingsPageRuntimeSetupRequired": "Runtime Setup Required",
+  "uiFinalAddonsSettingsPageNativeEngineActiveAndListeningFor": "Native engine active and listening for queries.",
+  "uiFinalAddonsSettingsPageDeselectAll": "Deselect All",
+  "uiFinalAddonsSettingsPageSelectAll": "Select All",
+  "uiFinalAddonsSettingsPageNoDebridProviderIsSetUp": "No Debrid provider is set up yet",
+  "uiFinalIptvPortalsModalPortalsPlaylists": "Portals & Playlists",
+  "uiFinalIptvPortalsModalIptvPortalsPlaylists": "IPTV Portals & Playlists",
+  "uiFinalIptvPortalBrowserPageCheckHealth": "Check Health",
+  "uiFinalIptvPortalBrowserPageNow": "NOW: ",
+  "uiFinalIptvPortalBrowserPageNext": "   NEXT: ",
+  "uiFinalTvCalendarPageNoEpisodesFoundForThisDay": "No episodes found for this day",
+  "uiFinalTvCalendarPageTrySelectingAllOrADifferent": "Try selecting \"All\" or a different network above",
+  "uiFinalTvCalendarPageSelectAnotherDayFromTheTimeline": "Select another day from the timeline above",
+  "uiFinalMusicPageDownloadedOfflineTapToRemove": "Downloaded Offline (Tap to Remove)",
+  "uiFinalMusicPageDownloadingQueued": "Downloading / Queued...",
+  "uiFinalMusicPageDownloadTrackOffline": "Download Track Offline",
+  "uiFinalTmdbSettingsPageSavedOnThisDeviceEnterA": "Saved on this device. Enter a new key to replace it.",
+  "uiFinalTmdbSettingsPageFreeKeyFromThemoviedbOrg": "Free key from themoviedb.org",
+  "uiFinalTraktSettingsPageCheckingCredentials": "Checking credentials...",
+  "uiFinalTraktSettingsPageSignInToActivateTwoWay": "Sign in to activate two-way cloud sync",
+  "uiFinalSimklSettingsPageCheckingCredentials": "Checking credentials...",
+  "uiFinalSimklSettingsPageSignInWithPinToActivate": "Sign in with PIN to activate Simkl cloud sync",
+  "uiFinalHomeUiSettingsPageCustomBackgroundActiveWithAmbientLight": "Custom background active with ambient light blending",
+  "uiFinalHomeUiSettingsPageUploadPhotosOrChooseCuratedDark": "Upload photos or choose curated dark wallpapers",
+  "uiFinalBookDetailSheetResumeReading": "Resume Reading",
+  "uiFinalBookDetailSheetReadNow": "Read Now",
+  "uiFinalMagnetFilesViewConnectingToSwarmPeers": "Connecting to swarm peers...",
+  "uiFinalMagnetFilesViewP2pSwarm": "P2P Swarm",
+  "uiFinalWewatchQuizPageRate3TitlesToUnlockRecommendations": "Rate 3 Titles to Unlock Recommendations",
+  "addonsRemoveCount": "{count, plural, one{Remove 1 plugin?} other{Remove {count} plugins?}}",
+  "@addonsRemoveCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "addonsRemovedCount": "{count, plural, one{Removed 1 plugin.} other{Removed {count} plugins.}}",
+  "@addonsRemovedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "addonsUsesServiceKey": "Uses your {value} key",
+  "@addonsUsesServiceKey": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "addonsContainsPlugins": "Contains: {value}",
+  "@addonsContainsPlugins": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "iptvCurrentChannel": "Channel {index}/{total} · {name}",
+  "@iptvCurrentChannel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "iptvCurrentSource": "Source {index}/{total} · {name}",
+  "@iptvCurrentSource": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "iptvNoPlayableStream": "No playable stream for \"{name}\". Reconnect the portal or remove it and add another.",
+  "@iptvNoPlayableStream": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "iptvStopHealthCheck": "Stop ({checked}/{total})",
+  "@iptvStopHealthCheck": {
+    "placeholders": {
+      "checked": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarNoNetworkEpisodes": "No episodes on {value} for this day",
+  "@calendarNoNetworkEpisodes": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "musicLosslessQuality": "{value} • HI-RES LOSSLESS AUDIO",
+  "@musicLosslessQuality": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "musicExtractingTrack": "Extracting stream for \"{value}\"...",
+  "@musicExtractingTrack": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "musicDownloadingTrack": "Downloading \"{title}\" ({progress}%)",
+  "@musicDownloadingTrack": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "progress": {
+        "type": "int"
+      }
+    }
+  },
+  "accountLoggedInTrakt": "Logged in as {value}",
+  "@accountLoggedInTrakt": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "accountLoggedInSimkl": "Logged in as {value}",
+  "@accountLoggedInSimkl": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "wallpaperActivePalette": "Wallpaper active with {value} ambient lighting",
+  "@wallpaperActivePalette": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "wallpaperDefaultPalette": "Default {value} theme background",
+  "@wallpaperDefaultPalette": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "bookDownloadingProgress": "Downloading {progress}%...",
+  "@bookDownloadingProgress": {
+    "placeholders": {
+      "progress": {
+        "type": "int"
+      }
+    }
+  },
+  "mediaCollectionPart": "PART {value}",
+  "@mediaCollectionPart": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "magnetUsingProvider": "Using {value} for files...",
+  "@magnetUsingProvider": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "magnetProviderCloud": "{value} Cloud",
+  "@magnetProviderCloud": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "aiDiscoverRated": "Discover Recommendations ({count} Titles)",
+  "@aiDiscoverRated": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "iptvChannelsCount": "{count, plural, one{1 channel} other{{count} channels}}",
+  "@iptvChannelsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "audiobookVoiceName": "Voice: {value}",
+  "@audiobookVoiceName": {
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "audiobookGeneratingProgress": "Generating {progress}%",
+  "@audiobookGeneratingProgress": {
+    "placeholders": {
+      "progress": {
+        "type": "int"
+      }
+    }
+  },
+  "updateExecutableInstructions": "Make the file executable and run it:\nchmod +x \"{file}\"\n./{file}",
+  "@updateExecutableInstructions": {
+    "placeholders": {
+      "file": {
+        "type": "String"
+      }
+    }
+  },
+  "videoZeroCopy": "Zero-Copy",
+  "videoTextureViewOff": "Off (TextureView)",
+  "aiRecMediaSeries": "TV Series",
+  "audiobookSplitNotice": "This book has approximately {words} words. It will be split into {parts} parts along chapter boundaries and queued:",
+  "@audiobookSplitNotice": {
+    "placeholders": {
+      "words": {
+        "type": "String"
+      },
+      "parts": {
+        "type": "int"
+      }
+    }
+  },
+  "audiobookSplitPart": "{name} (approximately {words} words)",
+  "@audiobookSplitPart": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "words": {
+        "type": "String"
+      }
+    }
+  },
+  "configCopyModernGlassIsland": "Modern Glass Island",
+  "configCopySleekFloatingGlassmorphismPlayerWithWaveformScrubber": "Sleek floating glassmorphism player with waveform scrubber & ambient glow",
+  "configCopyVinylTurntableStudio": "Vinyl Turntable Studio",
+  "configCopyRotatingVinylDiscTonearmAnimationAnalogVintage": "Rotating vinyl disc, tonearm animation & analog vintage VU styling",
+  "configCopyMinimalistFocusCapsule": "Minimalist Focus Capsule",
+  "configCopyCompactDistractionFreeFloatingCapsuleWithEssential": "Compact distraction-free floating capsule with essential controls",
+  "configCopyImmersiveCanvasStudio": "Immersive Canvas Studio",
+  "configCopyFullScreenCinematicAmbientBlurCanvasWith": "Full-screen cinematic ambient blur canvas with oversized artwork",
+  "configCopyCustomDragDropStudio": "Custom Drag & Drop Studio",
+  "configCopyYourFullyCustomizedArrangedAndStyledAudio": "Your fully customized, arranged and styled audio player",
+  "configCopyDynamicAudioWaveformCanvas": "Dynamic Audio Waveform Canvas",
+  "configCopyProceduralAnimatedWaveformBarsWithLiveEqualizer": "Procedural animated waveform bars with live equalizer scrubbing",
+  "configCopyNeonGradientProgressBar": "Neon Gradient Progress Bar",
+  "configCopyMultiColorVibrantLinearGradientScrubberWith": "Multi-color vibrant linear gradient scrubber with glowing tip",
+  "configCopyPrecisionGlassSlider": "Precision Glass Slider",
+  "configCopyTactileInteractiveGlassTrackWithTimecodeReadouts": "Tactile interactive glass track with timecode readouts",
+  "configCopyRadialCircularRingScrubber": "Radial Circular Ring Scrubber",
+  "configCopyRadialCircularDialScrubberForCompactModern": "Radial circular dial scrubber for compact modern interfaces",
+  "configCopyCircleAuraGlow": "Circle Aura Glow",
+  "configCopyLiquidGlassNeomorphic": "Liquid Glass Neomorphic",
+  "configCopyRoundedGlassSquare": "Rounded Glass Square",
+  "configCopyWideAccentPill": "Wide Accent Pill",
+  "configCopyScaleSpringBounce": "Scale & Spring Bounce",
+  "configCopyThemeAccentGlowAura": "Theme Accent Glow Aura",
+  "configCopyLiquidGlassRipple": "Liquid Glass Ripple",
+  "configCopy3dSubtleTiltPerspective": "3D Subtle Tilt Perspective",
+  "configCopy3dRoundedSquareWithGlow": "3D Rounded Square with Glow",
+  "configCopySpinningVinylDisc": "Spinning Vinyl Disc",
+  "configCopyFloatingGlassCard": "Floating Glass Card",
+  "configCopyHiddenFocusMode": "Hidden / Focus Mode",
+  "configCopyCompactDenseGrid": "Compact (Dense Grid)",
+  "configCopyStandardBalanced": "Standard (Balanced)",
+  "configCopySpaciousLargeCovers": "Spacious (Large Covers)",
+  "configCopyRecommendedOnWindowsFasterInPracticeHere": "Recommended on Windows — faster in practice here and avoids the NVIDIA driver crash seen with Impeller.",
+  "configCopyEngineDefaultKeptSelectableForTestingCoincided": "Engine default — kept selectable for testing. Coincided with an NVIDIA driver crash notice on this machine.",
+  "configCopyTopBelowHeroBanner": "Top (Below Hero Banner)",
+  "configCopyUnderCinemetaAddon": "Under Cinemeta Addon",
+  "configCopyMiddleOfCatalog": "Middle of Catalog",
+  "configCopyBottomOfPage": "Bottom of Page",
+  "configCopyImmersiveCinematicCarousel": "Immersive Cinematic Carousel",
+  "configCopyCompactSpotlight": "Compact Spotlight",
+  "configCopyMinimalistHeader": "Minimalist Header",
+  "configCopyDualFloatingOrbs": "Dual Floating Orbs",
+  "configCopyTopAuroraHorizon": "Top Aurora Horizon",
+  "configCopyFullDeepAmbientMesh": "Full Deep Ambient Mesh",
+  "configCopyPulsingCore": "Pulsing Core",
+  "configCopyStandardBalanced2": "Standard Balanced",
+  "configCopyCinematicLargePosters": "Cinematic (Large Posters)",
+  "configCopyCloudVault": "Cloud Vault",
+  "configCopyHighSpeedCloudDatabaseWith9000": "High-speed cloud database with 9,000+ live IPTV servers",
+  "configCopyLiveScrapersFromRedditIptvSubreddits": "Live scrapers from Reddit IPTV subreddits",
+  "configCopyRichCardWithBadges": "Rich Card with Badges",
+  "configCopyCompactRow": "Compact Row",
+  "configCopyGridCards": "Grid Cards",
+  "configCopyDetailedListWithEpg": "Detailed List with EPG",
+  "configCopyCompactChannelList": "Compact Channel List",
+  "configCopySpaciousLargePosters": "Spacious (Large Posters)",
+  "configCopyVerticalContinuousWebtoon": "Vertical Continuous (Webtoon)",
+  "configCopyHorizontalLeftToRight": "Horizontal (Left to Right)",
+  "configCopyHorizontalRightToLeftManga": "Horizontal (Right to Left / Manga)",
+  "configCopyFullScreen100": "Full Screen (100%)",
+  "configCopyCompact720px": "Compact (720px)",
+  "configCopyStandard900px": "Standard (900px)",
+  "configCopyWide1150px": "Wide (1150px)",
+  "configCopyPitchBlack": "Pitch Black",
+  "configCopyDeepCharcoal": "Deep Charcoal",
+  "configCopySepiaDark": "Sepia Dark",
+  "configCopyFloatingGlassIsland": "Floating Glass Island",
+  "configCopyDockedBottomBar": "Docked Bottom Bar",
+  "configCopyMinimalistFloatingPill": "Minimalist Floating Pill",
+  "configCopyRotating33rpmVinylDiscWithTonearmAnd": "Rotating 33rpm vinyl disc with tonearm and warm studio atmosphere",
+  "configCopyCyberpunkWaveVisualizer": "Cyberpunk Wave Visualizer",
+  "configCopyRealTimeAnimatedAudioVisualizerCanvasWith": "Real-time animated audio visualizer canvas with neon glow",
+  "configCopyLiquidGlassSanctuary": "Liquid Glass Sanctuary",
+  "configCopyDeepOpticalRefractionGlassSheetsPoweredBy": "Deep optical refraction glass sheets powered by liquid_glass_easy",
+  "configCopyCinematicPosterFocus": "Cinematic Poster Focus",
+  "configCopyMassiveEdgeToEdgeImmersiveAlbumArt": "Massive edge-to-edge immersive album art with blurred atmosphere",
+  "configCopyCustomDragDropFullPlayer": "Custom Drag & Drop Full Player",
+  "configCopyYourFullyCustomizedArrangedAndStyledFullscreen": "Your fully customized, arranged and styled fullscreen player",
+  "configCopyLiquidGlassTrackSlider": "Liquid Glass Track Slider",
+  "configCopyRefractiveFrostedGlassSliderTrackWithSmooth": "Refractive frosted glass slider track with smooth thumb",
+  "configCopyPrecisionTactileSlider": "Precision Tactile Slider",
+  "configCopyRadialCircularRingDial": "Radial Circular Ring Dial",
+  "configCopyAuraGlowCircle": "Aura Glow Circle",
+  "configCopyNeonGlassSquare": "Neon Glass Square",
+  "configCopySpinningVinylDiscWithCenterLabel": "Spinning Vinyl Disc with Center Label",
+  "configCopy3dFloatingGlassCardWithElevation": "3D Floating Glass Card with Elevation",
+  "configCopyRoundedNeomorphicSquareWithGlow": "Rounded Neomorphic Square with Glow",
+  "configCopyAtmosphericGlowOrb": "Atmospheric Glow Orb",
+  "configCopyClassicWhite": "Classic White",
+  "configCopyCrispWhiteTextWithBlackOutline": "Crisp white text with black outline",
+  "configCopyWarmYellowTextWithSubtleShadowAnd": "Warm yellow text with subtle shadow and border",
+  "configCopyStreamingBox": "Streaming Box",
+  "configCopyWhiteTextInsideA50TranslucentBlack": "White text inside a 50% translucent black box",
+  "configCopyBoldYellowTextWithSolidOpaqueBlack": "Bold yellow text with solid opaque black box",
+  "configCopyAnimeClean": "Anime Clean",
+  "configCopyBoldWhiteTextWithDeepOutlineShadow": "Bold white text with deep outline & shadow",
+  "configCopyCyberpunkCyan": "Cyberpunk Cyan",
+  "configCopyVibrantCyanTextWithDarkBorder": "Vibrant cyan text with dark border",
+  "configCopyNightModeWarm": "Night Mode Warm",
+  "configCopySoftCreamTextWith40TranslucentBackground": "Soft cream text with 40% translucent background",
+  "configCopyUserConfiguredCustomSubtitleStyles": "User configured custom subtitle styles",
+  "configCopyStandardVideoPlaybackWithoutNeuralUpscalingShaders": "Standard video playback without neural upscaling shaders",
+  "configCopyModeAFastBalanced": "Mode A (Fast / Balanced)",
+  "configCopyRestoresLineArtAndUpscalesCleanlyBalanced": "Restores line art and upscales cleanly. Balanced GPU load, ideal for 1080p anime and mobile/integrated GPUs.",
+  "configCopyModeAHighQualityHq": "Mode A (High Quality / HQ)",
+  "configCopyUltraCrispPerceptualLineReconstructionAndUpscale": "Ultra-crisp perceptual line reconstruction and upscale using Very Large CNNs. Best for discrete desktop GPUs.",
+  "configCopyModeBSoftDenoise": "Mode B (Soft / Denoise)",
+  "configCopySoftLineReconstructionAndArtifactReductionBest": "Soft line reconstruction and artifact reduction. Best for blurry, compressed, or older anime.",
+  "configCopyModeCDeblurUpscale": "Mode C (Deblur / Upscale)",
+  "configCopyAggressiveDeblurringAndScalingBestFor720p": "Aggressive deblurring and scaling. Best for 720p / 480p low-resolution anime streams.",
+  "configCopyFsr10Smooth": "FSR 1.0 (Smooth)",
+  "configCopyEdgeAdaptiveUpscalingForLiveActionAnd": "Edge-adaptive upscaling for live action and older sources. Upscales rather than sharpens, so it is the safer of the two FSR modes. Not useful on a source already at display resolution.",
+  "configCopyFsr10Sharp": "FSR 1.0 (Sharp)",
+  "configCopyFsrWithContrastAdaptiveSharpeningAddsBite": "FSR with contrast-adaptive sharpening. Adds bite to soft or low-bitrate sources. On a 2K or 4K source this can look worse than no upscaling, so use it deliberately.",
+  "configCopyAutoSafeHardwareAccelerated": "Auto-Safe (Hardware Accelerated)",
+  "configCopyGpuHardwareDecodingWithSafeDriverFallbacks": "GPU hardware decoding with safe driver fallbacks (recommended)",
+  "configCopyPureCpuDecodingUsingFfmpegLibavcodecGuarantees": "Pure CPU decoding using FFmpeg libavcodec. Guarantees frame rendering and eliminates black screens.",
+  "configCopyDirectGpuHardwareDecodingDirect3d11Mediacodec": "Direct GPU hardware decoding (Direct3D 11 / MediaCodec / VAAPI).",
+  "configCopySubtleGlass": "Subtle Glass",
+  "configCopyBalancedLiquid": "Balanced Liquid",
+  "configCopyHyperJelly": "Hyper Jelly",
+  "configCopyCrystalPrism": "Crystal Prism",
+  "configCopyFrostedCyber": "Frosted Cyber",
+  "configCopySignalTeal": "Signal Teal",
+  "configCopyAmethystViolet": "Amethyst Violet",
+  "configCopyCyberpunkNeon": "Cyberpunk Neon",
+  "configCopyEmeraldAurora": "Emerald Aurora",
+  "configCopySunsetCrimson": "Sunset Crimson",
+  "configCopyMidnightSapphire": "Midnight Sapphire",
+  "configCopyGoldenAmber": "Golden Amber",
+  "configCopyVampireRed": "Vampire Red",
+  "configCopyPinkBarbie": "Pink Barbie",
+  "configCopyEmberCrimson": "Ember Crimson",
+  "configCopyStudioBone": "Studio Bone",
+  "configCopyCyberNeonCity": "Cyber Neon City",
+  "configCopyCosmicNebula": "Cosmic Nebula",
+  "configCopyDarkLiquidSilk": "Dark Liquid Silk",
+  "configCopySynthwaveHorizon": "Synthwave Horizon",
+  "configCopyMoodyForestMist": "Moody Forest Mist",
+  "configCopyAbstractDarkNeon": "Abstract Dark Neon",
+  "configCopyRecommendedForYouTrakt": "Recommended for You (Trakt)",
+  "configCopyPersonalizedBasedOnYourTraktWatchHistory": "Personalized based on your Trakt watch history",
+  "configCopyTrendingThisWeek": "Trending This Week",
+  "configCopyWhatTraktViewersAreWatchingRightNow": "What Trakt viewers are watching right now",
+  "configCopyPopularNow": "Popular Now",
+  "configCopyMostWatchedTitlesAcrossTrakt": "Most-watched titles across Trakt",
+  "configCopyComingSoon": "Coming Soon",
+  "configCopyMostAnticipatedUpcomingReleases": "Most anticipated upcoming releases",
+  "configCopyFromTrakt": "From Trakt",
+  "configCopyRecommendedForYouSimkl": "Recommended for You (Simkl)",
+  "configCopyThe1970s": "The 1970s",
+  "configCopyThe1980s": "The 1980s",
+  "configCopyThe2000s": "The 2000s",
+  "configCopyThe2010s": "The 2010s",
+  "configCopyThe90sAction": "The 90s: Action",
+  "configCopyThe90sComedy": "The 90s: Comedy",
+  "configCopyThe90sHorror": "The 90s: Horror",
+  "configCopyThe90sSciFi": "The 90s: Sci-Fi",
+  "configCopyThe90sAnimation": "The 90s: Animation",
+  "configCopyThe90sThriller": "The 90s: Thriller",
+  "configCopyGodfatherCollection": "Godfather Collection",
+  "configCopyRockyAndCreed": "Rocky and Creed",
+  "configCopyBackToTheFuture": "Back to the Future",
+  "configCopyAlien": "Alien",
+  "configCopyDieHard": "Die Hard",
+  "configCopyLethalWeapon": "Lethal Weapon",
+  "configCopyTheTerminator": "The Terminator",
+  "configCopyPredator": "Predator",
+  "configCopyJurassicPark": "Jurassic Park",
+  "configCopyRambo": "Rambo",
+  "configCopyIndianaJones": "Indiana Jones",
+  "configCopyTheMarxBrothers": "The Marx Brothers",
+  "configCopyGrouchoAndHisBrothers13Films1929": "Groucho and his brothers, 13 films, 1929 to 1949",
+  "configCopyOnHold": "On Hold",
+  "configCopyDropped": "Dropped",
+  "configCopyRatings": "Ratings",
+  "configCopyTrending": "Trending",
+  "configCopyTopRated": "Top Rated",
+  "configCopyNewUpcoming": "New & Upcoming",
+  "configCopyWatchlist": "Watchlist",
+  "configCopyHistory": "History",
+  "configCopyCollection": "Collection",
+  "configCopyRecommendations": "Recommendations",
+  "configCopyAnticipated": "Anticipated",
+  "configCopyUntitledList": "Untitled list",
+  "configCopyStreamSource": "Stream Source",
+  "configCopyAllLanguages": "All Languages",
+  "configCopyDefaultZplaySubfont": "Default (ZPlay Subfont)",
+  "configCopyAddToFavorites": "Add to Favorites",
+  "configCopyHidePassword": "Hide Password",
+  "configCopyAspectFitContain": "ASPECT: FIT (CONTAIN)",
+  "configCopyAspectFillZoomCrop": "ASPECT: FILL (ZOOM / CROP)",
+  "configCopyAspectStretchFill": "ASPECT: STRETCH (FILL)",
+  "configCopyPreviousChapterPage": "Previous chapter page",
+  "configCopyNextChapterPage": "Next chapter page",
+  "configCopyClearChapterSearch": "Clear chapter search",
+  "configCopyClearSearch": "Clear search",
+  "configCopyReaderCustomization": "Reader Customization",
+  "configCopyZoomOut": "Zoom Out (-)",
+  "configCopyZoomIn": "Zoom In (+)",
+  "configCopyTogglePageDeck": "Toggle Page Deck",
+  "configCopyRearrangeStreams": "Rearrange Streams",
+  "configCopyAllCategories": "All Categories",
+  "configCopyFavorites": "Favorites",
+  "configCopyUnknownSource": "Unknown source",
+  "configCopyUnknown": "Unknown",
+  "configCopyUnknownTitle": "Unknown Title",
+  "configCopyUnknownTrack": "Unknown Track",
+  "configCopyUntitledBook": "Untitled Book",
+  "configCopyUntitledAudiobook": "Untitled Audiobook",
+  "configCopyUnknownAddon": "Unknown Addon",
+  "configCopyUnknownPlugin": "Unknown Plugin",
+  "configCopyTitles": "Titles",
+  "configCopySkipIntro": "Skip Intro",
+  "configCopySkipRecap": "Skip Recap",
+  "configCopySkipCredits": "Skip Credits",
+  "configCopySkipPreview": "Skip Preview",
+  "configCopySegment": "Segment",
+  "configCopyPublisher": "Publisher",
+  "configCopySize": "Size",
+  "configCopyTvShort": "TV Short",
+  "configCopySpecial": "Special",
+  "configCopyAiring": "Airing",
+  "configCopyUpcoming": "Upcoming",
+  "configCopyCancelled": "Cancelled",
+  "configCopyOnHiatus": "On Hiatus",
+  "configCopyAiringSoon": "Airing soon",
+  "configCopySearchesTheWyzieSubtitleCatalogueForMovies": "Searches the Wyzie subtitle catalogue for movies and episodes.",
+  "configCopyMintsTheAnonymousTokenTheAudionestAudiobook": "Mints the anonymous token the Audionest audiobook search API requires.",
+  "configCopyBearerForTheAudionestAudiobookSearchEndpoint": "Bearer for the Audionest audiobook search endpoint.",
+  "configCopyFirebaseKeyForThePaper2audioPdfTo": "Firebase key for the paper2audio PDF to audiobook backend.",
+  "configCopyBearerForTheVidgodCloudCacheBehind": "Bearer for the VidGod cloud cache behind ZPlayHTTP streams.",
+  "configCopyBearerForTheFilms365DirectStreamApi": "Bearer for the Films365 direct stream API.",
+  "configCopyIdentifiesTheTraktApplicationThePairingFlow": "Identifies the Trakt application the pairing flow asks for a device code on, and stamps every Trakt API call.",
+  "configCopyExchangesTheDeviceCodeForATrakt": "Exchanges the device code for a Trakt access token.",
+  "configCopyYourKeyIsInUse": "Your key is in use.",
+  "configCopySuppliedAtBuildTimeForThisBuild": "Supplied at build time for this build.",
+  "configCopyRunningOnTheValueThisAppShips": "Running on the value this app ships with.",
+  "configCopyNoKeyAvailableSoThisSourceStays": "No key available, so this source stays off.",
+  "configCopyThatKeyWasRejectedByTmdb": "That key was rejected by TMDb",
+  "configCopyCouldNotReachTmdb": "Could not reach TMDb",
+  "configCopy10PicksFrom1970To1979": "10 picks from 1970 to 1979",
+  "configCopy10PicksFrom1980To1989": "10 picks from 1980 to 1989",
+  "configCopy10PicksFrom2000To2009": "10 picks from 2000 to 2009",
+  "configCopy10PicksFrom2010To2019": "10 picks from 2010 to 2019",
+  "configCopy10PicksFrom1990To1999": "10 picks from 1990 to 1999",
+  "configCopy3Films1972To1990": "3 films, 1972 to 1990",
+  "configCopy9Films1976To2023": "9 films, 1976 to 2023",
+  "configCopy3Films1985To1990": "3 films, 1985 to 1990",
+  "configCopy7Films1979To2024": "7 films, 1979 to 2024",
+  "configCopy5Films1988To2013": "5 films, 1988 to 2013",
+  "configCopy4Films1987To1998": "4 films, 1987 to 1998",
+  "configCopy6Films1984To2019": "6 films, 1984 to 2019",
+  "configCopy5Films1987To2022": "5 films, 1987 to 2022",
+  "configCopy6Films1993To2022": "6 films, 1993 to 2022",
+  "configCopy5Films1982To2019": "5 films, 1982 to 2019",
+  "configCopy5Films1981To2023": "5 films, 1981 to 2023",
+  "configCopyStremioBasedMultiResolutionHttpStreamScraper": "Stremio-based multi-resolution HTTP stream scraper",
+  "configCopyDirectHighSpeedHttpMediaStorageScraper": "Direct high-speed HTTP media storage scraper",
+  "configCopy4kHdDirectStreamExtractor": "4K & HD direct stream extractor",
+  "configCopyFastMultiSourceStreamDownloader": "Fast multi-source stream downloader",
+  "configCopyVideasyMultiCdnEncryptedHlsScraper": "Videasy multi-CDN encrypted HLS scraper",
+  "configCopyVidsrcStreamingNetworkResolver": "VidSrc streaming network resolver",
+  "configCopy2embedMultiHostStreamAggregator": "2Embed multi-host stream aggregator",
+  "configCopyMultiSourceHdVideoCoreExtractor": "Multi-source HD video core extractor",
+  "configCopyUltraFastHlsStreamingNetwork": "Ultra-fast HLS streaming network",
+  "configCopyMovienightMultiServerHlsStreams": "MovieNight multi-server HLS streams",
+  "configCopyDirectMediaDownloadStreamExtractor": "Direct media download & stream extractor",
+  "configCopyDirectEncryptedMp4HlsSourceProvider": "Direct encrypted MP4/HLS source provider",
+  "configCopyFastCloudHlsStreamResolver": "Fast cloud HLS stream resolver",
+  "configCopyRiveMultiServerDirectStreamProvider": "Rive multi-server direct stream provider",
+  "configCopyCinejoyMultiCdnVideoSourceProvider": "Cinejoy multi-CDN video source provider",
+  "configCopyDuloHighSpeedDirectStreamNetwork": "Dulo high-speed direct stream network",
+  "configCopyVidupCloudVideoHostingScraper": "VidUp cloud video hosting scraper",
+  "configCopyFlaxmoviesMultiCdnDirectStreams": "FlaxMovies multi-CDN direct streams",
+  "configCopyMultiServerCloudVideoStreams": "Multi-server cloud video streams",
+  "configCopyLowLatencyDirectStreamingProvider": "Low-latency direct streaming provider",
+  "configCopyFastCloudVideoSourceProvider": "Fast cloud video source provider",
+  "configCopyLookmovieDirectMultiQualityStreams": "LookMovie direct multi-quality streams",
+  "configCopyHexaMultiHostVideoExtractor": "Hexa multi-host video extractor",
+  "configCopyBcineDirectMasterHlsProvider": "Bcine direct master HLS provider",
+  "configCopyMappleFastStreamingProvider": "Mapple fast streaming provider",
+  "configCopyNovaMultiServerStreamExtractor": "Nova multi-server stream extractor",
+  "configCopyMegasourceMultiCdnVideoNetwork": "MegaSource multi-CDN video network",
+  "configCopyPurstreamDirectVideoStreamResolver": "Purstream direct video stream resolver",
+  "configCopyVidapiDirectVideoSourceExtractor": "VidApi direct video source extractor",
+  "configCopyVidrockCloudVideoProvider": "VidRock cloud video provider",
+  "configCopyVidvaultSecureStreamingNetwork": "VidVault secure streaming network",
+  "configCopyVidzeeHighSpeedVideoProvider": "VidZee high-speed video provider",
+  "configCopyCinesrcDirectMasterHlsWithBright67Subtitles": "CineSrc direct master HLS with bright67 subtitles",
+  "configCopyCinesuDirectVideoStreamExtractor": "CineSu direct video stream extractor",
+  "configCopyFrameMultiResolutionStreamProvider": "Frame multi-resolution stream provider",
+  "configCopyFsharetvCloudStreamingNetwork": "FshareTV cloud streaming network",
+  "configCopyFsonicDirectCloudVideoScraper": "FSonic direct cloud video scraper",
+  "configCopyFsonlineMultiHostStreamResolver": "FSOnline multi-host stream resolver",
+  "configCopyKisskhAsianDramaAnimeStreamingProvider": "KissKH Asian drama & anime streaming provider",
+  "configCopyLmscriptVideoSourceExtractor": "LMScript video source extractor",
+  "configCopyMeowtvDirectStreamingNetwork": "MeowTV direct streaming network",
+  "configCopyVidlinkFastMultiCdnStreamProvider": "VidLink fast multi-CDN stream provider",
+  "configCopyVixsrcDirectMasterStreamingExtractor": "VixSrc direct master streaming extractor",
+  "configCopyXpassMultiServerVideoScraper": "XPass multi-server video scraper",
+  "configCopyZxcstreamMultiSourceDirectProvider": "ZxcStream multi-source direct provider",
+  "configCopyBollywoodHindiDualAudioHollywoodDirectStreams": "Bollywood, Hindi Dual-Audio & Hollywood direct streams",
+  "configExtraStandard": "Standard",
+  "configExtraRecommended": "Recommended",
+  "configExtraUltraQuality": "Ultra Quality",
+  "configExtraDenoise": "Denoise",
+  "configExtraDeblur": "Deblur",
+  "configExtraDefault": "Default",
+  "configExtra100Reliable": "100% Reliable",
+  "configExtraMaxGpu": "Max GPU",
+  "configExtraSimilarTo": "Similar to",
+  "configExtraMoviesTv": "Movies & TV",
+  "configExtraLiveTv": "Live TV",
+  "configExtraMyList": "My List",
+  "configExtraDownloads": "Downloads",
+  "configExtraManga": "Manga",
+  "configExtraBooks": "Books",
+  "configExtraAudiobooks": "Audiobooks",
+  "configExtraMusic": "Music",
+  "configExtraCollections": "Collections",
+  "configExtraAnime": "Anime",
+  "configExtraAll": "All",
+  "configExtraNone": "None",
+  "configExtraSeries": "Series",
+  "configExtraMovie": "Movie",
+  "configExtraCustomStream": "Custom Stream",
+  "configExtraLiveStream": "Live Stream",
+  "configExtraTorrentEngine": "Torrent Engine",
+  "configExtraRefusedByProvider": "Refused by provider",
+  "configExtraAccountRejected": "Account rejected",
+  "appearanceDetailCustomActive": "Custom Active",
+  "appearanceDetailDefaultTheme": "Default Theme",
+  "appearanceDetailSpotlightOn": "Spotlight ON",
+  "appearanceDetailCompact": "Compact",
+  "appearanceDetailWebtoon": "Webtoon",
+  "appearanceDetailHorizontal": "Horizontal",
+  "appearanceDetailSkiaRecommended": "Skia (Recommended)",
+  "appearanceDetailDisabled": "Disabled",
+  "appearanceDetailBackgroundImageUploadedAndAppliedAcrossAllUi": "Background image uploaded and applied across all UI!",
+  "appearanceDetailPleaseEnterAValidHttpOrHttpsImage": "Please enter a valid HTTP or HTTPS image URL.",
+  "appearanceDetailCustomBackgroundUrlApplied": "Custom background URL applied!",
+  "appearanceDetailUploadPhotoFromDevice": "Upload Photo from Device",
+  "appearanceDetailBackgroundResetToDefaultTheme": "Background reset to default theme.",
+  "appearanceDetailAppliedWallpaperName": "Applied wallpaper: {name}",
+  "@appearanceDetailAppliedWallpaperName": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "appearanceDetailRequiresTraktLoginInSettingsTrakt": "Requires Trakt login in Settings -> Trakt",
+  "appearanceDetailRequiresSimklLoginInSettingsSimkl": "Requires Simkl login in Settings -> Simkl",
+  "appearanceDetailDisconnected": "DISCONNECTED",
+  "appearanceDetailPreviewEnableGlassAbove": "PREVIEW (ENABLE GLASS ABOVE)",
+  "appearanceDetailDragDropLayout": "Drag & Drop Layout",
+  "appearanceDetailSeekBarCanvas": "Seek Bar Canvas",
+  "appearanceDetailPlayButtonPhysics": "Play Button & Physics",
+  "appearanceDetailArtworkFrame": "Artwork & Frame",
+  "appearanceDetailArtworkVinylFrame": "Artwork & Vinyl Frame",
+  "appearanceDetailChapterBookTitles": "Chapter & Book Titles",
+  "appearanceDetailSeekBarScrubberCanvas": "Seek Bar Scrubber Canvas",
+  "appearanceDetailPrimaryControlsPlayPauseSkip10s": "Primary Controls (Play, Pause, Skip ±10s)",
+  "appearanceDetailSecondaryControlsSpeedPillVolume": "Secondary Controls (Speed Pill & Volume)",
+  "appearanceDetailPremadeChaptersPanelButton": "Premade Chapters Panel Button",
+  "appearanceDetailPlay": "PLAY",
+  "appearanceDetailChapter4TheSecretsOfTheNight": "Chapter 4: The Secrets of the Night",
+  "appearanceDetailChapter4Of24HarryPotterTheSorcerer": "Chapter 4 of 24 • Harry Potter & The Sorcerer's Stone",
+  "appearanceDetailChapter1TheBoyWhoLived": "Chapter 1: The Boy Who Lived",
+  "appearanceDetailChapter2TheVanishingGlass": "Chapter 2: The Vanishing Glass",
+  "appearanceDetailChapter3TheLettersFromNoOne": "Chapter 3: The Letters from No One",
+  "appearanceDetailChapter4TheKeeperOfTheKeys": "Chapter 4: The Keeper of the Keys",
+  "appearanceDetailChapter5DiagonAlley": "Chapter 5: Diagon Alley",
+  "appearanceDetailArtworkTurntable": "Artwork & Turntable",
+  "appearanceDetailAlbumArtVinylTurntable": "Album Art & Vinyl Turntable",
+  "appearanceDetailTrackArtistAlbumTitles": "Track, Artist & Album Titles",
+  "appearanceDetailTrackTitleQualityBadge": "Track Title & Quality Badge",
+  "appearanceDetailLosslessHiResAudioQualityBadge": "Lossless Hi-Res Audio Quality Badge",
+  "appearanceDetailPrimaryControlsPlayPauseSkipShuffleRepeat": "Primary Controls (Play, Pause, Skip, Shuffle, Repeat)",
+  "appearanceDetailSecondaryControlsVolumeSlider": "Secondary Controls (Volume Slider)",
+  "appearanceDetailSyncedLyricsQueueQuickButtons": "Synced Lyrics & Queue Quick Buttons",
+  "appearanceDetailAudiobookCoverArtworkDeck": "Audiobook Cover Artwork Deck",
+  "appearanceDetailTitleAuthorChapterLabel": "Title, Author & Chapter Label",
+  "appearanceDetailSeekBarWaveformCanvasScrubber": "Seek Bar & Waveform Canvas Scrubber",
+  "appearanceDetailMainPlayPauseSkip10sCluster": "Main Play / Pause / Skip (±10s) Cluster",
+  "appearanceDetailSpeedSelectorVolumeControls": "Speed Selector & Volume Controls",
+  "appearanceDetailPremadeSlidingChaptersPanelTrigger": "Premade Sliding Chapters Panel Trigger",
+  "appearanceDetailTheWayOfKings": "The Way of Kings",
+  "appearanceDetailBrandonSandersonChapter1Stormblessed": "Brandon Sanderson • Chapter 1: Stormblessed",
+  "animeSourceSettingsTitle": "Anime metadata sources",
+  "animeSourceSettingsSubtitle": "Switch catalog, search and detail providers; playback sources are unchanged.",
+  "animeSourceAniList": "AniList",
+  "animeSourceBangumi": "Bangumi (Chinese metadata)",
+  "animeSourceFallback": "Fallback and supplemental data",
+  "animeSourceFallbackHelp": "When Bangumi fails or does not support a filter, use AniList. Also supplement cast and playback identity fields.",
+  "animeSourceMirror": "Optional HTTPS mirror",
+  "animeSourceMirrorHelp": "Leave blank to use official API. Only enter a trusted, authorized Bangumi-compatible mirror origin. Public search queries will be sent to it.",
+  "animeSourceProxy": "Optional HTTP proxy",
+  "animeSourceProxyHelp": "Example: http://127.0.0.1:7890. Blank uses process proxy environment, then Windows system proxy.",
+  "animeSourceSave": "Save network settings",
+  "animeSourceSaved": "Network settings saved",
+  "animeSourceInvalid": "Invalid origin or proxy. Use HTTPS mirror and HTTP proxy with a port.",
+  "animeSourceIdentityHelp": "Only subjects with a verified AniList mapping are shown in Bangumi catalogs for now. Existing history and library IDs stay unchanged.",
+  "animeSourceCheck": "Test Bangumi connection",
+  "animeSourceCheckOk": "Bangumi connection succeeded",
+  "animeSourceCheckFail": "Bangumi connection failed; check network settings."
 }

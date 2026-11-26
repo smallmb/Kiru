@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -166,7 +168,7 @@ class _AudiobookDetailPageState extends State<AudiobookDetailPage> {
                       const SizedBox(width: ZplaySpacing.s12),
                       Expanded(
                         child: Text(
-                          'Audiobook Details',
+                          l10nOf(context).auxAudiobookDetailPageAudiobookDetails,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: ZplayType.titleLarge
@@ -222,7 +224,7 @@ class _AudiobookDetailPageState extends State<AudiobookDetailPage> {
                     bottom: ZplaySpacing.s4,
                   ),
                   child: SectionHeader(
-                    title: 'Chapters & Audio Files',
+                    title: l10nOf(context).auxAudiobookDetailPageChaptersAudioFiles,
                     count: _chapters?.length,
                   ),
                 ),
@@ -243,7 +245,7 @@ class _AudiobookDetailPageState extends State<AudiobookDetailPage> {
                   // like every other fetch that fails and offers the retry the
                   // bare red sentence never did.
                   child: ErrorView(
-                    title: 'Could not load chapters',
+                    title: l10nOf(context).auxAudiobookDetailPageCouldNotLoadChapters,
                     error: _error,
                     onRetry: _fetchChapters,
                   ),
@@ -253,7 +255,7 @@ class _AudiobookDetailPageState extends State<AudiobookDetailPage> {
                   hasScrollBody: false,
                   child: Center(
                     child: Text(
-                      'No playable chapters found.',
+                      l10nOf(context).auxAudiobookDetailPageNoPlayableChaptersFound,
                       style: ZplayType.subtitle.toStyle(color: tokens.textSecondary),
                     ),
                   ),
@@ -368,7 +370,7 @@ class _AudiobookDetailPageState extends State<AudiobookDetailPage> {
           // one mark this design puts on a control, and a second, softer accent
           // edge under it read as a duplicate focus cue.
           PillButton(
-            label: 'Play First Chapter',
+            label: l10nOf(context).auxAudiobookDetailPagePlayFirstChapter,
             icon: Icons.play_arrow_rounded,
             onPressed: () => _playChapter(_chapters!.first),
           ),

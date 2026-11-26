@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -259,7 +262,7 @@ class _MangaPageState extends State<MangaPage> {
                       Icon(Icons.tune_rounded, color: tokens.accent, size: 20),
                       const SizedBox(width: ZplaySpacing.s12),
                       Text(
-                        'Customize Manga Section',
+                        l10nOf(context).auxMangaPageCustomizeMangaSection,
                         style: ZplayType.title.toStyle(color: tokens.textPrimary),
                       ),
                       const Spacer(),
@@ -276,7 +279,7 @@ class _MangaPageState extends State<MangaPage> {
                   const SizedBox(height: ZplaySpacing.s12),
 
                   Text(
-                    'Poster Card Density',
+                    l10nOf(context).auxAudiobooksPagePosterCardDensity,
                     style: ZplayType.label.toStyle(color: tokens.textPrimary),
                   ),
                   const SizedBox(height: ZplaySpacing.s8),
@@ -284,7 +287,7 @@ class _MangaPageState extends State<MangaPage> {
                     valueListenable: MangaSettings.cardDensity,
                     builder: (context, density, _) {
                       return SegmentedTabs<MangaCardDensity>(
-                        semanticsLabel: 'Manga poster card density',
+                        semanticsLabel: l10nOf(context).auxMangaPageMangaPosterCardDensity,
                         selected: density,
                         onSelected: MangaSettings.setCardDensity,
                         options: [
@@ -305,7 +308,7 @@ class _MangaPageState extends State<MangaPage> {
                     builder: (context, enabled, _) {
                       return SwitchListTile.adaptive(
                         contentPadding: EdgeInsets.zero,
-                        title: Text('Moving Ambient Background Glow', style: ZplayType.label.toStyle(color: tokens.textPrimary)),
+                        title: Text(l10nOf(context).auxAudiobooksPageMovingAmbientBackgroundGlow, style: ZplayType.label.toStyle(color: tokens.textPrimary)),
                         value: enabled,
                         activeColor: tokens.accent,
                         onChanged: (val) => MangaSettings.setEnableAmbientLights(val),
@@ -318,7 +321,7 @@ class _MangaPageState extends State<MangaPage> {
                     builder: (context, show, _) {
                       return SwitchListTile.adaptive(
                         contentPadding: EdgeInsets.zero,
-                        title: Text('Show "Continue Reading" Slider', style: ZplayType.label.toStyle(color: tokens.textPrimary)),
+                        title: Text(l10nOf(context).auxMangaPageShowContinueReadingSlider, style: ZplayType.label.toStyle(color: tokens.textPrimary)),
                         value: show,
                         activeColor: tokens.accent,
                         onChanged: (val) => MangaSettings.setShowContinueReading(val),
@@ -331,7 +334,7 @@ class _MangaPageState extends State<MangaPage> {
                     builder: (context, show, _) {
                       return SwitchListTile.adaptive(
                         contentPadding: EdgeInsets.zero,
-                        title: Text('Show Content Type Badge on Posters', style: ZplayType.label.toStyle(color: tokens.textPrimary)),
+                        title: Text(l10nOf(context).auxMangaPageShowContentTypeBadgeOnPosters, style: ZplayType.label.toStyle(color: tokens.textPrimary)),
                         value: show,
                         activeColor: tokens.accent,
                         onChanged: (val) => MangaSettings.setShowContentTypeBadge(val),
@@ -346,7 +349,7 @@ class _MangaPageState extends State<MangaPage> {
                   SizedBox(
                     width: double.infinity,
                     child: PillButton(
-                      label: 'More Appearance & Reader Settings',
+                      label: l10nOf(context).auxMangaPageMoreAppearanceReaderSettings,
                       variant: PillVariant.secondary,
                       icon: Icons.settings_rounded,
                       expand: true,
@@ -447,7 +450,7 @@ class _MangaPageState extends State<MangaPage> {
             child: Padding(
               padding: EdgeInsets.only(top: isMobile ? ZplaySpacing.s16 : ZplaySpacing.s24),
               child: SectionHeader(
-                title: 'Continue Reading',
+                title: l10nOf(context).auxMangaPageContinueReading,
                 count: _readingHistory.length,
               ),
             ),
@@ -503,7 +506,7 @@ class _MangaPageState extends State<MangaPage> {
                         if (_selectedGenre != 'All') ...[
                           const SizedBox(width: ZplaySpacing.s8),
                           _ClearGenreChip(
-                            tooltip: 'Reset to All Categories',
+                            tooltip: l10nOf(context).auxMangaCategoryDropdownResetToAllCategories,
                             onTap: () => _onGenreSelected('All'),
                           ),
                         ],
@@ -526,7 +529,7 @@ class _MangaPageState extends State<MangaPage> {
             hasScrollBody: false,
             child: Center(
               child: Text(
-                'No manga found',
+                l10nOf(context).auxMangaPageNoMangaFound,
                 style: ZplayType.title.toStyle(color: tokens.textEmphasis),
               ),
             ),
@@ -616,7 +619,7 @@ class _MangaPageState extends State<MangaPage> {
             // Quick Customize Button
             _MangaChromeAction(
               icon: Icons.tune_rounded,
-              semanticLabel: 'Customize Manga Section',
+              semanticLabel: configLabel(context, 'Customize Manga Section'),
               onTap: () => _showMangaCustomizer(context),
             ),
 
@@ -648,7 +651,7 @@ class _MangaPageState extends State<MangaPage> {
         textInputAction: TextInputAction.search,
         style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
         decoration: InputDecoration(
-          hintText: 'Search Manga, Manhwa, Manhua...',
+          hintText: l10nOf(context).auxMangaPageSearchMangaManhwaManhua,
           hintStyle: ZplayType.subtitle.toStyle(color: tokens.textSecondary),
           prefixIcon: Icon(Icons.search_rounded, color: tokens.accent),
           filled: true,
@@ -672,7 +675,7 @@ class _MangaPageState extends State<MangaPage> {
           suffixIcon: _searchQuery.isNotEmpty
               ? _MangaChromeAction(
                   icon: Icons.close_rounded,
-                  semanticLabel: 'Clear search',
+                  semanticLabel: configLabel(context, 'Clear search'),
                   size: ZplaySpacing.s40,
                   onTap: () {
                     _searchController.clear();
@@ -1009,7 +1012,7 @@ class _ContinueReadingSliderState extends State<_ContinueReadingSlider> {
                         top: 0,
                         right: 0,
                         child: Tooltip(
-                          message: 'Remove from Continue Reading',
+                          message: l10nOf(context).auxMangaPageRemoveFromContinueReading,
                           child: FocusableCard(
                             onTap: () => widget.onRemove(mangaId),
                             builder: (context, closeState) => CardFocusRing(

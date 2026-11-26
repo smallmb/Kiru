@@ -1,3 +1,5 @@
+import '../../l10n/l10n.dart';
+
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -620,7 +622,7 @@ class _HomePageState extends State<HomePage> {
       if (pointer && _isHomeVisible && HomePageSettings.enableAiQuiz.value)
         ShellPageAction(
           icon: Icons.auto_awesome_rounded,
-          tooltip: 'AI Taste Quiz',
+          tooltip: l10nOf(context).homeAiTasteQuiz,
           accent: true,
           onTap: () => Navigator.push(
             context,
@@ -630,7 +632,7 @@ class _HomePageState extends State<HomePage> {
       if (pointer && _isHomeVisible && HomePageSettings.enableCalendar.value)
         ShellPageAction(
           icon: Icons.calendar_month_rounded,
-          tooltip: 'TV Airing Calendar',
+          tooltip: l10nOf(context).homeTvCalendar,
           onTap: () => Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const TvCalendarPage()),
@@ -1149,7 +1151,7 @@ class _HomePageState extends State<HomePage> {
         ),
       // One feed, so the rail is everything watched. The type filter existed to
       // match the All/Movies/Series/Anime tabs, and that split is Browse's now.
-      const ContinueWatchingSlider(title: 'Continue Watching'),
+      ContinueWatchingSlider(title: l10nOf(context).homeContinueWatching),
       if (!hasContent)
         Padding(
           padding: const EdgeInsets.fromLTRB(
@@ -1176,7 +1178,7 @@ class _HomePageState extends State<HomePage> {
       if (_topTenSource(visibleSections) case final top?)
         MovieSliderSection(
           section: MovieSection(
-            title: 'Top 10 Movies',
+            title: l10nOf(context).homeTopTenMovies,
             subtitle: '',
             contentType: top.contentType,
             addonBaseUrl: top.addonBaseUrl,
@@ -1445,7 +1447,7 @@ class _HomePageState extends State<HomePage> {
         container: true,
         excludeSemantics: true,
         button: true,
-        label: 'Skip intro',
+        label: l10nOf(context).homeSkipIntro,
         onTap: _skipIntro,
         child: Container(
           color: context.tokens.bg,
@@ -1456,7 +1458,7 @@ class _HomePageState extends State<HomePage> {
                 ZplayLogo(size: iconSize * 1.5),
                 const SizedBox(height: ZplaySpacing.s32),
                 Text(
-                  'ZPlay',
+                  'Kiru',
                   textAlign: TextAlign.center,
                   style: ZplayType.display
                       .copyWith(size: titleSize)
@@ -1464,7 +1466,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: ZplaySpacing.s8),
                 Text(
-                  'Your Cinema Universe',
+                  l10nOf(context).homeCinemaUniverse,
                   textAlign: TextAlign.center,
                   style: ZplayType.overline
                       .copyWith(size: subtitleSize, letterSpacing: 2)
@@ -1662,7 +1664,7 @@ class _GlassAppBar extends StatelessWidget {
                   ),
                   color: tokens.accent,
                   iconSize: television ? 18 : 22,
-                  tooltip: 'AI Taste Quiz',
+                  tooltip: l10nOf(context).homeAiTasteQuiz,
                   style: rowButton,
                   onPressed: () {
                     Navigator.push(
@@ -1691,7 +1693,7 @@ class _GlassAppBar extends StatelessWidget {
                   ),
                   color: tokens.textEmphasis,
                   iconSize: television ? 18 : 22,
-                  tooltip: 'TV Airing Calendar',
+                  tooltip: l10nOf(context).homeTvCalendar,
                   style: rowButton,
                   onPressed: () {
                     Navigator.push(
@@ -2144,7 +2146,7 @@ class _HomeBrand extends StatelessWidget {
             const ZplayLogo(size: ZplaySpacing.s24),
             const SizedBox(width: ZplaySpacing.s8),
             Text(
-              'ZPlay',
+              'Kiru',
               style: ZplayType.title.toStyle(color: tokens.textPrimary),
             ),
           ],

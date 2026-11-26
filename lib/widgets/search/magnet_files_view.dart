@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import '../../models/stream/stream_model.dart';
 import '../../pages/player/player_screen.dart';
@@ -305,8 +307,8 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
                   const SizedBox(height: 24),
                   Text(
                     _isDebrid
-                        ? 'Using $_providerName for files...'
-                        : 'Connecting to swarm peers...',
+                        ? l10nOf(context).magnetUsingProvider(_providerName)
+                        : l10nOf(context).uiFinalMagnetFilesViewConnectingToSwarmPeers,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
@@ -315,7 +317,7 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Gathering file list & stream metadata',
+                    l10nOf(context).auxMagnetFilesViewGatheringFileListStreamMetadata,
                     style: TextStyle(
                       fontSize: 13,
                       color: Colors.white.withValues(alpha: 0.5),
@@ -350,8 +352,8 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
                     ),
                   ),
                   const SizedBox(height: 18),
-                  const Text(
-                    'Failed to Read Magnet',
+                  Text(
+                    l10nOf(context).auxMagnetFilesViewFailedToReadMagnet,
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
@@ -383,8 +385,8 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
                       ),
                     ),
                     icon: const Icon(Icons.refresh_rounded, size: 18),
-                    label: const Text(
-                      'Try Again',
+                    label: Text(
+                      l10nOf(context).auxMagnetFilesViewTryAgain,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -422,7 +424,7 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 40),
                   child: Text(
-                    'No files match filter',
+                    l10nOf(context).auxMagnetFilesViewNoFilesMatchFilter,
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.4),
                       fontSize: 14,
@@ -515,7 +517,7 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
               // Provider Badge
               _buildBadge(
                 icon: _isDebrid ? Icons.cloud_done_rounded : Icons.hub_rounded,
-                label: _isDebrid ? '$_providerName Cloud' : 'P2P Swarm',
+                label: _isDebrid ? l10nOf(context).magnetProviderCloud(_providerName) : l10nOf(context).uiFinalMagnetFilesViewP2pSwarm,
                 color: _isDebrid ? Colors.cyanAccent : palette.primaryColor,
               ),
               // Size Badge
@@ -528,14 +530,14 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
               _buildBadge(
                 icon: Icons.folder_rounded,
                 label:
-                    '${_files.length} ${_files.length == 1 ? "file" : "files"}',
+                    l10nOf(context).dynamicMagnetFilesView((_files.length).toString(), (_files.length == 1 ? "file" : "files").toString()),
                 color: Colors.white70,
               ),
               // Video Files Badge
               if (videoCount > 0)
                 _buildBadge(
                   icon: Icons.movie_rounded,
-                  label: '$videoCount ${videoCount == 1 ? "video" : "videos"}',
+                  label: l10nOf(context).dynamicMagnetFilesView2((videoCount).toString(), (videoCount == 1 ? "video" : "videos").toString()),
                   color: palette.primaryColor,
                 ),
             ],
@@ -590,7 +592,7 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
             style: const TextStyle(color: Colors.white, fontSize: 13),
             onChanged: (val) => setState(() => _searchFilter = val),
             decoration: InputDecoration(
-              hintText: 'Filter files by name...',
+              hintText: l10nOf(context).auxMagnetFilesViewFilterFilesByName,
               hintStyle: TextStyle(
                 color: Colors.white.withValues(alpha: 0.3),
                 fontSize: 13,
@@ -780,14 +782,14 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
                 elevation: 0,
               ),
               icon: const Icon(Icons.play_arrow_rounded, size: 18),
-              label: const Text(
-                'Play',
+              label: Text(
+                l10nOf(context).playerPlay,
                 style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.bold),
               ),
             )
           else
             Text(
-              'Non-video',
+              l10nOf(context).auxMagnetFilesViewNonVideo,
               style: TextStyle(
                 fontSize: 11,
                 color: Colors.white.withValues(alpha: 0.25),

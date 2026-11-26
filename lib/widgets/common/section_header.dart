@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../services/theme/design_tokens.dart';
@@ -113,7 +115,7 @@ class SectionHeader extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'See All',
+                        l10nOf(context).auxSectionHeaderSeeAll,
                         style: ZplayType.label.toStyle(
                           color: state.highlighted
                               ? tokens.accent

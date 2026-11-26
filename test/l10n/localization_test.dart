@@ -16,6 +16,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zplay/l10n/generated/app_localizations.dart';
 import 'package:zplay/l10n/l10n.dart';
+import 'package:zplay/l10n/media_labels.dart';
+import 'package:zplay/pages/browse/browse_page.dart';
 import 'package:zplay/pages/settings/diagnostics_page.dart';
 import 'package:zplay/services/diagnostics/diagnostics_export.dart';
 import 'package:zplay/services/layout/device_profile.dart';
@@ -99,6 +101,36 @@ void main() {
     }
   });
 
+  testWidgets('Chinese media labels retain unknown provider labels', (
+    tester,
+  ) async {
+    Widget probe(Locale locale) => _app(
+      locale,
+      Builder(
+        builder: (context) {
+          return Column(
+            children: [
+              Text(mediaLabel(context, 'Action')),
+              Text(mediaLabel(context, 'WINTER')),
+              Text(mediaLabel(context, 'RELEASING')),
+              Text(mediaLabel(context, 'Custom provider')),
+              Text(l10nOf(context).detailsSeasonLabel(2)),
+            ],
+          );
+        },
+      ),
+    );
+    await tester.pumpWidget(probe(const Locale('zh')));
+    expect(find.text('动作'), findsOneWidget);
+    expect(find.text('冬季'), findsOneWidget);
+    expect(find.text('连载中'), findsOneWidget);
+    expect(find.text('Custom provider'), findsOneWidget);
+    expect(find.text('第 2 季'), findsOneWidget);
+    await tester.pumpWidget(probe(const Locale('en')));
+    expect(find.text('Action'), findsOneWidget);
+    expect(find.text('WINTER'), findsOneWidget);
+  });
+
   testWidgets('English stays the default copy', (tester) async {
     tester.view.physicalSize = const Size(1280, 800);
     tester.view.devicePixelRatio = 1.0;
@@ -137,6 +169,54 @@ void main() {
     expect(find.text('نسخ التقرير'), findsOneWidget);
     expect(find.text('حفظ التقرير'), findsOneWidget);
     expect(find.textContaining('2 مسجّل'), findsOneWidget);
+  });
+
+  testWidgets('Chinese browse labels and source copy use generated resources', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _app(
+        const Locale('zh'),
+        Builder(
+          builder: (context) {
+            final l10n = l10nOf(context);
+            return Column(
+              children: [
+                Text(BrowseVertical.moviesAndTv.localizedLabel(context)),
+                Text(BrowseVertical.anime.localizedLabel(context)),
+                Text(l10n.sourcesTitle),
+                Text(l10n.sourcesEmpty),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+    expect(find.text('电影与剧集'), findsOneWidget);
+    expect(find.text('动漫'), findsOneWidget);
+    expect(find.text('播放源'), findsOneWidget);
+    expect(find.text('暂无可用播放源'), findsOneWidget);
+    await tester.pumpWidget(
+      _app(
+        const Locale('en'),
+        Builder(
+          builder: (context) {
+            return Text(BrowseVertical.moviesAndTv.localizedLabel(context));
+          },
+        ),
+      ),
+    );
+    expect(find.text('Movies & TV'), findsOneWidget);
+  });
+
+  test('LocaleSettings persists Chinese and restores it', () async {
+    await LocaleSettings.setLocale('zh');
+    expect(LocaleSettings.locale.value, const Locale('zh'));
+    LocaleSettings.locale.value = null;
+    await LocaleSettings.initialize();
+    expect(LocaleSettings.locale.value, const Locale('zh'));
+    await LocaleSettings.setLocale(LocaleSettings.systemCode);
+    expect(LocaleSettings.locale.value, isNull);
   });
 
   test('LocaleSettings persists Arabic and initialize restores it', () async {

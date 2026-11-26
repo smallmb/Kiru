@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import '../../services/theme/design_tokens.dart';
 import 'player_glass.dart';
@@ -35,7 +37,7 @@ class PlayerMenuHeader extends StatelessWidget {
           size: 28,
           iconSize: 14,
           icon: const Icon(Icons.close_rounded),
-          tooltip: 'Close',
+          tooltip: l10nOf(context).uiPlayerMenuRowsClose,
           onPressed: onClose,
         ),
       ],

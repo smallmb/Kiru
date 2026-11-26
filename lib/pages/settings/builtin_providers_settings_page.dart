@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import '../../services/scraper/builtin_providers_settings_service.dart';
 import '../../widgets/common/animated_ambient_background.dart';
@@ -46,7 +49,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
       // clears it with its own top padding (below).
       extendBodyBehindAppBar: true,
       appBar: SettingsAppBar(
-        title: 'Built-in Providers',
+        title: l10nOf(context).uiBuiltinProvidersSettingsPageBuiltInProviders,
         actions: [
           ListenableBuilder(
             listenable: _service,
@@ -58,7 +61,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                 ),
                 icon: const Icon(Icons.restore_rounded, size: 18),
-                label: Text('Reset', style: ZplayType.label.toStyle()),
+                label: Text(l10nOf(context).uiBuiltinProvidersSettingsPageReset, style: ZplayType.label.toStyle()),
                 onPressed: () async {
                   final confirm = await showDialog<bool>(
                     context: context,
@@ -70,13 +73,13 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                           borderRadius: ZplayRadius.lgAll,
                         ),
                         title: Text(
-                          'Reset Providers Order?',
+                          l10nOf(context).uiBuiltinProvidersSettingsPageResetProvidersOrder,
                           style: ZplayType.title.toStyle(
                             color: tokens.textPrimary,
                           ),
                         ),
                         content: Text(
-                          'This will restore all 45 ZPlayHTTP providers to their default order and re-enable any disabled providers.',
+                          l10nOf(context).auxBuiltinProvidersSettingsPageThisWillRestoreAll45ZplayhttpProviders,
                           style: ZplayType.body.toStyle(
                             color: tokens.textEmphasis,
                           ),
@@ -84,7 +87,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                         actions: [
                           TextButton(
                             child: Text(
-                              'Cancel',
+                              l10nOf(context).uiBuiltinProvidersSettingsPageCancel,
                               style: ZplayType.label.toStyle(
                                 color: tokens.textSecondary,
                               ),
@@ -96,7 +99,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                               backgroundColor: tokens.accent,
                               foregroundColor: tokens.onAccent,
                             ),
-                            child: const Text('Reset'),
+                            child: Text(l10nOf(context).uiBuiltinProvidersSettingsPageReset),
                             onPressed: () => Navigator.pop(ctx, true),
                           ),
                         ],
@@ -175,7 +178,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                               Icon(Icons.search_off_rounded, size: 44, color: tokens.textDisabled),
                               const SizedBox(height: 12),
                               Text(
-                                'No providers found matching "$_searchQuery"',
+                                l10nOf(context).dynamicBuiltinProvidersSettingsPageNoProvidersFoundMatching((_searchQuery).toString()),
                                 textAlign: TextAlign.center,
                                 style: ZplayType.body.toStyle(color: tokens.textSecondary),
                               ),
@@ -252,8 +255,8 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
               isSelected: !isCustom,
               icon: Icons.auto_awesome_rounded,
               iconColor: tokens.accent,
-              title: 'Default Mode',
-              subtitle: 'Standard auto-sorting across all 45 providers',
+              title: l10nOf(context).uiBuiltinProvidersSettingsPageDefaultMode,
+              subtitle: l10nOf(context).auxBuiltinProvidersSettingsPageStandardAutoSortingAcrossAll45Providers,
               activeColor: tokens.accent,
               onTap: () => _service.setMode(BuiltinProvidersMode.defaultMode),
             ),
@@ -262,8 +265,8 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
               isSelected: isCustom,
               icon: Icons.tune_rounded,
               iconColor: tokens.accent,
-              title: 'Custom Mode',
-              subtitle: 'Manual provider order, toggles & priority scraping',
+              title: l10nOf(context).uiBuiltinProvidersSettingsPageCustomMode,
+              subtitle: l10nOf(context).uiBuiltinProvidersSettingsPageManualProviderOrderTogglesPriorityScraping,
               activeColor: tokens.accent,
               onTap: () => _service.setMode(BuiltinProvidersMode.customMode),
             ),
@@ -281,8 +284,8 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
               isSelected: !isCustom,
               icon: Icons.auto_awesome_rounded,
               iconColor: tokens.accent,
-              title: 'Default',
-              subtitle: 'Standard auto-sorting',
+              title: l10nOf(context).uiBuiltinProvidersSettingsPageDefault,
+              subtitle: l10nOf(context).uiBuiltinProvidersSettingsPageStandardAutoSorting,
               activeColor: tokens.accent,
               onTap: () => _service.setMode(BuiltinProvidersMode.defaultMode),
             ),
@@ -293,8 +296,8 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
               isSelected: isCustom,
               icon: Icons.tune_rounded,
               iconColor: tokens.accent,
-              title: 'Custom',
-              subtitle: 'Manual order & toggles',
+              title: l10nOf(context).uiBuiltinProvidersSettingsPageCustom,
+              subtitle: l10nOf(context).uiBuiltinProvidersSettingsPageManualOrderToggles,
               activeColor: tokens.accent,
               onTap: () => _service.setMode(BuiltinProvidersMode.customMode),
             ),
@@ -400,12 +403,12 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Default Mode Active',
+                      l10nOf(context).uiBuiltinProvidersSettingsPageDefaultModeActive,
                       style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'All $totalCount ZPlayHTTP providers are active and scraped concurrently.',
+                      l10nOf(context).dynamicBuiltinProvidersSettingsPageAllZplayhttpProvidersAreActiveAnd((totalCount).toString()),
                       style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                     ),
                   ],
@@ -417,7 +420,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
           Divider(color: tokens.borderStrong, height: 1),
           const SizedBox(height: 14),
           Text(
-            'In Default mode, ZPlay uses its native multi-source streaming engine. All providers run simultaneously, and results are smartly sorted by video resolution (4K, 1080p, 720p) and file size.',
+            l10nOf(context).auxBuiltinProvidersSettingsPageInDefaultModeZplayUsesItsNative,
             style: ZplayType.bodySmall.toStyle(color: tokens.textEmphasis),
           ),
           const SizedBox(height: 16),
@@ -433,7 +436,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               ),
               icon: const Icon(Icons.tune_rounded, size: 17),
-              label: Text('Switch to Custom Mode', style: ZplayType.label.toStyle()),
+              label: Text(l10nOf(context).uiBuiltinProvidersSettingsPageSwitchToCustomMode, style: ZplayType.label.toStyle()),
               onPressed: () => _service.setMode(BuiltinProvidersMode.customMode),
             ),
           ),
@@ -477,12 +480,12 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Priority Scrape & Result Sorting',
+                  l10nOf(context).uiBuiltinProvidersSettingsPagePriorityScrapeResultSorting,
                   style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  'Providers at the top scrape first, and their results strictly display at the top of stream results, no matter the file size or quality.',
+                  l10nOf(context).auxBuiltinProvidersSettingsPageProvidersAtTheTopScrapeFirstAnd,
                   style: ZplayType.bodySmall.toStyle(color: tokens.textEmphasis),
                 ),
               ],
@@ -512,7 +515,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
               style: ZplayType.body.toStyle(color: tokens.textPrimary),
               onChanged: (val) => setState(() => _searchQuery = val.trim()),
               decoration: InputDecoration(
-                hintText: 'Search providers (e.g. CineSrc)...',
+                hintText: l10nOf(context).uiBuiltinProvidersSettingsPageSearchProvidersEGCinesrc,
                 hintStyle: ZplayType.bodySmall.toStyle(color: tokens.textDisabled),
                 prefixIcon: Icon(Icons.search_rounded, size: 18, color: tokens.textMuted),
                 suffixIcon: _searchQuery.isNotEmpty
@@ -542,7 +545,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                   border: Border.fromBorderSide(tokens.hairline),
                 ),
                 child: Text(
-                  '$activeCount / $totalCount Active',
+                  l10nOf(context).dynamicBuiltinProvidersSettingsPageActive((activeCount).toString(), (totalCount).toString()),
                   style: ZplayType.caption.toStyle(
                     color: activeCount > 0 ? tokens.success : tokens.danger,
                   ),
@@ -558,7 +561,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                       visualDensity: VisualDensity.compact,
                     ),
                     icon: const Icon(Icons.select_all_rounded, size: 15),
-                    label: Text('Enable All', style: ZplayType.label.toStyle()),
+                    label: Text(l10nOf(context).uiBuiltinProvidersSettingsPageEnableAll, style: ZplayType.label.toStyle()),
                     onPressed: () => _service.enableAll(),
                   ),
                   TextButton.icon(
@@ -568,7 +571,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                       visualDensity: VisualDensity.compact,
                     ),
                     icon: const Icon(Icons.deselect_rounded, size: 15),
-                    label: Text('Disable All', style: ZplayType.label.toStyle()),
+                    label: Text(l10nOf(context).uiBuiltinProvidersSettingsPageDisableAll, style: ZplayType.label.toStyle()),
                     onPressed: () => _service.disableAll(),
                   ),
                 ],
@@ -597,7 +600,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                   style: ZplayType.body.toStyle(color: tokens.textPrimary),
                   onChanged: (val) => setState(() => _searchQuery = val.trim()),
                   decoration: InputDecoration(
-                    hintText: 'Search providers (e.g. CineSrc, Dulo)...',
+                    hintText: l10nOf(context).uiBuiltinProvidersSettingsPageSearchProvidersEGCinesrcDulo,
                     hintStyle: ZplayType.bodySmall.toStyle(color: tokens.textDisabled),
                     prefixIcon: Icon(Icons.search_rounded, size: 18, color: tokens.textMuted),
                     suffixIcon: _searchQuery.isNotEmpty
@@ -624,7 +627,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                 border: Border.fromBorderSide(tokens.hairline),
               ),
               child: Text(
-                '$activeCount / $totalCount Active',
+                l10nOf(context).dynamicBuiltinProvidersSettingsPageActive((activeCount).toString(), (totalCount).toString()),
                 style: ZplayType.caption.toStyle(
                   color: activeCount > 0 ? tokens.success : tokens.danger,
                 ),
@@ -641,7 +644,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
               icon: const Icon(Icons.select_all_rounded, size: 16),
-              label: Text('Enable All', style: ZplayType.label.toStyle()),
+              label: Text(l10nOf(context).uiBuiltinProvidersSettingsPageEnableAll, style: ZplayType.label.toStyle()),
               onPressed: () => _service.enableAll(),
             ),
             const SizedBox(width: 6),
@@ -651,13 +654,13 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
               icon: const Icon(Icons.deselect_rounded, size: 16),
-              label: Text('Disable All', style: ZplayType.label.toStyle()),
+              label: Text(l10nOf(context).uiBuiltinProvidersSettingsPageDisableAll, style: ZplayType.label.toStyle()),
               onPressed: () => _service.disableAll(),
             ),
             const Spacer(),
             if (_searchQuery.isNotEmpty)
               Text(
-                'Clear search to drag & reorder',
+                l10nOf(context).uiBuiltinProvidersSettingsPageClearSearchToDragReorder,
                 style: ZplayType.caption.toStyle(color: tokens.textMuted),
               ),
           ],
@@ -770,7 +773,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                             borderRadius: ZplayRadius.xsAll,
                           ),
                           child: Text(
-                            'Off',
+                            l10nOf(context).uiBuiltinProvidersSettingsPageOff,
                             style: ZplayType.caption.toStyle(color: tokens.textMuted),
                           ),
                         ),
@@ -779,7 +782,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    provider.description,
+                    configLabel(context, provider.description),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: ZplayType.caption.toStyle(
@@ -801,7 +804,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                   height: isCompact ? 28 : 34,
                 ),
                 color: isEnabled && index > 0 ? tokens.textEmphasis : tokens.textDisabled,
-                tooltip: 'Move Up',
+                tooltip: l10nOf(context).uiBuiltinProvidersSettingsPageMoveUp,
                 onPressed: isEnabled && index > 0
                     ? () => _service.moveProvider(provider.id, -1)
                     : null,
@@ -815,7 +818,7 @@ class _BuiltinProvidersSettingsPageState extends State<BuiltinProvidersSettingsP
                   height: isCompact ? 28 : 34,
                 ),
                 color: isEnabled ? tokens.textEmphasis : tokens.textDisabled,
-                tooltip: 'Move Down',
+                tooltip: l10nOf(context).uiBuiltinProvidersSettingsPageMoveDown,
                 onPressed: isEnabled
                     ? () => _service.moveProvider(provider.id, 1)
                     : null,

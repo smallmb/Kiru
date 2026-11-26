@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../services/collections/collections_service.dart';
@@ -107,7 +110,7 @@ class _Header extends StatelessWidget {
         children: [
           IconButton(
             onPressed: () => Navigator.of(context).maybePop(),
-            tooltip: 'Back',
+            tooltip: l10nOf(context).uiPlayerTopBarBack,
             icon: Icon(Icons.arrow_back_rounded, color: tokens.textPrimary),
           ),
           const SizedBox(width: ZplaySpacing.s4),
@@ -116,7 +119,7 @@ class _Header extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  collection.title,
+                  configLabel(context, collection.title),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: ZplayType.titleLarge.toStyle(color: tokens.textPrimary),
@@ -124,7 +127,7 @@ class _Header extends StatelessWidget {
                 if (collection.subtitle.isNotEmpty) ...[
                   const SizedBox(height: ZplaySpacing.s4),
                   Text(
-                    collection.subtitle,
+                    configLabel(context, collection.subtitle),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),

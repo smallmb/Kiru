@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -232,7 +234,7 @@ class _BooksPageState extends State<BooksPage> {
                   SliverFillRemaining(
                     hasScrollBody: false,
                     child: ErrorView(
-                      title: 'Could not load books',
+                      title: l10nOf(context).auxBooksPageCouldNotLoadBooks,
                       error: _error,
                       onRetry: () => _loadBooks(),
                     ),
@@ -247,12 +249,12 @@ class _BooksPageState extends State<BooksPage> {
                           Icon(Icons.search_off_rounded, color: tokens.textMuted, size: 56),
                           const SizedBox(height: ZplaySpacing.s12),
                           Text(
-                            'No books found',
+                            l10nOf(context).auxBooksPageNoBooksFound,
                             style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
                           ),
                           const SizedBox(height: ZplaySpacing.s4),
                           Text(
-                            'Try searching for another title, author, or language',
+                            l10nOf(context).auxBooksPageTrySearchingForAnotherTitleAuthorOr,
                             style: ZplayType.label.toStyle(color: tokens.textMuted),
                           ),
                         ],
@@ -351,7 +353,7 @@ class _BooksPageState extends State<BooksPage> {
               onChanged: _onSearchChanged,
               style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
               decoration: InputDecoration(
-                hintText: 'Search millions of books & authors...',
+                hintText: l10nOf(context).auxBooksPageSearchMillionsOfBooksAuthors,
                 hintStyle: ZplayType.body.toStyle(color: tokens.textDisabled),
                 prefixIcon: Icon(Icons.search_rounded, color: tokens.textMuted, size: 19),
                 suffixIcon: _searchController.text.isNotEmpty
@@ -416,7 +418,7 @@ class _BooksPageState extends State<BooksPage> {
               // worth more to the selectors.
               if (!isMobile) ...[
                 Text(
-                  'Font Engine:',
+                  l10nOf(context).auxBooksPageFontEngine,
                   style: ZplayType.label
                       .copyWith(weight: FontWeight.w600)
                       .toStyle(color: tokens.textMuted),
@@ -434,7 +436,7 @@ class _BooksPageState extends State<BooksPage> {
                   ],
                   selected: settings.fontFamily,
                   onSelected: ReaderSettings.updateFontFamily,
-                  semanticsLabel: 'Reader font engine',
+                  semanticsLabel: l10nOf(context).auxBooksPageReaderFontEngine,
                   height: stripHeight,
                 ),
               ),
@@ -476,22 +478,22 @@ class _BooksPageState extends State<BooksPage> {
         ZplaySpacing.s16,
       ),
       child: TabStrip<String?>(
-        options: const [
-          TabStripOption<String?>(value: null, label: 'All Formats'),
-          TabStripOption<String?>(value: 'epub', label: 'EPUB'),
-          TabStripOption<String?>(value: 'pdf', label: 'PDF'),
-          TabStripOption<String?>(value: 'mobi', label: 'MOBI'),
-          TabStripOption<String?>(value: 'azw3', label: 'AZW3'),
-          TabStripOption<String?>(value: 'fb2', label: 'FB2'),
-          TabStripOption<String?>(value: 'txt', label: 'TXT'),
-          TabStripOption<String?>(value: 'cbz', label: 'CBZ'),
+        options: [
+          TabStripOption<String?>(value: null, label: l10nOf(context).auxBooksPageAllFormats),
+          const TabStripOption<String?>(value: 'epub', label: 'EPUB'),
+          const TabStripOption<String?>(value: 'pdf', label: 'PDF'),
+          const TabStripOption<String?>(value: 'mobi', label: 'MOBI'),
+          const TabStripOption<String?>(value: 'azw3', label: 'AZW3'),
+          const TabStripOption<String?>(value: 'fb2', label: 'FB2'),
+          const TabStripOption<String?>(value: 'txt', label: 'TXT'),
+          const TabStripOption<String?>(value: 'cbz', label: 'CBZ'),
         ],
         selected: _selectedFormat,
         onSelected: (format) {
           setState(() => _selectedFormat = format);
           _loadBooks();
         },
-        semanticsLabel: 'Book formats',
+        semanticsLabel: l10nOf(context).auxBooksPageBookFormats,
         height: stripHeight,
       ),
     );

@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../../services/layout/form_factor.dart';
@@ -79,12 +82,12 @@ class MangaAtmosphereChips extends StatelessWidget {
         children: [
           if (showLabel)
             Text(
-              'Reader Atmosphere:',
+              l10nOf(context).auxMangaReaderControlsReaderAtmosphere,
               style: ZplayType.label.toStyle(color: tokens.textEmphasis),
             ),
           for (final background in MangaReaderBackground.values)
             ReaderChoiceChip(
-              label: background.label,
+              label: configLabel(context, background.label),
               swatch: background.color,
               selected: background == current,
               onTap: () => MangaSettings.setReaderBackground(background),
@@ -250,7 +253,7 @@ class MangaPageModeChip extends StatelessWidget {
       context,
       values: MangaReadingMode.values,
       current: current,
-      label: (mode) => mode.label,
+      label: (mode) => configLabel(context, mode.label),
     );
 
     if (picked != null) await MangaSettings.setDefaultReadingMode(picked);
@@ -262,7 +265,7 @@ class MangaPageModeChip extends StatelessWidget {
       valueListenable: MangaSettings.defaultReadingMode,
       builder: (context, mode, _) => Builder(
         builder: (chipContext) => ReaderChoiceChip(
-          label: 'Page Mode: ${shortLabel(mode)}',
+          label: l10nOf(context).dynamicMangaReaderControlsPageMode((shortLabel(mode)).toString()),
           selected: false,
           trailingIcon: Icons.arrow_drop_down_rounded,
           onTap: () => _openMenu(chipContext, mode),
@@ -295,7 +298,7 @@ class MangaAtmosphereChip extends StatelessWidget {
       context,
       values: MangaReaderBackground.values,
       current: current,
-      label: (background) => background.label,
+      label: (background) => configLabel(context, background.label),
     );
 
     if (picked != null) await MangaSettings.setReaderBackground(picked);
@@ -307,7 +310,7 @@ class MangaAtmosphereChip extends StatelessWidget {
       valueListenable: MangaSettings.readerBackground,
       builder: (context, current, _) => Builder(
         builder: (chipContext) => ReaderChoiceChip(
-          label: 'Atmosphere: ${current.label}',
+          label: l10nOf(context).dynamicMangaReaderControlsAtmosphere((current.label).toString()),
           swatch: current.color,
           selected: false,
           trailingIcon: Icons.arrow_drop_down_rounded,

@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -84,7 +86,7 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${plugin.name} installed successfully!'),
+          content: Text(l10nOf(context).dynamicCloudstreamRepoModalInstalledSuccessfully((plugin.name).toString())),
           backgroundColor: tokens.success,
           behavior: SnackBarBehavior.floating,
         ),
@@ -115,7 +117,7 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${plugin.name} uninstalled.'),
+          content: Text(l10nOf(context).dynamicCloudstreamRepoModalUninstalled((plugin.name).toString())),
           backgroundColor: tokens.warning,
           behavior: SnackBarBehavior.floating,
         ),
@@ -141,8 +143,8 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
     final uninstalled = _filteredPlugins.where((p) => !_isInstalled(p)).toList();
     if (uninstalled.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('All matching plugins are already installed!'),
+        SnackBar(
+          content: Text(l10nOf(context).uiCloudstreamRepoModalAllMatchingPluginsAreAlreadyInstalled),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -154,7 +156,7 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Successfully installed $count plugins!'),
+          content: Text(l10nOf(context).dynamicCloudstreamRepoModalSuccessfullyInstalledPlugins((count).toString())),
           backgroundColor: tokens.success,
           behavior: SnackBarBehavior.floating,
         ),
@@ -164,7 +166,7 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Installation error: $e'),
+          content: Text(l10nOf(context).dynamicCloudstreamRepoModalInstallationError((e).toString())),
           backgroundColor: tokens.danger,
           behavior: SnackBarBehavior.floating,
         ),
@@ -186,18 +188,18 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
           children: [
             Icon(Icons.delete_sweep_rounded, color: tokens.danger, size: 22),
             const SizedBox(width: 8),
-            Text('Remove ${installedList.length} Plugin${installedList.length > 1 ? 's' : ''}?'),
+            Text(l10nOf(context).addonsRemoveCount(installedList.length)),
           ],
         ),
         content: Text(
-          'Are you sure you want to uninstall all ${installedList.length} installed plugins from this list? Their downloaded files will be removed.',
+          l10nOf(context).dynamicCloudstreamRepoModalUninstallAllInstalledPluginsFromThis((installedList.length).toString()),
           style: ZplayType.body.toStyle(color: tokens.textEmphasis),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
             child: Text(
-              'Cancel',
+              l10nOf(context).uiCloudstreamRepoModalCancel,
               style: ZplayType.label.toStyle(color: tokens.textSecondary),
             ),
           ),
@@ -208,7 +210,7 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
               foregroundColor: tokens.onAccent,
               shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
             ),
-            child: Text('Remove All (${installedList.length})', style: ZplayType.label.toStyle()),
+            child: Text(l10nOf(context).dynamicCloudstreamRepoModalRemoveAll((installedList.length).toString()), style: ZplayType.label.toStyle()),
           ),
         ],
       ),
@@ -220,7 +222,7 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Successfully uninstalled ${installedList.length} plugins.'),
+        content: Text(l10nOf(context).dynamicCloudstreamRepoModalSuccessfullyUninstalledPlugins((installedList.length).toString())),
         backgroundColor: tokens.danger,
         behavior: SnackBarBehavior.floating,
       ),
@@ -284,7 +286,7 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
                                 color: tokens.danger,
                               ),
                               label: Text(
-                                'Remove All ($installedCount)',
+                                l10nOf(context).dynamicCloudstreamRepoModalRemoveAll((installedCount).toString()),
                                 style: ZplayType.caption.toStyle(color: tokens.danger),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -312,7 +314,7 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
                               onPressed: busy ? null : _installAll,
                               icon: const Icon(Icons.download_rounded, size: 14),
                               label: Text(
-                                'Install All ($uninstalledCount)',
+                                l10nOf(context).dynamicCloudstreamRepoModalInstallAll((uninstalledCount).toString()),
                                 style: ZplayType.caption.toStyle(),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -335,7 +337,7 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  'Available Plugins',
+                                  l10nOf(context).uiCloudstreamRepoModalAvailablePlugins,
                                   style: ZplayType.title.toStyle(color: tokens.textPrimary),
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -366,7 +368,7 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
                     return Row(
                       children: [
                         Text(
-                          'Available CloudStream Plugins',
+                          l10nOf(context).uiCloudstreamRepoModalAvailableCloudstreamPlugins,
                           style: ZplayType.title.toStyle(color: tokens.textPrimary),
                         ),
                         const Spacer(),
@@ -440,7 +442,7 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
                   style: ZplayType.body.toStyle(color: tokens.textPrimary),
                   onChanged: (val) => setState(() => _searchQuery = val),
                   decoration: InputDecoration(
-                    hintText: 'Search plugins (e.g. Sflix, SuperStream)...',
+                    hintText: l10nOf(context).uiCloudstreamRepoModalSearchPluginsEGSflixSuperstream,
                     hintStyle: ZplayType.label.toStyle(color: tokens.textDisabled),
                     prefixIcon: Icon(
                       Icons.search_rounded,
@@ -603,7 +605,7 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
                                                 ),
                                                 const SizedBox(width: 4),
                                                 Text(
-                                                  'Installed',
+                                                  l10nOf(context).uiCloudstreamRepoModalInstalled,
                                                   style: ZplayType.caption.toStyle(
                                                     color: tokens.success,
                                                   ),
@@ -619,7 +621,7 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
                                               color: tokens.danger,
                                             ),
                                             onPressed: () => _uninstall(plugin),
-                                            tooltip: 'Uninstall',
+                                            tooltip: l10nOf(context).uiCloudstreamRepoModalUninstall,
                                             visualDensity: VisualDensity.compact,
                                             padding: const EdgeInsets.all(6),
                                             constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
@@ -637,7 +639,7 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
                                           visualDensity: VisualDensity.compact,
                                         ),
                                         child: Text(
-                                          'Install',
+                                          l10nOf(context).uiCloudstreamRepoModalInstall,
                                           style: ZplayType.label.toStyle(),
                                         ),
                                       ),

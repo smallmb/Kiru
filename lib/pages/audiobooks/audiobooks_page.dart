@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -240,7 +242,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                       Icon(Icons.tune_rounded, color: tokens.accent, size: 20),
                       const SizedBox(width: ZplaySpacing.s12),
                       Text(
-                        'Customize Audiobook Section',
+                        l10nOf(context).auxAudiobooksPageCustomizeAudiobookSection,
                         style: ZplayType.title.toStyle(color: tokens.textPrimary),
                       ),
                       const Spacer(),
@@ -268,7 +270,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                   const SizedBox(height: ZplaySpacing.s20),
 
                   Text(
-                    'Poster Card Density',
+                    l10nOf(context).auxAudiobooksPagePosterCardDensity,
                     style: ZplayType.label
                         .copyWith(weight: FontWeight.w700)
                         .toStyle(color: tokens.textPrimary),
@@ -278,7 +280,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                     valueListenable: AudiobookSettings.cardDensity,
                     builder: (context, density, _) {
                       return SegmentedTabs<AudiobookCardDensity>(
-                        semanticsLabel: 'Audiobook poster card density',
+                        semanticsLabel: l10nOf(context).auxAudiobooksPageAudiobookPosterCardDensity,
                         selected: density,
                         onSelected: AudiobookSettings.setCardDensity,
                         options: [
@@ -300,7 +302,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                       return SwitchListTile.adaptive(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          'Featured Hero Spotlight Carousel',
+                          l10nOf(context).auxAudiobooksPageFeaturedHeroSpotlightCarousel,
                           style: ZplayType.label.toStyle(color: tokens.textPrimary),
                         ),
                         value: enabled,
@@ -316,7 +318,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                       return SwitchListTile.adaptive(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          'Moving Ambient Background Glow',
+                          l10nOf(context).auxAudiobooksPageMovingAmbientBackgroundGlow,
                           style: ZplayType.label.toStyle(color: tokens.textPrimary),
                         ),
                         value: enabled,
@@ -332,7 +334,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                       return SwitchListTile.adaptive(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          'Show "Continue Listening" Carousel',
+                          l10nOf(context).auxAudiobooksPageShowContinueListeningCarousel,
                           style: ZplayType.label.toStyle(color: tokens.textPrimary),
                         ),
                         value: show,
@@ -348,7 +350,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                   // to another surface, and its column is sized by it.
                   PillButton(
                     variant: PillVariant.secondary,
-                    label: 'Open Player Studio & Themes',
+                    label: l10nOf(context).auxAudiobooksPageOpenPlayerStudioThemes,
                     icon: Icons.palette_rounded,
                     expand: true,
                     onPressed: () {
@@ -445,11 +447,11 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Audiobook Hub',
+                              l10nOf(context).auxAudiobooksPageAudiobookHub,
                               style: ZplayType.titleLarge.toStyle(color: tokens.textPrimary),
                             ),
                             Text(
-                              'Explore, stream & listen to thousands of stories',
+                              l10nOf(context).auxAudiobooksPageExploreStreamListenToThousandsOfStories,
                               style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -461,7 +463,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                       // AI Generator & Studio
                       _ChromeActionButton(
                         icon: Icons.auto_awesome_rounded,
-                        tooltip: 'Audiobook Generator & Studio',
+                        tooltip: l10nOf(context).auxAudiobooksPageAudiobookGeneratorStudio,
                         onTap: () async {
                           await Navigator.push(
                             context,
@@ -474,7 +476,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                       // Quick Customize
                       _ChromeActionButton(
                         icon: Icons.tune_rounded,
-                        tooltip: 'Audiobook Customizer',
+                        tooltip: l10nOf(context).auxAudiobooksPageAudiobookCustomizer,
                         onTap: () => _showAudiobookCustomizer(context),
                       ),
                     ],
@@ -510,7 +512,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                       onChanged: _onSearchChanged,
                       onSubmitted: _performSearch,
                       decoration: InputDecoration(
-                        hintText: 'Search audiobooks by title, author, or genre...',
+                        hintText: l10nOf(context).auxAudiobooksPageSearchAudiobooksByTitleAuthorOrGenre,
                         hintStyle: ZplayType.body.toStyle(color: tokens.textMuted),
                         prefixIcon: Icon(Icons.search_rounded, color: tokens.accent),
                         suffixIcon: _searchController.text.isNotEmpty
@@ -569,7 +571,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                       ],
                       selected: _selectedCategory,
                       onSelected: _selectCategory,
-                      semanticsLabel: 'Audiobook genres',
+                      semanticsLabel: l10nOf(context).auxAudiobooksPageAudiobookGenres,
                       height: television ? ZplaySpacing.s64 : ZplaySpacing.s48,
                     ),
                   ),
@@ -627,7 +629,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                         CircularProgressIndicator(color: tokens.accent),
                         const SizedBox(height: ZplaySpacing.s16),
                         Text(
-                          'Scraping high-quality audiobook sources...',
+                          l10nOf(context).auxAudiobooksPageScrapingHighQualityAudiobookSources,
                           style: ZplayType.body.toStyle(color: tokens.textEmphasis),
                         ),
                       ],
@@ -640,7 +642,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                   // The shared failure view: it names what failed and offers the
                   // retry the bare red sentence never did.
                   child: ErrorView(
-                    title: 'Could not load audiobooks',
+                    title: l10nOf(context).auxAudiobooksPageCouldNotLoadAudiobooks,
                     error: _errorMessage,
                     onRetry: () => _performSearch(_searchController.text),
                   ),
@@ -650,7 +652,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                   hasScrollBody: false,
                   child: Center(
                     child: Text(
-                      'No audiobooks found. Try another search query.',
+                      l10nOf(context).auxAudiobooksPageNoAudiobooksFoundTryAnotherSearchQuery,
                       style: ZplayType.subtitle.toStyle(color: tokens.textSecondary),
                     ),
                   ),
@@ -846,7 +848,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                       ),
                       const SizedBox(width: ZplaySpacing.s12),
                       Text(
-                        '${_formatRemaining(remaining)} left',
+                        l10nOf(context).dynamicAudiobooksPageLeft((_formatRemaining(remaining)).toString()),
                         style: ZplayType.caption
                             .copyWith(weight: FontWeight.w600)
                             .toStyle(color: tokens.textSecondary),
@@ -930,7 +932,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
           // header's muted tabular number. The accent glyph that used to lead
           // this row was a second mark for a title that already names itself.
           SectionHeader(
-            title: 'Continue Listening',
+            title: l10nOf(context).auxAudiobooksPageContinueListening,
             count: _continueListeningList.length,
           ),
           const SizedBox(height: ZplaySpacing.s8),
@@ -1074,13 +1076,13 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'AI Audiobook Studio & EPUB Generator',
+                      l10nOf(context).auxAudiobooksPageAiAudiobookStudioEpubGenerator,
                       style: ZplayType.label
                           .copyWith(weight: FontWeight.w700)
                           .toStyle(color: tokens.textPrimary),
                     ),
                     Text(
-                      'Generate audiobooks from EPUBs or import your own MP3/M4B audiobooks.',
+                      l10nOf(context).auxAudiobooksPageGenerateAudiobooksFromEpubsOrImportYour,
                       style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                     ),
                   ],
@@ -1088,7 +1090,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
               ),
               const SizedBox(width: ZplaySpacing.s16),
               PillButton(
-                label: 'Open Studio',
+                label: l10nOf(context).auxAudiobooksPageOpenStudio,
                 onPressed: () async {
                   await Navigator.push(
                     context,
@@ -1112,7 +1114,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SectionHeader(
-            title: 'My Generated & Uploaded Audiobooks',
+            title: l10nOf(context).auxAudiobooksPageMyGeneratedUploadedAudiobooks,
             count: jobs.length + uploaded.length,
             // The shared header's trailing slot rather than a `TextButton.icon`
             // beside it: one row height, one heading type, and a control that is
@@ -1139,7 +1141,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                       Icon(Icons.tune_rounded, size: 18, color: tokens.textSecondary),
                       const SizedBox(width: ZplaySpacing.s4),
                       Text(
-                        'Studio',
+                        l10nOf(context).auxAudiobooksPageStudio,
                         style: ZplayType.label.toStyle(color: tokens.textSecondary),
                       ),
                     ],
@@ -1214,7 +1216,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                               ),
                               const SizedBox(height: 3),
                               Text(
-                                isDone ? 'Voice: ${job.voiceId}' : (isFailed ? 'Failed' : 'Generating ${(job.progress * 100).round()}%'),
+                                isDone ? l10nOf(context).audiobookVoiceName(job.voiceId) : (isFailed ? 'Failed' : l10nOf(context).audiobookGeneratingProgress((job.progress * 100).round())),
                                 style: ZplayType.caption
                                     .copyWith(weight: FontWeight.w600)
                                     .toStyle(
@@ -1229,7 +1231,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                                 // the same control as the banner's. A 44 dp pill
                                 // fits the 100 dp column the cover leaves.
                                 PillButton(
-                                  label: 'Play',
+                                  label: l10nOf(context).playerPlay,
                                   icon: Icons.play_arrow_rounded,
                                   onPressed: () {
                                     final streamOrLocalPath = job.localAudioPath ?? job.downloadUrl!;
@@ -1323,14 +1325,14 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                               ),
                               const SizedBox(height: 3),
                               Text(
-                                '${b.author} • Local',
+                                l10nOf(context).dynamicAudiobooksPageLocal((b.author).toString()),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                               ),
                               const SizedBox(height: ZplaySpacing.s8),
                               PillButton(
-                                label: 'Play',
+                                label: l10nOf(context).playerPlay,
                                 icon: Icons.play_arrow_rounded,
                                 onPressed: () {
                                   Navigator.push(
@@ -1493,7 +1495,7 @@ class _ContinueListeningCard extends StatelessWidget {
                                 ),
                                 const SizedBox(height: ZplaySpacing.s4),
                                 Text(
-                                  '${(percent * 100).toInt()}% completed',
+                                  l10nOf(context).dynamicAudiobooksPageCompleted(((percent * 100).toInt()).toString()),
                                   style: ZplayType.caption
                                       .copyWith(weight: FontWeight.w600)
                                       .toStyle(color: tokens.accent),

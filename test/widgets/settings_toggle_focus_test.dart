@@ -265,7 +265,7 @@ void main() {
       reason: 'the sidebar item is not a focusable card',
     );
 
-    final lastRow = find.text('About ZPlay');
+    final lastRow = find.text('About Kiru');
     final before = tester.getTopLeft(lastRow).dy;
     expect(
       before,

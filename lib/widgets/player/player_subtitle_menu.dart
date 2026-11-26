@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/l10n.dart';
+import 'package:zplay/l10n/language_labels.dart';
+
 import 'package:flutter/material.dart';
 import 'package:zplay/models/subtitle/subtitle_model.dart';
 import 'package:zplay/services/subtitles/subtitle_service.dart';
@@ -343,7 +346,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Subtitles',
+                        l10nOf(context).uiPlayerSubtitleMenuSubtitles,
                         style: ZplayType.subtitle
                             .copyWith(size: 14.5, weight: FontWeight.w700)
                             .toStyle(color: PlayerTheme.ink),
@@ -389,7 +392,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                               ),
                             )
                           : const Icon(Icons.refresh_rounded),
-                      tooltip: 'Refresh Online Subtitles',
+                      tooltip: l10nOf(context).uiPlayerSubtitleMenuRefreshOnlineSubtitles,
                       onPressed: _isLoadingSearch ? null : _searchOnline,
                     ),
                     const SizedBox(width: 3),
@@ -400,7 +403,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                         size: buttonSize,
                         iconSize: iconSize,
                         icon: const Icon(Icons.timer_outlined),
-                        tooltip: 'Subtitle Sync Bar',
+                        tooltip: l10nOf(context).uiPlayerSubtitleMenuSubtitleSyncBar,
                         showActiveBadge: widget.delaySec != 0,
                         onPressed: () {
                           widget.onClose();
@@ -415,7 +418,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                       size: buttonSize,
                       iconSize: iconSize,
                       icon: const Icon(Icons.tune_rounded),
-                      tooltip: 'Subtitle Appearance',
+                      tooltip: l10nOf(context).uiPlayerSubtitleMenuSubtitleAppearance,
                       onPressed: () {
                         widget.onClose();
                         widget.onOpenStyleBar();
@@ -429,7 +432,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                         size: buttonSize,
                         iconSize: iconSize,
                         icon: const Icon(Icons.text_fields_rounded),
-                        tooltip: 'Speech Text Sync',
+                        tooltip: l10nOf(context).uiPlayerSubtitleMenuSpeechTextSync,
                         onPressed: () {
                           widget.onClose();
                           widget.onOpenTextSync();
@@ -443,7 +446,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                       size: buttonSize,
                       iconSize: iconSize,
                       icon: const Icon(Icons.close_rounded),
-                      tooltip: 'Close',
+                      tooltip: l10nOf(context).uiPlayerSubtitleMenuClose,
                       onPressed: widget.onClose,
                     ),
                   ],
@@ -550,7 +553,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
     final tokens = AppThemeService.currentTokens;
     return [
       _languageItem(
-        label: 'Off',
+        label: l10nOf(context).uiPlayerSubtitleMenuOff,
         selected: isOff,
         compact: compact,
         mutedLabel: !compact,
@@ -569,7 +572,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
       if (widget.embeddedSubtitles.isNotEmpty) ...[
         if (!compact) _sectionMarker('EMBEDDED'),
         _languageItem(
-          label: 'Embedded',
+          label: l10nOf(context).uiPlayerSubtitleMenuEmbedded,
           selected: _selectedLanguage == '__embedded__',
           compact: compact,
           countBadge: true,
@@ -581,7 +584,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
       if (_dynamicGroups.isNotEmpty) ...[
         if (!compact) _sectionMarker('LANGUAGES'),
         _languageItem(
-          label: compact ? 'All' : 'All Languages',
+          label: compact ? l10nOf(context).uiPlayerSubtitleMenuAll : 'All Languages',
           selected: _selectedLanguage == '__all__',
           compact: compact,
           icon: _emojiIcon('🌐'),
@@ -590,7 +593,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
         ),
         for (final g in _dynamicGroups)
           _languageItem(
-            label: g.language,
+            label: localizedLanguageLabel(context, g.language),
             selected: _selectedLanguage == g.language,
             compact: compact,
             icon: _emojiIcon(_getLanguageEmoji(g.language)),
@@ -862,7 +865,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
         children: [
           PlayerToggleChip(
             active: _sourceFilter == 'all',
-            label: 'All',
+            label: l10nOf(context).uiPlayerSubtitleMenuAll,
             onClick: () => setState(() => _sourceFilter = 'all'),
           ),
           const SizedBox(width: 5),
@@ -874,7 +877,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
           const SizedBox(width: 5),
           PlayerToggleChip(
             active: _filterForced,
-            label: 'Forced',
+            label: l10nOf(context).uiPlayerSubtitleMenuForced,
             onClick: () => setState(() => _filterForced = !_filterForced),
           ),
           const Spacer(),
@@ -890,7 +893,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                   ),
                   const SizedBox(width: ZplaySpacing.s4),
                   Text(
-                    'Search Online',
+                    l10nOf(context).uiPlayerSubtitleMenuSearchOnline,
                     style: ZplayType.caption
                         .copyWith(weight: FontWeight.w600)
                         .toStyle(color: PlayerTheme.accent),
@@ -1005,7 +1008,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                               borderRadius: ZplayRadius.xsAll,
                             ),
                             child: Text(
-                              'EMBEDDED',
+                              l10nOf(context).uiPlayerSubtitleMenuEmbedded12,
                               style: ZplayType.overline
                                   .copyWith(size: 8.5, weight: FontWeight.w700)
                                   .toStyle(color: PlayerTheme.accent),
@@ -1015,7 +1018,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                               track.language!.isNotEmpty) ...[
                             const SizedBox(width: 5),
                             Text(
-                              track.language!.toUpperCase(),
+                              localizedLanguageLabel(context, track.language!, uppercaseFallback: true),
                               style: ZplayType.overline
                                   .copyWith(size: 9)
                                   .toStyle(color: PlayerTheme.inkSubtle),
@@ -1071,7 +1074,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
             ),
             const SizedBox(height: 10),
             Text(
-              'Searching subtitles...',
+              l10nOf(context).uiPlayerSubtitleMenuSearchingSubtitles,
               style: ZplayType.bodySmall.toStyle(color: PlayerTheme.inkMuted),
             ),
           ],
@@ -1093,7 +1096,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
               ),
               const SizedBox(height: ZplaySpacing.s8),
               Text(
-                'No subtitles available.',
+                l10nOf(context).uiPlayerSubtitleMenuNoSubtitlesAvailable,
                 style: ZplayType.bodySmall
                     .copyWith(size: 12.5)
                     .toStyle(color: PlayerTheme.inkMuted),
@@ -1113,7 +1116,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                 ),
                 icon: const Icon(Icons.search_rounded, size: 15),
                 label: Text(
-                  'Search Online Providers',
+                  l10nOf(context).uiPlayerSubtitleMenuSearchOnlineProviders,
                   style: ZplayType.caption.copyWith(size: 11.5).toStyle(),
                 ),
                 onPressed: _searchOnline,
@@ -1155,7 +1158,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                 ),
                 const SizedBox(width: ZplaySpacing.s8),
                 Text(
-                  'Searching additional subtitles online...',
+                  l10nOf(context).uiPlayerSubtitleMenuSearchingAdditionalSubtitlesOnline,
                   style: ZplayType.caption.toStyle(color: PlayerTheme.accent),
                 ),
               ],
@@ -1318,7 +1321,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                                 borderRadius: ZplayRadius.xsAll,
                               ),
                               child: Text(
-                                'FORCED',
+                                l10nOf(context).uiPlayerSubtitleMenuForced17,
                                 style: ZplayType.overline
                                     .copyWith(
                                       size: 8.5,
@@ -1367,7 +1370,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                   ),
                   const SizedBox(width: 5),
                   Text(
-                    'Find more subtitles',
+                    l10nOf(context).uiPlayerSubtitleMenuFindMoreSubtitles,
                     style: ZplayType.caption
                         .copyWith(size: 11.5, weight: FontWeight.w600)
                         .toStyle(color: PlayerTheme.inkMuted),

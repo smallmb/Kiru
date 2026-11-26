@@ -411,6 +411,8 @@ class _AppShellState extends State<AppShell> {
       autofocus: _formFactor == FormFactor.television,
       blend: blend,
       pageActions: _controller.pageActions,
+      browseVertical: _controller.browseVertical,
+      onBrowseVertical: _controller.goBrowseVertical,
     );
     if (!handOverDown) return rail;
     return _TopChromeHandover(onDown: _handOverDownToPage, child: rail);

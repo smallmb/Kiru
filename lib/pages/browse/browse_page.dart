@@ -1,3 +1,5 @@
+import '../../l10n/l10n.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -57,6 +59,21 @@ extension BrowseVerticalX on BrowseVertical {
       case BrowseVertical.adult:
         return '18+';
     }
+  }
+
+  String localizedLabel(BuildContext context) {
+    final l10n = l10nOf(context);
+    return switch (this) {
+      BrowseVertical.moviesAndTv => l10n.browseVerticalMoviesAndTv,
+      BrowseVertical.collections => l10n.browseVerticalCollections,
+      BrowseVertical.liveTv => l10n.browseVerticalLiveTv,
+      BrowseVertical.anime => l10n.browseVerticalAnime,
+      BrowseVertical.manga => l10n.browseVerticalManga,
+      BrowseVertical.books => l10n.browseVerticalBooks,
+      BrowseVertical.audiobooks => l10n.browseVerticalAudiobooks,
+      BrowseVertical.music => l10n.browseVerticalMusic,
+      BrowseVertical.adult => l10n.browseVerticalAdult,
+    };
   }
 
   IconData get icon {
@@ -120,8 +137,12 @@ extension BrowseVerticalX on BrowseVertical {
 /// The stack's index is looked up in the returned verticals rather than read
 /// off the enum. An enum index is wrong twice over once a vertical is gated:
 /// it addresses a child that is not in the list at all.
-({List<BrowseVertical> verticals, List<TabStripOption<BrowseVertical>> options, List<Widget> pages})
-    _buildVerticals({required bool adultEnabled}) {
+({
+  List<BrowseVertical> verticals,
+  List<TabStripOption<BrowseVertical>> options,
+  List<Widget> pages,
+})
+_buildVerticals(BuildContext context, {required bool adultEnabled}) {
   // `BrowseVertical.values` minus the verticals the current settings do not
   // offer. Only [BrowseVertical.adult] is conditional today; the filter is
   // written as a per-vertical rule so adding another gated vertical does not
@@ -140,7 +161,7 @@ extension BrowseVerticalX on BrowseVertical {
       for (final vertical in visible)
         TabStripOption<BrowseVertical>(
           value: vertical,
-          label: vertical.label,
+          label: vertical.localizedLabel(context),
           icon: vertical.icon,
         ),
     ],
@@ -195,6 +216,7 @@ class _BrowsePageState extends State<BrowsePage> {
     _verticalRequest?.removeListener(_onVerticalRequest);
     _verticalRequest = next;
     _verticalRequest?.addListener(_onVerticalRequest);
+    if (next != null) _vertical = next.value;
   }
 
   void _onVerticalRequest() {
@@ -211,6 +233,9 @@ class _BrowsePageState extends State<BrowsePage> {
     if (!ContentSettings.adultEnabled.value &&
         _vertical == BrowseVertical.adult) {
       setState(() => _vertical = BrowseVertical.moviesAndTv);
+      AppShellScope.of(
+        context,
+      )?.reportBrowseVertical(BrowseVertical.moviesAndTv);
     }
   }
 
@@ -236,21 +261,31 @@ class _BrowsePageState extends State<BrowsePage> {
     // the stack's `index` read the same element of the same list, so they
     // cannot name different verticals even while the visible set is changing
     // underneath them.
-  final verticals = _buildVerticals(adultEnabled: adultEnabled);
-  // `_onAdultContentChanged` moves the selection off a vertical that has just
-  // stopped being offered, so the lookup succeeds. The clamp is the index
-  // guard for [IndexedStack], which throws on an out-of-range index, and it
-  // lands on `moviesAndTv` - the first visible vertical, and the default
-  // selection, for the same reason it is the default.
-  final selectedIndex = verticals.verticals
-      .indexOf(_vertical)
-      .clamp(0, verticals.pages.length - 1);
-  final selected = verticals.verticals[selectedIndex];
+    final verticals = _buildVerticals(context, adultEnabled: adultEnabled);
+    // `_onAdultContentChanged` moves the selection off a vertical that has just
+    // stopped being offered, so the lookup succeeds. The clamp is the index
+    // guard for [IndexedStack], which throws on an out-of-range index, and it
+    // lands on `moviesAndTv` - the first visible vertical, and the default
+    // selection, for the same reason it is the default.
+    final selectedIndex = verticals.verticals
+        .indexOf(_vertical)
+        .clamp(0, verticals.pages.length - 1);
+    final selected = verticals.verticals[selectedIndex];
+    // Pointer layouts expose all content destinations in the global header.
+    // Keep the shell's top inset for each vertical's own header instead of
+    // paying for a second navigation row.
+    final factor = FormFactorService.of(context);
+    if (AppShellScope.of(context) != null &&
+        (factor == FormFactor.medium || factor == FormFactor.expanded)) {
+      return ClipRect(
+        child: IndexedStack(index: selectedIndex, children: verticals.pages),
+      );
+    }
+
     // Ten-foot pills are sized like the shell rail's TV rows and the band grows
     // with them, per the prototype's TV variant; the pointer height matches the
     // rail's own pointer row so the two read as one chrome.
-    final television =
-        FormFactorService.of(context) == FormFactor.television;
+    final television = FormFactorService.of(context) == FormFactor.television;
     final double gutter = television ? ZplaySpacing.s32 : ZplaySpacing.s20;
     // The band pays for the chrome above this slot out of its own gutter rather
     // than into it: `paddingOf(context).top` is the shell's top bar on tablet,
@@ -288,8 +323,7 @@ class _BrowsePageState extends State<BrowsePage> {
         // would justify the scroll-driven tint Home's glass bar uses.
         Padding(
           padding: EdgeInsets.only(
-            top: (television ? ZplaySpacing.s20 : ZplaySpacing.s16) +
-                inset.top,
+            top: (television ? ZplaySpacing.s20 : ZplaySpacing.s16) + inset.top,
             left: gutter + inset.left,
             right: gutter + inset.right,
             bottom: television ? ZplaySpacing.s16 : ZplaySpacing.s12,
@@ -297,9 +331,11 @@ class _BrowsePageState extends State<BrowsePage> {
           child: TabStrip<BrowseVertical>(
             options: verticals.options,
             selected: selected,
-            onSelected: (vertical) =>
-                setState(() => _vertical = vertical),
-            semanticsLabel: 'Browse verticals',
+            onSelected: (vertical) {
+              setState(() => _vertical = vertical);
+              AppShellScope.of(context)?.reportBrowseVertical(vertical);
+            },
+            semanticsLabel: l10nOf(context).auxBrowsePageBrowseVerticals,
             height: television ? ZplaySpacing.s64 : ZplaySpacing.s48,
           ),
         ),

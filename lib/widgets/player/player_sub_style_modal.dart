@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import '../../services/player/player_settings.dart';
@@ -184,7 +187,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Subtitle Appearance',
+                    l10nOf(context).uiPlayerSubStyleModalSubtitleAppearance,
                     style: ZplayType.subtitle
                         .copyWith(
                           size: isSmall ? 13.5 : 15.5,
@@ -193,7 +196,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
                         .toStyle(color: PlayerTheme.ink),
                   ),
                   Text(
-                    'libass / libmpv hardware-rendered subtitles',
+                    l10nOf(context).uiPlayerSubStyleModalLibassLibmpvHardwareRenderedSubtitles,
                     style: ZplayType.caption.toStyle(
                       color: PlayerTheme.inkSubtle,
                     ),
@@ -211,7 +214,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
                   size: 19,
                   color: PlayerTheme.inkMuted,
                 ),
-                tooltip: 'Reset Subtitle Defaults',
+                tooltip: l10nOf(context).uiPlayerSubStyleModalResetSubtitleDefaults,
                 onPressed: () =>
                     PlayerSettings.resetSubtitleDefaults(player: widget.player),
               ),
@@ -222,7 +225,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
                   size: 20,
                   color: tokens.textPrimary,
                 ),
-                tooltip: 'Close',
+                tooltip: l10nOf(context).uiPlayerSubStyleModalClose,
                 onPressed: widget.onClose,
               ),
             ],
@@ -316,7 +319,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
               borderRadius: ZplayRadius.xsAll,
             ),
             child: Text(
-              'ZPlay • Sample Subtitle Preview',
+              l10nOf(context).uiPlayerSubStyleModalZplaySampleSubtitlePreview,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: fontName,
@@ -422,7 +425,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
                           ),
                         ),
                       Text(
-                        preset.label,
+                        configLabel(context, preset.label),
                         style: ZplayType.caption
                             .copyWith(
                               weight: isSelected
@@ -472,24 +475,24 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
         unselectedLabelStyle: ZplayType.bodySmall
             .copyWith(weight: FontWeight.w500)
             .toStyle(),
-        tabs: const [
+        tabs: [
           Tab(
-            text: 'Typography',
+            text: l10nOf(context).finalPlayerSubStyleModalTypography,
             icon: Icon(Icons.text_fields_rounded, size: 16),
           ),
           Tab(
-            text: 'Colors & Box',
+            text: l10nOf(context).finalPlayerSubStyleModalColorsBox,
             icon: Icon(Icons.palette_rounded, size: 16),
           ),
           Tab(
-            text: 'Outline & Shadow',
+            text: l10nOf(context).finalPlayerSubStyleModalOutlineShadow,
             icon: Icon(Icons.border_style_rounded, size: 16),
           ),
           Tab(
-            text: 'Position',
+            text: l10nOf(context).finalPlayerSubStyleModalPosition,
             icon: Icon(Icons.vertical_align_bottom_rounded, size: 16),
           ),
-          Tab(text: 'Advanced / ASS', icon: Icon(Icons.tune_rounded, size: 16)),
+          Tab(text: l10nOf(context).finalPlayerSubStyleModalAdvancedAss, icon: Icon(Icons.tune_rounded, size: 16)),
         ],
       ),
     );
@@ -507,7 +510,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
       physics: const BouncingScrollPhysics(),
       children: [
         // Font Family Selector
-        _buildSectionTitle('FONT FAMILY'),
+        _buildSectionTitle(l10nOf(context).finalPlayerSubStyleModalFontFamily),
         const SizedBox(height: ZplaySpacing.s8),
         Container(
           padding: const EdgeInsets.symmetric(
@@ -561,7 +564,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
 
         // Base Font Size Slider
         _buildSectionTitle(
-          'BASE FONT SIZE (${PlayerSettings.subFontSize.value}pt)',
+          l10nOf(context).subtitleBaseFontSize((PlayerSettings.subFontSize.value).toString()),
         ),
         Row(
           children: [
@@ -609,7 +612,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
 
         // Scale Multiplier Slider
         _buildSectionTitle(
-          'SCALE MULTIPLIER (${(PlayerSettings.subScale.value * 100).round()}%)',
+          l10nOf(context).subtitleScaleMultiplier(((PlayerSettings.subScale.value * 100).round()).toString()),
         ),
         SliderTheme(
           data: _sliderTheme(),
@@ -630,7 +633,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
           children: [
             Expanded(
               child: _buildToggleTile(
-                title: 'Bold Text',
+                title: l10nOf(context).uiPlayerSubStyleModalBoldText,
                 icon: Icons.format_bold_rounded,
                 value: PlayerSettings.subBold.value,
                 onChanged: (val) =>
@@ -640,7 +643,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
             const SizedBox(width: ZplaySpacing.s12),
             Expanded(
               child: _buildToggleTile(
-                title: 'Italic Text',
+                title: l10nOf(context).uiPlayerSubStyleModalItalicText,
                 icon: Icons.format_italic_rounded,
                 value: PlayerSettings.subItalic.value,
                 onChanged: (val) =>
@@ -667,7 +670,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
       physics: const BouncingScrollPhysics(),
       children: [
         // Text Color Palette
-        _buildSectionTitle('SUBTITLE TEXT COLOR'),
+        _buildSectionTitle(l10nOf(context).finalPlayerSubStyleModalSubtitleTextColor),
         const SizedBox(height: 10),
         Wrap(
           spacing: 8,
@@ -732,7 +735,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
         const SizedBox(height: 22),
 
         // Background Box Style
-        _buildSectionTitle('BACKGROUND BOX (ACCESSIBILITY & READABILITY)'),
+        _buildSectionTitle(l10nOf(context).finalPlayerSubStyleModalBackgroundBoxAccessibilityReadability),
         const SizedBox(height: 10),
         Column(
           children: _boxColorOptions.map((opt) {
@@ -782,7 +785,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
                           ),
                           const SizedBox(width: ZplaySpacing.s12),
                           Text(
-                            opt['name'] as String,
+                            _subtitleOptionLabel(opt['name'] as String),
                             style: ZplayType.label
                                 .copyWith(weight: FontWeight.w600)
                                 .toStyle(color: tokens.textPrimary),
@@ -790,7 +793,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
                         ],
                       ),
                       Text(
-                        opt['desc'] as String,
+                        _subtitleOptionLabel(opt['desc'] as String),
                         style: ZplayType.caption.toStyle(
                           color: PlayerTheme.inkSubtle,
                         ),
@@ -819,7 +822,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
       physics: const BouncingScrollPhysics(),
       children: [
         // Outline Color Selector
-        _buildSectionTitle('OUTLINE / BORDER COLOR'),
+        _buildSectionTitle(l10nOf(context).finalPlayerSubStyleModalOutlineBorderColor),
         const SizedBox(height: ZplaySpacing.s8),
         Wrap(
           spacing: 8,
@@ -885,7 +888,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
 
         // Outline Thickness Slider
         _buildSectionTitle(
-          'OUTLINE THICKNESS (${PlayerSettings.subBorderSize.value.toStringAsFixed(1)}px)',
+          l10nOf(context).subtitleOutlineThickness((PlayerSettings.subBorderSize.value.toStringAsFixed(1)).toString()),
         ),
         SliderTheme(
           data: _sliderTheme(),
@@ -903,7 +906,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
 
         // Drop Shadow Offset Slider
         _buildSectionTitle(
-          'DROP SHADOW OFFSET (${PlayerSettings.subShadowOffset.value.toStringAsFixed(1)}px)',
+          l10nOf(context).subtitleShadowOffset((PlayerSettings.subShadowOffset.value.toStringAsFixed(1)).toString()),
         ),
         SliderTheme(
           data: _sliderTheme(),
@@ -930,7 +933,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
       physics: const BouncingScrollPhysics(),
       children: [
         // Horizontal Alignment
-        _buildSectionTitle('HORIZONTAL ALIGNMENT'),
+        _buildSectionTitle(l10nOf(context).finalPlayerSubStyleModalHorizontalAlignment),
         const SizedBox(height: ZplaySpacing.s8),
         Row(
           children: [
@@ -954,7 +957,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
 
         // Bottom Margin
         _buildSectionTitle(
-          'BOTTOM MARGIN / OFFSET (${PlayerSettings.subMarginY.value.round()}px)',
+          l10nOf(context).subtitleBottomMargin((PlayerSettings.subMarginY.value.round()).toString()),
         ),
         SliderTheme(
           data: _sliderTheme(),
@@ -972,7 +975,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
 
         // Vertical Screen Position
         _buildSectionTitle(
-          'VERTICAL POSITION (${PlayerSettings.subPos.value.round()}%)',
+          l10nOf(context).subtitleVerticalPosition((PlayerSettings.subPos.value.round()).toString()),
         ),
         SliderTheme(
           data: _sliderTheme(),
@@ -1073,7 +1076,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
       padding: const EdgeInsets.all(ZplaySpacing.s16),
       physics: const BouncingScrollPhysics(),
       children: [
-        _buildSectionTitle('SUBTITLE RENDERING ENGINE'),
+        _buildSectionTitle(l10nOf(context).finalPlayerSubStyleModalSubtitleRenderingEngine),
         const SizedBox(height: 10),
 
         // Flutter Engine Option
@@ -1111,14 +1114,14 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Flutter Subtitle Engine (Recommended)',
+                          l10nOf(context).uiPlayerSubStyleModalFlutterSubtitleEngineRecommended,
                           style: ZplayType.label
                               .copyWith(weight: FontWeight.w700)
                               .toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 3),
                         Text(
-                          '100% reliable hardware-accelerated subtitle overlay across Android, iOS, Windows, Mac, and Linux with full styling support.',
+                          l10nOf(context).uiPlayerSubStyleModal100ReliableHardwareAcceleratedSubtitle,
                           style: ZplayType.caption.toStyle(
                             color: PlayerTheme.inkSubtle,
                           ),
@@ -1167,14 +1170,14 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Native MPV libass Engine',
+                          l10nOf(context).uiPlayerSubStyleModalNativeMpvLibassEngine,
                           style: ZplayType.label
                               .copyWith(weight: FontWeight.w700)
                               .toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 3),
                         Text(
-                          'Direct GPU video texture rendering powered by libass with bundled Poppins font and SSA/ASS script layout support.',
+                          l10nOf(context).uiPlayerSubStyleModalDirectGpuVideoTextureRendering,
                           style: ZplayType.caption.toStyle(
                             color: PlayerTheme.inkSubtle,
                           ),
@@ -1188,7 +1191,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
           ),
         ),
 
-        _buildSectionTitle('SSA / ASS FANSUB SCRIPT OVERRIDE MODE'),
+        _buildSectionTitle(l10nOf(context).finalPlayerSubStyleModalSsaAssFansubScriptOverrideMode),
         const SizedBox(height: 10),
         ...overrideModes.map((m) {
           final isSelected = activeOverride == m['val'];
@@ -1235,14 +1238,14 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            m['title']!,
+                            _subtitleOptionLabel(m['title']!),
                             style: ZplayType.label
                                 .copyWith(weight: FontWeight.w700)
                                 .toStyle(color: tokens.textPrimary),
                           ),
                           const SizedBox(height: 3),
                           Text(
-                            m['subtitle']!,
+                            _subtitleOptionLabel(m['subtitle']!),
                             style: ZplayType.caption.toStyle(
                               color: PlayerTheme.inkSubtle,
                             ),
@@ -1263,6 +1266,44 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
   // ───────────────────────────────────────────────────────────────────────────
   // Helper Component Builders
   // ───────────────────────────────────────────────────────────────────────────
+
+  String _subtitleOptionLabel(String raw) {
+    final l10n = l10nOf(context);
+    return switch (raw) {
+      'White' => l10n.subtitleOptionWhite0,
+      'Cinema Yellow' => l10n.subtitleOptionCinemaYellow1,
+      'Amber Gold' => l10n.subtitleOptionAmberGold2,
+      'Electric Cyan' => l10n.subtitleOptionElectricCyan3,
+      'Neon Green' => l10n.subtitleOptionNeonGreen4,
+      'Vibrant Orange' => l10n.subtitleOptionVibrantOrange5,
+      'Soft Rose' => l10n.subtitleOptionSoftRose6,
+      'Light Gray' => l10n.subtitleOptionLightGray7,
+      'None' => l10n.subtitleOptionNone8,
+      '25% Dark' => l10n.subtitleOption25Dark9,
+      '50% Dark' => l10n.subtitleOption50Dark10,
+      '75% Dark' => l10n.subtitleOption75Dark11,
+      '100% Solid' => l10n.subtitleOption100Solid12,
+      '50% Indigo' => l10n.subtitleOption50Indigo13,
+      'Transparent' => l10n.subtitleOptionTransparent14,
+      'Subtle' => l10n.subtitleOptionSubtle15,
+      'Standard Box' => l10n.subtitleOptionStandardBox16,
+      'High Contrast' => l10n.subtitleOptionHighContrast17,
+      'Opaque Black' => l10n.subtitleOptionOpaqueBlack18,
+      'Slate Tint' => l10n.subtitleOptionSlateTint19,
+      'Black' => l10n.subtitleOptionBlack20,
+      'Dark Slate' => l10n.subtitleOptionDarkSlate21,
+      'Gold' => l10n.subtitleOptionGold22,
+      'Crimson' => l10n.subtitleOptionCrimson23,
+      'Neon Cyan' => l10n.subtitleOptionNeonCyan24,
+      'Preserve Anime & SSA/ASS Styling (Recommended)' => l10n.subtitleOptionPreserveAnimeSsaAssStylingRecommended25,
+      'Leaves SSA/ASS anime subtitles untouched to preserve custom karaoke, styling & positions. Plain SRT/VTT are styled with your custom theme.' => l10n.subtitleOptionLeavesSsaAssAnimeSubtitlesUntouched26,
+      'Scale Only' => l10n.subtitleOptionScaleOnly27,
+      'Applies size scaling to SSA/ASS scripts while preserving their fonts, colors, and author typography.' => l10n.subtitleOptionAppliesSizeScalingToSsaAss28,
+      'Override Colors & Outlines' => l10n.subtitleOptionOverrideColorsOutlines29,
+      'Applies your custom colors and outlines on top of SSA/ASS subtitle scripts.' => l10n.subtitleOptionAppliesYourCustomColorsAndOutlines30,
+      _ => raw,
+    };
+  }
 
   Widget _buildSectionTitle(String title) {
     return Text(

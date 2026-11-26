@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/anime_titles.dart';
+import 'package:zplay/l10n/media_labels.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/anime/anime_media.dart';
@@ -45,7 +47,7 @@ class AnimeCard extends StatelessWidget {
       container: true,
       button: true,
       label: A11y.cardLabel(
-        anime.displayTitle,
+        localizedAnimeTitle(context, anime),
         year: anime.seasonYear > 0 ? '${anime.seasonYear}' : null,
       ),
       hint: l10nOf(context).a11yOpenDetails,
@@ -94,7 +96,7 @@ class AnimeCard extends StatelessWidget {
                         // when the title is a series - an anime *film* is a film
                         // and carries no badge.
                         topLeft: state.focused && _isSeriesFormat(anime.format)
-                            ? const CardTypeBadge(label: 'SERIES')
+                            ? CardTypeBadge(label: mediaLabel(context, 'SERIES'))
                             : null,
                         // Rating badge (top-right), present in every state.
                         topRight: anime.averageScore > 0
@@ -112,7 +114,7 @@ class AnimeCard extends StatelessWidget {
                                   borderRadius: ZplayRadius.xsAll,
                                 ),
                                 child: Text(
-                                  '${anime.totalEpisodes} EPS',
+                                  l10nOf(context).dynamicAnimeCardEps((anime.totalEpisodes).toString()),
                                   style: ZplayType.overline.toStyle(
                                     color: tokens.textEmphasis,
                                   ),
@@ -128,7 +130,7 @@ class AnimeCard extends StatelessWidget {
                 // Title
                 const SizedBox(height: ZplaySpacing.s8),
                 Text(
-                  anime.displayTitle,
+                  localizedAnimeTitle(context, anime),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
@@ -162,8 +164,8 @@ class AnimeCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         anime.genres.isNotEmpty
-                            ? anime.genres.first
-                            : anime.formattedFormat,
+                            ? mediaLabel(context, anime.genres.first)
+                            : Localizations.localeOf(context).languageCode == 'zh' ? mediaLabel(context, anime.format) : anime.formattedFormat,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: ZplayType.label.toStyle(color: tokens.textMuted),

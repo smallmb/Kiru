@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../services/updater/app_updater_service.dart';
@@ -34,7 +36,7 @@ class _UpdatesSettingsPageState extends State<UpdatesSettingsPage> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('ZPlay is up to date!'),
+            content: Text(l10nOf(context).uiUpdatesSettingsPageZplayIsUpToDate),
             backgroundColor: context.tokens.accent,
             behavior: SnackBarBehavior.floating,
           ),
@@ -44,7 +46,7 @@ class _UpdatesSettingsPageState extends State<UpdatesSettingsPage> {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error checking updates: $e'),
+            content: Text(l10nOf(context).dynamicUpdatesSettingsPageErrorCheckingUpdates((e).toString())),
             backgroundColor: context.tokens.danger,
             behavior: SnackBarBehavior.floating,
           ),
@@ -63,7 +65,7 @@ class _UpdatesSettingsPageState extends State<UpdatesSettingsPage> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return SettingsScaffold(
-      title: 'App Updates & System',
+      title: l10nOf(context).uiUpdatesSettingsPageAppUpdatesSystem,
       child: ListView(
         padding: const EdgeInsets.symmetric(
           horizontal: ZplaySpacing.s16,
@@ -74,7 +76,7 @@ class _UpdatesSettingsPageState extends State<UpdatesSettingsPage> {
           Padding(
             padding: const EdgeInsets.only(bottom: ZplaySpacing.s20),
             child: Text(
-              'Keep ZPlay up to date with the latest features, security patches, and performance improvements.',
+              l10nOf(context).uiUpdatesSettingsPageKeepZplayUpToDateWith,
               style: ZplayType.body.toStyle(color: tokens.textSecondary),
             ),
           ),
@@ -92,7 +94,7 @@ class _UpdatesSettingsPageState extends State<UpdatesSettingsPage> {
               // see windows/runner/Runner.rc. The display name is the brand,
               // so it is written out here instead of taken from the
               // platform string.
-              const appName = 'ZPlay';
+              const appName = 'Kiru';
 
               return Padding(
                 padding: const EdgeInsets.all(ZplaySpacing.s20),
@@ -127,7 +129,7 @@ class _UpdatesSettingsPageState extends State<UpdatesSettingsPage> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'Installed Version: v$version (Build $buildNumber)',
+                                l10nOf(context).dynamicUpdatesSettingsPageInstalledVersionVBuild((version).toString(), (buildNumber).toString()),
                                 style: ZplayType.bodySmall.toStyle(
                                   color: tokens.textSecondary,
                                 ),
@@ -155,7 +157,7 @@ class _UpdatesSettingsPageState extends State<UpdatesSettingsPage> {
                               )
                             : const Icon(Icons.refresh_rounded, size: 18),
                         label: Text(
-                          _isCheckingForUpdates ? 'Checking for updates...' : 'Check for Updates',
+                          _isCheckingForUpdates ? l10nOf(context).finalUpdatesSettingsPageCheckingForUpdates : 'Check for Updates',
                           style: ZplayType.label.toStyle(),
                         ),
                         style: ElevatedButton.styleFrom(
@@ -179,7 +181,7 @@ class _UpdatesSettingsPageState extends State<UpdatesSettingsPage> {
 
           // Release Channel Info
           Text(
-            'RELEASE CHANNELS',
+            l10nOf(context).uiUpdatesSettingsPageReleaseChannels,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -187,15 +189,15 @@ class _UpdatesSettingsPageState extends State<UpdatesSettingsPage> {
           _buildInfoTile(
             context: context,
             icon: Icons.verified_rounded,
-            title: 'Official Stable Channel',
-            subtitle: 'Direct GitHub release distribution with automated checksum verification.',
+            title: l10nOf(context).uiUpdatesSettingsPageOfficialStableChannel,
+            subtitle: l10nOf(context).uiUpdatesSettingsPageDirectGithubReleaseDistributionWithAutomated,
           ),
           const SizedBox(height: 10),
           _buildInfoTile(
             context: context,
             icon: Icons.security_rounded,
-            title: 'Seamless In-App Patching',
-            subtitle: 'Downloads and applies executable updates directly without manual file downloads.',
+            title: l10nOf(context).uiUpdatesSettingsPageSeamlessInAppPatching,
+            subtitle: l10nOf(context).uiUpdatesSettingsPageDownloadsAndAppliesExecutableUpdatesDirectly,
           ),
         ],
       ),

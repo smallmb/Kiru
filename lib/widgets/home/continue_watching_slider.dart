@@ -1,3 +1,4 @@
+import 'package:zplay/l10n/config_labels.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -112,7 +113,7 @@ class _ContinueWatchingSliderState extends State<ContinueWatchingSlider> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Section Header
-              SectionHeader(title: widget.title, count: items.length),
+              SectionHeader(title: configLabel(context, widget.title), count: items.length),
 
               const SizedBox(height: ZplaySpacing.s12),
 
@@ -483,7 +484,7 @@ class _ContinueWatchingCardState extends State<_ContinueWatchingCard> {
                                 borderRadius: ZplayRadius.xsAll,
                               ),
                               child: Text(
-                                'Hold OK for options',
+                                l10nOf(context).uiContinueWatchingSliderHoldOkForOptions,
                                 style: ZplayType.label.toStyle(
                                   color: tokens.textPrimary,
                                 ),
@@ -512,7 +513,7 @@ class _ContinueWatchingCardState extends State<_ContinueWatchingCard> {
                                 children: [
                                   // Details Button
                                   Tooltip(
-                                    message: 'View Details',
+                                    message: l10nOf(context).uiContinueWatchingSliderViewDetails,
                                     child: FocusableCard(
                                       onTap: () => _openDetails(context),
                                       builder: (_, state) => Container(
@@ -540,7 +541,7 @@ class _ContinueWatchingCardState extends State<_ContinueWatchingCard> {
                                   const SizedBox(width: ZplaySpacing.s8),
                                   // Dismiss / Remove Button
                                   Tooltip(
-                                    message: 'Remove from Continue Watching',
+                                    message: l10nOf(context).uiContinueWatchingSliderRemoveFromContinueWatching,
                                     child: FocusableCard(
                                       onTap: widget.onRemove,
                                       builder: (_, state) => Container(
@@ -774,7 +775,7 @@ class _CardOptionsPanel extends StatelessWidget {
                 ),
                 const SizedBox(height: ZplaySpacing.s16),
                 PillButton(
-                  label: 'Resume',
+                  label: l10nOf(context).uiContinueWatchingSliderResume,
                   icon: Icons.play_arrow_rounded,
                   expand: true,
                   autofocus: true,
@@ -782,7 +783,7 @@ class _CardOptionsPanel extends StatelessWidget {
                 ),
                 const SizedBox(height: ZplaySpacing.s8),
                 PillButton(
-                  label: 'View details',
+                  label: l10nOf(context).uiContinueWatchingSliderViewDetails3,
                   icon: Icons.info_outline_rounded,
                   variant: PillVariant.secondary,
                   expand: true,
@@ -790,7 +791,7 @@ class _CardOptionsPanel extends StatelessWidget {
                 ),
                 const SizedBox(height: ZplaySpacing.s8),
                 PillButton(
-                  label: 'Remove from Continue Watching',
+                  label: l10nOf(context).uiContinueWatchingSliderRemoveFromContinueWatching,
                   icon: Icons.close_rounded,
                   variant: PillVariant.secondary,
                   expand: true,

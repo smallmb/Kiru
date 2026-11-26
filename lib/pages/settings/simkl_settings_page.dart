@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -69,7 +71,7 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
     if (res == null) {
       setState(() => _pairing = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to request Simkl PIN code.')),
+        SnackBar(content: Text(l10nOf(context).uiSimklSettingsPageFailedToRequestSimklPinCode)),
       );
       return;
     }
@@ -140,7 +142,7 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return SettingsScaffold(
-      title: 'Simkl Synchronization',
+      title: l10nOf(context).uiSimklSettingsPageSimklSynchronization,
       child: ListView(
         padding: const EdgeInsets.symmetric(
           horizontal: ZplaySpacing.s16,
@@ -150,7 +152,7 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
           Padding(
             padding: const EdgeInsets.only(bottom: ZplaySpacing.s20),
             child: Text(
-              'Connect your Simkl account to synchronize Movies, TV Shows, and Anime watchlists, continue watching progress, and custom lists.',
+              l10nOf(context).auxSimklSettingsPageConnectYourSimklAccountToSynchronizeMovies,
               style: ZplayType.body.toStyle(color: tokens.textSecondary),
             ),
           ),
@@ -194,7 +196,7 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
                                   borderRadius: ZplayRadius.xsAll,
                                 ),
                                 child: Text(
-                                  _isAuthed ? 'CONNECTED' : 'DISCONNECTED',
+                                  _isAuthed ? l10nOf(context).finalSimklSettingsPageConnected : 'DISCONNECTED',
                                   style: ZplayType.overline.toStyle(
                                     color: _isAuthed ? tokens.success : tokens.textSecondary,
                                   ),
@@ -205,10 +207,10 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
                           const SizedBox(height: 4),
                           Text(
                             _isLoading
-                                ? 'Checking credentials...'
+                                ? l10nOf(context).uiFinalSimklSettingsPageCheckingCredentials
                                 : _isAuthed
-                                    ? 'Logged in as ${_username ?? 'Simkl User'}'
-                                    : 'Sign in with PIN to activate Simkl cloud sync',
+                                    ? l10nOf(context).accountLoggedInSimkl(_username ?? 'Simkl User')
+                                    : l10nOf(context).uiFinalSimklSettingsPageSignInWithPinToActivate,
                             style: ZplayType.body.toStyle(color: tokens.textSecondary),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -231,7 +233,7 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                     ),
                     onPressed: _logout,
-                    child: Text('Disconnect', style: ZplayType.label.toStyle()),
+                    child: Text(l10nOf(context).uiSimklSettingsPageDisconnect, style: ZplayType.label.toStyle()),
                   );
                 } else if (!_pairing) {
                   actionWidget = ElevatedButton.icon(
@@ -243,7 +245,7 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
                     ),
                     onPressed: _startPairing,
                     icon: const Icon(Icons.pin_rounded, size: 18),
-                    label: Text('Connect Simkl', style: ZplayType.label.toStyle()),
+                    label: Text(l10nOf(context).uiSimklSettingsPageConnectSimkl, style: ZplayType.label.toStyle()),
                   );
                 }
 
@@ -275,7 +277,7 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
                         child: Column(
                           children: [
                             Text(
-                              'Enter this PIN code at simkl.com/pin:',
+                              l10nOf(context).uiSimklSettingsPageEnterThisPinCodeAtSimkl,
                               style: ZplayType.label.toStyle(color: tokens.textEmphasis),
                             ),
                             const SizedBox(height: 12),
@@ -283,7 +285,7 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
                               onTap: () {
                                 Clipboard.setData(ClipboardData(text: _userCode!));
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('PIN copied to clipboard!')),
+                                  SnackBar(content: Text(l10nOf(context).uiSimklSettingsPagePinCopiedToClipboard)),
                                 );
                               },
                               borderRadius: ZplayRadius.smAll,
@@ -322,7 +324,7 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
                               ),
                               onPressed: () => _openBrowser('https://simkl.com/pin'),
                               icon: const Icon(Icons.open_in_browser_rounded, size: 16),
-                              label: Text('Open simkl.com/pin', style: ZplayType.label.toStyle()),
+                              label: Text(l10nOf(context).uiSimklSettingsPageOpenSimklComPin, style: ZplayType.label.toStyle()),
                             ),
                             const SizedBox(height: 14),
                             Row(
@@ -335,7 +337,7 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
                                 ),
                                 const SizedBox(width: 10),
                                 Text(
-                                  'Waiting for PIN approval on simkl.com...',
+                                  l10nOf(context).uiSimklSettingsPageWaitingForPinApprovalOnSimkl,
                                   style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                                 ),
                               ],
@@ -355,18 +357,18 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
           // Cloud Sync Actions
           if (_isAuthed) ...[
             Text(
-              'Cloud Sync Controls',
+              l10nOf(context).uiSimklSettingsPageCloudSyncControls,
               style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
             ),
             const SizedBox(height: 12),
             ListTile(
               leading: const Icon(Icons.sync_rounded, color: _simklBrand),
-              title: Text('Sync Simkl Watchlist & Continue Watching', style: ZplayType.body.toStyle(color: tokens.textPrimary)),
-              subtitle: Text('Manually triggers an immediate pull from Simkl', style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
+              title: Text(l10nOf(context).uiSimklSettingsPageSyncSimklWatchlistContinueWatching, style: ZplayType.body.toStyle(color: tokens.textPrimary)),
+              subtitle: Text(l10nOf(context).uiSimklSettingsPageManuallyTriggersAnImmediatePullFrom, style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
               trailing: Icon(Icons.arrow_forward_ios_rounded, size: 14, color: tokens.textMuted),
               onTap: () async {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Syncing with Simkl...')),
+                  SnackBar(content: Text(l10nOf(context).uiSimklSettingsPageSyncingWithSimkl)),
                 );
                 await Future.wait([
                   MyListService.syncAll(),
@@ -374,7 +376,7 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
                 ]);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Simkl sync complete!')),
+                    SnackBar(content: Text(l10nOf(context).uiSimklSettingsPageSimklSyncComplete)),
                   );
                 }
               },

@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -152,7 +155,7 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
         behavior: SnackBarBehavior.floating,
         backgroundColor: isError ? tokens.danger : tokens.accent,
         action: SnackBarAction(
-          label: 'Dismiss',
+          label: l10nOf(context).uiServiceKeysSettingsPageDismiss,
           textColor: tokens.onAccent,
           onPressed: () {},
         ),
@@ -173,7 +176,7 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
     ];
 
     return SettingsScaffold(
-      title: 'Service API Keys',
+      title: l10nOf(context).uiServiceKeysSettingsPageServiceApiKeys,
       child: ListView(
         padding: const EdgeInsets.symmetric(
           horizontal: ZplaySpacing.s16,
@@ -183,15 +186,13 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
           Padding(
             padding: const EdgeInsets.only(bottom: ZplaySpacing.s20),
             child: Text(
-              'ZPlay talks to several third-party services. Any key you save '
-              'here replaces the one this build uses and takes effect '
-              'immediately, with no restart.',
+              l10nOf(context).serviceKeysIntroduction,
               style: ZplayType.body.toStyle(color: tokens.textSecondary),
             ),
           ),
 
           Text(
-            'KEYS YOU CAN OBTAIN',
+            l10nOf(context).uiServiceKeysSettingsPageKeysYouCanObtain,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 10),
@@ -202,16 +203,12 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
 
           const SizedBox(height: ZplaySpacing.s12),
           Text(
-            'BORROWED CREDENTIALS',
+            l10nOf(context).uiServiceKeysSettingsPageBorrowedCredentials,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 8),
           Text(
-            'These cannot be obtained: each is a credential for a '
-            'third-party service that did not issue it to ZPlay, so leave '
-            'its field blank unless you have your own. A private build can '
-            'supply its own with --dart-define, and blanking the registry '
-            'entry in the source disables only that one source.',
+            l10nOf(context).serviceKeysExternalCredentials,
             style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
           ),
           const SizedBox(height: 10),
@@ -221,14 +218,13 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
           ],
 
           Text(
-            'Every value is stored only on this device and is never shown '
-            'back in these fields.',
+            l10nOf(context).serviceKeysStorageNotice,
             style: ZplayType.bodySmall.toStyle(color: tokens.textDisabled),
           ),
 
           const SizedBox(height: ZplaySpacing.s24),
           Text(
-            'RELATED',
+            l10nOf(context).uiServiceKeysSettingsPageRelated,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 10),
@@ -281,7 +277,7 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
                         borderRadius: ZplayRadius.xsAll,
                       ),
                       child: Text(
-                        'SAVED',
+                        l10nOf(context).uiServiceKeysSettingsPageSaved,
                         style: ZplayType.caption.toStyle(color: tokens.accent),
                       ),
                     ),
@@ -289,7 +285,7 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
               ),
               const SizedBox(height: 3),
               Text(
-                _purposeOf(credential),
+                configLabel(context, _purposeOf(credential)),
                 style: ZplayType.bodySmall.toStyle(
                   color: tokens.textSecondary,
                 ),
@@ -310,7 +306,7 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
                       autocorrect: false,
                       style: ZplayType.label.toStyle(color: tokens.textPrimary),
                       decoration: InputDecoration(
-                        hintText: 'Paste your $label key',
+                        hintText: l10nOf(context).dynamicServiceKeysSettingsPagePasteYourKey((label).toString()),
                         hintStyle: ZplayType.bodySmall.toStyle(
                           color: tokens.textDisabled,
                         ),
@@ -346,7 +342,7 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
                               ),
                               padding: const EdgeInsets.all(4),
                               constraints: const BoxConstraints(),
-                              tooltip: obscured ? 'Show Key' : 'Hide Key',
+                              tooltip: obscured ? l10nOf(context).finalDebridSettingsPageShowKey : l10nOf(context).finalDebridSettingsPageHideKey,
                               onPressed: () {
                                 setState(() {
                                   _obscured[credential] = !obscured;
@@ -361,7 +357,7 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
                               ),
                               padding: const EdgeInsets.all(4),
                               constraints: const BoxConstraints(),
-                              tooltip: 'Paste from Clipboard',
+                              tooltip: l10nOf(context).uiServiceKeysSettingsPagePasteFromClipboard,
                               onPressed: () => _paste(credential),
                             ),
                             const SizedBox(width: 4),
@@ -394,7 +390,7 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
                               color: tokens.onAccent,
                             ),
                           )
-                        : Text('Save', style: ZplayType.label.toStyle()),
+                        : Text(l10nOf(context).uiServiceKeysSettingsPageSave, style: ZplayType.label.toStyle()),
                   ),
                 ],
               ),
@@ -411,7 +407,7 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
-                      _sourceText(source),
+                      configLabel(context, _sourceText(source)),
                       style: ZplayType.bodySmall.toStyle(
                         color: source == CredentialSource.user
                             ? tokens.success
@@ -434,7 +430,7 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
                         borderRadius: ZplayRadius.smAll,
                       ),
                     ),
-                    child: Text('Clear key', style: ZplayType.label.toStyle()),
+                    child: Text(l10nOf(context).uiServiceKeysSettingsPageClearKey, style: ZplayType.label.toStyle()),
                   ),
                 ],
               ),
@@ -463,14 +459,14 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'TMDb API Key',
+                    l10nOf(context).uiServiceKeysSettingsPageTmdbApiKey,
                     style: ZplayType.subtitle.toStyle(
                       color: tokens.textPrimary,
                     ),
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    'Ranks the 1990s rails and covers the scraper metadata lookups.',
+                    l10nOf(context).auxServiceKeysSettingsPageRanksThe1990sRailsAndCoversThe,
                     style: ZplayType.bodySmall.toStyle(
                       color: tokens.textSecondary,
                     ),

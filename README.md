@@ -1,180 +1,98 @@
-<p align="center">
-  <img src="assets/branding/zplay/lockup.svg" alt="ZPlay" width="360" />
-</p>
+<div align="center">
 
-<p align="center">
-  <strong>Your media, on your device.</strong><br />
-  Screen, page, sound, and live television in one local-first player, with no account required.
-</p>
+<img src="assets/icon.png" width="176" alt="Kiru" />
 
-<p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-F04E3C?style=flat" alt="GPL-3.0 license" /></a>
-  <img src="https://img.shields.io/badge/telemetry-none-F04E3C?style=flat" alt="No telemetry" />
-  <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux%20%7C%20Android%20%7C%20iOS-F04E3C?style=flat" alt="Windows, macOS, Linux, Android, and iOS" />
-</p>
+<h1>Kiru</h1>
 
-<p align="center">
-  <a href="https://tzero86.github.io/ZPlay/"><strong>Project site</strong></a>
-  &nbsp;·&nbsp;
-  <a href="https://github.com/tzero86/ZPlay/releases"><strong>Download a release</strong></a>
-  &nbsp;·&nbsp;
-  <a href="#build-from-source">Build from source</a>
-</p>
+<p><code>ANIME / CINEMA / MUSIC / BEYOND</code></p>
+
+<p><b>连接次元，探索光影。</b><br/>
+<sub>物語の続きを、ここから。 — Your next story begins here.</sub></p>
+
+<a href="LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-9B8AC4?style=flat-square" alt="GPL-3.0" /></a>
+<img src="https://img.shields.io/badge/Flutter-02569B?style=flat-square&amp;logo=flutter&amp;logoColor=white" alt="Flutter" />
+<img src="https://img.shields.io/badge/Dart-0175C2?style=flat-square&amp;logo=dart&amp;logoColor=white" alt="Dart" />
+<img src="https://img.shields.io/badge/Platform-Windows-7986AC?style=flat-square" alt="Windows" />
+<img src="https://img.shields.io/badge/Bangumi-FF6B9D?style=flat-square" alt="Bangumi" />
+
+<p><a href="#功能">功能</a> · <a href="#数据源">数据源</a> · <a href="#运行">运行</a> · <a href="#鸣谢">鸣谢</a></p>
+
+</div>
 
 ---
 
-## One library. Four ways to play.
+**Kiru** 是一款基于 Flutter 的开源多媒体客户端，以中文体验与可扩展数据源为核心，将番剧、影视、音乐和阅读融入同一个数字空间。
 
-ZPlay keeps your progress, preferences, and library on your device. There are no required accounts, analytics SDKs, crash reporters, subscriptions, or paywalls. Optional services such as Trakt, Simkl, and debrid providers remain yours to connect.
+无需注册 Kiru 账户，自由探索作品，在属于自己的节奏里继续每一段故事。
 
-| Mode | What it is for | What sets it apart |
-|:--|:--|:--|
-| **Screen** | Movies, television, anime, and live TV | Built-in HTTP and torrent providers, Stremio-compatible addons, optional Real-Debrid / TorBox, IPTV portals, curated film collections, and a dual-engine player: Android's ExoPlayer/Media3 on a SurfaceView for mainstream video — the only path that decodes 4K on a low-RAM television without copying every frame — and `media_kit` / libmpv for torrents, live streams, HDR handling, Anime4K upscaling and full subtitle styling. |
-| **Page** | Manga | Horizontal or vertical reading, pinch zoom, and exact chapter-and-page resume. |
-| **Sound** | Audiobooks and music | Multi-source audiobook playback with speed, sleep timer, chapters, and saved position; music search, artists, playlists, likes, quality switching, and a persistent mini-player. |
-| **Live** | Television you bring with you | Xtream-style IPTV portals, channel search, favourites, and viewing history. |
+## 功能
 
-### Curated collections
+<sub>01 / FEATURES</sub>
 
-Browse carries a Collections vertical, and Home keeps a Memory Lane zone, both built from hand-picked packs whose every IMDb id was verified against Cinemeta before shipping: twelve franchise packs (The Godfather, Rocky and Creed, Back to the Future, Alien, Die Hard, Lethal Weapon, The Terminator, Predator, Jurassic Park, Rambo, Indiana Jones, and The Marx Brothers) plus six 1990s rails covering Action, Comedy, Horror, Sci-Fi, Animation, and Thriller. Tapping a pack opens a grid; tapping a film opens the normal details screen. Because posters come from the same image CDN the rest of the library uses, the packs paint instantly and need no catalog lookup.
+| 模块 | 能力 |
+| :--- | :--- |
+| 🌸 **Anime · 动漫** | 中文番剧信息、季度目录、搜索与选集 |
+| 🎬 **Cinema · 影视** | 电影、剧集、精选合集与多源播放 |
+| 🎧 **Music · 音乐** | 音乐搜索、专辑、歌单与迷你播放器 |
+| 📖 **Reading · 阅读** | 漫画、电子书与有声书 |
+| 📡 **Live · 直播** | IPTV 播放列表与频道管理 |
+| ◈ **Library · 媒体库** | 收藏、观看历史与续播 |
 
-Add a free TMDb API key in Settings, stored only on your device, and those 1990s rails are replaced by lists ranked by real vote counts, refreshed at most once a day. No key ships with the app, and your key is never sent anywhere except TMDb.
+**Playback** — media_kit / libmpv · 硬件解码 · Anime4K · 字幕与音轨 · 4K / HDR（视片源及设备而定）
 
-### A player that respects your place
+## 数据源
 
-Watch progress, reading position, and listening position are saved locally. Catalogs can render from cache while they refresh, and source results arrive as providers respond rather than waiting for the slowest one. Addons and scrapers are isolated so one unavailable source does not stop the rest.
+<sub>02 / MODULAR SOURCES</sub>
 
----
+```mermaid
+flowchart LR
+    A["Kiru"] --> B["Metadata Provider"]
+    B --> C["Bangumi"]
+    B --> D["AniList"]
+    A --> E["Stream Providers"]
+    E --> F["Player"]
+```
 
-## Get ZPlay
+Bangumi / AniList 可在设置中切换，支持中文元数据、离线名称索引、缓存、自动回退、自定义镜像及代理。元数据与播放源独立管理。
 
-Every tagged release is built by CI for five platforms. Download the files you need from [GitHub Releases](https://github.com/tzero86/ZPlay/releases).
+现阶段 Bangumi 目录仅展示能够可靠映射至 AniList ID 的作品。
 
-| Platform | Release artifacts |
-|:--|:--|
-| **Windows** | `ZPlay-Windows-Setup.exe` installer · `ZPlay-Windows-x64-Portable.zip` |
-| **Android** | `app-arm64-v8a-release.apk` · `app-armeabi-v7a-release.apk` · Android TV support |
-| **Linux** | `ZPlay-Linux-x86_64.AppImage` · `ZPlay-Linux-x86_64.tar.gz` |
-| **macOS** | Apple Silicon and Intel `.dmg` / `.zip` builds |
-| **iOS** | `ZPlay-iOS.ipa` (unsigned; sideloading required) |
+[数据源实现说明 →](docs/product-development/ANIME_DATA_SOURCES.md)
 
-For release notes and downloads, visit **[github.com/tzero86/ZPlay/releases](https://github.com/tzero86/ZPlay/releases)**. The public project site is **[tzero86.github.io/ZPlay](https://tzero86.github.io/ZPlay/)**.
+## 运行
 
----
+<sub>03 / QUICK START</sub>
 
-## Build from source
+技术栈：**Flutter · Dart · media_kit · libmpv · ARB**
 
-Requires Flutter 3.x (Dart 3.11+).
+安装 Flutter（Dart SDK 满足 `^3.11.5`）及 Windows C++ 桌面开发工具，在项目根目录执行：
 
 ```bash
-git clone https://github.com/tzero86/ZPlay.git
-cd ZPlay
 flutter pub get
-flutter run -d windows      # or macos / linux
+flutter gen-l10n
+flutter run -d windows
 ```
 
-Release builds:
+当前为开发版本，Windows Debug 已验证；其他平台及独立 Release 安装包尚未验收。部分继承模块及第三方服务的实际可用性仍需验证。
 
-```bash
-flutter build windows --release
-flutter build apk --release --split-per-abi --target-platform android-arm,android-arm64
-```
+## 鸣谢
+
+<sub>04 / CREDITS & LICENSE</sub>
+
+Kiru 基于 [ZPlay](https://github.com/tzero86/ZPlay) 开发，其上游为 [PlayTorrio V3](https://github.com/ayman708-UX/PlayTorrioV3)（© 2026 Ayman）。动漫数据接入参考 [Kazumi](https://github.com/Predidit/Kazumi)。
+
+感谢 [Bangumi](https://bgm.tv/)、[AniList](https://anilist.co/)、[bangumi-data](https://github.com/bangumi-data/bangumi-data)、[media_kit](https://github.com/media-kit/media-kit)、[mpv](https://mpv.io/) 与 [TMDB](https://www.themoviedb.org/)。
+
+项目采用 [GPL-3.0](LICENSE)；中文动漫索引采用 [CC BY 4.0](assets/metadata/BANGUMI_DATA_NOTICE.txt)，Poppins 字体采用 SIL OFL 1.1。第三方依赖遵循各自许可证。本产品使用 TMDB API，但未获得 TMDB 认可或认证。
+
+Kiru 不提供自营影视内容服务；第三方来源可能需要账户、密钥或订阅，P2P 播放可能上传数据。请仅访问和分享具有合法授权的内容。
 
 ---
 
-## Addons, sources, and architecture
+<div align="center">
 
-ZPlay combines Stremio-compatible addons (Cinemeta is installed by default) with built-in scrapers. Open a title and enabled providers are queried concurrently; streams appear as each provider responds. The provider list can be reordered, and individual providers can be enabled or disabled.
+<sub>また、次の物語で。</sub>
 
-Scrapers are isolated plugins. To add one, extend `StreamScraper`, implement `scrape()`, then register it in `stream_service.dart`; the manager supplies concurrency, timeouts, deduplication, and error isolation.
+<b>SEE YOU IN THE NEXT STORY.</b>
 
-```dart
-class MyNewScraper extends StreamScraper {
-  @override
-  String get name => 'ZPlayHTTP';
-
-  @override
-  Future<List<StreamSource>> scrape({
-    required String type,
-    required String title,
-    required int? year,
-    required int? season,
-    required int? episode,
-    required String? imdbId,
-  }) async {
-    // Your source lookup.
-  }
-}
-```
-
-### Technical stack
-
-- **Flutter / Dart** for one codebase across five platforms
-- **ExoPlayer / Media3** on Android, rendering into a SurfaceView, for mainstream video. This is what makes 4K work on small Android TVs: the bundled libmpv only ships `mediacodec-copy` hardware decoding, so every 4K frame was copied out of the decoder into system memory and composited into a Flutter texture, measuring 1,389–1,917 ms of latency and about 1.5 dropped frames a second on a 2 GB Chromecast with Google TV. Media3 renders the decoder output straight to the display: 904 ms and zero dropped frames on the same device and the same file.
-- **media_kit / libmpv** for torrents, live streams, HLS/DASH fallbacks, Anime4K GLSL upscaling, and the full subtitle styling surface
-- **TorrServer** (`libtorrent`) as the embedded torrent engine
-- **Stremio addon protocol** for catalogs, search, and metadata
-- **SharedPreferences** for versioned, checksummed local documents (last-known-good recovery), with credentials kept in the platform keystore
-- **Liquid Glass** GPU shader UI via `liquid_glass_easy`, with a low-end-device setting
-
-<details>
-<summary><strong>Project layout</strong></summary>
-
-```text
-lib/
-├── main.dart                     # entry point
-├── models/                       # data classes
-├── services/
-│   ├── addon/                    # Stremio addon manager
-│   ├── metadata/                 # metadata and recommendations
-│   ├── stream/                   # stream aggregation, health checks, torrent engine
-│   ├── scraper/                  # scraper base class, manager, providers
-│   ├── anime/                    # anime services and extractors
-│   ├── subtitles/                # subtitle services and providers
-│   ├── manga/                    # reader sources and progress tracking
-│   ├── audiobook/                # aggregation and progress service
-│   ├── music/                    # music client, library, and player controller
-│   ├── continue_watching/        # resume and source matching
-│   └── diagnostics/              # local breadcrumbs and performance monitor
-├── pages/                        # screens
-├── widgets/                      # reusable components
-└── utils/                        # parsing, scoring, and transitions
-```
-
-</details>
-
----
-
-## Technical notes
-
-ZPlay uses stale-while-refresh catalog loading, bounded image decoding, and a shared disk/memory cache. Release builds use a pruned asset bundle; Android release APKs are minified and resource-shrunk. On Windows, Skia is the default renderer and can be changed in the app.
-
-Crash breadcrumbs are written locally in release builds; the performance HUD is debug-only. Neither is a telemetry service.
-
-User documents (My List, resume position, addons, reader/download state) are stored in a versioned envelope with a SHA-256 checksum and a last-known-good copy; an unreadable value is quarantined rather than silently replaced with an empty list. Account tokens, API keys and Qobuz session material live in the platform keystore (Keychain, Keystore/EncryptedSharedPreferences, Windows DPAPI, libsecret), with a plaintext fallback only where no keystore is available. A profile export is redacted by default: credentials, IPTV portal keys and addon URLs stay on the device. Supplying a passphrase exports the full profile encrypted with PBKDF2-HMAC-SHA256 and AES-256-GCM instead.
-
-Pointer rails use poster cards with title, year, type and rating; televisions keep the landscape shape for ten-foot scanning. Resting a pointer on a poster starts a muted trailer preview after a short dwell, while D-pad and touch surfaces never mount one. The trailer comes from the addon's own payload, which names it on every catalog item; a title that arrives without one is resolved on demand from the addon's info response, and from TMDb when a TMDb key is set. Artwork is requested at the largest CDN step and decoded against the display's DPR.
-
-The trailer preview's sound control reads the state from the embed's live player, because YouTube applies a mute change asynchronously: the state is read back until it settles, and the control is drawn from the state the video is really in, so an embed that refuses to unmute is reported as refusing. The trailer page is a local document served on its own origin, and the video id it carries is escaped for both the JavaScript parser and the document's.
-
-Settings → Diagnostics builds a local-only report (app, device, renderer, player, torrent-engine state, recent crash breadcrumbs and a redacted settings summary) that can be copied or saved under `ZPlay/diagnostics/`; there is no upload path. The interface ships English and Arabic, follows the system language unless overridden in Settings, and switches to RTL for Arabic.
-
----
-
-## Legal
-
-ZPlay is a media player and aggregator. It hosts no content and stores none. Content is fetched from third-party sources only at your request. You are responsible for ensuring that you have the right to access anything you stream in your jurisdiction.
-
-## License and attribution
-
-ZPlay is licensed under the [GNU General Public License v3.0](LICENSE).
-
-ZPlay is a modified version of **[PlayTorrio V3](https://github.com/ayman708-UX/PlayTorrioV3)**, © 2026 Ayman ([@ayman708-UX](https://github.com/ayman708-UX)), and is distributed under the same license. The original project and its full corresponding source remain available at [github.com/ayman708-UX/PlayTorrioV3](https://github.com/ayman708-UX/PlayTorrioV3).
-
-Poppins is bundled under the SIL Open Font License 1.1.
-
-Film metadata and images can be sourced from [The Movie Database (TMDb)](https://www.themoviedb.org). This product uses the TMDB API but is not endorsed or certified by TMDB.
-
-<p align="center">
-  Maintained by <a href="https://github.com/tzero86">tzero86</a>
-</p>
+</div>

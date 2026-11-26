@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -443,7 +445,7 @@ class _FocusModeViewState extends State<FocusModeView> {
                               ),
                               const SizedBox(width: ReaderTokens.space8),
                               Text(
-                                'Focus Mode Active',
+                                l10nOf(context).auxFocusModeViewFocusModeActive,
                                 style: ZplayType.label.toStyle(
                                   color: ReaderTokens.accent,
                                 ),
@@ -454,7 +456,7 @@ class _FocusModeViewState extends State<FocusModeView> {
 
                         // Exit Pill
                         Semantics(
-                          label: 'Exit Focus Mode',
+                          label: l10nOf(context).auxFocusModeViewExitFocusMode,
                           button: true,
                           child: InkWell(
                             onTap: widget.onExit,
@@ -480,7 +482,7 @@ class _FocusModeViewState extends State<FocusModeView> {
                                   ),
                                   const SizedBox(width: ReaderTokens.space4),
                                   Text(
-                                    'Exit (Esc)',
+                                    l10nOf(context).auxFocusModeViewExitEsc,
                                     style: ZplayType.label.toStyle(
                                       color: ReaderTokens.textPrimary,
                                     ),
@@ -528,7 +530,7 @@ class _FocusModeViewState extends State<FocusModeView> {
                               ),
                               const SizedBox(width: ReaderTokens.space8),
                               Text(
-                                'Tap above/below to move · ↑ ↓ keys to navigate',
+                                l10nOf(context).auxFocusModeViewTapAboveBelowToMoveKeysTo,
                                 style: ZplayType.label.toStyle(
                                   color: ReaderTokens.textPrimary,
                                 ),
@@ -559,7 +561,7 @@ class _FocusModeViewState extends State<FocusModeView> {
                             Icons.keyboard_arrow_up_rounded,
                             color: ReaderTokens.textPrimary,
                           ),
-                          tooltip: 'Previous Line (Up Arrow)',
+                          tooltip: l10nOf(context).auxFocusModeViewPreviousLineUpArrow,
                           onPressed: () => _goToLine(_activeLineIndex - 1),
                         ),
                         Container(height: 1, width: 24, color: ReaderTokens.borderStrong),
@@ -568,7 +570,7 @@ class _FocusModeViewState extends State<FocusModeView> {
                             Icons.keyboard_arrow_down_rounded,
                             color: ReaderTokens.textPrimary,
                           ),
-                          tooltip: 'Next Line (Down Arrow / Space)',
+                          tooltip: l10nOf(context).auxFocusModeViewNextLineDownArrowSpace,
                           onPressed: () => _goToLine(_activeLineIndex + 1),
                         ),
                       ],

@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../../widgets/common/zplay_logo.dart';
+import '../widgets/common/zplay_logo.dart';
+import '../services/content/content_settings.dart';
+import 'dart:ui' show PointerDeviceKind;
 
 import '../l10n/l10n.dart';
 import '../pages/browse/browse_page.dart';
@@ -45,11 +47,15 @@ class ShellRail extends StatelessWidget {
     this.autofocus = false,
     this.blend = 0,
     this.pageActions,
+    this.browseVertical,
+    this.onBrowseVertical,
   });
 
   /// Icons the current page lends to the capsule - see
   /// `AppShellController.pageActions`. Desktop and tablet only.
   final ValueListenable<List<ShellPageAction>>? pageActions;
+  final ValueListenable<BrowseVertical>? browseVertical;
+  final ValueChanged<BrowseVertical>? onBrowseVertical;
 
   final ShellSlot current;
   final ValueChanged<ShellSlot> onSelect;
@@ -111,7 +117,7 @@ class ShellRail extends StatelessWidget {
     return switch (FormFactorService.of(context)) {
       FormFactor.compact => _bottomBar(context, inset),
       FormFactor.television => _topBar(context, inset, FormFactor.television),
-      _ => _capsuleBar(context, inset),
+      _ => _desktopBar(context, inset),
     };
   }
 
@@ -136,173 +142,158 @@ class ShellRail extends StatelessWidget {
       FormFactor.medium || FormFactor.expanded => true,
       _ => false,
     };
-    return (pointer ? _capsuleBarHeight : _barHeight) +
+    return (pointer ? _desktopBarHeight : _barHeight) +
         MediaQuery.viewPaddingOf(context).top;
   }
 
   /// The pointer bar's height: the capsule plus the air above and below it.
-  static const double _capsuleBarHeight = 64;
+  static const double _desktopBarHeight = 64;
 
-  /// The desktop and tablet bar: the brand alone in the leading corner and the
-  /// navigation as one floating capsule in the trailing one.
-  ///
-  /// No full-width band. The bar used to be a 48 dp strip across the window
-  /// that went opaque as soon as the page scrolled, with Home's quiz and
-  /// calendar on a second strip under it. The reference this follows keeps the
-  /// page full-bleed and puts the whole menu - destinations, then search, the
-  /// page's own actions, fullscreen and settings as icons - into one small pill
-  /// that floats over whatever is behind it. The pill carries its own dark
-  /// fill, so it stays legible over art and over the page alike, and a soft
-  /// scrim behind the bar keeps the brand readable over a bright frame.
-  ///
-  /// The television keeps [_topBar]: its focus paths, target sizes and the
-  /// regression tests pinned on them are built around that bar.
-  Widget _capsuleBar(BuildContext context, EdgeInsets inset) {
+  /// Desktop/tablet: YesPlayMusic-inspired single, full-width header.
+  /// The Browse slot is exposed as direct content destinations.
+  Widget _desktopBar(BuildContext context, EdgeInsets inset) {
     final tokens = context.tokens;
     final l10n = l10nOf(context);
     final window = WindowService.instance;
-    final liveTvMarked = liveTvSelected && current == ShellSlot.browse;
 
     Widget slotItem(ShellSlot slot, {bool iconOnly = false}) {
       final chrome = _slotChrome(context, slot);
-      return _CapsuleItem(
+      return _DesktopNavItem(
         label: chrome.label,
         icon: chrome.icon,
-        selected:
-            slot == current && !(slot == ShellSlot.browse && liveTvMarked),
+        selected: slot == current,
         iconOnly: iconOnly,
-        autofocus: false,
+        textOnly: !iconOnly,
         onTap: () => onSelect(slot),
       );
     }
 
-    final divider = Container(
-      width: 1,
-      height: 18,
-      margin: const EdgeInsets.symmetric(horizontal: ZplaySpacing.s4),
-      color: Colors.white.withValues(alpha: 0.12),
-    );
-
-    final capsule = DecoratedBox(
-      decoration: BoxDecoration(
-        color: Color.alphaBlend(
-          Colors.white.withValues(alpha: 0.04),
-          tokens.surface.withValues(alpha: 0.88),
-        ),
-        borderRadius: BorderRadius.circular(ZplaySpacing.s12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.25),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
+    Widget destinations(BrowseVertical active, bool adultEnabled) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          slotItem(ShellSlot.home),
+          for (final vertical in BrowseVertical.values)
+            if (vertical != BrowseVertical.adult || adultEnabled)
+              _DesktopNavItem(
+                label: vertical.localizedLabel(context),
+                icon: vertical.icon,
+                selected: current == ShellSlot.browse && active == vertical,
+                textOnly: true,
+                onTap: () {
+                  final callback = onBrowseVertical;
+                  if (callback != null) {
+                    callback(vertical);
+                  } else if (vertical == BrowseVertical.liveTv) {
+                    onLiveTv();
+                  } else {
+                    onSelect(ShellSlot.browse);
+                  }
+                },
+              ),
+          slotItem(ShellSlot.library),
         ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(ZplaySpacing.s4),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            slotItem(ShellSlot.home),
-            slotItem(ShellSlot.browse),
-            _CapsuleItem(
-              label: l10n.navLiveTv,
-              icon: BrowseVertical.liveTv.icon,
-              selected: liveTvMarked,
-              onTap: onLiveTv,
-            ),
-            slotItem(ShellSlot.library),
-            divider,
-            slotItem(ShellSlot.search, iconOnly: true),
-            if (pageActions != null)
-              ValueListenableBuilder<List<ShellPageAction>>(
-                valueListenable: pageActions!,
-                builder: (context, actions, _) => Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    for (final action in actions)
-                      _CapsuleItem(
-                        label: action.tooltip,
-                        icon: action.icon,
-                        selected: false,
-                        iconOnly: true,
-                        accent: action.accent,
-                        onTap: action.onTap,
-                      ),
-                  ],
-                ),
-              ),
-            if (window.isDesktop)
-              ValueListenableBuilder<bool>(
-                valueListenable: window.isFullscreenNotifier,
-                builder: (context, isFullscreen, _) => _CapsuleItem(
-                  label: isFullscreen
-                      ? l10n.shellExitFullscreenTooltip
-                      : l10n.shellFullscreenTooltip,
-                  icon: isFullscreen
-                      ? Icons.fullscreen_exit_rounded
-                      : Icons.fullscreen_rounded,
-                  selected: isFullscreen,
-                  iconOnly: true,
-                  onTap: window.toggleFullscreen,
-                ),
-              ),
-            slotItem(ShellSlot.settings, iconOnly: true),
-          ],
-        ),
-      ),
+      );
+    }
+
+    final navigation = ValueListenableBuilder<bool>(
+      valueListenable: ContentSettings.adultEnabled,
+      builder: (context, adultEnabled, _) {
+        final selected = browseVertical;
+        if (selected == null) {
+          return destinations(
+            liveTvSelected ? BrowseVertical.liveTv : BrowseVertical.moviesAndTv,
+            adultEnabled,
+          );
+        }
+        return ValueListenableBuilder<BrowseVertical>(
+          valueListenable: selected,
+          builder: (context, active, _) => destinations(
+            !adultEnabled && active == BrowseVertical.adult
+                ? BrowseVertical.moviesAndTv
+                : active,
+            adultEnabled,
+          ),
+        );
+      },
     );
 
     return SizedBox(
       height: topBarHeightFor(context),
-      child: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          // A soft scrim, so the brand stays legible over a bright frame and
-          // over the page scrolling under the bar. It fades to nothing by the
-          // bar's underside, so there is never a band edge.
-          IgnorePointer(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: <Color>[
-                    tokens.bg.withValues(alpha: 0.6),
-                    tokens.bg.withValues(alpha: 0.0),
-                  ],
-                ),
-              ),
-            ),
+      child: ColoredBox(
+        color: tokens.bg.withValues(alpha: 0.96),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            20 + inset.left,
+            inset.top,
+            16 + inset.right,
+            0,
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              ZplaySpacing.s32 + inset.left,
-              inset.top,
-              ZplaySpacing.s24 + inset.right,
-              0,
-            ),
-            child: Row(
-              children: <Widget>[
-                const ZplayLogo(size: 30),
-                const SizedBox(width: ZplaySpacing.s16),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    // A window too narrow for the whole capsule scrolls it
-                    // rather than overflowing.
-                    child: SingleChildScrollView(
+          child: Row(
+            children: [
+              const ZplayLogo(size: 30),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(context).copyWith(
+                    dragDevices: {
+                      PointerDeviceKind.mouse,
+                      PointerDeviceKind.touch,
+                      PointerDeviceKind.trackpad,
+                    },
+                  ),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
-                      reverse: true,
-                      child: capsule,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minWidth: constraints.maxWidth,
+                        ),
+                        child: Center(child: navigation),
+                      ),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 12),
+              slotItem(ShellSlot.search, iconOnly: true),
+              if (pageActions != null)
+                ValueListenableBuilder<List<ShellPageAction>>(
+                  valueListenable: pageActions!,
+                  builder: (context, actions, _) => Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for (final action in actions)
+                        _DesktopNavItem(
+                          label: action.tooltip,
+                          icon: action.icon,
+                          selected: false,
+                          iconOnly: true,
+                          accent: action.accent,
+                          onTap: action.onTap,
+                        ),
+                    ],
+                  ),
+                ),
+              if (window.isDesktop)
+                ValueListenableBuilder<bool>(
+                  valueListenable: window.isFullscreenNotifier,
+                  builder: (context, isFullscreen, _) => _DesktopNavItem(
+                    label: isFullscreen
+                        ? l10n.shellExitFullscreenTooltip
+                        : l10n.shellFullscreenTooltip,
+                    icon: isFullscreen
+                        ? Icons.fullscreen_exit_rounded
+                        : Icons.fullscreen_rounded,
+                    selected: isFullscreen,
+                    iconOnly: true,
+                    onTap: window.toggleFullscreen,
+                  ),
+                ),
+              slotItem(ShellSlot.settings, iconOnly: true),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -1013,20 +1004,16 @@ class _RailRow extends StatelessWidget {
   };
 }
 
-/// One entry in the desktop nav capsule: an icon and a name, or the icon alone.
-///
-/// The selected entry sits on a lighter pill inside the capsule rather than
-/// over an underline, which is what makes the capsule read as one segmented
-/// control. Keyboard focus draws the app's ring; a pointer gets a faint wash.
-class _CapsuleItem extends StatelessWidget {
-  const _CapsuleItem({
+/// Desktop text destination or utility icon with hover, focus and press feedback.
+class _DesktopNavItem extends StatelessWidget {
+  const _DesktopNavItem({
     required this.label,
     required this.icon,
     required this.selected,
     required this.onTap,
     this.iconOnly = false,
+    this.textOnly = false,
     this.accent = false,
-    this.autofocus = false,
   });
 
   final String label;
@@ -1034,8 +1021,8 @@ class _CapsuleItem extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
   final bool iconOnly;
+  final bool textOnly;
   final bool accent;
-  final bool autofocus;
 
   static const BorderRadius _radius = BorderRadius.all(
     Radius.circular(ZplaySpacing.s8),
@@ -1055,47 +1042,53 @@ class _CapsuleItem extends StatelessWidget {
         waitDuration: const Duration(milliseconds: 500),
         child: FocusableCard(
           onTap: onTap,
-          autofocus: autofocus,
           builder: (context, state) {
             final active = selected || state.hovered || state.focused;
-            final Color fg = accent
+            final Color fg = accent || selected
                 ? tokens.accent
-                : (active ? tokens.textPrimary : tokens.textSecondary);
-            final Color fill = selected
-                ? Colors.white.withValues(alpha: 0.12)
-                : state.hovered
-                ? Colors.white.withValues(alpha: 0.06)
+                : (active || textOnly
+                      ? tokens.textPrimary
+                      : tokens.textSecondary);
+            final Color fill = state.hovered
+                ? tokens.textPrimary.withValues(alpha: 0.08)
                 : Colors.transparent;
             return CardFocusRing(
               focused: state.focused,
               radius: _radius,
-              child: AnimatedContainer(
-                duration: ZplayMotion.fast,
-                curve: ZplayMotion.standard,
-                height: 34,
-                padding: EdgeInsets.symmetric(
-                  horizontal: iconOnly ? ZplaySpacing.s8 : ZplaySpacing.s12,
-                ),
-                decoration: BoxDecoration(color: fill, borderRadius: _radius),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Icon(icon, size: 17, color: fg),
-                    if (!iconOnly) ...[
-                      const SizedBox(width: 6),
-                      Text(
-                        label,
-                        maxLines: 1,
-                        style: ZplayType.label
-                            .toStyle(color: fg)
-                            .copyWith(
-                              fontWeight: selected
-                                  ? FontWeight.w600
-                                  : FontWeight.w500,
-                            ),
-                      ),
+              child: AnimatedScale(
+                scale: state.pressed ? 0.92 : 1,
+                duration: MediaQuery.disableAnimationsOf(context)
+                    ? Duration.zero
+                    : ZplayMotion.fast,
+                child: AnimatedContainer(
+                  duration: MediaQuery.disableAnimationsOf(context)
+                      ? Duration.zero
+                      : ZplayMotion.fast,
+                  curve: ZplayMotion.standard,
+                  height: 40,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: iconOnly ? ZplaySpacing.s8 : 10,
+                  ),
+                  decoration: BoxDecoration(color: fill, borderRadius: _radius),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      if (!textOnly) Icon(icon, size: 20, color: fg),
+                      if (!iconOnly) ...[
+                        if (!textOnly) const SizedBox(width: 6),
+                        Text(
+                          label,
+                          maxLines: 1,
+                          style: ZplayType.label
+                              .toStyle(color: fg)
+                              .copyWith(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                              ),
+                        ),
+                      ],
                     ],
-                  ],
+                  ),
                 ),
               ),
             );

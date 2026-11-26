@@ -1,3 +1,4 @@
+import 'package:zplay/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/theme/design_tokens.dart';
@@ -52,7 +53,7 @@ class TrailerMuteButton extends StatelessWidget {
     return Semantics(
       button: true,
       toggled: !muted,
-      label: muted ? 'Unmute trailer' : 'Mute trailer',
+      label: muted ? l10nOf(context).finalTrailerMuteButtonUnmuteTrailer : l10nOf(context).finalTrailerMuteButtonMuteTrailer,
       excludeSemantics: true,
       child: FocusableCard(
         onTap: onPressed,

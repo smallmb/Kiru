@@ -256,7 +256,7 @@ abstract final class TmdbService {
     if (response.statusCode != 200) return const _HttpOutcome.unreachable();
 
     try {
-      final decoded = jsonDecode(response.body);
+      final decoded = jsonDecode(utf8.decode(response.bodyBytes));
       if (decoded is Map<String, dynamic>) return _HttpOutcome.ok(decoded);
     } catch (_) {}
     return const _HttpOutcome.unreachable();

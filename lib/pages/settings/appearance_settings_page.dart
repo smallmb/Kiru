@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -33,7 +36,7 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return SettingsScaffold(
-      title: 'Appearance & Interface',
+      title: l10nOf(context).uiAppearanceSettingsPageAppearanceInterface,
       child: ListView(
         padding: const EdgeInsets.symmetric(
           horizontal: ZplaySpacing.s16,
@@ -44,14 +47,14 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
           Padding(
             padding: const EdgeInsets.only(bottom: ZplaySpacing.s24),
             child: Text(
-              'Fine-tune the visual atmosphere, custom wallpaper background, color palettes, and interface layouts.',
+              l10nOf(context).uiAppearanceSettingsPageFineTuneTheVisualAtmosphere,
               style: ZplayType.body.toStyle(color: tokens.textSecondary),
             ),
           ),
 
           // ── Interface & atmosphere ────────────────────────────────────
           SettingsSection(
-            title: 'INTERFACE & ATMOSPHERE',
+            title: l10nOf(context).uiAppearanceSettingsPageInterfaceAtmosphere,
             first: true,
             rows: [
               // Custom Wallpaper & Atmosphere Background
@@ -64,12 +67,12 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                       return SettingsNavRow(
                         icon: Icons.wallpaper_rounded,
                         iconColor: tokens.accent,
-                        title: 'Custom Background & Wallpaper',
+                        title: l10nOf(context).uiAppearanceSettingsPageCustomBackgroundWallpaper,
                         subtitle:
-                            'Upload custom photos, choose curated dark wallpapers, and blend theme ambient lighting',
+                            l10nOf(context).auxAppearanceSettingsPageUploadCustomPhotosChooseCuratedDarkWallpapers,
                         valueText: customBg.hasCustomBackground
-                            ? 'Custom Active'
-                            : 'Default Theme',
+                            ? l10nOf(context).appearanceDetailCustomActive
+                            : l10nOf(context).appearanceDetailDefaultTheme,
                         onTap: () async {
                           await Navigator.push(
                             context,
@@ -98,10 +101,10 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                         iconColor: glassEnabled
                             ? tokens.accent
                             : tokens.textDisabled,
-                        title: 'Liquid Glass Setup',
+                        title: l10nOf(context).uiAppearanceSettingsPageLiquidGlassSetup,
                         subtitle:
-                            'Adjust hover impact, wobble spring physics, lens refraction, and chromatic aberration',
-                        valueText: glassEnabled ? preset.label : 'Disabled',
+                            l10nOf(context).auxAppearanceSettingsPageAdjustHoverImpactWobbleSpringPhysicsLens,
+                        valueText: glassEnabled ? configLabel(context, preset.label) : l10nOf(context).appearanceDetailDisabled,
                         onTap: () async {
                           await Navigator.push(
                             context,
@@ -125,10 +128,10 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                   return SettingsNavRow(
                     icon: Icons.palette_rounded,
                     iconColor: tokens.accent,
-                    title: 'Home Page UI & Themes',
+                    title: l10nOf(context).uiAppearanceSettingsPageHomePageUiThemes,
                     subtitle:
-                        'Color schemes, "Because you have on your list" smart slider, hero spotlight, and card density',
-                    valueText: currentPalette.name,
+                        l10nOf(context).auxAppearanceSettingsPageColorSchemesBecauseYouHaveOnYour,
+                    valueText: configLabel(context, currentPalette.name),
                     onTap: () async {
                       await Navigator.push(
                         context,
@@ -152,10 +155,10 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                       return SettingsNavRow(
                         icon: Icons.live_tv_rounded,
                         iconColor: tokens.accent,
-                        title: 'Live TV & Sports UI',
+                        title: l10nOf(context).uiAppearanceSettingsPageLiveTvSportsUi,
                         subtitle:
-                            'Broadcast hero spotlight, channel card density, category ordering, and live badge styling',
-                        valueText: spotlightEnabled ? 'Spotlight ON' : 'Compact',
+                            l10nOf(context).auxAppearanceSettingsPageBroadcastHeroSpotlightChannelCardDensityCategory,
+                        valueText: spotlightEnabled ? l10nOf(context).appearanceDetailSpotlightOn : l10nOf(context).appearanceDetailCompact,
                         onTap: () async {
                           await Navigator.push(
                             context,
@@ -176,7 +179,7 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
 
           // ── Content ───────────────────────────────────────────────────
           SettingsSection(
-            title: 'CONTENT',
+            title: l10nOf(context).uiAppearanceSettingsPageContent,
             rows: [
               // Manga UI & Reader Atmosphere
               ValueListenableBuilder<MangaReadingMode>(
@@ -188,12 +191,12 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                       return SettingsNavRow(
                         icon: Icons.menu_book_rounded,
                         iconColor: tokens.accent,
-                        title: 'Manga UI & Reader Atmosphere',
+                        title: l10nOf(context).uiAppearanceSettingsPageMangaUiReaderAtmosphere,
                         subtitle:
-                            'Ambient moving lighting, card density, reading layout widths, webtoon/horizontal modes, and page deck preview',
+                            l10nOf(context).auxAppearanceSettingsPageAmbientMovingLightingCardDensityReadingLayout,
                         valueText: readingMode == MangaReadingMode.webtoon
-                            ? 'Webtoon'
-                            : 'Horizontal',
+                            ? l10nOf(context).appearanceDetailWebtoon
+                            : l10nOf(context).appearanceDetailHorizontal,
                         onTap: () async {
                           await Navigator.push(
                             context,
@@ -214,7 +217,7 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
 
           // ── Playback ──────────────────────────────────────────────────
           SettingsSection(
-            title: 'PLAYBACK',
+            title: l10nOf(context).uiAppearanceSettingsPagePlayback,
             rows: [
               // Audiobook UI & Player Studio
               ValueListenableBuilder<AudiobookPlayerPreset>(
@@ -226,10 +229,10 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                       return SettingsNavRow(
                         icon: Icons.headphones_rounded,
                         iconColor: tokens.accent,
-                        title: 'Audiobook UI & Player Studio',
+                        title: l10nOf(context).uiAppearanceSettingsPageAudiobookUiPlayerStudio,
                         subtitle:
-                            'Hero spotlight, 5 distinct player designs, drag & drop modular studio, waveform canvas scrubber, and custom controls',
-                        valueText: playerPreset.label.split(' ').first,
+                            l10nOf(context).auxAppearanceSettingsPageHeroSpotlight5DistinctPlayerDesignsDrag,
+                        valueText: configLabel(context, playerPreset.label),
                         onTap: () async {
                           await Navigator.push(
                             context,
@@ -256,10 +259,10 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                       return SettingsNavRow(
                         icon: Icons.music_note_rounded,
                         iconColor: tokens.accent,
-                        title: 'Music UI & Player Studio',
+                        title: l10nOf(context).uiAppearanceSettingsPageMusicUiPlayerStudio,
                         subtitle:
-                            'Hero spotlight, lossless badges, and fullscreen player studio for layout, seekbar, physics & turntable styling',
-                        valueText: fullPreset.label.split(' ').first,
+                            l10nOf(context).auxAppearanceSettingsPageHeroSpotlightLosslessBadgesAndFullscreenPlayer,
+                        valueText: configLabel(context, fullPreset.label),
                         onTap: () async {
                           await Navigator.push(
                             context,
@@ -280,7 +283,7 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
           // ── Diagnostics (Windows graphics backend) ────────────────────
           if (Platform.isWindows)
             SettingsSection(
-              title: 'DIAGNOSTICS',
+              title: l10nOf(context).uiAppearanceSettingsPageDiagnostics,
               rows: [_buildRendererBackendContent()],
             ),
         ],
@@ -324,7 +327,7 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                           children: [
                             Expanded(
                               child: Text(
-                                'Graphics Backend',
+                                l10nOf(context).uiAppearanceSettingsPageGraphicsBackend,
                                 style: ZplayType.subtitle.toStyle(
                                   color: tokens.textPrimary,
                                 ),
@@ -332,7 +335,7 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                             ),
                             const SizedBox(width: ZplaySpacing.s8),
                             Text(
-                              backend.label,
+                              configLabel(context, backend.label),
                               style: ZplayType.caption.toStyle(
                                 color: tokens.textMuted,
                               ),
@@ -342,8 +345,7 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                         ),
                         const SizedBox(height: ZplaySpacing.s2),
                         Text(
-                          'Skia is recommended on Windows here — '
-                          'Impeller coincided with an NVIDIA driver crash.',
+                          l10nOf(context).appearanceSkiaRecommendation,
                           style: ZplayType.bodySmall.toStyle(
                             color: tokens.textSecondary,
                           ),
@@ -374,7 +376,7 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                   const SizedBox(width: ZplaySpacing.s8),
                   Expanded(
                     child: Text(
-                      'Restart the app to apply — the backend is fixed when the engine starts.',
+                      l10nOf(context).uiAppearanceSettingsPageRestartTheAppToApply,
                       style: ZplayType.bodySmall.toStyle(
                         color: tokens.textMuted,
                       ),
@@ -431,13 +433,13 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                   children: [
                     Text(
                       backend == RendererBackend.skia
-                          ? 'Skia (Recommended)'
+                          ? l10nOf(context).appearanceDetailSkiaRecommended
                           : 'Impeller',
                       style: ZplayType.label.toStyle(color: tokens.textPrimary),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      backend.description,
+                      configLabel(context, backend.description),
                       style: ZplayType.bodySmall.toStyle(
                         color: tokens.textSecondary,
                       ),

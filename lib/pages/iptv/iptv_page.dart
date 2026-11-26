@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -279,7 +281,7 @@ class _IptvPageState extends State<IptvPage> {
         const SizedBox(height: ZplaySpacing.s8),
         SectionHeader(
           title: title,
-          subtitle: 'Channel list and programme schedule',
+          subtitle: l10nOf(context).auxIptvPageChannelListAndProgrammeSchedule,
           count: channels.length,
         ),
         const SizedBox(height: ZplaySpacing.s12),
@@ -683,7 +685,7 @@ class _IptvGlassAppBar extends StatelessWidget {
           // chip - the chip was the only box in a row that carries no other, and
           // a count is a caption, not a control.
           Text(
-            '${HardcodedChannels.all.length} CHANNELS',
+            l10nOf(context).dynamicIptvPageChannels((HardcodedChannels.all.length).toString()),
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
 
@@ -693,8 +695,8 @@ class _IptvGlassAppBar extends StatelessWidget {
           _GlassActionButton(
             size: buttonSize,
             icon: Icons.dashboard_rounded,
-            tooltip: 'Multi Streams (Multi-View Window)',
-            label: 'Multi Streams',
+            tooltip: l10nOf(context).auxIptvPageMultiStreamsMultiViewWindow,
+            label: l10nOf(context).auxIptvPageMultiStreams,
             showLabel: isExpanded,
             onTap: onMultiStreamsTap,
           ),
@@ -705,7 +707,7 @@ class _IptvGlassAppBar extends StatelessWidget {
           _GlassActionButton(
             size: buttonSize,
             icon: Icons.settings_input_antenna_rounded,
-            tooltip: 'Manage Portals & Playlists',
+            tooltip: l10nOf(context).auxIptvPageManagePortalsPlaylists,
             onTap: onSourcesTap,
           ),
 
@@ -715,7 +717,7 @@ class _IptvGlassAppBar extends StatelessWidget {
           _GlassActionButton(
             size: buttonSize,
             icon: Icons.search_rounded,
-            tooltip: 'Search Channels',
+            tooltip: l10nOf(context).auxIptvPageSearchChannels,
             onTap: onSearchTap,
           ),
 
@@ -724,7 +726,7 @@ class _IptvGlassAppBar extends StatelessWidget {
           _GlassActionButton(
             size: buttonSize,
             icon: Icons.settings_rounded,
-            tooltip: 'Settings',
+            tooltip: l10nOf(context).navSettings,
             onTap: onSettingsTap,
           ),
         ],
@@ -887,14 +889,14 @@ class _QuickChannelsSlider extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Quick Channels',
+                l10nOf(context).auxIptvPageQuickChannels,
                 style: ZplayType.title.toStyle(color: tokens.textPrimary),
               ),
               const Spacer(),
               IconButton(
                 icon: const Icon(Icons.add_circle_outline_rounded, size: 24),
                 color: tokens.accent,
-                tooltip: 'Add Quick Channel',
+                tooltip: l10nOf(context).auxIptvPageAddQuickChannel,
                 onPressed: onAddTap,
               ),
             ],
@@ -1088,7 +1090,7 @@ class _QuickAddCard extends StatelessWidget {
               Icon(Icons.add_rounded, color: tokens.accent, size: 36),
               const SizedBox(height: 8),
               Text(
-                'Add Channel',
+                l10nOf(context).auxIptvPageAddChannel,
                 style: ZplayType.label.toStyle(color: tokens.accent),
               ),
             ],
@@ -1170,7 +1172,7 @@ class _AddQuickChannelDialogState extends State<_AddQuickChannelDialog> {
       backgroundColor: tokens.surfaceOverlay,
       shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.mdAll),
       title: Text(
-        'Add Quick Channel',
+        l10nOf(context).auxIptvPageAddQuickChannel,
         style: ZplayType.title.toStyle(color: tokens.textPrimary),
       ),
       content: SizedBox(
@@ -1264,7 +1266,7 @@ class _AddQuickChannelDialogState extends State<_AddQuickChannelDialog> {
                     labelStyle: ZplayType.body.toStyle(
                       color: tokens.textEmphasis,
                     ),
-                    hintText: 'e.g. cnn, news, international',
+                    hintText: l10nOf(context).auxIptvPageEGCnnNewsInternational,
                     hintStyle: ZplayType.body.toStyle(color: tokens.textMuted),
                     border: const UnderlineInputBorder(),
                     focusedBorder: UnderlineInputBorder(
@@ -1278,7 +1280,7 @@ class _AddQuickChannelDialogState extends State<_AddQuickChannelDialog> {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Gradient',
+                    l10nOf(context).auxIptvPageGradient,
                     style: ZplayType.bodySmall.toStyle(
                       color: tokens.textEmphasis,
                     ),
@@ -1327,7 +1329,7 @@ class _AddQuickChannelDialogState extends State<_AddQuickChannelDialog> {
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text(
-            'Cancel',
+            l10nOf(context).actionCancel,
             style: ZplayType.label.toStyle(color: tokens.textEmphasis),
           ),
         ),
@@ -1370,7 +1372,7 @@ class _AddQuickChannelDialogState extends State<_AddQuickChannelDialog> {
               Navigator.pop(context);
             }
           },
-          child: const Text('Add'),
+          child: Text(l10nOf(context).commonAddAction),
         ),
       ],
     );

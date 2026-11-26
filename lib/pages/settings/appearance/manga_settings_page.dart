@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import '../palette_picker.dart';
 import '../../../services/theme/design_tokens.dart';
@@ -21,33 +24,33 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
     final palette = AppThemeService.currentPalette.value;
 
     return SettingsScaffold(
-      title: 'Manga UI & Reader Atmosphere',
+      title: l10nOf(context).appearanceMangaTitle,
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         children: [
           // ── 1. Color Themes & Accents ──
-          _buildSectionHeader('COLOR THEMES & ACCENTS'),
+          _buildSectionHeader(l10nOf(context).auxHomeUiSettingsPageColorThemesAccents),
           const SizedBox(height: 12),
           const PalettePicker(),
 
           const SizedBox(height: 28),
 
           // ── 2. Ambient Background Lighting ──
-          _buildSectionHeader('AMBIENT BACKGROUND LIGHTING & MOVING GLOWS'),
+          _buildSectionHeader(l10nOf(context).finalAudiobookSettingsPageAmbientBackgroundLightingMovingGlows),
           const SizedBox(height: 12),
           _buildAmbientLightsCard(palette),
 
           const SizedBox(height: 28),
 
           // ── 3. Discovery & Cards ──
-          _buildSectionHeader('DISCOVERY & POSTER CARDS'),
+          _buildSectionHeader(l10nOf(context).finalMangaSettingsPageDiscoveryPosterCards),
           const SizedBox(height: 12),
           _buildCardsConfigCard(palette),
 
           const SizedBox(height: 28),
 
           // ── 4. Manga Reader Customization ──
-          _buildSectionHeader('MANGA READER & CHAPTER VIEWER'),
+          _buildSectionHeader(l10nOf(context).finalMangaSettingsPageMangaReaderChapterViewer),
           const SizedBox(height: 12),
           _buildReaderConfigCard(palette),
 
@@ -79,11 +82,11 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
                 title: Text(
-                  'Enable Moving Ambient Lighting',
+                  l10nOf(context).auxMangaSettingsPageEnableMovingAmbientLighting,
                   style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                 ),
                 subtitle: Text(
-                  'Soft flowing glowing orbs and aurora waves themed to ${palette.name}',
+                  l10nOf(context).dynamicMangaSettingsPageSoftFlowingGlowingOrbsAndAurora((palette.name).toString()),
                   style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                 ),
                 value: enabled,
@@ -99,7 +102,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
 
           // Pattern selector
           Text(
-            'Lighting Flow Pattern',
+            l10nOf(context).auxAudiobookSettingsPageLightingFlowPattern,
             style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
           ),
           const SizedBox(height: 8),
@@ -113,7 +116,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
                 },
                 options: [
                   for (final p in AmbientLightPattern.values)
-                    SegmentedTabOption(value: p, label: p.label),
+                    SegmentedTabOption(value: p, label: configLabel(context, p.label)),
                 ],
               );
             },
@@ -131,7 +134,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Glow Strength / Opacity', style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
+                      Text(l10nOf(context).auxAudiobookSettingsPageGlowStrengthOpacity, style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
                       Text('${(intensity * 100).round()}%', style: ZplayType.labelNumeric.toStyle(color: palette.primaryColor)),
                     ],
                   ),
@@ -165,7 +168,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Motion Drift Speed', style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
+                      Text(l10nOf(context).auxAudiobookSettingsPageMotionDriftSpeed, style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
                       Text('${speed.toStringAsFixed(1)}x', style: ZplayType.labelNumeric.toStyle(color: palette.primaryColor)),
                     ],
                   ),
@@ -217,7 +220,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
                         children: [
                           Icon(Icons.auto_awesome_rounded, color: palette.primaryColor, size: 14),
                           const SizedBox(width: 6),
-                          Text('Live Atmosphere Preview', style: ZplayType.caption.toStyle(color: tokens.textPrimary)),
+                          Text(l10nOf(context).auxAudiobookSettingsPageLiveAtmospherePreview, style: ZplayType.caption.toStyle(color: tokens.textPrimary)),
                         ],
                       ),
                     ),
@@ -244,8 +247,8 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
             builder: (context, show, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Show "Continue Reading" Slider', style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
-                subtitle: Text('Display your active reading history at the top of the Manga page', style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
+                title: Text(l10nOf(context).auxMangaPageShowContinueReadingSlider, style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
+                subtitle: Text(l10nOf(context).auxMangaSettingsPageDisplayYourActiveReadingHistoryAtThe, style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
                 value: show,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => MangaSettings.setShowContinueReading(val),
@@ -257,7 +260,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
           Divider(color: tokens.borderDefault),
           const SizedBox(height: 12),
 
-          Text('Manga Poster Card Density', style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
+          Text(l10nOf(context).auxMangaSettingsPageMangaPosterCardDensity, style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
           const SizedBox(height: 8),
           ValueListenableBuilder<MangaCardDensity>(
             valueListenable: MangaSettings.cardDensity,
@@ -269,7 +272,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
                 },
                 options: [
                   for (final d in MangaCardDensity.values)
-                    SegmentedTabOption(value: d, label: d.label),
+                    SegmentedTabOption(value: d, label: configLabel(context, d.label)),
                 ],
               );
             },
@@ -282,7 +285,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
             builder: (context, show, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Show Content Type Badge (Manga/Manhwa)', style: ZplayType.label.toStyle(color: tokens.textPrimary)),
+                title: Text(l10nOf(context).auxMangaSettingsPageShowContentTypeBadgeMangaManhwa, style: ZplayType.label.toStyle(color: tokens.textPrimary)),
                 value: show,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => MangaSettings.setShowContentTypeBadge(val),
@@ -295,7 +298,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
             builder: (context, show, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Show Publication Year on Cards', style: ZplayType.label.toStyle(color: tokens.textPrimary)),
+                title: Text(l10nOf(context).auxMangaSettingsPageShowPublicationYearOnCards, style: ZplayType.label.toStyle(color: tokens.textPrimary)),
                 value: show,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => MangaSettings.setShowMangaYear(val),
@@ -308,7 +311,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
             builder: (context, show, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Poster Card Hover Glow Effect', style: ZplayType.label.toStyle(color: tokens.textPrimary)),
+                title: Text(l10nOf(context).auxMangaSettingsPagePosterCardHoverGlowEffect, style: ZplayType.label.toStyle(color: tokens.textPrimary)),
                 value: show,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => MangaSettings.setAmbientCardGlow(val),
@@ -321,7 +324,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
             builder: (context, show, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Show Desktop Scroll Track', style: ZplayType.label.toStyle(color: tokens.textPrimary)),
+                title: Text(l10nOf(context).auxMangaSettingsPageShowDesktopScrollTrack, style: ZplayType.label.toStyle(color: tokens.textPrimary)),
                 value: show,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => MangaSettings.setShowScrollTrack(val),
@@ -342,7 +345,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Default Reading Mode
-          Text('Default Reading Mode', style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
+          Text(l10nOf(context).auxMangaSettingsPageDefaultReadingMode, style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
           const SizedBox(height: 8),
           ValueListenableBuilder<MangaReadingMode>(
             valueListenable: MangaSettings.defaultReadingMode,
@@ -354,7 +357,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
                 },
                 options: [
                   for (final m in MangaReadingMode.values)
-                    SegmentedTabOption(value: m, label: m.label),
+                    SegmentedTabOption(value: m, label: configLabel(context, m.label)),
                 ],
               );
             },
@@ -363,7 +366,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
           const SizedBox(height: 16),
 
           // Reader Max Width
-          Text('Page Reading Width Constraint', style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
+          Text(l10nOf(context).auxMangaReaderPagePageReadingWidthConstraint, style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
           const SizedBox(height: 8),
           ValueListenableBuilder<MangaReaderMaxWidth>(
             valueListenable: MangaSettings.readerMaxWidth,
@@ -375,7 +378,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
                 },
                 options: [
                   for (final w in MangaReaderMaxWidth.values)
-                    SegmentedTabOption(value: w, label: w.label),
+                    SegmentedTabOption(value: w, label: configLabel(context, w.label)),
                 ],
               );
             },
@@ -384,7 +387,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
           const SizedBox(height: 16),
 
           // Reader Background Color
-          Text('Reader Background Atmosphere', style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
+          Text(l10nOf(context).auxMangaReaderPageReaderBackgroundAtmosphere, style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
           const SizedBox(height: 8),
           ValueListenableBuilder<MangaReaderBackground>(
             valueListenable: MangaSettings.readerBackground,
@@ -408,7 +411,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
                         ),
                       ),
                     ),
-                    label: Text(b.label),
+                    label: Text(configLabel(context, b.label)),
                     selected: isSelected,
                     selectedColor: palette.primaryColor.withValues(alpha: 0.25),
                     backgroundColor: tokens.surface,
@@ -430,7 +433,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
           const SizedBox(height: 16),
 
           // Control Bar Style
-          Text('Control Toolbar Style', style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
+          Text(l10nOf(context).auxMangaSettingsPageControlToolbarStyle, style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
           const SizedBox(height: 8),
           ValueListenableBuilder<MangaControlBarStyle>(
             valueListenable: MangaSettings.readerControlBarStyle,
@@ -442,7 +445,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
                 },
                 options: [
                   for (final s in MangaControlBarStyle.values)
-                    SegmentedTabOption(value: s, label: s.label),
+                    SegmentedTabOption(value: s, label: configLabel(context, s.label)),
                 ],
               );
             },
@@ -460,7 +463,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Vertical Page Gap', style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
+                      Text(l10nOf(context).auxMangaSettingsPageVerticalPageGap, style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
                       Text('${gap.round()} px', style: ZplayType.labelNumeric.toStyle(color: palette.primaryColor)),
                     ],
                   ),
@@ -489,8 +492,8 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
             builder: (context, show, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Show Page Deck / Thumbnail Previews', style: ZplayType.label.toStyle(color: tokens.textPrimary)),
-                subtitle: Text('Interactive visual tray of thumbnail previews for instant page jumping', style: ZplayType.caption.toStyle(color: tokens.textSecondary)),
+                title: Text(l10nOf(context).auxMangaSettingsPageShowPageDeckThumbnailPreviews, style: ZplayType.label.toStyle(color: tokens.textPrimary)),
+                subtitle: Text(l10nOf(context).auxMangaSettingsPageInteractiveVisualTrayOfThumbnailPreviewsFor, style: ZplayType.caption.toStyle(color: tokens.textSecondary)),
                 value: show,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => MangaSettings.setShowPageDeck(val),
@@ -503,7 +506,7 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
             builder: (context, show, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Show Page Scrubber Slider', style: ZplayType.label.toStyle(color: tokens.textPrimary)),
+                title: Text(l10nOf(context).auxMangaSettingsPageShowPageScrubberSlider, style: ZplayType.label.toStyle(color: tokens.textPrimary)),
                 value: show,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => MangaSettings.setShowPageScrubber(val),
@@ -516,8 +519,8 @@ class _MangaSettingsPageState extends State<MangaSettingsPage> {
             builder: (context, show, _) {
               return SwitchListTile.adaptive(
                 contentPadding: EdgeInsets.zero,
-                title: Text('Enable Next Chapter Preview Card Deck', style: ZplayType.label.toStyle(color: tokens.textPrimary)),
-                subtitle: Text('Rich glass deck card at the end of each chapter with chapter art and direct launch', style: ZplayType.caption.toStyle(color: tokens.textSecondary)),
+                title: Text(l10nOf(context).auxMangaSettingsPageEnableNextChapterPreviewCardDeck, style: ZplayType.label.toStyle(color: tokens.textPrimary)),
+                subtitle: Text(l10nOf(context).auxMangaSettingsPageRichGlassDeckCardAtTheEnd, style: ZplayType.caption.toStyle(color: tokens.textSecondary)),
                 value: show,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => MangaSettings.setEnableNextChapterDeck(val),

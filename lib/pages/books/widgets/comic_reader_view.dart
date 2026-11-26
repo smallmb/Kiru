@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -230,7 +232,7 @@ class _ComicReaderViewState extends State<ComicReaderView> with SingleTickerProv
                       // Zoom Out Button
                       _buildToolbarButton(
                         icon: Icons.remove_rounded,
-                        tooltip: 'Zoom Out (Ctrl -)',
+                        tooltip: l10nOf(context).auxComicReaderViewZoomOutCtrl,
                         onPressed: () => _zoomBy(0.8),
                       ),
 
@@ -251,7 +253,7 @@ class _ComicReaderViewState extends State<ComicReaderView> with SingleTickerProv
                       // Zoom In Button
                       _buildToolbarButton(
                         icon: Icons.add_rounded,
-                        tooltip: 'Zoom In (Ctrl +)',
+                        tooltip: l10nOf(context).auxComicReaderViewZoomInCtrl,
                         onPressed: () => _zoomBy(1.25),
                       ),
 
@@ -262,7 +264,7 @@ class _ComicReaderViewState extends State<ComicReaderView> with SingleTickerProv
                       // Reset / Fit
                       _buildToolbarButton(
                         icon: Icons.fit_screen_rounded,
-                        tooltip: 'Reset Zoom (100%)',
+                        tooltip: l10nOf(context).auxComicReaderViewResetZoom100,
                         onPressed: () => _resetZoom(),
                       ),
                     ],

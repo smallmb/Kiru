@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -221,7 +224,7 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
                 // Full-bleed: [SectionHeader] carries its own 8 dp top / 16 dp
                 // side padding, so the heading lands on the page gutter without
                 // this sliver wrapping it twice.
-                const SectionHeader(title: 'Synopsis'),
+                SectionHeader(title: l10nOf(context).auxMangaDetailsPageSynopsis),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(
                     ZplaySpacing.s16,
@@ -255,7 +258,7 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
         SliverToBoxAdapter(
           child: isDesktop
               ? SectionHeader(
-                  title: 'Chapters',
+                  title: l10nOf(context).auxMangaDetailsPageChapters,
                   count: _chapters?.length,
                   trailing: SizedBox(
                     width: 250,
@@ -266,7 +269,7 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SectionHeader(title: 'Chapters', count: _chapters?.length),
+                    SectionHeader(title: l10nOf(context).auxMangaDetailsPageChapters, count: _chapters?.length),
                     const SizedBox(height: ZplaySpacing.s12),
                     // Full-width on mobile, so it stays under the heading
                     // rather than beside it.
@@ -433,14 +436,14 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
                   children: [
                     _ChromeGlyphAction(
                       icon: Icons.chevron_left_rounded,
-                      semanticLabel: 'Previous chapter page',
+                      semanticLabel: configLabel(context, 'Previous chapter page'),
                       onTap: _currentChapterPage > 0
                           ? () => setState(() => _currentChapterPage--)
                           : null,
                     ),
                     const SizedBox(width: 14),
                     Text(
-                      'Page ${_currentChapterPage + 1} of $totalPages',
+                      l10nOf(context).dynamicMangaDetailsPagePageOf((_currentChapterPage + 1).toString(), (totalPages).toString()),
                       style: ZplayType.body
                           .copyWith(size: 14.5)
                           .toStyle(color: tokens.textEmphasis),
@@ -448,7 +451,7 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
                     const SizedBox(width: 14),
                     _ChromeGlyphAction(
                       icon: Icons.chevron_right_rounded,
-                      semanticLabel: 'Next chapter page',
+                      semanticLabel: configLabel(context, 'Next chapter page'),
                       onTap: _currentChapterPage < totalPages - 1
                           ? () => setState(() => _currentChapterPage++)
                           : null,
@@ -477,7 +480,7 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
       },
       style: ZplayType.label.copyWith(size: 13.5).toStyle(color: tokens.textPrimary),
       decoration: InputDecoration(
-        hintText: 'Search chapters...',
+        hintText: l10nOf(context).auxMangaDetailsPageSearchChapters,
         hintStyle: ZplayType.label.copyWith(size: 13.5).toStyle(color: tokens.textMuted),
         prefixIcon: Icon(Icons.search_rounded, color: tokens.accent, size: 18),
         // A `FocusableCard`, not an `IconButton`: the latter draws Material's
@@ -486,7 +489,7 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
         suffixIcon: _chapterSearchQuery.isNotEmpty
             ? _ChromeGlyphAction(
                 icon: Icons.clear_rounded,
-                semanticLabel: 'Clear chapter search',
+                semanticLabel: configLabel(context, 'Clear chapter search'),
                 iconSize: 16,
                 tapTarget: 36,
                 color: tokens.textSecondary,
@@ -690,7 +693,7 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
     } else if (_chapters != null && _chapters!.isNotEmpty) {
       return _buildActionButton(
         icon: Icons.menu_book_rounded,
-        label: 'Start Reading',
+        label: l10nOf(context).auxMangaDetailsPageStartReading,
         isFullWidth: isFullWidth,
         onTap: () => _startReading(_chapters!.length - 1),
       );

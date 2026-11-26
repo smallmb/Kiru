@@ -21,6 +21,8 @@ abstract final class LocaleSettings {
           locale.value = const Locale('en');
         case 'ar':
           locale.value = const Locale('ar');
+        case 'zh':
+          locale.value = const Locale('zh');
         default:
           locale.value = null;
       }
@@ -34,6 +36,7 @@ abstract final class LocaleSettings {
     final next = switch (code) {
       'en' => const Locale('en'),
       'ar' => const Locale('ar'),
+      'zh' => const Locale('zh'),
       _ => null,
     };
     locale.value = next;

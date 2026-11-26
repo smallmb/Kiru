@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -186,7 +188,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
         controller: _searchController,
         style: ZplayType.label.toStyle(color: tokens.textPrimary),
         decoration: InputDecoration(
-          hintText: 'Search channels...',
+          hintText: l10nOf(context).auxMultinutzChannelSheetSearchChannels,
           hintStyle: ZplayType.body.toStyle(color: tokens.textDisabled),
           prefixIcon: Icon(Icons.search_rounded, color: tokens.textDisabled),
           border: OutlineInputBorder(
@@ -245,7 +247,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
             horizontal: ZplaySpacing.s16,
             vertical: ZplaySpacing.s8,
           ),
-          child: _manageButton(tab: 0, label: 'Portals'),
+          child: _manageButton(tab: 0, label: l10nOf(context).auxMultinutzChannelSheetPortals),
         ),
 
         const SizedBox(height: ZplaySpacing.s8),
@@ -377,7 +379,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                   const SizedBox(width: ZplaySpacing.s4),
                   _cardIconButton(
                     icon: Icons.copy_rounded,
-                    tooltip: 'Copy Login (url:user:pass)',
+                    tooltip: l10nOf(context).auxMultinutzChannelSheetCopyLoginUrlUserPass,
                     color: tokens.textEmphasis,
                     onPressed: () {
                       final text =
@@ -385,7 +387,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                       Clipboard.setData(ClipboardData(text: text));
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Copied: $text'),
+                          content: Text(l10nOf(context).dynamicMultinutzChannelSheetCopied((text).toString())),
                           duration: const Duration(seconds: 2),
                           backgroundColor: context.tokens.surfaceOverlay,
                         ),
@@ -397,7 +399,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                     icon: isFav
                         ? Icons.star_rounded
                         : Icons.star_outline_rounded,
-                    tooltip: isFav ? 'Remove Favorite' : 'Add to Favorites',
+                    tooltip: isFav ? l10nOf(context).finalMultinutzChannelSheetRemoveFavorite : 'Add to Favorites',
                     color: isFav ? tokens.warning : tokens.textMuted,
                     size: 19,
                     onPressed: () => ctrl.toggleFavoritePortal(p.key),
@@ -405,7 +407,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                   const SizedBox(width: ZplaySpacing.s2),
                   _cardIconButton(
                     icon: Icons.delete_outline_rounded,
-                    tooltip: 'Remove Portal',
+                    tooltip: l10nOf(context).auxMultinutzChannelSheetRemovePortal,
                     color: tokens.danger,
                     size: 18,
                     onPressed: () => ctrl.deletePortalsByKeys({p.key}),
@@ -458,7 +460,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                                 borderRadius: ZplayRadius.xsAll,
                               ),
                               child: Text(
-                                'Exp: ${p.expiry}',
+                                l10nOf(context).dynamicMultinutzChannelSheetExpires((p.expiry).toString()),
                                 style: ZplayType.overline
                                     .copyWith(weight: FontWeight.w700)
                                     .toStyle(color: palette.primaryColor),
@@ -475,7 +477,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                                 borderRadius: ZplayRadius.xsAll,
                               ),
                               child: Text(
-                                'Conn: ${p.activeConnections}/${p.maxConnections}',
+                                l10nOf(context).dynamicMultinutzChannelSheetConnections((p.activeConnections).toString(), (p.maxConnections).toString()),
                                 style: ZplayType.overline.toStyle(
                                   color: tokens.textEmphasis,
                                 ),
@@ -566,7 +568,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                 borderRadius: ZplayRadius.xsAll,
               ),
               child: Text(
-                'Exp: ${group.portal.expiry}',
+                l10nOf(context).dynamicMultinutzChannelSheetExpires((group.portal.expiry).toString()),
                 style: ZplayType.overline
                     .copyWith(weight: FontWeight.w700)
                     .toStyle(color: palette.primaryColor),
@@ -580,7 +582,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                 borderRadius: ZplayRadius.xsAll,
               ),
               child: Text(
-                'Conn: ${group.portal.activeConnections}/${group.portal.maxConnections}',
+                l10nOf(context).dynamicMultinutzChannelSheetConnections((group.portal.activeConnections).toString(), (group.portal.maxConnections).toString()),
                 style: ZplayType.overline.toStyle(color: tokens.textEmphasis),
               ),
             ),
@@ -671,7 +673,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                     const SizedBox(width: ZplaySpacing.s4),
                     _cardIconButton(
                       icon: Icons.copy_rounded,
-                      tooltip: 'Copy Login (url:user:pass)',
+                      tooltip: l10nOf(context).auxMultinutzChannelSheetCopyLoginUrlUserPass,
                       color: tokens.textEmphasis,
                       onPressed: () {
                         final text =
@@ -679,7 +681,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                         Clipboard.setData(ClipboardData(text: text));
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('Copied: $text'),
+                            content: Text(l10nOf(context).dynamicMultinutzChannelSheetCopied((text).toString())),
                             duration: const Duration(seconds: 2),
                             backgroundColor: context.tokens.surfaceOverlay,
                           ),
@@ -691,7 +693,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                       icon: isFav
                           ? Icons.star_rounded
                           : Icons.star_outline_rounded,
-                      tooltip: isFav ? 'Remove Favorite' : 'Add to Favorites',
+                      tooltip: isFav ? l10nOf(context).finalMultinutzChannelSheetRemoveFavorite : 'Add to Favorites',
                       color: isFav ? tokens.warning : tokens.textMuted,
                       size: 19,
                       onPressed: () =>
@@ -700,7 +702,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                     const SizedBox(width: ZplaySpacing.s2),
                     _cardIconButton(
                       icon: Icons.delete_outline_rounded,
-                      tooltip: 'Remove Portal',
+                      tooltip: l10nOf(context).auxMultinutzChannelSheetRemovePortal,
                       color: tokens.danger,
                       size: 18,
                       onPressed: () =>
@@ -735,7 +737,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                 padding: const EdgeInsets.all(ZplaySpacing.s16),
                 child: Center(
                   child: Text(
-                    'No live channels available for this portal',
+                    l10nOf(context).auxMultinutzChannelSheetNoLiveChannelsAvailableForThisPortal,
                     style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
                   ),
                 ),
@@ -748,7 +750,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                   vertical: ZplaySpacing.s4,
                 ),
                 child: Text(
-                  '${group.hits.length} live channels',
+                  l10nOf(context).dynamicMultinutzChannelSheetLiveChannels((group.hits.length).toString()),
                   style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                 ),
               ),
@@ -843,7 +845,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
             horizontal: ZplaySpacing.s16,
             vertical: ZplaySpacing.s8,
           ),
-          child: _manageButton(tab: 1, label: 'Playlists'),
+          child: _manageButton(tab: 1, label: l10nOf(context).auxMultinutzChannelSheetPlaylists),
         ),
 
         const SizedBox(height: ZplaySpacing.s8),
@@ -931,7 +933,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                 ),
                 const SizedBox(height: ZplaySpacing.s2),
                 Text(
-                  '${group.channels.length} channels${group.playlist.sourceUrl != null ? ' · ${group.playlist.sourceUrl!}' : ''}',
+                  '${l10nOf(context).iptvChannelsCount(group.channels.length)}${group.playlist.sourceUrl != null ? ' · ${group.playlist.sourceUrl!}' : ''}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: ZplayType.caption.toStyle(color: tokens.textMuted),
@@ -942,7 +944,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
           const SizedBox(width: 6),
           _cardIconButton(
             icon: Icons.copy_rounded,
-            tooltip: 'Copy Playlist URL',
+            tooltip: l10nOf(context).auxMultinutzChannelSheetCopyPlaylistUrl,
             color: tokens.textEmphasis,
             onPressed: () {
               final text = group.playlist.sourceUrl ?? '';
@@ -950,7 +952,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                 Clipboard.setData(ClipboardData(text: text));
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Copied: $text'),
+                    content: Text(l10nOf(context).dynamicMultinutzChannelSheetCopied((text).toString())),
                     duration: const Duration(seconds: 2),
                     backgroundColor: context.tokens.surfaceOverlay,
                   ),
@@ -961,7 +963,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
           const SizedBox(width: ZplaySpacing.s2),
           _cardIconButton(
             icon: Icons.delete_outline_rounded,
-            tooltip: 'Remove Playlist',
+            tooltip: l10nOf(context).auxMultinutzChannelSheetRemovePlaylist,
             color: tokens.danger,
             size: 18,
             onPressed: () => ctrl.deleteM3uPlaylist(group.playlist.id),
@@ -976,7 +978,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                 padding: const EdgeInsets.all(ZplaySpacing.s16),
                 child: Center(
                   child: Text(
-                    'No channels in this playlist',
+                    l10nOf(context).auxMultinutzChannelSheetNoChannelsInThisPlaylist,
                     style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
                   ),
                 ),
@@ -989,7 +991,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                   vertical: ZplaySpacing.s4,
                 ),
                 child: Text(
-                  '${group.channels.length} channels',
+                  l10nOf(context).dynamicMultinutzChannelSheetChannels((group.channels.length).toString()),
                   style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                 ),
               ),

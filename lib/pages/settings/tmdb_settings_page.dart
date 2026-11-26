@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -53,11 +56,11 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
   String _statusText(TmdbKeyResult result) {
     switch (result) {
       case TmdbKeyResult.ok:
-        return 'Connected';
+        return configLabel(context, 'Connected');
       case TmdbKeyResult.rejected:
-        return 'That key was rejected by TMDb';
+        return configLabel(context, 'That key was rejected by TMDb');
       case TmdbKeyResult.unreachable:
-        return 'Could not reach TMDb';
+        return configLabel(context, 'Could not reach TMDb');
     }
   }
 
@@ -140,7 +143,7 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
         behavior: SnackBarBehavior.floating,
         backgroundColor: isError ? tokens.danger : tokens.accent,
         action: SnackBarAction(
-          label: 'Dismiss',
+          label: l10nOf(context).uiTmdbSettingsPageDismiss,
           textColor: tokens.onAccent,
           onPressed: () {},
         ),
@@ -160,7 +163,7 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
     final tokens = context.tokens;
 
     return SettingsScaffold(
-      title: 'TMDb API Key',
+      title: l10nOf(context).uiTmdbSettingsPageTmdbApiKey,
       child: ListView(
         padding: const EdgeInsets.symmetric(
           horizontal: ZplaySpacing.s16,
@@ -170,15 +173,13 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
           Padding(
             padding: const EdgeInsets.only(bottom: ZplaySpacing.s20),
             child: Text(
-              'Add your own free TMDb key to rank the six "The 90s" rails by '
-              'TMDb vote counts, and to cover the TMDb lookups the built-in '
-              'scrapers make. Get a key at themoviedb.org.',
+              l10nOf(context).tmdbKeyIntroduction,
               style: ZplayType.body.toStyle(color: tokens.textSecondary),
             ),
           ),
 
           Text(
-            'TMDB CREDENTIAL',
+            l10nOf(context).uiTmdbSettingsPageTmdbCredential,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 10),
@@ -191,16 +192,14 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
           const SizedBox(height: ZplaySpacing.s12),
 
           Text(
-            'The key is stored only on this device. This app ships with no '
-            'key, and a built-in fallback keeps the scraper lookups working '
-            'without one. Clearing your key restores the built-in 1990s picks.',
+            l10nOf(context).tmdbKeyStorageNotice,
             style: ZplayType.bodySmall.toStyle(color: tokens.textDisabled),
           ),
 
           const SizedBox(height: ZplaySpacing.s24),
 
           Text(
-            'CREDITS',
+            l10nOf(context).uiTmdbSettingsPageCredits,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: ZplaySpacing.s12),
@@ -229,7 +228,7 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               Text(
-                'TMDb API Key',
+                l10nOf(context).uiTmdbSettingsPageTmdbApiKey,
                 style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
               ),
               if (hasKey)
@@ -242,7 +241,7 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
                     borderRadius: ZplayRadius.xsAll,
                   ),
                   child: Text(
-                    'SAVED',
+                    l10nOf(context).uiTmdbSettingsPageSaved,
                     style: ZplayType.caption.toStyle(color: tokens.accent),
                   ),
                 ),
@@ -251,8 +250,8 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
           const SizedBox(height: 3),
           Text(
             hasKey
-                ? 'Saved on this device. Enter a new key to replace it.'
-                : 'Free key from themoviedb.org',
+                ? l10nOf(context).uiFinalTmdbSettingsPageSavedOnThisDeviceEnterA
+                : l10nOf(context).uiFinalTmdbSettingsPageFreeKeyFromThemoviedbOrg,
             style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
           ),
           const SizedBox(height: 10),
@@ -266,7 +265,7 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
                   autocorrect: false,
                   style: ZplayType.label.toStyle(color: tokens.textPrimary),
                   decoration: InputDecoration(
-                    hintText: 'Paste your TMDb API key',
+                    hintText: l10nOf(context).uiTmdbSettingsPagePasteYourTmdbApiKey,
                     hintStyle: ZplayType.bodySmall.toStyle(
                       color: tokens.textDisabled,
                     ),
@@ -302,7 +301,7 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
                           ),
                           padding: const EdgeInsets.all(4),
                           constraints: const BoxConstraints(),
-                          tooltip: _obscured ? 'Show Key' : 'Hide Key',
+                          tooltip: _obscured ? l10nOf(context).finalDebridSettingsPageShowKey : l10nOf(context).finalDebridSettingsPageHideKey,
                           onPressed: () {
                             setState(() => _obscured = !_obscured);
                           },
@@ -315,7 +314,7 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
                           ),
                           padding: const EdgeInsets.all(4),
                           constraints: const BoxConstraints(),
-                          tooltip: 'Paste from Clipboard',
+                          tooltip: l10nOf(context).uiTmdbSettingsPagePasteFromClipboard,
                           onPressed: _pasteFromClipboard,
                         ),
                         const SizedBox(width: 4),
@@ -348,7 +347,7 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
                           color: tokens.onAccent,
                         ),
                       )
-                    : Text('Save and test', style: ZplayType.label.toStyle()),
+                    : Text(l10nOf(context).uiTmdbSettingsPageSaveAndTest, style: ZplayType.label.toStyle()),
               ),
             ],
           ),
@@ -382,7 +381,7 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
                     borderRadius: ZplayRadius.smAll,
                   ),
                 ),
-                child: Text('Clear key', style: ZplayType.label.toStyle()),
+                child: Text(l10nOf(context).uiTmdbSettingsPageClearKey, style: ZplayType.label.toStyle()),
               ),
             ],
           ),

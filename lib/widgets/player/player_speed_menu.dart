@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import '../../services/theme/design_tokens.dart';
 import 'player_glass.dart';
@@ -30,7 +32,7 @@ class PlayerSpeedMenu extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
-          PlayerMenuHeader(title: 'PLAYBACK SPEED', onClose: onClose),
+          PlayerMenuHeader(title: l10nOf(context).uiPlayerSpeedMenuPlaybackSpeed, onClose: onClose),
 
           const SizedBox(height: 6),
 

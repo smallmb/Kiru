@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../models/addon/addon.dart';
@@ -285,7 +287,7 @@ class _AdultPageState extends State<AdultPage> {
       return _padded(
         ErrorView(
           error: _error,
-          title: 'Could not load 18+ sources',
+          title: l10nOf(context).auxAdultPageCouldNotLoad18Sources,
           onRetry: _reload,
         ),
         topInset,
@@ -352,16 +354,16 @@ class _AdultPageState extends State<AdultPage> {
         const SizedBox(height: ZplaySpacing.s12),
         Text(
           noAddons
-              ? 'No 18+ sources yet.'
-              : '18+ sources found nothing to show.',
+              ? l10nOf(context).uiFinalAdultPageNo18SourcesYet
+              : l10nOf(context).uiFinalAdultPage18SourcesFoundNothingToShow,
           style: ZplayType.title.toStyle(color: tokens.textPrimary),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: ZplaySpacing.s8),
         Text(
           noAddons
-              ? 'Mark an addon as 18+ or hybrid in Settings → Addons, or install one.'
-              : 'The addons this page lists answered with no titles. Try again in a moment.',
+              ? l10nOf(context).uiFinalAdultPageMarkAnAddonAs18Or
+              : l10nOf(context).uiFinalAdultPageTheAddonsThisPageListsAnswered,
           style: ZplayType.body.toStyle(color: tokens.textSecondary),
           textAlign: TextAlign.center,
         ),
@@ -372,7 +374,7 @@ class _AdultPageState extends State<AdultPage> {
         // hand-rolled bordered control here would be a second look for the same
         // thing.
         PillButton(
-          label: 'Try again',
+          label: l10nOf(context).actionTryAgain,
           icon: Icons.refresh_rounded,
           variant: PillVariant.secondary,
           onPressed: _reload,
@@ -485,7 +487,7 @@ class _AdultHeader extends StatelessWidget {
               ),
               const SizedBox(height: ZplaySpacing.s8),
               Text(
-                'Titles from the addons marked 18+ or hybrid.',
+                l10nOf(context).auxAdultPageTitlesFromTheAddonsMarked18Or,
                 style: ZplayType.caption.toStyle(color: tokens.textMuted),
               ),
             ],

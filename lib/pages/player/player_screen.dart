@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/media_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:io';
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -262,7 +265,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
         .where((ve.EngineTrack track) => track.id == index)
         .firstOrNull;
     engine.setAudioTrack(
-      match ?? ve.EngineTrack(id: index, title: 'Audio $index'),
+      match ?? ve.EngineTrack(id: index, title: l10nOf(context).dynamicPlayerScreenAudio((index).toString())),
     );
   }
 
@@ -310,10 +313,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
       );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
-              'External subtitle files need the mpv engine. '
-              'Pick an embedded track instead.',
+              l10nOf(context).playerExternalSubtitleEngine,
             ),
             duration: Duration(seconds: 3),
           ),
@@ -2548,7 +2550,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Switched to embedded subtitle: ${embedded.title}'),
+          content: Text(l10nOf(context).playerSubtitleSwitched(embedded.title)),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -2577,7 +2579,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Downloading ${variant.language} subtitle...'),
+          content: Text(l10nOf(context).playerSubtitleDownloading(variant.language)),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -2587,7 +2589,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
     if (path == null) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to download subtitle')),
+          SnackBar(content: Text(l10nOf(context).uiPlayerScreenFailedToDownloadSubtitle)),
         );
       }
       return;
@@ -2620,7 +2622,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            '${variant.language} subtitle loaded (${_currentCues.length} lines)',
+            l10nOf(context).playerSubtitleLoaded(variant.language, _currentCues.length),
           ),
           duration: const Duration(seconds: 2),
         ),
@@ -2719,8 +2721,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Subtitle timing synchronized and saved!'),
+          SnackBar(
+            content: Text(l10nOf(context).uiPlayerScreenSubtitleTimingSynchronizedAndSaved),
           ),
         );
       }
@@ -2762,7 +2764,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Could not load subtitle: $errorMsg'),
+            content: Text(l10nOf(context).playerSubtitleLoadError(errorMsg)),
             duration: const Duration(seconds: 3),
           ),
         );
@@ -3851,8 +3853,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
               _startUnlockButtonTimer();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: const Text(
-                    'Screen is locked. Tap the lock icon to unlock.',
+                  content: Text(
+                    l10nOf(context).uiPlayerScreenScreenIsLockedTapThe,
                   ),
                   duration: const Duration(seconds: 2),
                   backgroundColor: tokens.surfaceOverlay,
@@ -4191,9 +4193,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     Semantics(
                       container: true,
                       label:
-                          'Testing other sources for you. '
-                          'Trying $sourceName. '
-                          'Attempt $_resumeAttempts of $_resumeAdvanceMaxAttempts.',
+                          l10nOf(context).playerSourceRetrySemantics(sourceName, _resumeAttempts, _resumeAdvanceMaxAttempts),
                       child: ExcludeSemantics(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -4229,7 +4229,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               ),
                             const SizedBox(height: ZplaySpacing.s32),
                             Text(
-                              'Testing other sources for you',
+                              l10nOf(context).uiPlayerScreenTestingOtherSourcesForYou,
                               textAlign: TextAlign.center,
                               style: ZplayType.title.toStyle(
                                 color: tokens.textPrimary,
@@ -4237,7 +4237,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                             ),
                             const SizedBox(height: ZplaySpacing.s8),
                             Text(
-                              '$sourceName • Attempt $_resumeAttempts of $_resumeAdvanceMaxAttempts',
+                              l10nOf(context).playerSourceAttempt(sourceName, _resumeAttempts, _resumeAdvanceMaxAttempts),
                               textAlign: TextAlign.center,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -4290,7 +4290,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           : _openSourcePicker,
                       icon: const Icon(Icons.swap_horiz_rounded, size: 18),
                       label: Text(
-                        'Choose a source myself',
+                        l10nOf(context).uiPlayerScreenChooseASourceMyself,
                         style: ZplayType.label
                             .copyWith(weight: FontWeight.w600)
                             .toStyle(),
@@ -4333,14 +4333,14 @@ class _PlayerScreenState extends State<PlayerScreen> {
     if (existing != null) {
       if (existing.status == DownloadStatus.downloading) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Download already in progress in background.'),
+          SnackBar(
+            content: Text(l10nOf(context).uiPlayerScreenDownloadAlreadyInProgressIn),
           ),
         );
         return;
       } else if (existing.status == DownloadStatus.completed) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('This media is already downloaded.')),
+          SnackBar(content: Text(l10nOf(context).uiPlayerScreenThisMediaIsAlreadyDownloaded)),
         );
         return;
       }
@@ -4374,9 +4374,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
-              'Download started in background. Track progress in Downloads tab.',
+              l10nOf(context).uiPlayerScreenDownloadStartedInBackgroundTrack,
             ),
             duration: Duration(seconds: 3),
           ),
@@ -4386,7 +4386,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Download failed to start: $e')));
+        ).showSnackBar(SnackBar(content: Text(l10nOf(context).playerDownloadError(e.toString()))));
       }
     }
   }
@@ -4404,7 +4404,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 Icon(Icons.link_rounded, color: tokens.success, size: 18),
                 const SizedBox(width: ZplaySpacing.s8),
                 Text(
-                  'Stream URL copied to clipboard',
+                  l10nOf(context).uiPlayerScreenStreamUrlCopiedToClipboard,
                   style: ZplayType.label.toStyle(color: tokens.textPrimary),
                 ),
               ],
@@ -4426,8 +4426,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No active stream URL available to copy.'),
+          SnackBar(
+            content: Text(l10nOf(context).uiPlayerScreenNoActiveStreamUrlAvailable),
             duration: Duration(seconds: 2),
           ),
         );
@@ -4718,9 +4718,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           onToggleSubSync: () {
                             if (_selectedEmbeddedSubtitleIndex != null) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
+                                SnackBar(
                                   content: Text(
-                                    'Subtitle sync is not supported for embedded subtitles. Please select an external subtitle.',
+                                    l10nOf(context).uiPlayerScreenSubtitleSyncIsNotSupported,
                                   ),
                                   duration: Duration(seconds: 2),
                                 ),
@@ -4730,9 +4730,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                             if (_currentSubtitlePath == null ||
                                 _currentSubtitleVariant == null) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
+                                SnackBar(
                                   content: Text(
-                                    'Please load an external subtitle to use subtitle sync.',
+                                    l10nOf(context).uiPlayerScreenPleaseLoadAnExternalSubtitle,
                                   ),
                                   duration: Duration(seconds: 2),
                                 ),
@@ -4792,9 +4792,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
               onOpenSyncBar: () {
                 if (_selectedEmbeddedSubtitleIndex != null) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
+                    SnackBar(
                       content: Text(
-                        'Subtitle sync is not supported for embedded subtitles.',
+                        l10nOf(context).uiPlayerScreenSubtitleSyncIsNotSupported13,
                       ),
                       duration: Duration(seconds: 2),
                     ),
@@ -4816,9 +4816,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     _currentSubtitlePath == null ||
                     _currentCues.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
+                    SnackBar(
                       content: Text(
-                        'Speech sync requires an external subtitle file.',
+                        l10nOf(context).uiPlayerScreenSpeechSyncRequiresAnExternal,
                       ),
                       duration: Duration(seconds: 2),
                     ),
@@ -5125,7 +5125,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
     return _GaugeHud(
       icon: volIcon,
-      label: _isMuted ? 'Muted' : '$pct%',
+      label: _isMuted ? mediaLabel(context, 'Muted') : '$pct%',
       fraction: effectiveVol / PlayerVolumeControl.maxVolume,
       accent: boostColor,
       boosting: isBoosting,
@@ -5207,7 +5207,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
               Icon(Icons.fast_forward_rounded, color: tokens.info, size: 22),
               const SizedBox(width: ZplaySpacing.s8),
               Text(
-                '2X Speed',
+                l10nOf(context).uiPlayerScreen2xSpeed,
                 style: ZplayType.subtitle
                     .copyWith(weight: FontWeight.w700, letterSpacing: 0.6)
                     .toStyle(color: tokens.textPrimary),
@@ -5319,7 +5319,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       ),
                       const SizedBox(width: 10),
                       Text(
-                        'Unlock',
+                        l10nOf(context).uiPlayerScreenUnlock,
                         style: ZplayType.subtitle
                             .copyWith(
                               weight: FontWeight.w700,

@@ -1,3 +1,7 @@
+import 'package:zplay/l10n/anime_titles.dart';
+import 'package:zplay/l10n/media_labels.dart';
+import '../../l10n/l10n.dart';
+
 import 'dart:async';
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -6,6 +10,8 @@ import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 
 import '../../models/anime/anime_media.dart';
 import '../../services/anime/anilist_service.dart';
+import '../../services/anime/anime_metadata_service.dart';
+import '../../services/anime/anime_source_settings.dart';
 import '../../services/anime/anime_library_service.dart';
 import '../../services/anime_arabic/anime_arabic_service.dart';
 import '../../services/content/content_settings.dart';
@@ -41,7 +47,8 @@ class AnimePage extends StatefulWidget {
 }
 
 class _AnimePageState extends State<AnimePage> {
-  final AnilistService _anilistService = AnilistService.instance;
+  final AnimeMetadataService _metadata = AnimeMetadataService.instance;
+  int _loadRevision = 0;
   final AnimeLibraryService _libraryService = AnimeLibraryService.instance;
   final AnimeArabicService _arabicService = AnimeArabicService.instance;
   final ScrollController _scrollController = ScrollController();
@@ -70,11 +77,15 @@ class _AnimePageState extends State<AnimePage> {
     _libraryService.addListener(_onLibraryChanged);
     _libraryService.init();
     ContentSettings.adultEnabled.addListener(_onAdultContentChanged);
+    AnimeSourceSettings.revision.addListener(_onSourceChanged);
     _loadAnimeData();
   }
 
+  void _onSourceChanged() { if(mounted && !_isArabicMode) _loadAnimeData(); }
+
   @override
   void dispose() {
+    AnimeSourceSettings.revision.removeListener(_onSourceChanged);
     ContentSettings.adultEnabled.removeListener(_onAdultContentChanged);
     _libraryService.removeListener(_onLibraryChanged);
     _scrollController.dispose();
@@ -93,6 +104,7 @@ class _AnimePageState extends State<AnimePage> {
   }
 
   Future<void> _loadAnimeData() async {
+    final revision = ++_loadRevision;
     setState(() {
       _loading = true;
       _error = null;
@@ -116,7 +128,7 @@ class _AnimePageState extends State<AnimePage> {
         registerCards(feed.legendary);
         registerCards(feed.upcoming);
 
-        if (mounted) {
+        if (mounted && revision == _loadRevision) {
           setState(() {
             _arabicFeed = feed;
             _loading = false;
@@ -124,7 +136,7 @@ class _AnimePageState extends State<AnimePage> {
         }
       } catch (e) {
         debugPrint('Error loading Arabic Anime data: $e');
-        if (mounted) {
+        if (mounted && revision == _loadRevision) {
           setState(() {
             _error = 'Failed to load Arabic Anime catalog. Check your internet connection.';
             _loading = false;
@@ -135,14 +147,14 @@ class _AnimePageState extends State<AnimePage> {
     }
 
     try {
-      final trendingFut = _anilistService.fetchTrendingAnime(perPage: 18);
-      final seasonFut = _anilistService.fetchPopularThisSeason(perPage: 18);
-      final topRatedFut = _anilistService.fetchTopRated(perPage: 18);
-      final upcomingFut = _anilistService.fetchUpcomingNextSeason(perPage: 18);
-      final actionFut = _anilistService.fetchByGenre('Action', perPage: 18);
-      final romanceFut = _anilistService.fetchByGenre('Romance', perPage: 18);
-      final fantasyFut = _anilistService.fetchByGenre('Fantasy', perPage: 18);
-      final sciFiFut = _anilistService.fetchByGenre('Sci-Fi', perPage: 18);
+      final trendingFut = _metadata.fetchTrendingAnime(perPage: 18);
+      final seasonFut = _metadata.fetchPopularThisSeason(perPage: 18);
+      final topRatedFut = _metadata.fetchTopRated(perPage: 18);
+      final upcomingFut = _metadata.fetchUpcomingNextSeason(perPage: 18);
+      final actionFut = _metadata.fetchByGenre('Action', perPage: 18);
+      final romanceFut = _metadata.fetchByGenre('Romance', perPage: 18);
+      final fantasyFut = _metadata.fetchByGenre('Fantasy', perPage: 18);
+      final sciFiFut = _metadata.fetchByGenre('Sci-Fi', perPage: 18);
 
       final results = await Future.wait([
         trendingFut,
@@ -153,9 +165,9 @@ class _AnimePageState extends State<AnimePage> {
         romanceFut,
         fantasyFut,
         sciFiFut,
-      ]);
+      ].map((request) => request.catchError((Object _) => <AnimeMedia>[])));
 
-      if (mounted) {
+      if (mounted && revision == _loadRevision) {
         final hasAnyData = results.any((list) => list.isNotEmpty);
         setState(() {
           _trending = results[0];
@@ -174,7 +186,7 @@ class _AnimePageState extends State<AnimePage> {
       }
     } catch (e) {
       debugPrint('Error loading Anime data: $e');
-      if (mounted) {
+      if (mounted && revision == _loadRevision) {
         setState(() {
           _error = 'Failed to load Anime catalog. Check your internet connection.';
           _loading = false;
@@ -209,7 +221,7 @@ class _AnimePageState extends State<AnimePage> {
               ? details.episodes.first
               : ArabicEpisode(
                   number: episodeNumber,
-                  title: 'الحلقة $episodeNumber',
+                  title: l10nOf(context).dynamicAnimePageEpisode((episodeNumber).toString()),
                   encodedHref: '',
                   watchPath: '/e/${card.slug}-$episodeNumber#tok',
                 ),
@@ -310,7 +322,7 @@ class _AnimePageState extends State<AnimePage> {
             _AnimeSkeleton(topInset: topPadding)
           else if (_error != null && !hasContent)
             ErrorView(
-              title: 'Could not load anime',
+              title: l10nOf(context).animeLoadFailed,
               error: _error,
               onRetry: _loadAnimeData,
             )
@@ -345,9 +357,9 @@ class _AnimePageState extends State<AnimePage> {
                     const SizedBox(height: ZplaySpacing.s16),
 
                     // 2. Anime Continue Watching Slider
-                    const ContinueWatchingSlider(
+                    ContinueWatchingSlider(
                       typeFilter: 'arabic_anime',
-                      title: 'متابعة المشاهدة',
+                      title: l10nOf(context).arabicSectionContinueWatching0,
                     ),
 
                     const SizedBox(height: ZplaySpacing.s8),
@@ -356,50 +368,50 @@ class _AnimePageState extends State<AnimePage> {
                     if (_arabicFeed != null) ...[
                       if (_arabicFeed!.recentEpisodes.isNotEmpty)
                         AnimeSliderSection(
-                          title: '⚡ آخر الحلقات المعروضة',
-                          subtitle: 'أحدث الحلقات المضافة المترجمة للعربية',
+                          title: l10nOf(context).arabicSectionLatestEpisodes1,
+                          subtitle: l10nOf(context).arabicSectionLatestEpisodesWithArabicSubtitles2,
                           animeList: _arabicFeed!.recentEpisodes.map((c) => c.toAnimeMedia()).toList(),
                           onAnimeTap: (anime) => _openDetails(anime, anime.totalEpisodes > 0 ? anime.totalEpisodes : null),
                         ),
                       if (_arabicFeed!.trending.isNotEmpty)
                         AnimeSliderSection(
-                          title: '🔥 الأكثر شهرة وتداولاً',
-                          subtitle: 'الأنميات الأكثر مشاهدة حالياً',
+                          title: l10nOf(context).arabicSectionTrending3,
+                          subtitle: l10nOf(context).arabicSectionMostWatchedAnimeRightNow4,
                           animeList: _arabicFeed!.trending.map((c) => c.toAnimeMedia()).toList(),
                           onAnimeTap: _openDetails,
                         ),
                       if (_arabicFeed!.popularMovies.isNotEmpty)
                         AnimeSliderSection(
-                          title: '🎬 الأفلام الأكثر شعبية',
-                          subtitle: 'أفلام الأنمي المميزة',
+                          title: l10nOf(context).arabicSectionPopularFilms5,
+                          subtitle: l10nOf(context).arabicSectionFeaturedAnimeFilms6,
                           animeList: _arabicFeed!.popularMovies.map((c) => c.toAnimeMedia()).toList(),
                           onAnimeTap: _openDetails,
                         ),
                       if (_arabicFeed!.topSeasonal.isNotEmpty)
                         AnimeSliderSection(
-                          title: '👑 أفضل الأنميات',
-                          subtitle: 'أنميات ذات تقييمات استثنائية',
+                          title: l10nOf(context).arabicSectionTopRatedAnime7,
+                          subtitle: l10nOf(context).arabicSectionHighlyRatedAnime8,
                           animeList: _arabicFeed!.topSeasonal.map((c) => c.toAnimeMedia()).toList(),
                           onAnimeTap: _openDetails,
                         ),
                       if (_arabicFeed!.seasonal.isNotEmpty)
                         AnimeSliderSection(
-                          title: '🌟 أنميات موسمية',
-                          subtitle: 'عروض الموسم الحالي',
+                          title: l10nOf(context).arabicSectionSeasonalAnime9,
+                          subtitle: l10nOf(context).arabicSectionCurrentSeasonShows10,
                           animeList: _arabicFeed!.seasonal.map((c) => c.toAnimeMedia()).toList(),
                           onAnimeTap: _openDetails,
                         ),
                       if (_arabicFeed!.legendary.isNotEmpty)
                         AnimeSliderSection(
-                          title: '⚔️ أنميات أسطورية',
-                          subtitle: 'أعمال خالدة يجب ألا تفوتك',
+                          title: l10nOf(context).arabicSectionClassicAnime11,
+                          subtitle: l10nOf(context).arabicSectionTimelessAnimeClassics12,
                           animeList: _arabicFeed!.legendary.map((c) => c.toAnimeMedia()).toList(),
                           onAnimeTap: _openDetails,
                         ),
                       if (_arabicFeed!.upcoming.isNotEmpty)
                         AnimeSliderSection(
-                          title: '🚀 المنتظرة قريباً',
-                          subtitle: 'أنميات قادمة قريباً',
+                          title: l10nOf(context).arabicSectionComingSoon13,
+                          subtitle: l10nOf(context).arabicSectionUpcomingAnime14,
                           animeList: _arabicFeed!.upcoming.map((c) => c.toAnimeMedia()).toList(),
                           onAnimeTap: _openDetails,
                         ),
@@ -416,59 +428,59 @@ class _AnimePageState extends State<AnimePage> {
                     const SizedBox(height: ZplaySpacing.s16),
 
                     // 2. Anime Continue Watching Slider
-                    const ContinueWatchingSlider(
+                    ContinueWatchingSlider(
                       typeFilter: 'general_anime',
-                      title: 'Continue Watching',
+                      title: l10nOf(context).animeContinueWatching,
                     ),
 
                     const SizedBox(height: ZplaySpacing.s8),
 
                     // 3. Sliders with Desktop Scroll Arrows
                     AnimeSliderSection(
-                      title: 'Trending on AniList',
-                      subtitle: 'Top popular and trending series',
+                      title: l10nOf(context).animeTrending,
+                      subtitle: l10nOf(context).animeTrendingDescription,
                       animeList: _trending,
                       onAnimeTap: _openDetails,
                     ),
                     AnimeSliderSection(
-                      title: 'Popular This Season (AniList Sync)',
-                      subtitle: 'Currently airing hits · ${AnilistService.currentSeason()}',
+                      title: l10nOf(context).animeSeasonPopular,
+                      subtitle: l10nOf(context).dynamicAnimePageCurrentlyAiringHits(mediaLabel(context, AnilistService.currentSeason())),
                       animeList: _popularSeason,
                       onAnimeTap: _openDetails,
                     ),
                     AnimeSliderSection(
-                      title: 'All-Time Masterpieces',
-                      subtitle: 'Critically acclaimed top rated anime',
+                      title: l10nOf(context).animeMasterpieces,
+                      subtitle: l10nOf(context).animeMasterpiecesDescription,
                       animeList: _topRated,
                       onAnimeTap: _openDetails,
                     ),
                     AnimeSliderSection(
-                      title: 'Anticipated Next Season',
-                      subtitle: 'Upcoming anime you cannot miss',
+                      title: l10nOf(context).animeNextSeason,
+                      subtitle: l10nOf(context).animeNextSeasonDescription,
                       animeList: _upcoming,
                       onAnimeTap: _openDetails,
                     ),
                     AnimeSliderSection(
-                      title: 'Action & Adventure',
-                      subtitle: 'High octane battles and epic journeys',
+                      title: l10nOf(context).animeAction,
+                      subtitle: l10nOf(context).animeActionDescription,
                       animeList: _actionAnime,
                       onAnimeTap: _openDetails,
                     ),
                     AnimeSliderSection(
-                      title: 'Romance & Drama',
-                      subtitle: 'Heartfelt emotional stories',
+                      title: l10nOf(context).animeRomance,
+                      subtitle: l10nOf(context).animeRomanceDescription,
                       animeList: _romanceAnime,
                       onAnimeTap: _openDetails,
                     ),
                     AnimeSliderSection(
-                      title: 'Fantasy & Isekai',
-                      subtitle: 'Magical realms and alternate worlds',
+                      title: l10nOf(context).animeFantasy,
+                      subtitle: l10nOf(context).animeFantasyDescription,
                       animeList: _fantasyAnime,
                       onAnimeTap: _openDetails,
                     ),
                     AnimeSliderSection(
-                      title: 'Sci-Fi & Cyberpunk',
-                      subtitle: 'Futuristic technologies and dystopian worlds',
+                      title: l10nOf(context).animeSciFi,
+                      subtitle: l10nOf(context).animeSciFiDescription,
                       animeList: _sciFiAnime,
                       onAnimeTap: _openDetails,
                     ),
@@ -664,16 +676,16 @@ class _AnimeGlassAppBar extends StatelessWidget {
             options: [
               SegmentedTabOption(
                 value: false,
-                label: isDesktop ? '🇯🇵 General' : '🇯🇵',
+                label: isDesktop ? l10nOf(context).finalAnimePageGeneral : '🇯🇵',
               ),
               SegmentedTabOption(
                 value: true,
-                label: isDesktop ? '🇸🇦 Arabic Anime' : '🇸🇦',
+                label: isDesktop ? l10nOf(context).finalAnimePageArabicAnime : '🇸🇦',
               ),
             ],
             selected: isArabicMode,
             onSelected: onModeChanged,
-            semanticsLabel: 'Anime catalogue',
+            semanticsLabel: l10nOf(context).auxAnimePageAnimeCatalogue,
             height: minTapTarget,
           ),
           const SizedBox(width: ZplaySpacing.s8),
@@ -682,7 +694,7 @@ class _AnimeGlassAppBar extends StatelessWidget {
           // the tap.
           _AnimeChromeAction(
             icon: Icons.search_rounded,
-            semanticLabel: 'Search anime',
+            semanticLabel: l10nOf(context).finalAnimePageSearchAnime,
             iconSize: 25,
             tapTarget: minTapTarget,
             onTap: onSearchTap,
@@ -691,7 +703,7 @@ class _AnimeGlassAppBar extends StatelessWidget {
           // Settings is a shell slot, not a route.
           _AnimeChromeAction(
             icon: Icons.settings_rounded,
-            semanticLabel: 'Settings',
+            semanticLabel: l10nOf(context).navSettings,
             iconSize: 24,
             tapTarget: minTapTarget,
             onTap: onSettingsTap,
@@ -1304,10 +1316,10 @@ class _AnimeHeroSlide extends StatelessWidget {
                   // the line out.
                   HeroMetaLine(
                     terms: [
-                      ...anime.genres.take(3),
+                      ...anime.genres.take(3).map((g) => mediaLabel(context, g)),
                       if (anime.seasonYear > 0) '${anime.seasonYear}',
                       if (anime.totalEpisodes > 0)
-                        '${anime.totalEpisodes} Episodes',
+                        l10nOf(context).animeEpisodeCount(anime.totalEpisodes),
                       if (anime.studioName.isNotEmpty) anime.studioName,
                     ],
                     leadingRating: anime.averageScore > 0
@@ -1321,7 +1333,7 @@ class _AnimeHeroSlide extends StatelessWidget {
 
                   // Title
                   Text(
-                    anime.displayTitle,
+                    localizedAnimeTitle(context, anime),
                     style: ZplayType.display
                         .copyWith(
                           size: compactHeight
@@ -1377,7 +1389,7 @@ class _AnimeHeroSlide extends StatelessWidget {
                       // drawn *over* the pill exists to avoid.
                       Builder(
                         builder: (context) => PillButton(
-                          label: 'Watch S1:E1',
+                          label: l10nOf(context).auxAnimePageWatchS1E1,
                           icon: Icons.play_arrow_rounded,
                           onPressed: onWatchNow,
                         ),
@@ -1390,7 +1402,7 @@ class _AnimeHeroSlide extends StatelessWidget {
                       // and an outlined rectangle.
                       Builder(
                         builder: (context) => PillButton(
-                          label: 'AniList Details',
+                          label: l10nOf(context).auxAnimePageAnilistDetails,
                           icon: Icons.info_outline_rounded,
                           variant: PillVariant.secondary,
                           onPressed: onDetailsTap,

@@ -1,3 +1,4 @@
+import 'package:zplay/l10n/config_labels.dart';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -423,7 +424,7 @@ class _Segment<T> extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    option.label,
+                    configLabel(context, option.label),
                     // A narrow segment must ellipsise rather than wrap, or it
                     // would push the control past its fixed height.
                     maxLines: 1,

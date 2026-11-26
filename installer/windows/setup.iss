@@ -3,7 +3,7 @@
 ;  Built by CI from: build\windows\x64\runner\Release\
 ; ──────────────────────────────────────────────────────────────────────────────
 
-#define MyAppName      "ZPlay"
+#define MyAppName      "Kiru"
 #ifndef MyAppVersion
 #define MyAppVersion   "1.1.6"
 #endif
@@ -27,7 +27,7 @@ DefaultGroupName={#MyAppName}
 UninstallDisplayIcon={app}\{#MyAppExeName}
 SetupIconFile=..\..\windows\runner\resources\app_icon.ico
 OutputDir=Output
-OutputBaseFilename=ZPlay-Windows-Setup
+OutputBaseFilename=Kiru-Windows-Setup
 Compression=lzma2/ultra64
 SolidCompression=yes
 ArchitecturesInstallIn64BitMode=x64compatible

@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import '../../../services/theme/design_tokens.dart';
 import '../../../services/theme/glass_settings.dart';
@@ -19,7 +22,7 @@ class _LiquidGlassSettingsPageState extends State<LiquidGlassSettingsPage> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return SettingsScaffold(
-      title: 'Liquid Glass Setup',
+      title: l10nOf(context).uiAppearanceSettingsPageLiquidGlassSetup,
       actions: [
         TextButton.icon(
           onPressed: () async {
@@ -28,7 +31,7 @@ class _LiquidGlassSettingsPageState extends State<LiquidGlassSettingsPage> {
             if (!context.mounted) return;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: const Text('Liquid Glass settings reset to defaults.'),
+                content: Text(l10nOf(context).auxLiquidGlassSettingsPageLiquidGlassSettingsResetToDefaults),
                 behavior: SnackBarBehavior.floating,
                 backgroundColor: AppThemeService.currentPalette.value.primaryColor,
               ),
@@ -36,7 +39,7 @@ class _LiquidGlassSettingsPageState extends State<LiquidGlassSettingsPage> {
           },
           icon: Icon(Icons.restore_rounded, size: 18, color: tokens.textEmphasis),
           label: Text(
-            'Reset',
+            l10nOf(context).uiAnimeSearchPageReset,
             style: ZplayType.label.toStyle(color: tokens.textEmphasis),
           ),
         ),
@@ -76,12 +79,12 @@ class _LiquidGlassSettingsPageState extends State<LiquidGlassSettingsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Enable Liquid Glass',
+                            l10nOf(context).auxLiquidGlassSettingsPageEnableLiquidGlass,
                             style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                           ),
                           const SizedBox(height: 3),
                           Text(
-                            'Real-time refraction shaders, jelly springs, and lenses',
+                            l10nOf(context).auxLiquidGlassSettingsPageRealTimeRefractionShadersJellySpringsAnd,
                             style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                           ),
                         ],
@@ -111,7 +114,7 @@ class _LiquidGlassSettingsPageState extends State<LiquidGlassSettingsPage> {
 
           // Presets Selection
           Text(
-            'PRESETS',
+            l10nOf(context).auxLiquidGlassSettingsPagePresets,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 10),
@@ -121,7 +124,7 @@ class _LiquidGlassSettingsPageState extends State<LiquidGlassSettingsPage> {
 
           // Detailed Sliders
           Text(
-            'PHYSICS & OPTICAL PARAMETERS',
+            l10nOf(context).auxLiquidGlassSettingsPagePhysicsOpticalParameters,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -131,8 +134,8 @@ class _LiquidGlassSettingsPageState extends State<LiquidGlassSettingsPage> {
             valueListenable: GlassSettings.hoverScale,
             builder: (context, val, _) {
               return _buildSliderTile(
-                title: 'Hover Scale Impact',
-                subtitle: 'Magnification amount applied to the player glass controls on hover',
+                title: l10nOf(context).auxLiquidGlassSettingsPageHoverScaleImpact,
+                subtitle: l10nOf(context).auxLiquidGlassSettingsPageMagnificationAmountAppliedToThePlayerGlass,
                 valueDisplay: '${val.toStringAsFixed(2)}x',
                 value: val,
                 min: 0.95,
@@ -149,8 +152,8 @@ class _LiquidGlassSettingsPageState extends State<LiquidGlassSettingsPage> {
             valueListenable: GlassSettings.wobbleIntensity,
             builder: (context, val, _) {
               return _buildSliderTile(
-                title: 'Wobble & Fluid Elasticity',
-                subtitle: 'Spring bounce intensity and deformation responsiveness',
+                title: l10nOf(context).auxLiquidGlassSettingsPageWobbleFluidElasticity,
+                subtitle: l10nOf(context).auxLiquidGlassSettingsPageSpringBounceIntensityAndDeformationResponsiveness,
                 valueDisplay: '${val.toStringAsFixed(1)}x',
                 value: val,
                 min: 0.5,
@@ -167,8 +170,8 @@ class _LiquidGlassSettingsPageState extends State<LiquidGlassSettingsPage> {
             valueListenable: GlassSettings.refractionIndex,
             builder: (context, val, _) {
               return _buildSliderTile(
-                title: 'Optical Refraction Index',
-                subtitle: 'Light bending and background warp index inside glass lenses',
+                title: l10nOf(context).auxLiquidGlassSettingsPageOpticalRefractionIndex,
+                subtitle: l10nOf(context).auxLiquidGlassSettingsPageLightBendingAndBackgroundWarpIndexInside,
                 valueDisplay: val.toStringAsFixed(2),
                 value: val,
                 min: 1.0,
@@ -185,8 +188,8 @@ class _LiquidGlassSettingsPageState extends State<LiquidGlassSettingsPage> {
             valueListenable: GlassSettings.magnification,
             builder: (context, val, _) {
               return _buildSliderTile(
-                title: 'Lens Magnification',
-                subtitle: 'Underlying zoom factor seen through the glass volume',
+                title: l10nOf(context).auxLiquidGlassSettingsPageLensMagnification,
+                subtitle: l10nOf(context).auxLiquidGlassSettingsPageUnderlyingZoomFactorSeenThroughTheGlass,
                 valueDisplay: '${val.toStringAsFixed(3)}x',
                 value: val,
                 min: 1.00,
@@ -203,8 +206,8 @@ class _LiquidGlassSettingsPageState extends State<LiquidGlassSettingsPage> {
             valueListenable: GlassSettings.chromaticAberration,
             builder: (context, val, _) {
               return _buildSliderTile(
-                title: 'Chromatic Aberration (Prism Split)',
-                subtitle: 'Separates RGB spectrum colors along optical glass bevels',
+                title: l10nOf(context).auxLiquidGlassSettingsPageChromaticAberrationPrismSplit,
+                subtitle: l10nOf(context).auxLiquidGlassSettingsPageSeparatesRgbSpectrumColorsAlongOpticalGlass,
                 valueDisplay: val.toStringAsFixed(4),
                 value: val,
                 min: 0.000,
@@ -221,8 +224,8 @@ class _LiquidGlassSettingsPageState extends State<LiquidGlassSettingsPage> {
             valueListenable: GlassSettings.blurSigma,
             builder: (context, val, _) {
               return _buildSliderTile(
-                title: 'Frosted Glass Blur',
-                subtitle: 'Gaussian blur diffusion applied behind glass components',
+                title: l10nOf(context).auxLiquidGlassSettingsPageFrostedGlassBlur,
+                subtitle: l10nOf(context).auxLiquidGlassSettingsPageGaussianBlurDiffusionAppliedBehindGlassComponents,
                 valueDisplay: '${val.toStringAsFixed(1)} px',
                 value: val,
                 min: 0.0,
@@ -239,8 +242,8 @@ class _LiquidGlassSettingsPageState extends State<LiquidGlassSettingsPage> {
             valueListenable: GlassSettings.lightIntensity,
             builder: (context, val, _) {
               return _buildSliderTile(
-                title: 'Specular Light & Shimmer',
-                subtitle: 'Glossy specular reflection and border illumination intensity',
+                title: l10nOf(context).auxLiquidGlassSettingsPageSpecularLightShimmer,
+                subtitle: l10nOf(context).auxLiquidGlassSettingsPageGlossySpecularReflectionAndBorderIlluminationIntensity,
                 valueDisplay: val.toStringAsFixed(2),
                 value: val,
                 min: 0.5,
@@ -257,8 +260,8 @@ class _LiquidGlassSettingsPageState extends State<LiquidGlassSettingsPage> {
             valueListenable: GlassSettings.borderWidth,
             builder: (context, val, _) {
               return _buildSliderTile(
-                title: 'Border Width',
-                subtitle: 'Thickness of the refractive outer boundary edge',
+                title: l10nOf(context).auxLiquidGlassSettingsPageBorderWidth,
+                subtitle: l10nOf(context).auxLiquidGlassSettingsPageThicknessOfTheRefractiveOuterBoundaryEdge,
                 valueDisplay: '${val.toStringAsFixed(1)} px',
                 value: val,
                 min: 0.5,
@@ -356,7 +359,7 @@ class _LiquidGlassSettingsPageState extends State<LiquidGlassSettingsPage> {
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            enabled ? 'LIVE INTERACTIVE PREVIEW' : 'PREVIEW (ENABLE GLASS ABOVE)',
+                            enabled ? l10nOf(context).finalLiquidGlassSettingsPageLiveInteractivePreview : l10nOf(context).appearanceDetailPreviewEnableGlassAbove,
                             style: ZplayType.overline.toStyle(color: tokens.textEmphasis),
                           ),
                         ],
@@ -434,7 +437,7 @@ class _LiquidGlassSettingsPageState extends State<LiquidGlassSettingsPage> {
                 right: 0,
                 child: Center(
                   child: Text(
-                    'Hover or tap the icons to preview spring wobble & scale',
+                    l10nOf(context).auxLiquidGlassSettingsPageHoverOrTapTheIconsToPreview,
                     style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                   ),
                 ),
@@ -462,7 +465,7 @@ class _LiquidGlassSettingsPageState extends State<LiquidGlassSettingsPage> {
           },
           options: [
             for (final preset in GlassPreset.values)
-              SegmentedTabOption(value: preset, label: preset.label),
+              SegmentedTabOption(value: preset, label: configLabel(context, preset.label)),
           ],
         );
       },

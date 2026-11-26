@@ -1,6 +1,9 @@
 class AnimeMedia {
   final int id; // AniList ID
   final int? idMal; // MyAnimeList ID
+  final int? bangumiId;
+  final String titleChinese;
+  final String descriptionChinese;
   final String titleRomaji;
   final String titleEnglish;
   final String titleNative;
@@ -39,6 +42,9 @@ class AnimeMedia {
   const AnimeMedia({
     required this.id,
     this.idMal,
+    this.bangumiId,
+    this.titleChinese = '',
+    this.descriptionChinese = '',
     this.titleRomaji = '',
     this.titleEnglish = '',
     this.titleNative = '',
@@ -248,6 +254,9 @@ class AnimeMedia {
   Map<String, dynamic> toJson() => {
         'id': id,
         'idMal': idMal,
+        'bangumiId': bangumiId,
+        'titleChinese': titleChinese,
+        'descriptionChinese': descriptionChinese,
         'titleRomaji': titleRomaji,
         'titleEnglish': titleEnglish,
         'titleNative': titleNative,
@@ -276,6 +285,9 @@ class AnimeMedia {
   factory AnimeMedia.fromJson(Map<String, dynamic> json) => AnimeMedia(
         id: json['id'] as int? ?? 0,
         idMal: json['idMal'] as int?,
+        bangumiId: json['bangumiId'] as int?,
+        titleChinese: json['titleChinese']?.toString() ?? '',
+        descriptionChinese: json['descriptionChinese']?.toString() ?? '',
         titleRomaji: json['titleRomaji']?.toString() ?? '',
         titleEnglish: json['titleEnglish']?.toString() ?? '',
         titleNative: json['titleNative']?.toString() ?? '',

@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../services/content/content_settings.dart';
@@ -41,11 +43,14 @@ extension LibraryTabX on LibraryTab {
 /// The prototype labels the two tabs with their totals (`My List (8)`,
 /// `Downloads (4)`), and `SegmentedTabs` draws a count under the label rather
 /// than beside it, so the label text the tests match stays exactly `My List`.
-List<SegmentedTabOption<LibraryTab>> _libraryTabOptions() => [
+List<SegmentedTabOption<LibraryTab>> _libraryTabOptions(BuildContext context) => [
   for (final tab in LibraryTab.values)
     SegmentedTabOption<LibraryTab>(
       value: tab,
-      label: tab.label,
+      label: switch (tab) {
+        LibraryTab.myList => l10nOf(context).libraryMyList,
+        LibraryTab.downloads => l10nOf(context).libraryDownloads,
+      },
       count: switch (tab) {
         LibraryTab.myList => MyListService.visibleItems.length,
         LibraryTab.downloads => DownloadService.instance.tasksNotifier.value.length,
@@ -155,10 +160,10 @@ class _LibraryPageState extends State<LibraryPage> {
                   DownloadService.instance.tasksNotifier,
                 ]),
                 builder: (context, _) => SegmentedTabs<LibraryTab>(
-                  options: _libraryTabOptions(),
+                  options: _libraryTabOptions(context),
                   selected: _tab,
                   onSelected: (tab) => setState(() => _tab = tab),
-                  semanticsLabel: 'Library section',
+                  semanticsLabel: l10nOf(context).librarySection,
                   height: ZplaySpacing.s48,
                 ),
               ),

@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -168,7 +171,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                       Icon(Icons.tune_rounded, color: tokens.accent, size: 20),
                       const SizedBox(width: ZplaySpacing.s8),
                       Text(
-                        'Customize Portal Browser',
+                        l10nOf(context).auxIptvPortalBrowserPageCustomizePortalBrowser,
                         style: ZplayType.title.toStyle(
                           color: tokens.textPrimary,
                         ),
@@ -187,7 +190,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                   const SizedBox(height: ZplaySpacing.s16),
                   // Was a hairline divider; hierarchy comes from the type above.
                   Text(
-                    'Channel Stream Layout Mode',
+                    l10nOf(context).auxIptvPortalBrowserPageChannelStreamLayoutMode,
                     style: ZplayType.label.toStyle(color: tokens.textPrimary),
                   ),
                   const SizedBox(height: 8),
@@ -201,7 +204,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                         },
                         options: [
                           for (final l in PortalBrowserLayout.values)
-                            SegmentedTabOption(value: l, label: l.label),
+                            SegmentedTabOption(value: l, label: configLabel(context, l.label)),
                         ],
                       );
                     },
@@ -226,13 +229,13 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Grid Stream Columns',
+                                    l10nOf(context).auxIptvPortalBrowserPageGridStreamColumns,
                                     style: ZplayType.label.toStyle(
                                       color: tokens.textPrimary,
                                     ),
                                   ),
                                   Text(
-                                    '$cols Cols',
+                                    l10nOf(context).dynamicIptvPortalBrowserPageCols((cols).toString()),
                                     style: ZplayType.label.toStyle(
                                       color: tokens.accent,
                                     ),
@@ -271,7 +274,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                       return SwitchListTile.adaptive(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          'Show Channel Stream Logos',
+                          l10nOf(context).auxIptvPortalBrowserPageShowChannelStreamLogos,
                           style: ZplayType.body.toStyle(
                             color: tokens.textPrimary,
                           ),
@@ -290,7 +293,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                       return SwitchListTile.adaptive(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          'Show EPG "Now Playing" Snippet',
+                          l10nOf(context).auxIptvPortalBrowserPageShowEpgNowPlayingSnippet,
                           style: ZplayType.body.toStyle(
                             color: tokens.textPrimary,
                           ),
@@ -308,7 +311,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                       return SwitchListTile.adaptive(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          'Show Category Stream Counts',
+                          l10nOf(context).auxIptvPortalBrowserPageShowCategoryStreamCounts,
                           style: ZplayType.body.toStyle(
                             color: tokens.textPrimary,
                           ),
@@ -592,8 +595,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          '"${stream.name}" has no playable stream. '
-          'Reconnect the portal or remove it and add another.',
+          l10nOf(context).iptvNoPlayableStream(stream.name),
         ),
       ),
     );
@@ -832,14 +834,14 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                         ),
                         const SizedBox(width: ZplaySpacing.s8),
                         Text(
-                          'Select Category',
+                          l10nOf(context).auxIptvPortalBrowserPageSelectCategory,
                           style: ZplayType.title.toStyle(
                             color: tokens.textPrimary,
                           ),
                         ),
                         const Spacer(),
                         Text(
-                          '${_categories.length} total',
+                          l10nOf(context).dynamicIptvPortalBrowserPageTotal((_categories.length).toString()),
                           style: ZplayType.bodySmall.toStyle(
                             color: tokens.textMuted,
                           ),
@@ -937,7 +939,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                           color: tokens.textPrimary,
                           size: 22,
                         ),
-                        tooltip: 'Back',
+                        tooltip: l10nOf(context).uiPlayerTopBarBack,
                         onPressed: () => Navigator.pop(context),
                       ),
                       const SizedBox(width: ZplaySpacing.s8),
@@ -968,7 +970,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                               Row(
                                 children: [
                                   Text(
-                                    'Expiry: ${widget.portal!.expiry}',
+                                    l10nOf(context).dynamicIptvPortalBrowserPageExpiry((widget.portal!.expiry).toString()),
                                     style: ZplayType.caption.toStyle(
                                       color: tokens.textMuted,
                                     ),
@@ -984,7 +986,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                                   ),
                                   const SizedBox(width: ZplaySpacing.s12),
                                   Text(
-                                    'Connections: ${widget.portal!.activeConnections}/${widget.portal!.maxConnections}',
+                                    l10nOf(context).dynamicIptvPortalBrowserPageConnections((widget.portal!.activeConnections).toString(), (widget.portal!.maxConnections).toString()),
                                     style: ZplayType.caption.toStyle(
                                       color: tokens.textMuted,
                                     ),
@@ -1077,8 +1079,8 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                               : const Icon(Icons.speed_rounded, size: 16),
                           label: Text(
                             _isCheckingAlive
-                                ? 'Stop ($_aliveChecked/$_aliveTotal)'
-                                : 'Check Health',
+                                ? l10nOf(context).iptvStopHealthCheck(_aliveChecked, _aliveTotal)
+                                : l10nOf(context).uiFinalIptvPortalBrowserPageCheckHealth,
                             style: ZplayType.label.toStyle(
                               color: tokens.onAccent,
                             ),
@@ -1097,7 +1099,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                           color: tokens.textSecondary,
                           size: 20,
                         ),
-                        tooltip: 'Customize Portal Browser Layout',
+                        tooltip: l10nOf(context).auxIptvPortalBrowserPageCustomizePortalBrowserLayout,
                         onPressed: () => _showBrowserCustomizer(context),
                       ),
                     ],
@@ -1147,7 +1149,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                                 ),
                                 if (widget.portal != null)
                                   Text(
-                                    'Conn: ${widget.portal!.activeConnections}/${widget.portal!.maxConnections} • ${widget.portal!.expiry}',
+                                    l10nOf(context).dynamicIptvPortalBrowserPageConn((widget.portal!.activeConnections).toString(), (widget.portal!.maxConnections).toString(), (widget.portal!.expiry).toString()),
                                     style: ZplayType.caption.toStyle(
                                       color: tokens.textMuted,
                                     ),
@@ -1160,7 +1162,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                           if (_activeSection == IptvSection.live &&
                               widget.portal != null)
                             IconButton(
-                              tooltip: 'Check Health',
+                              tooltip: l10nOf(context).auxIptvPortalBrowserPageCheckHealth,
                               icon: _isCheckingAlive
                                   ? SizedBox(
                                       width: 18,
@@ -1185,7 +1187,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                               color: tokens.textSecondary,
                               size: 20,
                             ),
-                            tooltip: 'Customize',
+                            tooltip: l10nOf(context).auxIptvPortalBrowserPageCustomize,
                             onPressed: () => _showBrowserCustomizer(context),
                           ),
                         ],
@@ -1309,7 +1311,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                     ? ErrorView(
                         error: _errorMessage,
                         onRetry: _loadSectionData,
-                        title: 'Could not load this portal',
+                        title: l10nOf(context).auxIptvPortalBrowserPageCouldNotLoadThisPortal,
                       )
                     : isDesktop
                     ? Row(
@@ -1672,12 +1674,12 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
               ),
               const SizedBox(height: ZplaySpacing.s16),
               Text(
-                'No Favorited Channels',
+                l10nOf(context).auxIptvPortalBrowserPageNoFavoritedChannels,
                 style: ZplayType.title.toStyle(color: tokens.textPrimary),
               ),
               const SizedBox(height: ZplaySpacing.s8),
               Text(
-                'Tap the star icon on any channel to save it to your Favorites.',
+                l10nOf(context).auxIptvPortalBrowserPageTapTheStarIconOnAnyChannel,
                 textAlign: TextAlign.center,
                 style: ZplayType.body.toStyle(color: tokens.textMuted),
               ),
@@ -2031,7 +2033,7 @@ class _LiveChannelRowState extends State<_LiveChannelRow> {
     );
   }
 
-  /// The 'LIVE' tag every layout draws. Fill only, no outline; the spacing
+  /// The LIVE tag every layout draws. Fill only, no outline; the spacing
   /// around it stays each layout's business.
   Widget _liveTag(ZplayTokens tokens) {
     return DecoratedBox(
@@ -2045,7 +2047,7 @@ class _LiveChannelRowState extends State<_LiveChannelRow> {
           vertical: ZplaySpacing.s2,
         ),
         child: Text(
-          'LIVE',
+          l10nOf(context).channelLiveBadge,
           style: ZplayType.overline
               .copyWith(letterSpacing: 0.5)
               .toStyle(color: tokens.textPrimary),
@@ -2252,7 +2254,7 @@ class _LiveChannelRowState extends State<_LiveChannelRow> {
                     TextSpan(
                       children: [
                         TextSpan(
-                          text: 'NOW: ',
+                          text: l10nOf(context).uiFinalIptvPortalBrowserPageNow,
                           style: ZplayType.caption.toStyle(
                             color: tokens.textMuted,
                           ),
@@ -2265,7 +2267,7 @@ class _LiveChannelRowState extends State<_LiveChannelRow> {
                         ),
                         if (nextEpg != null) ...[
                           TextSpan(
-                            text: '   NEXT: ',
+                            text: l10nOf(context).uiFinalIptvPortalBrowserPageNext,
                             style: ZplayType.caption.toStyle(
                               color: tokens.textMuted,
                             ),
@@ -2304,7 +2306,7 @@ class _LiveChannelRowState extends State<_LiveChannelRow> {
                   ),
                 ] else
                   Text(
-                    'Live Stream Feed',
+                    l10nOf(context).auxIptvPortalBrowserPageLiveStreamFeed,
                     style: ZplayType.caption.toStyle(color: tokens.textMuted),
                   ),
               ],
@@ -2865,7 +2867,7 @@ class _SeriesEpisodesSheetState extends State<_SeriesEpisodesSheet> {
                 ? ErrorView(
                     error: _error,
                     onRetry: _loadEpisodes,
-                    title: 'Could not load episodes',
+                    title: l10nOf(context).auxIptvPortalBrowserPageCouldNotLoadEpisodes,
                   )
                 : ListView.separated(
                     padding: const EdgeInsets.symmetric(

@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/l10n.dart';
+import 'package:zplay/l10n/language_labels.dart';
+
 import 'package:flutter/material.dart';
 import 'player_glass.dart';
 import '../../services/theme/design_tokens.dart';
@@ -65,10 +68,10 @@ class PlayerAudioMenu extends StatelessWidget {
     return '🌐';
   }
 
-  String? _getTrackSubtitle(PlayerAudioTrack track) {
+  String? _getTrackSubtitle(BuildContext context, PlayerAudioTrack track) {
     final parts = <String>[];
     if (track.language != null && track.language!.isNotEmpty) {
-      parts.add(track.language!.toUpperCase());
+      parts.add(localizedLanguageLabel(context, track.language!, uppercaseFallback: true));
     }
     if (track.codec != null && track.codec!.isNotEmpty) {
       parts.add(track.codec!.toUpperCase());
@@ -118,7 +121,7 @@ class PlayerAudioMenu extends StatelessWidget {
                         vertical: isCompactH ? 2 : 4,
                       ),
                       child: Text(
-                        'AUDIO TRACKS',
+                        l10nOf(context).uiPlayerAudioMenuAudioTracks,
                         style: ZplayType.overline
                             .copyWith(
                               size: isCompactH ? 9.5 : 10.5,
@@ -153,7 +156,7 @@ class PlayerAudioMenu extends StatelessWidget {
                   size: isCompactH ? 24 : 28,
                   iconSize: isCompactH ? 12 : 14,
                   icon: const Icon(Icons.close_rounded),
-                  tooltip: 'Close',
+                  tooltip: l10nOf(context).uiPlayerAudioMenuClose,
                   onPressed: onClose,
                 ),
               ],
@@ -172,7 +175,7 @@ class PlayerAudioMenu extends StatelessWidget {
                       itemBuilder: (context, i) {
                         final track = audioTracks[i];
                         final isSelected = track.index == selectedIndex;
-                        final subtitle = _getTrackSubtitle(track);
+                        final subtitle = _getTrackSubtitle(context, track);
 
                         return FocusableInkWell(
                           borderRadius: ZplayRadius.smAll,
@@ -293,7 +296,7 @@ class PlayerAudioMenu extends StatelessWidget {
                           ),
                           const SizedBox(width: ZplaySpacing.s8),
                           Text(
-                            'Default audio stream playing.',
+                            l10nOf(context).uiPlayerAudioMenuDefaultAudioStreamPlaying,
                             style: ZplayType.label.toStyle(
                               color: tokens.textSecondary,
                             ),
@@ -330,7 +333,7 @@ class PlayerAudioMenu extends StatelessWidget {
                           ),
                           const SizedBox(width: 5),
                           Text(
-                            'Audio Sync Offset',
+                            l10nOf(context).uiPlayerAudioMenuAudioSyncOffset,
                             style: ZplayType.caption
                                 .copyWith(
                                   size: isCompactH ? 11 : 12,

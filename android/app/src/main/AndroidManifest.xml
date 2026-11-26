@@ -54,7 +54,7 @@
          endpoints use https; a per-host policy needs the shared HTTP client,
          which is a separate change. Do not turn this off without that. -->
     <application
-        android:label="ZPlay"
+        android:label="Kiru"
         android:name="${applicationName}"
         android:usesCleartextTraffic="true"
         android:extractNativeLibs="true"

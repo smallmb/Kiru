@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -341,7 +343,7 @@ class TvOnScreenKeyboardState extends State<TvOnScreenKeyboard> {
           Expanded(
             flex: 3,
             child: _TvKey(
-              label: 'Space',
+              label: l10nOf(context).auxTvOnScreenKeyboardSpace,
               height: _actionHeight,
               onTap: () => _insert(' '),
             ),
@@ -359,7 +361,7 @@ class TvOnScreenKeyboardState extends State<TvOnScreenKeyboard> {
           const SizedBox(width: ZplaySpacing.s8),
           Expanded(
             flex: 2,
-            child: _TvKey(label: 'Clear', height: _actionHeight, onTap: _clear),
+            child: _TvKey(label: l10nOf(context).settingsClear, height: _actionHeight, onTap: _clear),
           ),
           if (widget.onVoice != null) ...<Widget>[
             const SizedBox(width: ZplaySpacing.s8),
@@ -377,7 +379,7 @@ class TvOnScreenKeyboardState extends State<TvOnScreenKeyboard> {
           Expanded(
             flex: 2,
             child: _TvKey(
-              label: 'Search',
+              label: l10nOf(context).navSearch,
               icon: Icons.search_rounded,
               height: _actionHeight,
               accent: true,

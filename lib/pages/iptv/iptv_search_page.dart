@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import '../../models/iptv/iptv_models.dart';
 import '../../services/iptv/hardcoded_channels.dart';
@@ -123,7 +125,7 @@ class _IptvSearchPageState extends State<IptvSearchPage> {
               IconButton(
                 icon: const Icon(Icons.arrow_back_rounded),
                 color: tokens.textPrimary,
-                tooltip: 'Back',
+                tooltip: l10nOf(context).uiPlayerTopBarBack,
                 onPressed: () => Navigator.pop(context),
               ),
               const SizedBox(width: ZplaySpacing.s4),
@@ -140,7 +142,7 @@ class _IptvSearchPageState extends State<IptvSearchPage> {
                     autofocus: true,
                     style: ZplayType.body.toStyle(color: tokens.textPrimary),
                     decoration: InputDecoration(
-                      hintText: 'Search 60+ live channels, leagues, networks…',
+                      hintText: l10nOf(context).auxIptvSearchPageSearch60LiveChannelsLeaguesNetworks,
                       hintStyle: ZplayType.label.toStyle(color: tokens.textMuted),
                       prefixIcon: Icon(
                         Icons.search_rounded,
@@ -185,7 +187,7 @@ class _IptvSearchPageState extends State<IptvSearchPage> {
             ],
             selected: _selectedCategory,
             onSelected: (cat) => setState(() => _selectedCategory = cat),
-            semanticsLabel: 'Channel categories',
+            semanticsLabel: l10nOf(context).auxIptvSearchPageChannelCategories,
             height: 44,
           ),
         ),
@@ -195,7 +197,7 @@ class _IptvSearchPageState extends State<IptvSearchPage> {
           child: channels.isEmpty
               ? Center(
                   child: Text(
-                    'No channels match your search.',
+                    l10nOf(context).auxIptvSearchPageNoChannelsMatchYourSearch,
                     style: ZplayType.body.toStyle(color: tokens.textMuted),
                   ),
                 )

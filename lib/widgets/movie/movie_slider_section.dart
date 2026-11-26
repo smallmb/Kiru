@@ -1,3 +1,7 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/media_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../models/movie/movie_section.dart';
@@ -126,9 +130,9 @@ class _MovieSliderSectionState extends State<MovieSliderSection>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SectionHeader(
-            title: widget.section.title,
+            title: configLabel(context, mediaLabel(context, widget.section.title)),
             count: widget.section.movies.length,
-            subtitle: widget.section.subtitle,
+            subtitle: configLabel(context, widget.section.subtitle),
             trailing: widget.showCalendarButton
                 ? InkWell(
                     onTap: () {
@@ -160,7 +164,7 @@ class _MovieSliderSectionState extends State<MovieSliderSection>
                           ),
                           const SizedBox(width: ZplaySpacing.s4),
                           Text(
-                            'Calendar',
+                            l10nOf(context).auxMovieSliderSectionCalendar,
                             style: ZplayType.label.toStyle(
                               color: tokens.textPrimary,
                             ),

@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -119,6 +121,12 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
       _seasonEpisodes = map;
       _seasonLabels = {s: 'Season 1'};
     }
+  }
+
+  String _displaySeasonLabel(int season) {
+    final label = _seasonLabels[season];
+    if (label != null && !label.startsWith('Season ')) return label;
+    return l10nOf(context).detailsSeasonLabel(season);
   }
 
   void _scrollToCurrentEpisode({bool immediate = false}) {
@@ -338,7 +346,7 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
                             top: 12,
                             child: _buildScrollFloatingButton(
                               icon: Icons.keyboard_arrow_up_rounded,
-                              tooltip: 'Scroll Up',
+                              tooltip: l10nOf(context).uiPlayerEpisodesPanelScrollUp,
                               onTap: () => _scrollStep(false),
                             ),
                           ),
@@ -347,7 +355,7 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
                             bottom: 12,
                             child: _buildScrollFloatingButton(
                               icon: Icons.keyboard_arrow_down_rounded,
-                              tooltip: 'Scroll Down',
+                              tooltip: l10nOf(context).uiPlayerEpisodesPanelScrollDown,
                               onTap: () => _scrollStep(true),
                             ),
                           ),
@@ -398,13 +406,13 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Episodes',
+                  l10nOf(context).uiPlayerEpisodesPanelEpisodes,
                   style: ZplayType.title
                       .copyWith(weight: FontWeight.w800, letterSpacing: -0.3)
                       .toStyle(color: tokens.textPrimary),
                 ),
                 Text(
-                  '${_seasonLabels[_selectedSeason] ?? "Season $_selectedSeason"} • $episodeCount Episodes',
+                  l10nOf(context).dynamicPlayerEpisodesPanelEpisodes(_displaySeasonLabel(_selectedSeason), (episodeCount).toString()),
                   style: ZplayType.bodySmall
                       .copyWith(weight: FontWeight.w500)
                       .toStyle(color: tokens.textSecondary),
@@ -416,7 +424,7 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
             size: 36,
             iconSize: 18,
             icon: const Icon(Icons.close_rounded),
-            tooltip: 'Close',
+            tooltip: l10nOf(context).uiPlayerEpisodesPanelClose,
             backgroundColor: tokens.textPrimary.withValues(
               alpha: ZplayOpacity.borderDefault,
             ),
@@ -446,7 +454,7 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
               padding: const EdgeInsets.only(left: ZplaySpacing.s4, right: 2),
               child: _buildSeasonArrowButton(
                 icon: Icons.chevron_left_rounded,
-                tooltip: 'Previous Seasons',
+                tooltip: l10nOf(context).uiPlayerEpisodesPanelPreviousSeasons,
                 onTap: () => _scrollSeason(false),
               ),
             ),
@@ -466,7 +474,7 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
               itemBuilder: (context, index) {
                 final season = _seasons[index];
                 final isActive = season == _selectedSeason;
-                final tabLabel = _seasonLabels[season] ?? 'Season $season';
+                final tabLabel = _displaySeasonLabel(season);
 
                 return FocusableInkWell(
                   onTap: () => _selectSeason(season),
@@ -531,7 +539,7 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
               padding: const EdgeInsets.only(left: 2, right: ZplaySpacing.s4),
               child: _buildSeasonArrowButton(
                 icon: Icons.chevron_right_rounded,
-                tooltip: 'Next Seasons',
+                tooltip: l10nOf(context).uiPlayerEpisodesPanelNextSeasons,
                 onTap: () => _scrollSeason(true),
               ),
             ),
@@ -686,7 +694,7 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
                                   borderRadius: ZplayRadius.xsAll,
                                 ),
                                 child: Text(
-                                  'EP $epNum',
+                                  l10nOf(context).dynamicPlayerEpisodesPanelEp((epNum).toString()),
                                   style: ZplayType.overline
                                       .copyWith(
                                         weight: FontWeight.w800,
@@ -763,7 +771,7 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
                                       ),
                                       const SizedBox(width: ZplaySpacing.s4),
                                       Text(
-                                        'PLAYING',
+                                        l10nOf(context).uiPlayerEpisodesPanelPlaying,
                                         style: ZplayType.overline
                                             .copyWith(
                                               weight: FontWeight.w800,
@@ -872,7 +880,7 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
                           ),
                           const SizedBox(width: ZplaySpacing.s8),
                           Text(
-                            'Select Sources',
+                            l10nOf(context).uiPlayerEpisodesPanelSelectSources,
                             style: ZplayType.label
                                 .copyWith(
                                   weight: FontWeight.w700,

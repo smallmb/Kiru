@@ -1,3 +1,8 @@
+import 'package:zplay/l10n/anime_titles.dart';
+import 'package:zplay/services/metadata/anime_chinese_synopsis.dart';
+import 'package:zplay/l10n/media_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:math' as math;
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -6,7 +11,8 @@ import 'package:flutter/material.dart';
 
 import '../../models/anime/anime_media.dart';
 import '../../models/movie/movie.dart';
-import '../../services/anime/anilist_service.dart';
+import '../../services/anime/anime_metadata_service.dart';
+import '../../services/anime/anime_source_settings.dart';
 import '../../services/anime/anime_library_service.dart';
 import '../../services/anime/extractors/anidb_extractor.dart';
 import '../../services/theme/design_tokens.dart';
@@ -37,12 +43,16 @@ class AnimeDetailsPage extends StatefulWidget {
 class _AnimeDetailsPageState extends State<AnimeDetailsPage>
     with SingleTickerProviderStateMixin {
   late AnimeMedia _anime;
+  String? _chineseSynopsis;
+  String? _synopsisLocale;
+  int _synopsisRevision = 0;
   bool _isDub = false;
   bool _isSynopsisExpanded = false;
 
   int _selectedEpisodeBatch = 0; // 50 episodes per chunk
   int? _highlightedEpisode;
   List<AniDbEpisode>? _aniDbEpisodes;
+  Map<int,String> _episodeChineseNames = const {};
 
   static const int _chunkSize = 50;
 
@@ -93,12 +103,37 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
 
     _animController.forward();
     _loadDetails();
+    _loadEpisodeTitles();
     _resolveAniDbEpisodes();
 
     _castScrollController.addListener(_updateCastScrollButtons);
     _relationsScrollController.addListener(_updateRelationsScrollButtons);
     _recsScrollController.addListener(_updateRecsScrollButtons);
   }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final locale = Localizations.localeOf(context).languageCode;
+    if (_synopsisLocale != locale) {
+      _synopsisLocale = locale;
+      _chineseSynopsis = null;
+      _refreshSynopsis();
+    }
+  }
+
+  Future<void> _refreshSynopsis() async {
+    final revision = ++_synopsisRevision;
+    final anime = _anime;
+    if (_synopsisLocale != 'zh' || anime.isArabic || anime.descriptionChinese.isNotEmpty || AnimeSourceSettings.source.value == AnimeSource.bangumi) return;
+    final result = await AnimeChineseSynopsis.instance.lookup(anime);
+    if (mounted && revision == _synopsisRevision && result != null) {
+      setState(() => _chineseSynopsis = result);
+    }
+  }
+
+  String get _displaySynopsis => _synopsisLocale == 'zh' && _anime.descriptionChinese.isNotEmpty
+      ? _anime.descriptionChinese : _chineseSynopsis ?? (_anime.description.isNotEmpty ? _anime.description : _anime.descriptionChinese);
 
   @override
   void dispose() {
@@ -111,11 +146,12 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
   }
 
   void _loadDetails() async {
-    final full = await AnilistService.instance.fetchAnimeDetails(_anime.id);
+    final full = await AnimeMetadataService.instance.fetchAnimeDetails(_anime.id);
     if (mounted) {
       setState(() {
         if (full != null) _anime = full;
       });
+      if (full != null && _chineseSynopsis == null) _refreshSynopsis();
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
@@ -125,6 +161,11 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
         }
       });
     }
+  }
+
+  Future<void> _loadEpisodeTitles() async {
+    final names=await AnimeMetadataService.instance.fetchEpisodeTitles(_anime.id);
+    if(mounted && names.isNotEmpty)setState(()=>_episodeChineseNames=names);
   }
 
   void _resolveAniDbEpisodes() async {
@@ -222,6 +263,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
         autoPlay: false,
         aniDbEpisodes: _aniDbEpisodes,
         totalEpisodes: _computedTotalEpisodes,
+        episodeChineseTitle: _episodeChineseNames[episodeNumber],
       ),
     );
   }
@@ -508,9 +550,9 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
               _buildTitle(isDesktop: true),
               const SizedBox(height: ZplaySpacing.s16),
               _buildMetadataRow(),
-              if (_anime.description.isNotEmpty) ...[
+              if (_displaySynopsis.isNotEmpty) ...[
                 const SizedBox(height: ZplaySpacing.s24),
-                _buildSynopsis(_anime.description),
+                _buildSynopsis(_displaySynopsis),
               ],
               if (_anime.genres.isNotEmpty) ...[
                 const SizedBox(height: ZplaySpacing.s24),
@@ -574,9 +616,9 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
             _buildLibraryButton(fullWidth: false),
           ],
         ),
-        if (_anime.description.isNotEmpty) ...[
+        if (_displaySynopsis.isNotEmpty) ...[
           const SizedBox(height: ZplaySpacing.s24),
-          _buildSynopsis(_anime.description),
+          _buildSynopsis(_displaySynopsis),
         ],
         if (_anime.genres.isNotEmpty) ...[
           const SizedBox(height: ZplaySpacing.s16),
@@ -592,7 +634,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          _anime.displayTitle,
+          localizedAnimeTitle(context, _anime),
           style: ZplayType.display
               .copyWith(
                 size: isDesktop ? 38 : 26,
@@ -611,7 +653,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
               ),
         ),
         if (_anime.titleNative.isNotEmpty &&
-            _anime.titleNative != _anime.displayTitle)
+            _anime.titleNative != localizedAnimeTitle(context, _anime))
           Padding(
             padding: const EdgeInsets.only(top: 6),
             child: Text(
@@ -644,7 +686,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
     if (_anime.formattedFormat.isNotEmpty) {
       items.add(
         Text(
-          _anime.formattedFormat,
+          Localizations.localeOf(context).languageCode == 'zh' ? mediaLabel(context, _anime.format) : _anime.formattedFormat,
           style: ZplayType.body.toStyle(color: tokens.textEmphasis),
         ),
       );
@@ -654,7 +696,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
     if (totalEps > 0) {
       items.add(
         Text(
-          '$totalEps Ep${totalEps > 1 ? "s" : ""}',
+          l10nOf(context).dynamicAnimeDetailsPageEp((totalEps).toString(), (totalEps > 1 ? "s" : "").toString()),
           style: ZplayType.body.toStyle(color: tokens.textEmphasis),
         ),
       );
@@ -749,9 +791,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
 
     return Builder(
       builder: (buttonContext) => PillButton(
-        label: watchItem != null
-            ? watchItem.status.name.toUpperCase()
-            : 'ADD TO LIST',
+        label: mediaLabel(context, watchItem != null ? watchItem.status.name.toUpperCase() : 'ADD TO LIST'),
         variant: PillVariant.secondary,
         icon: watchItem != null
             ? Icons.check_circle_rounded
@@ -795,22 +835,22 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
       items: [
         PopupMenuItem(
           value: AnimeWatchStatus.watching,
-          child: Text('Watching',
+          child: Text(l10nOf(context).uiAnimeDetailsPageWatching,
               style: ZplayType.body.toStyle(color: tokens.textPrimary)),
         ),
         PopupMenuItem(
           value: AnimeWatchStatus.planToWatch,
-          child: Text('Plan to Watch',
+          child: Text(l10nOf(context).uiAnimeDetailsPagePlanToWatch,
               style: ZplayType.body.toStyle(color: tokens.textPrimary)),
         ),
         PopupMenuItem(
           value: AnimeWatchStatus.completed,
-          child: Text('Completed',
+          child: Text(l10nOf(context).uiAnimeDetailsPageCompleted,
               style: ZplayType.body.toStyle(color: tokens.textPrimary)),
         ),
         PopupMenuItem(
           value: AnimeWatchStatus.dropped,
-          child: Text('Dropped',
+          child: Text(l10nOf(context).uiAnimeDetailsPageDropped,
               style: ZplayType.body.toStyle(color: tokens.textSecondary)),
         ),
       ],
@@ -864,7 +904,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
                 border: Border.all(color: tokens.borderStrong),
               ),
               child: Text(
-                g,
+                mediaLabel(context, g),
                 style: ZplayType.bodySmall
                     .copyWith(weight: FontWeight.w600)
                     .toStyle(color: tokens.textEmphasis),
@@ -883,7 +923,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _railHeader('Characters & Cast'),
+        _railHeader(l10nOf(context).animeCastHeading),
         const SizedBox(height: ZplaySpacing.s16),
         MouseRegion(
           onEnter: (_) => setState(() => _isHoveringCast = true),
@@ -1003,9 +1043,9 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
       children: [
         _onRailGrid(
           SectionHeader(
-            title: 'Episodes',
+            title: l10nOf(context).uiAnimeDetailsPageEpisodes,
             trailing: Text(
-              '($totalEps total)',
+              l10nOf(context).animeTotalEpisodes(totalEps),
               style: ZplayType.labelNumeric.toStyle(color: tokens.textMuted),
             ),
           ),
@@ -1024,9 +1064,9 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
               children: [
                 // SUB / DUB Switcher
                 SegmentedTabs<bool>(
-                  options: const [
-                    SegmentedTabOption<bool>(value: false, label: 'SUB'),
-                    SegmentedTabOption<bool>(value: true, label: 'DUB'),
+                  options: [
+                    SegmentedTabOption<bool>(value: false, label: l10nOf(context).uiAnimeDetailsPageSub),
+                    SegmentedTabOption<bool>(value: true, label: l10nOf(context).uiAnimeDetailsPageDub),
                   ],
                   selected: _isDub,
                   onSelected: (value) => setState(() => _isDub = value),
@@ -1051,7 +1091,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
                     onSubmitted: _jumpToEpisode,
                     style: ZplayType.bodySmall.toStyle(color: tokens.textPrimary),
                     decoration: InputDecoration(
-                      hintText: 'Jump to ep #',
+                      hintText: l10nOf(context).uiAnimeDetailsPageJumpToEp,
                       hintStyle: ZplayType.caption.toStyle(color: tokens.textMuted),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(
@@ -1161,7 +1201,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
         final isCurrent = lastWatchedEp == epNum;
         final isHighlighted = _highlightedEpisode == epNum;
 
-        return FocusableCard(
+        final tile = FocusableCard(
           onTap: () => _playEpisode(epNum),
           builder: (_, state) => CardFocusRing(
             focused: state.focused,
@@ -1218,6 +1258,9 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
             ),
           ),
         );
+        final name = _episodeChineseNames[epNum];
+        return Localizations.localeOf(context).languageCode == 'zh' && name != null
+            ? Tooltip(message:name,child:tile) : tile;
       },
     );
   }
@@ -1230,7 +1273,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _railHeader('Franchise & Relations'),
+        _railHeader(l10nOf(context).animeRelationsHeading),
         const SizedBox(height: ZplaySpacing.s16),
         MouseRegion(
           onEnter: (_) => setState(() => _isHoveringRelations = true),
@@ -1258,7 +1301,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
                         child: MovieCard(
                           movie: _relationAsMovie(rel),
                           onTap: () async {
-                            final media = await AnilistService.instance
+                            final media = await AnimeMetadataService.instance
                                 .fetchAnimeDetails(rel.id);
                             if (media != null && mounted) {
                               _navigateToAnime(media);
@@ -1317,7 +1360,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _railHeader('You May Also Like'),
+          _railHeader(l10nOf(context).animeRecommendationsHeading),
           const SizedBox(height: ZplaySpacing.s16),
           MouseRegion(
             onEnter: (_) => setState(() => _isHoveringRecs = true),

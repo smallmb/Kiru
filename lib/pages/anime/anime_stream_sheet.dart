@@ -1,3 +1,7 @@
+import 'package:zplay/l10n/anime_titles.dart';
+import 'package:zplay/l10n/media_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../models/anime/anime_media.dart';
@@ -20,6 +24,7 @@ class AnimeStreamSheet extends StatefulWidget {
   final bool autoPlay;
   final List<AniDbEpisode>? aniDbEpisodes;
   final int? totalEpisodes;
+  final String? episodeChineseTitle;
 
   const AnimeStreamSheet({
     super.key,
@@ -28,6 +33,7 @@ class AnimeStreamSheet extends StatefulWidget {
     this.autoPlay = false,
     this.aniDbEpisodes,
     this.totalEpisodes,
+    this.episodeChineseTitle,
   });
 
   @override
@@ -141,7 +147,7 @@ class _AnimeStreamSheetState extends State<AnimeStreamSheet> {
       MaterialPageRoute(
         builder: (_) => PlayerScreen(
           source: source,
-          title: '${widget.anime.displayTitle} - Episode ${widget.episodeNumber}',
+          title: l10nOf(context).dynamicAnimeStreamSheetEpisode(localizedAnimeTitle(context, widget.anime), (widget.episodeNumber).toString()),
           backdropUrl: widget.anime.backdropUrl,
           detail: detail,
           episode: video,
@@ -156,8 +162,9 @@ class _AnimeStreamSheetState extends State<AnimeStreamSheet> {
     final tokens = ZplayTokens.of(context);
 
     return ZplaySheet(
-      title: '${widget.anime.displayTitle} • Ep ${widget.episodeNumber}',
-      subtitle: _isScraping ? 'Cascading native anime extractors…' : null,
+      title: l10nOf(context).dynamicAnimeStreamSheetEp(localizedAnimeTitle(context, widget.anime), (widget.episodeNumber).toString()),
+      subtitle: _isScraping ? l10nOf(context).finalAnimeStreamSheetCascadingNativeAnimeExtractors :
+            (Localizations.localeOf(context).languageCode == 'zh' ? widget.episodeChineseTitle : null),
       status: IconButton(
         icon: Icon(Icons.close_rounded, color: tokens.textSecondary),
         onPressed: () => Navigator.pop(context),
@@ -177,18 +184,18 @@ class _AnimeStreamSheetState extends State<AnimeStreamSheet> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: SegmentedTabs<String>(
-                semanticsLabel: 'Subtitle or dub',
+                semanticsLabel: l10nOf(context).uiAnimeStreamSheetSubtitleOrDub,
                 selected: _selectedCategory,
                 onSelected: (category) =>
                     setState(() => _selectedCategory = category),
                 options: [
                   SegmentedTabOption(
                     value: 'all',
-                    label: 'All',
+                    label: l10nOf(context).uiAnimeStreamSheetAll,
                     count: _allSources.length,
                   ),
-                  const SegmentedTabOption(value: 'sub', label: 'Sub'),
-                  const SegmentedTabOption(value: 'dub', label: 'Dub'),
+                  SegmentedTabOption(value: 'sub', label: l10nOf(context).uiAnimeStreamSheetSub),
+                  SegmentedTabOption(value: 'dub', label: l10nOf(context).uiAnimeStreamSheetDub),
                 ],
               ),
             ),
@@ -201,7 +208,7 @@ class _AnimeStreamSheetState extends State<AnimeStreamSheet> {
           // translation here: the header's own 16 dp inset is exactly the
           // inset the rows below are drawn at, so the two already align.
           SectionHeader(
-            title: 'Sources',
+            title: l10nOf(context).uiAnimeStreamSheetSources,
             count: filtered.isEmpty ? null : filtered.length,
           ),
 
@@ -226,7 +233,7 @@ class _AnimeStreamSheetState extends State<AnimeStreamSheet> {
                         CircularProgressIndicator(color: tokens.accent),
                         const SizedBox(height: 14),
                         Text(
-                          'Extracting MegaPlay, VidWish, AllAnime & Miruro streams...',
+                          l10nOf(context).auxAnimeStreamSheetExtractingMegaplayVidwishAllanimeMiruroStreams,
                           style: ZplayType.body.toStyle(
                             color: tokens.textEmphasis,
                           ),
@@ -255,7 +262,7 @@ class _AnimeStreamSheetState extends State<AnimeStreamSheet> {
                             ),
                             const SizedBox(height: 14),
                             PillButton(
-                              label: 'Retry Scraping',
+                              label: l10nOf(context).uiAnimeStreamSheetRetryScraping,
                               icon: Icons.refresh_rounded,
                               onPressed: _startScraping,
                             ),
@@ -266,7 +273,7 @@ class _AnimeStreamSheetState extends State<AnimeStreamSheet> {
                         ? Padding(
                             padding: const EdgeInsets.all(ZplaySpacing.s32),
                             child: Text(
-                              'No ${_selectedCategory.toUpperCase()} sources found.',
+                              l10nOf(context).dynamicAnimeStreamSheetNoSourcesFound(mediaLabel(context, _selectedCategory.toUpperCase())),
                               style: ZplayType.body.toStyle(
                                 color: tokens.textSecondary,
                               ),
@@ -358,7 +365,7 @@ class _AnimeStreamSheetState extends State<AnimeStreamSheet> {
                                             borderRadius: ZplayRadius.xsAll,
                                           ),
                                           child: Text(
-                                            isDub ? 'DUB' : 'SUB',
+                                            isDub ? l10nOf(context).uiAnimeDetailsPageDub : 'SUB',
                                             style: ZplayType.overline
                                                 .copyWith(
                                                   weight: FontWeight.w900,

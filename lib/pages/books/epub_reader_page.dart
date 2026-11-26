@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -555,7 +557,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                 color: ReaderTokens.textPrimary,
                 size: 18,
               ),
-              tooltip: 'Back to Library',
+              tooltip: l10nOf(context).auxEpubReaderPageBackToLibrary,
               onPressed: () => Navigator.of(context).pop(),
             ),
             const SizedBox(width: ReaderTokens.space4),
@@ -565,7 +567,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                 color: ReaderTokens.textPrimary,
                 size: 20,
               ),
-              tooltip: 'Table of Contents (T)',
+              tooltip: l10nOf(context).auxEpubReaderPageTableOfContentsT,
               onPressed: () => _scaffoldKey.currentState?.openDrawer(),
             ),
             const SizedBox(width: ReaderTokens.space12),
@@ -592,7 +594,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                       : ReaderTokens.textPrimary,
                   size: 20,
                 ),
-                tooltip: 'Focus Mode (Line-by-Line)',
+                tooltip: l10nOf(context).auxEpubReaderPageFocusModeLineByLine,
                 onPressed: () {
                   HapticFeedback.lightImpact();
                   ReaderSettings.toggleFocusMode();
@@ -604,7 +606,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                   color: ReaderTokens.textPrimary,
                   size: 20,
                 ),
-                tooltip: 'Appearance & Customization',
+                tooltip: l10nOf(context).auxEpubReaderPageAppearanceCustomization,
                 onPressed: () => ReaderCustomizationSheet.show(
                   context,
                   realBookSampleText: _getSamplePreviewText(),
@@ -618,7 +620,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                 color: ReaderTokens.textPrimary,
                 size: 22,
               ),
-              tooltip: 'Toggle Fullscreen (F)',
+              tooltip: l10nOf(context).auxEpubReaderPageToggleFullscreenF,
               onPressed: () => WindowService.instance.toggleFullscreen(),
             ),
           ],
@@ -669,7 +671,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                 color: ReaderTokens.textPrimary,
                 size: 26,
               ),
-              tooltip: 'Previous Chapter (Left Arrow)',
+              tooltip: l10nOf(context).auxEpubReaderPagePreviousChapterLeftArrow,
               onPressed: _currentChapterIndex > 0
                   ? () => _goToChapter(_currentChapterIndex - 1)
                   : null,
@@ -683,13 +685,13 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Ch. $current of $total',
+                      l10nOf(context).dynamicEpubReaderPageChOf((current).toString(), (total).toString()),
                       style: ZplayType.label
                           .copyWith(weight: FontWeight.w600)
                           .toStyle(color: ReaderTokens.textPrimary),
                     ),
                     Text(
-                      '$percent% · ~$minsLeft min left',
+                      l10nOf(context).dynamicEpubReaderPageMinLeft((percent).toString(), (minsLeft).toString()),
                       style: ZplayType.bodySmall.toStyle(
                         color: ReaderTokens.textSecondary,
                       ),
@@ -704,7 +706,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                 color: ReaderTokens.textPrimary,
                 size: 26,
               ),
-              tooltip: 'Next Chapter (Right Arrow)',
+              tooltip: l10nOf(context).auxEpubReaderPageNextChapterRightArrow,
               onPressed: _currentChapterIndex < total - 1
                   ? () => _goToChapter(_currentChapterIndex + 1)
                   : null,
@@ -793,10 +795,10 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
               children: [
                 OutlinedButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Back to Library'),
+                  child: Text(l10nOf(context).auxEpubReaderPageBackToLibrary),
                 ),
                 const SizedBox(width: ReaderTokens.space12),
-                FilledButton(onPressed: _loadBook, child: const Text('Retry')),
+                FilledButton(onPressed: _loadBook, child: Text(l10nOf(context).actionRetry)),
               ],
             ),
           ],
@@ -819,7 +821,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
             ),
             const SizedBox(height: ReaderTokens.space16),
             Text(
-              'No readable chapters found.',
+              l10nOf(context).auxEpubReaderPageNoReadableChaptersFound,
               style: ZplayType.body.toStyle(color: settings.secondaryTextColor),
             ),
           ],
@@ -855,7 +857,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                   ),
                   const SizedBox(width: ReaderTokens.space12),
                   Text(
-                    'Table of Contents',
+                    l10nOf(context).auxEpubReaderPageTableOfContents,
                     style: ZplayType.title.toStyle(
                       color: ReaderTokens.textPrimary,
                     ),
@@ -867,7 +869,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
               child: toc.isEmpty
                   ? Center(
                       child: Text(
-                        'No table of contents available',
+                        l10nOf(context).auxEpubReaderPageNoTableOfContentsAvailable,
                         style: ZplayType.bodySmall.toStyle(
                           color: ReaderTokens.textMuted,
                         ),

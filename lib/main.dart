@@ -30,6 +30,8 @@ import './services/music/music_download_service.dart';
 import './services/music/music_settings.dart';
 import './services/music/qobuz_music_service.dart';
 import './services/metadata/tmdb_service.dart';
+import './services/metadata/anime_chinese_titles.dart';
+import './services/anime/anime_source_settings.dart';
 import './services/my_list/my_list_service.dart';
 import './services/debrid/debrid_rejection_store.dart';
 import './services/debrid/debrid_service.dart';
@@ -92,6 +94,8 @@ void main() async {
   await LocaleSettings.initialize();
   await Future.wait([
     AppThemeService.initialize(),
+    AnimeChineseTitles.initialize(),
+    AnimeSourceSettings.initialize(),
     // The first frame mounts the shell, which mounts HomePage, and HomePage
     // listens to these.
     HomePageSettings.initialize(),
@@ -260,7 +264,7 @@ class _ZPlayAppState extends State<ZPlayApp> with WidgetsBindingObserver {
             return MaterialApp(
               navigatorKey: navigatorKey,
               navigatorObservers: [BreadcrumbObserver()],
-              title: 'ZPlay',
+              title: 'Kiru',
               debugShowCheckedModeBanner: false,
               locale: locale,
               localizationsDelegates: AppLocalizations.localizationsDelegates,

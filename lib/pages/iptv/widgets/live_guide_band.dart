@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../../models/iptv/iptv_models.dart';
@@ -226,7 +228,7 @@ class _LiveGuideBandState extends State<LiveGuideBand> {
 
     final header = <Widget>[
       Text(
-        'Now Airing on ${channel.name}',
+        l10nOf(context).dynamicLiveGuideBandNowAiringOn((channel.name).toString()),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: ZplayType.overline.toStyle(color: tokens.accent),
@@ -317,12 +319,12 @@ class _LiveGuideBandState extends State<LiveGuideBand> {
     final tokens = context.tokens;
 
     final Widget label = Text(
-      'Upcoming On This Channel',
+      l10nOf(context).auxLiveGuideBandUpcomingOnThisChannel,
       style: ZplayType.overline.toStyle(color: tokens.textMuted),
     );
 
     final Widget empty = Text(
-      'Nothing else listed for this channel.',
+      l10nOf(context).auxLiveGuideBandNothingElseListedForThisChannel,
       style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
     );
 
@@ -380,14 +382,12 @@ class _LiveGuideBandState extends State<LiveGuideBand> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'No programme guide for this channel yet.',
+          l10nOf(context).auxLiveGuideBandNoProgrammeGuideForThisChannelYet,
           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
         ),
         const SizedBox(height: ZplaySpacing.s4),
         Text(
-          'Programme data comes from the channel\'s own panel, so it appears '
-          'once one of your portals has a verified live feed for '
-          '${channel.name}.',
+          l10nOf(context).channelGuideWaiting(channel.name),
           maxLines: 3,
           overflow: TextOverflow.ellipsis,
           style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
@@ -422,7 +422,7 @@ class _LiveGuideBandState extends State<LiveGuideBand> {
                   ),
                   const SizedBox(width: ZplaySpacing.s8),
                   Text(
-                    'Find Live Streams',
+                    l10nOf(context).auxLiveGuideBandFindLiveStreams,
                     style: ZplayType.label.toStyle(
                       color: tokens.textEmphasis,
                     ),
@@ -568,7 +568,7 @@ class _GuideChannelRow extends StatelessWidget {
                     vertical: ZplaySpacing.s2,
                   ),
                   child: Text(
-                    'LIVE',
+                    l10nOf(context).channelLiveBadge,
                     style: ZplayType.overline
                         .copyWith(letterSpacing: 0.5)
                         .toStyle(color: tokens.textPrimary),
@@ -595,7 +595,7 @@ class _WatchLiveButton extends StatelessWidget {
     // ring as its only focus marker. Its height comes from the pill, so the
     // guide no longer has to special-case the phone's shorter button.
     return PillButton(
-      label: 'Watch Live Stream',
+      label: l10nOf(context).auxLiveGuideBandWatchLiveStream,
       icon: Icons.play_arrow_rounded,
       onPressed: onPressed,
     );

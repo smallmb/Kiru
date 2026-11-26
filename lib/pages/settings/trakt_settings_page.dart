@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -68,11 +70,9 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
     // so and says where.
     if (kTraktClientId.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            'Trakt needs a Client ID before it can pair. Create a free app at '
-            '$kTraktAppRegistrationUrl, then paste its Client ID in Settings > '
-            'Service API Keys. The Client Secret from the same app is optional.',
+            l10nOf(context).traktPairingClientIdRequired(kTraktAppRegistrationUrl),
           ),
         ),
       );
@@ -89,11 +89,9 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
     if (res == null) {
       setState(() => _pairing = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            'Trakt rejected the pairing request. Check the Client ID in '
-            'Settings > Service API Keys - and add the Client Secret if Trakt '
-            'requires one for your app.',
+            l10nOf(context).traktPairingRejected,
           ),
         ),
       );
@@ -167,7 +165,7 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return SettingsScaffold(
-      title: 'Trakt.tv Synchronization',
+      title: l10nOf(context).uiTraktSettingsPageTraktTvSynchronization,
       child: ListView(
         padding: const EdgeInsets.symmetric(
           horizontal: ZplaySpacing.s16,
@@ -177,7 +175,7 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
           Padding(
             padding: const EdgeInsets.only(bottom: ZplaySpacing.s20),
             child: Text(
-              'Connect your Trakt.tv account to seamlessly synchronize your watch history, watchlist, continue watching progress, and ratings across all your devices.',
+              l10nOf(context).auxTraktSettingsPageConnectYourTraktTvAccountToSeamlessly,
               style: ZplayType.body.toStyle(color: tokens.textSecondary),
             ),
           ),
@@ -221,7 +219,7 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
                                   borderRadius: ZplayRadius.xsAll,
                                 ),
                                 child: Text(
-                                  _isAuthed ? 'CONNECTED' : 'DISCONNECTED',
+                                  _isAuthed ? l10nOf(context).finalSimklSettingsPageConnected : 'DISCONNECTED',
                                   style: ZplayType.overline.toStyle(
                                     color: _isAuthed ? tokens.success : tokens.textSecondary,
                                   ),
@@ -232,10 +230,10 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
                           const SizedBox(height: 4),
                             Text(
                               _isLoading
-                                  ? 'Checking credentials...'
+                                  ? l10nOf(context).uiFinalTraktSettingsPageCheckingCredentials
                                   : _isAuthed
-                                      ? 'Logged in as ${_username ?? 'Trakt User'}'
-                                      : 'Sign in to activate two-way cloud sync',
+                                      ? l10nOf(context).accountLoggedInTrakt(_username ?? 'Trakt User')
+                                      : l10nOf(context).uiFinalTraktSettingsPageSignInToActivateTwoWay,
                               style: ZplayType.body.toStyle(color: tokens.textSecondary),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -258,7 +256,7 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                       ),
                       onPressed: _logout,
-                      child: Text('Disconnect', style: ZplayType.label.toStyle()),
+                      child: Text(l10nOf(context).uiTraktSettingsPageDisconnect, style: ZplayType.label.toStyle()),
                     );
                   } else if (!_pairing) {
                     actionWidget = ElevatedButton.icon(
@@ -270,7 +268,7 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
                       ),
                       onPressed: _startPairing,
                       icon: const Icon(Icons.qr_code_rounded, size: 18),
-                      label: Text('Pair Account', style: ZplayType.label.toStyle()),
+                      label: Text(l10nOf(context).uiTraktSettingsPagePairAccount, style: ZplayType.label.toStyle()),
                     );
                   }
 
@@ -302,7 +300,7 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
                           child: Column(
                             children: [
                               Text(
-                                'Enter this activation code at trakt.tv/activate:',
+                                l10nOf(context).uiTraktSettingsPageEnterThisActivationCodeAtTrakt,
                                 style: ZplayType.label.toStyle(color: tokens.textEmphasis),
                               ),
                               const SizedBox(height: 12),
@@ -310,7 +308,7 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
                                 onTap: () {
                                   Clipboard.setData(ClipboardData(text: _userCode!));
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Code copied to clipboard!')),
+                                    SnackBar(content: Text(l10nOf(context).uiTraktSettingsPageCodeCopiedToClipboard)),
                                   );
                                 },
                                 borderRadius: ZplayRadius.smAll,
@@ -349,7 +347,7 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
                                 ),
                                 onPressed: () => _openBrowser('https://trakt.tv/activate'),
                                 icon: const Icon(Icons.open_in_browser_rounded, size: 16),
-                                label: Text('Open trakt.tv/activate', style: ZplayType.label.toStyle()),
+                                label: Text(l10nOf(context).uiTraktSettingsPageOpenTraktTvActivate, style: ZplayType.label.toStyle()),
                               ),
                               const SizedBox(height: 14),
                               Row(
@@ -362,7 +360,7 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
                                   ),
                                   const SizedBox(width: 10),
                                   Text(
-                                    'Waiting for authorization on trakt.tv...',
+                                    l10nOf(context).uiTraktSettingsPageWaitingForAuthorizationOnTraktTv,
                                     style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                                   ),
                                 ],
@@ -382,18 +380,18 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
           // Cloud Sync Actions
           if (_isAuthed) ...[
             Text(
-              'Cloud Sync Controls',
+              l10nOf(context).uiTraktSettingsPageCloudSyncControls,
               style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
             ),
             const SizedBox(height: 12),
             ListTile(
               leading: Icon(Icons.sync_rounded, color: tokens.accent),
-              title: Text('Sync Watchlist & Continue Watching Now', style: ZplayType.body.toStyle(color: tokens.textPrimary)),
-              subtitle: Text('Manually triggers an immediate pull from Trakt', style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
+              title: Text(l10nOf(context).uiTraktSettingsPageSyncWatchlistContinueWatchingNow, style: ZplayType.body.toStyle(color: tokens.textPrimary)),
+              subtitle: Text(l10nOf(context).uiTraktSettingsPageManuallyTriggersAnImmediatePullFrom, style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
               trailing: Icon(Icons.arrow_forward_ios_rounded, size: 14, color: tokens.textMuted),
               onTap: () async {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Syncing with Trakt.tv...')),
+                  SnackBar(content: Text(l10nOf(context).uiTraktSettingsPageSyncingWithTraktTv)),
                 );
                 await Future.wait([
                   MyListService.syncAll(),
@@ -401,7 +399,7 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
                 ]);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Trakt sync complete!')),
+                    SnackBar(content: Text(l10nOf(context).uiTraktSettingsPageTraktSyncComplete)),
                   );
                 }
               },

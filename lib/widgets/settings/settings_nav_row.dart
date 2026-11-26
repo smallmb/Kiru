@@ -109,10 +109,13 @@ class SettingsNavRow extends StatelessWidget {
 
                   if (valueText != null) ...[
                     const SizedBox(width: ZplaySpacing.s12),
-                    Text(
-                      valueText!,
-                      style: ZplayType.caption.toStyle(color: tokens.textMuted),
-                      maxLines: 1,
+                    Flexible(
+                      child: Text(
+                        valueText!,
+                        style: ZplayType.caption.toStyle(color: tokens.textMuted),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ],
 

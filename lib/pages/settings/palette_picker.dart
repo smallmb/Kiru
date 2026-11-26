@@ -1,3 +1,4 @@
+import 'package:zplay/l10n/config_labels.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/theme/app_theme_service.dart';
@@ -102,7 +103,7 @@ class PalettePicker extends StatelessWidget {
                           ),
                           const SizedBox(height: ZplaySpacing.s4),
                           Text(
-                            palette.name,
+                            configLabel(context, palette.name),
                             textAlign: TextAlign.center,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

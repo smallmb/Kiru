@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../models/stream/stream_model.dart';
@@ -116,7 +118,7 @@ class _AnimeArabicStreamSheetState extends State<AnimeArabicStreamSheet> {
       MaterialPageRoute(
         builder: (_) => PlayerScreen(
           source: source,
-          title: '${widget.details.title} - Episode ${widget.episode.number}',
+          title: l10nOf(context).dynamicAnimeArabicStreamSheetEpisode((widget.details.title).toString(), (widget.episode.number).toString()),
           backdropUrl: widget.details.displayBanner,
           detail: movieDetail,
           episode: video,
@@ -134,7 +136,7 @@ class _AnimeArabicStreamSheetState extends State<AnimeArabicStreamSheet> {
     // shadow this used to draw were the third variant of a sheet in the app.
     return ZplaySheet(
       title: widget.details.title,
-      subtitle: _isScraping ? 'جاري فحص السيرفرات...' : null,
+      subtitle: _isScraping ? l10nOf(context).arabicSectionCheckingServers21 : null,
       leading: ClipRRect(
         borderRadius: ZplayRadius.smAll,
         child: CachedNetworkImage(
@@ -161,7 +163,7 @@ class _AnimeArabicStreamSheetState extends State<AnimeArabicStreamSheet> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           SectionHeader(
-            title: 'السيرفرات',
+            title: l10nOf(context).arabicSectionServers22,
             count: _allSources.isEmpty ? null : _allSources.length,
           ),
 
@@ -199,7 +201,7 @@ class _AnimeArabicStreamSheetState extends State<AnimeArabicStreamSheet> {
                   ),
                   const SizedBox(height: ZplaySpacing.s16),
                   PillButton(
-                    label: 'إعادة المحاولة',
+                    label: l10nOf(context).arabicSectionRetry23,
                     icon: Icons.refresh_rounded,
                     onPressed: _startScraping,
                   ),
@@ -270,14 +272,14 @@ class _AnimeArabicStreamSheetState extends State<AnimeArabicStreamSheet> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        source.name ?? 'سيرفر تشغيل',
+                        source.name ?? l10nOf(context).arabicSectionPlaybackServer24,
                         style: ZplayType.body
                             .copyWith(weight: FontWeight.w700)
                             .toStyle(color: tokens.textPrimary),
                       ),
                       const SizedBox(height: ZplaySpacing.s2),
                       Text(
-                        source.description ?? 'تشغيل مباشر • جودة عالية',
+                        source.description ?? l10nOf(context).arabicSectionDirectStreamingHighQuality25,
                         style: ZplayType.caption.toStyle(
                           color: tokens.textSecondary,
                         ),

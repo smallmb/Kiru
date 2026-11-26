@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -242,7 +244,7 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
             IconButton(
               icon: Icon(Icons.arrow_back_rounded, color: tokens.textPrimary, size: 22),
               onPressed: () => Navigator.of(context).pop(),
-              tooltip: 'Back',
+              tooltip: l10nOf(context).uiPlayerTopBarBack,
               splashRadius: 20,
             ),
           if (canPop) const SizedBox(width: 8),
@@ -254,14 +256,14 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'TV Shows Airing Calendar',
+                  l10nOf(context).auxTvCalendarPageTvShowsAiringCalendar,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: ZplayType.titleLarge.toStyle(color: tokens.textPrimary),
                 ),
                 if (!isMobile)
                   Text(
-                    'Upcoming broadcast & streaming episodes with live network filters',
+                    l10nOf(context).auxTvCalendarPageUpcomingBroadcastStreamingEpisodesWithLiveNetwork,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
@@ -285,7 +287,7 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
               onChanged: _onSearchChanged,
               style: ZplayType.label.copyWith(size: 13).toStyle(color: tokens.textPrimary),
               decoration: InputDecoration(
-                hintText: 'Filter shows...',
+                hintText: l10nOf(context).auxTvCalendarPageFilterShows,
                 hintStyle: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
                 prefixIcon: Icon(
                   Icons.search_rounded,
@@ -448,7 +450,7 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
                 if (!isMobile) ...[
                   const SizedBox(width: 4),
                   Text(
-                    'Network:',
+                    l10nOf(context).auxTvCalendarPageNetwork,
                     style: ZplayType.caption
                         .copyWith(size: 11.5, weight: FontWeight.w700)
                         .toStyle(color: tokens.textEmphasis),
@@ -657,8 +659,8 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
                 const SizedBox(height: 12),
                 Text(
                   isNetworkFiltered
-                      ? 'No episodes on $_selectedNetwork for this day'
-                      : 'No episodes found for this day',
+                      ? l10nOf(context).calendarNoNetworkEpisodes(_selectedNetwork)
+                      : l10nOf(context).uiFinalTvCalendarPageNoEpisodesFoundForThisDay,
                   style: ZplayType.title
                       .copyWith(size: 16, weight: FontWeight.w700)
                       .toStyle(color: tokens.textEmphasis),
@@ -666,8 +668,8 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
                 const SizedBox(height: 6),
                 Text(
                   isNetworkFiltered
-                      ? 'Try selecting "All" or a different network above'
-                      : 'Select another day from the timeline above',
+                      ? l10nOf(context).uiFinalTvCalendarPageTrySelectingAllOrADifferent
+                      : l10nOf(context).uiFinalTvCalendarPageSelectAnotherDayFromTheTimeline,
                   style: ZplayType.label.toStyle(color: tokens.textMuted),
                 ),
                 if (isNetworkFiltered) ...[
@@ -675,7 +677,7 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
                   OutlinedButton.icon(
                     onPressed: () => _onNetworkSelected('All'),
                     icon: const Icon(Icons.refresh_rounded, size: 16),
-                    label: const Text('Show All Networks'),
+                    label: Text(l10nOf(context).auxTvCalendarPageShowAllNetworks),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: tokens.accent,
                       side: BorderSide(color: tokens.accent.withValues(alpha: 0.4)),

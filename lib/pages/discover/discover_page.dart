@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/media_labels.dart';
+import '../../l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../models/addon/addon.dart';
@@ -308,8 +311,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
     final required = catalog.requiredExtras
         .map((e) => e.name)
         .where((name) => name.trim().isNotEmpty && name != 'skip');
-    if (required.isEmpty) return 'Custom';
-    return required.join(' + ');
+    if (required.isEmpty) return mediaLabel(context, 'Custom');
+    return required.map((v) => mediaLabel(context, v)).join(' + ');
   }
 
   void _onTypeChanged(String type) {
@@ -714,7 +717,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
               Icon(Icons.inbox_rounded, size: 48, color: tokens.textDisabled),
               const SizedBox(height: ZplaySpacing.s12),
               Text(
-                'No titles found in this catalog',
+                l10nOf(context).discoverNoTitles,
                 style: ZplayType.subtitle.toStyle(color: tokens.textSecondary),
                 textAlign: TextAlign.center,
               ),
@@ -842,12 +845,12 @@ class _DiscoverPageState extends State<DiscoverPage> {
               ),
               const SizedBox(height: ZplaySpacing.s16),
               Text(
-                'Select Required Filter',
+                l10nOf(context).discoverRequiredFilter,
                 style: ZplayType.title.toStyle(color: tokens.textPrimary),
               ),
               const SizedBox(height: ZplaySpacing.s8),
               Text(
-                'This catalog requires selecting ${missing.map((e) => e.name).join(' & ')} before loading titles.',
+                l10nOf(context).discoverRequiredFields(missing.map((e) => mediaLabel(context, e.name)).join(' & ')),
                 textAlign: TextAlign.center,
                 style: ZplayType.body.toStyle(color: tokens.textEmphasis),
               ),
@@ -860,7 +863,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 children: missing.map((extra) {
                   if (extra.options.isNotEmpty) {
                     return PopupMenuButton<String>(
-                      tooltip: extra.name,
+                      tooltip: mediaLabel(context, extra.name),
                       constraints: const BoxConstraints(maxHeight: 360),
                       color: tokens.surface,
                       shape: RoundedRectangleBorder(
@@ -896,7 +899,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'Select ${extra.name[0].toUpperCase()}${extra.name.substring(1)}',
+                              l10nOf(context).dynamicDiscoverPageSelect((extra.name[0].toUpperCase()).toString(), (extra.name.substring(1)).toString()),
                               style: ZplayType.label
                                   .copyWith(weight: FontWeight.w600)
                                   .toStyle(color: tokens.onAccent),
@@ -932,7 +935,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                       ),
                       icon: const Icon(Icons.edit_rounded, size: 16),
                       label: Text(
-                        'Enter ${extra.name}',
+                        l10nOf(context).dynamicDiscoverPageEnter(mediaLabel(context, extra.name)),
                         style: ZplayType.label.toStyle(),
                       ),
                     );
@@ -962,7 +965,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
           side: tokens.hairline,
         ),
         title: Text(
-          'Enter $extraName',
+          l10nOf(context).dynamicDiscoverPageEnter(mediaLabel(context, extraName)),
           style: ZplayType.title.toStyle(color: tokens.textPrimary),
         ),
         content: SizedBox(
@@ -972,7 +975,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
             autofocus: true,
             style: ZplayType.body.toStyle(color: tokens.textPrimary),
             decoration: InputDecoration(
-              hintText: 'Type $extraName here...',
+              hintText: l10nOf(context).dynamicDiscoverPageTypeHere(mediaLabel(context, extraName)),
               hintStyle: ZplayType.body.toStyle(color: tokens.textDisabled),
               enabledBorder: UnderlineInputBorder(
                 borderSide: tokens.hairlineStrong,
@@ -993,7 +996,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
           TextButton(
             onPressed: () => Navigator.pop(ctx),
             child: Text(
-              'Cancel',
+              l10nOf(context).uiDiscoverPageCancel,
               style: ZplayType.label.toStyle(color: tokens.textSecondary),
             ),
           ),
@@ -1010,7 +1013,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
               Navigator.pop(ctx);
               _onCustomExtraSubmitted(extraName, controller.text);
             },
-            child: const Text('Apply'),
+            child: Text(l10nOf(context).uiDiscoverPageApply),
           ),
         ],
       ),
@@ -1034,10 +1037,10 @@ class _DiscoverPageState extends State<DiscoverPage> {
     final isRequired = extra.isRequired;
     final isSelected = currentVal != null && currentVal.isNotEmpty;
     final label = _isPointerLayout(context) && extra.options.isNotEmpty
-        ? (isSelected ? currentVal : _extraTitle(extra.name))
+        ? (isSelected ? mediaLabel(context, currentVal) : mediaLabel(context, _extraTitle(extra.name)))
         : extra.options.isNotEmpty
-        ? '${extra.name}: ${currentVal ?? 'All'}'
-        : '${extra.name.toUpperCase()}: ${currentVal ?? (isRequired ? 'Required' : 'Enter')}';
+        ? '${mediaLabel(context, extra.name)}: ${mediaLabel(context, currentVal ?? 'All')}'
+        : '${mediaLabel(context, extra.name)}: ${mediaLabel(context, currentVal ?? (isRequired ? 'Required' : 'Enter'))}';
 
     return Padding(
       padding: const EdgeInsets.only(right: ZplaySpacing.s8),
@@ -1070,7 +1073,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 // it says.
                 value: '',
                 child: Text(
-                  'All ${extra.name}',
+                  l10nOf(context).dynamicDiscoverPageAll(mediaLabel(context, extra.name)),
                   style: ZplayType.body.toStyle(color: tokens.textPrimary),
                 ),
               ),
@@ -1078,7 +1081,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
               (option) => PopupMenuItem<String>(
                 value: option,
                 child: Text(
-                  option,
+                  mediaLabel(context, option),
                   style: ZplayType.body.toStyle(
                     color: option == currentVal
                         ? tokens.accent
@@ -1153,10 +1156,10 @@ class _DiscoverPageState extends State<DiscoverPage> {
     final tokens = context.tokens;
     final entry = _selectedCatalogEntry;
     String nameOf(({InstalledAddon addon, AddonCatalog catalog}) e) =>
-        '${AddonManager.instance.catalogDisplayName(e.catalog)}'
+        '${mediaLabel(context, AddonManager.instance.catalogDisplayName(e.catalog))}'
         '${_selectedType == _adultType ? ' · ${e.addon.manifest.name}' : ''}';
     return _DiscoverPill(
-      label: entry == null ? 'Sort by' : 'Sort by: ${nameOf(entry)}',
+      label: entry == null ? mediaLabel(context, 'Sort by') : l10nOf(context).discoverSortCatalog(nameOf(entry)),
       trailing: Icons.keyboard_arrow_down_rounded,
       onActivate: (pill) =>
           _openPillMenu<({InstalledAddon addon, AddonCatalog catalog})>(
@@ -1178,7 +1181,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                       if (e.catalog.hasRequiredExtra) ...[
                         const SizedBox(width: ZplaySpacing.s8),
                         Text(
-                          'by ${_requiredExtraLabel(e.catalog)}',
+                          l10nOf(context).dynamicDiscoverPageBy((_requiredExtraLabel(e.catalog)).toString()),
                           style: ZplayType.label.toStyle(
                             color: tokens.textMuted,
                           ),
@@ -1323,14 +1326,14 @@ class _DiscoverPageState extends State<DiscoverPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _typeTitle(_selectedType),
+                          mediaLabel(context, _typeTitle(_selectedType)),
                           style: ZplayType.display
                               .toStyle(color: tokens.textPrimary)
                               .copyWith(fontSize: 44, height: 1.1),
                         ),
                         const SizedBox(height: ZplaySpacing.s4),
                         Text(
-                          _typeSubtitle(_selectedType),
+                          mediaLabel(context, _typeSubtitle(_selectedType)),
                           style: ZplayType.body.toStyle(
                             color: tokens.textSecondary,
                           ),
@@ -1345,7 +1348,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                     ),
                     const SizedBox(width: ZplaySpacing.s8),
                     Text(
-                      'Discover',
+                      l10nOf(context).discoverPageTitle,
                       style: ZplayType.titleLarge.toStyle(
                         color: tokens.textPrimary,
                       ),
@@ -1380,8 +1383,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
                           onSubmitted: _onSearchSubmitted,
                           decoration: InputDecoration(
                             hintText: isNarrow
-                                ? 'Search...'
-                                : 'Search within ${_selectedCatalogEntry?.catalog.name ?? 'catalog'}...',
+                                ? mediaLabel(context, 'Search...')
+                                : l10nOf(context).discoverSearchWithin(mediaLabel(context, _selectedCatalogEntry?.catalog.name ?? l10nOf(context).discoverDefaultCatalog)),
                             hintStyle: ZplayType.body.toStyle(
                               color: tokens.textSecondary,
                             ),
@@ -1414,7 +1417,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                         color: tokens.textEmphasis,
                         size: 22,
                       ),
-                      tooltip: 'Search catalog',
+                      tooltip: l10nOf(context).discoverSearchCatalog,
                       onPressed: () => setState(() => _isSearching = true),
                     ),
                   const SizedBox(width: ZplaySpacing.s8),
@@ -1457,7 +1460,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                       color: tokens.textEmphasis,
                       size: 22,
                     ),
-                    tooltip: 'Search catalog',
+                    tooltip: l10nOf(context).discoverSearchCatalog,
                     onPressed: () => setState(() => _isSearching = true),
                   ),
                   const SizedBox(width: ZplaySpacing.s8),
@@ -1466,7 +1469,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 if (_availableTypes.isNotEmpty) ...[
                   _DiscoverPill(
                     label:
-                        '${_selectedType[0].toUpperCase()}${_selectedType.substring(1)}',
+                        _localizedCatalogType(context, _selectedType),
                     trailing: Icons.arrow_drop_down,
                     height: television ? selectorH : null,
                     onActivate: (pill) => _openPillMenu<String>(
@@ -1476,7 +1479,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                             (t) => PopupMenuItem<String>(
                               value: t,
                               child: Text(
-                                '${t[0].toUpperCase()}${t.substring(1)}',
+                                _localizedCatalogType(context, t),
                                 style: ZplayType.body.toStyle(
                                   color: t == _selectedType
                                       ? tokens.accent
@@ -1525,7 +1528,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                             final isSelected = _selectedCatalogEntry == entry;
                             // The 18+ view mixes addons, so name the source.
                             final name =
-                                '${AddonManager.instance.catalogDisplayName(entry.catalog)}'
+                                '${mediaLabel(context, AddonManager.instance.catalogDisplayName(entry.catalog))}'
                                 '${_selectedType == _adultType ? ' · ${entry.addon.manifest.name}' : ''}';
                             final hasReq = entry.catalog.hasRequiredExtra;
 
@@ -1635,7 +1638,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                       padding: const EdgeInsets.only(right: ZplaySpacing.s8),
                       child: _DiscoverPill(
                         label:
-                            '${extra.name.toUpperCase()}: ${currentVal ?? (isReq ? "Required *" : "All")}',
+                            '${mediaLabel(context, extra.name)}: ${mediaLabel(context, currentVal ?? (isReq ? 'Required *' : 'All'))}',
                         trailing: Icons.arrow_drop_down,
                         required: isReq,
                         attention: isReq && !isSelected,
@@ -1649,7 +1652,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                 // `_buildInlineExtraChip`.
                                 value: '',
                                 child: Text(
-                                  'All ${extra.name}',
+                                  l10nOf(context).dynamicDiscoverPageAll(mediaLabel(context, extra.name)),
                                   style: ZplayType.body.toStyle(
                                     color: tokens.textPrimary,
                                   ),
@@ -1659,7 +1662,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                               (opt) => PopupMenuItem<String>(
                                 value: opt,
                                 child: Text(
-                                  opt,
+                                  mediaLabel(context, opt),
                                   style: ZplayType.body.toStyle(
                                     color: opt == currentVal
                                         ? tokens.accent
@@ -1681,7 +1684,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                     padding: const EdgeInsets.only(right: ZplaySpacing.s8),
                     child: _DiscoverPill(
                       label:
-                          '${extra.name.toUpperCase()}: ${currentVal ?? (isReq ? "Required *" : "Enter")}',
+                          '${mediaLabel(context, extra.name)}: ${mediaLabel(context, currentVal ?? (isReq ? 'Required *' : 'Enter'))}',
                       trailing: Icons.edit_rounded,
                       required: isReq,
                       attention: isReq && !isSelected,
@@ -1768,7 +1771,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
             else if (_legacySections.isEmpty)
               Center(
                 child: Text(
-                  'No results found for "${widget.query}"',
+                  l10nOf(context).dynamicDiscoverPageNoResultsFoundFor((widget.query).toString()),
                   style: ZplayType.subtitle.toStyle(
                     color: tokens.textSecondary,
                   ),
@@ -1973,4 +1976,15 @@ class _DiscoverPill extends StatelessWidget {
       ),
     );
   }
+}
+
+String _localizedCatalogType(BuildContext context, String type) {
+  final l10n = l10nOf(context);
+  return switch (type.toLowerCase()) {
+    'movie' => l10n.mediaTypeMovie,
+    'series' || 'tv' => l10n.mediaTypeSeries,
+    'anime' => l10n.mediaTypeAnime,
+    'other' => l10n.mediaTypeOther,
+    _ => type.isEmpty ? type : '${type[0].toUpperCase()}${type.substring(1)}',
+  };
 }

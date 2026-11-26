@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -431,7 +434,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                       ),
                       const SizedBox(width: 10),
                       Text(
-                        'Reader Settings & Layout',
+                        l10nOf(context).auxMangaReaderPageReaderSettingsLayout,
                         style: ZplayType.title
                             .copyWith(weight: FontWeight.w700)
                             .toStyle(color: tokens.textPrimary),
@@ -457,14 +460,14 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                   const SizedBox(height: 12),
 
                   Text(
-                    'Reading Orientation Mode',
+                    l10nOf(context).auxMangaReaderPageReadingOrientationMode,
                     style: ZplayType.label
                         .copyWith(weight: FontWeight.w700)
                         .toStyle(color: tokens.textPrimary),
                   ),
                   const SizedBox(height: 8),
                   SegmentedTabs<MangaReadingMode>(
-                    semanticsLabel: 'Reading orientation mode',
+                    semanticsLabel: l10nOf(context).auxMangaReaderPageReadingOrientationMode2,
                     selected: _readingMode,
                     onSelected: (mode) {
                       setState(() => _readingMode = mode);
@@ -473,14 +476,14 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                     },
                     options: [
                       for (final mode in MangaReadingMode.values)
-                        SegmentedTabOption(value: mode, label: mode.label),
+                        SegmentedTabOption(value: mode, label: configLabel(context, mode.label)),
                     ],
                   ),
 
                   const SizedBox(height: 14),
 
                   Text(
-                    'Page Reading Width Constraint',
+                    l10nOf(context).auxMangaReaderPagePageReadingWidthConstraint,
                     style: ZplayType.label
                         .copyWith(weight: FontWeight.w700)
                         .toStyle(color: tokens.textPrimary),
@@ -490,14 +493,14 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                     valueListenable: MangaSettings.readerMaxWidth,
                     builder: (context, width, _) {
                       return SegmentedTabs<MangaReaderMaxWidth>(
-                        semanticsLabel: 'Page reading width constraint',
+                        semanticsLabel: l10nOf(context).auxMangaReaderPagePageReadingWidthConstraint2,
                         selected: width,
                         onSelected: MangaSettings.setReaderMaxWidth,
                         options: [
                           for (final option in MangaReaderMaxWidth.values)
                             SegmentedTabOption(
                               value: option,
-                              label: option.label,
+                              label: configLabel(context, option.label),
                             ),
                         ],
                       );
@@ -507,7 +510,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                   const SizedBox(height: 14),
 
                   Text(
-                    'Reader Background Atmosphere',
+                    l10nOf(context).auxMangaReaderPageReaderBackgroundAtmosphere,
                     style: ZplayType.label
                         .copyWith(weight: FontWeight.w700)
                         .toStyle(color: tokens.textPrimary),
@@ -523,7 +526,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                       return SwitchListTile.adaptive(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          'Show Page Deck Previews Drawer',
+                          l10nOf(context).auxMangaReaderPageShowPageDeckPreviewsDrawer,
                           style: ZplayType.label.toStyle(
                             color: tokens.textPrimary,
                           ),
@@ -541,7 +544,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                       return SwitchListTile.adaptive(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          'Show Next Chapter Deck Card',
+                          l10nOf(context).auxMangaReaderPageShowNextChapterDeckCard,
                           style: ZplayType.label.toStyle(
                             color: tokens.textPrimary,
                           ),
@@ -591,7 +594,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                   : _pageUrls.isEmpty
                   ? Center(
                       child: Text(
-                        'No pages found for this chapter.',
+                        l10nOf(context).auxMangaReaderPageNoPagesFoundForThisChapter,
                         style: ZplayType.subtitle.toStyle(
                           color: tokens.textEmphasis,
                         ),
@@ -807,7 +810,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
               borderRadius: ZplayRadius.smAll,
             ),
             child: Text(
-              hasNext ? 'UP NEXT' : 'CHAPTER FINISHED',
+              hasNext ? l10nOf(context).finalMangaReaderPageUpNext : 'CHAPTER FINISHED',
               style: ZplayType.caption
                   .copyWith(weight: FontWeight.w700)
                   .toStyle(color: palette.primaryColor),
@@ -838,7 +841,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                 size: 20,
               ),
               label: Text(
-                'Read Next Chapter',
+                l10nOf(context).auxMangaReaderPageReadNextChapter,
                 style: ZplayType.subtitle
                     .copyWith(weight: FontWeight.w700)
                     .toStyle(color: tokens.textPrimary),
@@ -862,7 +865,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                 color: tokens.success,
               ),
               label: Text(
-                'Back to Manga Details',
+                l10nOf(context).auxMangaReaderPageBackToMangaDetails,
                 style: ZplayType.label.toStyle(color: tokens.textPrimary),
               ),
               style: OutlinedButton.styleFrom(
@@ -920,7 +923,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      'Page Deck Preview',
+                      l10nOf(context).auxMangaReaderPagePageDeckPreview,
                       style: ZplayType.caption
                           .copyWith(weight: FontWeight.w700, letterSpacing: 0.5)
                           .toStyle(color: tokens.textEmphasis),
@@ -940,7 +943,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                     // "Page N / M" badge never had one.
                   ),
                   child: Text(
-                    'Page ${_currentPageIndex + 1} of ${_pageUrls.length}',
+                    l10nOf(context).dynamicMangaReaderPagePageOf((_currentPageIndex + 1).toString(), (_pageUrls.length).toString()),
                     style: ZplayType.caption
                         .copyWith(weight: FontWeight.w700)
                         .toStyle(color: palette.primaryColor),
@@ -1131,7 +1134,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
           ),
           _MangaChromeAction(
             icon: Icons.tune_rounded,
-            semanticLabel: 'Reader Customization',
+            semanticLabel: configLabel(context, 'Reader Customization'),
             iconSize: 22,
             tapTarget: tapTarget,
             onTap: () => _showReaderCustomizer(context),
@@ -1226,7 +1229,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
               // Prev Chapter Button
               _MangaChromeAction(
                 icon: Icons.skip_previous_rounded,
-                semanticLabel: 'Previous Chapter',
+                semanticLabel: configLabel(context, 'Previous Chapter'),
                 iconSize: 24,
                 tapTarget: tapTarget,
                 onTap: _currentChapterIndex < widget.chapters.length - 1
@@ -1246,7 +1249,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                     if (!isVerySmall)
                       _MangaChromeAction(
                         icon: Icons.zoom_out_rounded,
-                        semanticLabel: 'Zoom Out (-)',
+                        semanticLabel: configLabel(context, 'Zoom Out (-)'),
                         iconSize: 18,
                         tapTarget: tapTarget,
                         onTap: _currentZoom > 0.26 ? _zoomOut : null,
@@ -1286,7 +1289,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                     if (!isVerySmall)
                       _MangaChromeAction(
                         icon: Icons.zoom_in_rounded,
-                        semanticLabel: 'Zoom In (+)',
+                        semanticLabel: configLabel(context, 'Zoom In (+)'),
                         iconSize: 18,
                         tapTarget: tapTarget,
                         onTap: _currentZoom < 4.9 ? _zoomIn : null,
@@ -1306,7 +1309,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                         borderRadius: ZplayRadius.smAll,
                       ),
                       child: Text(
-                        'Page ${_currentPageIndex + 1} / ${_pageUrls.isNotEmpty ? _pageUrls.length : "?"}',
+                        l10nOf(context).dynamicMangaReaderPagePage((_currentPageIndex + 1).toString(), (_pageUrls.isNotEmpty ? _pageUrls.length : "?").toString()),
                         style: ZplayType.caption
                             .copyWith(
                               size: isVerySmall ? 11 : 12.5,
@@ -1326,7 +1329,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                   if (showDeckToggle)
                     _MangaChromeAction(
                       icon: Icons.view_carousel_rounded,
-                      semanticLabel: 'Toggle Page Deck',
+                      semanticLabel: configLabel(context, 'Toggle Page Deck'),
                       iconSize: 20,
                       tapTarget: tapTarget,
                       // Doubles as the "on" marker while the deck is open, so
@@ -1337,7 +1340,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
 
                   _MangaChromeAction(
                     icon: Icons.skip_next_rounded,
-                    semanticLabel: 'Next Chapter',
+                    semanticLabel: configLabel(context, 'Next Chapter'),
                     iconSize: 24,
                     tapTarget: tapTarget,
                     onTap: _currentChapterIndex > 0 ? _nextChapter : null,

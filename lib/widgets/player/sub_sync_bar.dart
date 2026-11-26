@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import '../../services/theme/design_tokens.dart';
 import 'player_glass.dart';
@@ -113,7 +115,7 @@ class _SubSyncBarState extends State<SubSyncBar> {
                           ),
                           const SizedBox(width: 6),
                           Text(
-                            'Text Sync',
+                            l10nOf(context).uiSubSyncBarTextSync,
                             style: ZplayType.label
                                 .toStyle(
                                   color: widget.isTextSyncAvailable
@@ -225,7 +227,7 @@ class _SubSyncBarState extends State<SubSyncBar> {
                     size: 32,
                     iconSize: 15,
                     icon: const Icon(Icons.undo_rounded),
-                    tooltip: 'Discard changes',
+                    tooltip: l10nOf(context).uiSubSyncBarDiscardChanges,
                     onPressed: _handleDiscard,
                   ),
                   const SizedBox(width: 4),
@@ -246,7 +248,7 @@ class _SubSyncBarState extends State<SubSyncBar> {
                   ),
                   icon: const Icon(Icons.check_rounded, size: 15),
                   label: Text(
-                    'Done',
+                    l10nOf(context).uiSubSyncBarDone,
                     style: ZplayType.label.toStyle().copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -259,7 +261,7 @@ class _SubSyncBarState extends State<SubSyncBar> {
                   size: 32,
                   iconSize: 15,
                   icon: const Icon(Icons.close_rounded),
-                  tooltip: 'Close',
+                  tooltip: l10nOf(context).uiSubSyncBarClose,
                   onPressed: widget.onClose,
                 ),
               ],

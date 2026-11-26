@@ -1,3 +1,4 @@
+import 'package:zplay/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/theme/design_tokens.dart';
@@ -154,7 +155,7 @@ class CardRankBadge extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'TOP',
+                l10nOf(context).cardTopRank,
                 style: TextStyle(
                   color: tokens.onAccent,
                   fontSize: 8,

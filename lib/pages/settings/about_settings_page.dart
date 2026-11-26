@@ -1,8 +1,11 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../services/theme/design_tokens.dart';
 import '../../widgets/player/player_glass.dart';
+import '../../widgets/common/zplay_logo.dart';
 import '../../widgets/settings/settings_scaffold.dart';
 
 class AboutSettingsPage extends StatelessWidget {
@@ -12,7 +15,7 @@ class AboutSettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return SettingsScaffold(
-      title: 'About ZPlay',
+      title: l10nOf(context).uiAboutSettingsPageAboutZplay,
       child: ListView(
         padding: const EdgeInsets.symmetric(
           horizontal: ZplaySpacing.s16,
@@ -23,22 +26,10 @@ class AboutSettingsPage extends StatelessWidget {
           Center(
             child: Column(
               children: [
-                Container(
-                  width: 72,
-                  height: 72,
-                  decoration: BoxDecoration(
-                    color: tokens.accent,
-                    borderRadius: ZplayRadius.lgAll,
-                  ),
-                  child: Icon(
-                    Icons.play_arrow_rounded,
-                    color: tokens.onAccent,
-                    size: 44,
-                  ),
-                ),
+                const ZplayLogo(size: 72),
                 const SizedBox(height: 16),
                 Text(
-                  'ZPlay',
+                  'Kiru',
                   style: ZplayType.display.toStyle(color: tokens.textPrimary),
                 ),
                 const SizedBox(height: 6),
@@ -47,7 +38,7 @@ class AboutSettingsPage extends StatelessWidget {
                   builder: (context, snapshot) {
                     final version = snapshot.hasData ? snapshot.data!.version : '1.1.6';
                     return Text(
-                      'Version $version • Next-Gen Streaming Hub',
+                      l10nOf(context).dynamicAboutSettingsPageVersionNextGenStreamingHub((version).toString()),
                       style: ZplayType.label.toStyle(
                         color: tokens.textSecondary,
                       ),
@@ -67,14 +58,14 @@ class AboutSettingsPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Universal Entertainment Ecosystem',
+                  l10nOf(context).uiAboutSettingsPageUniversalEntertainmentEcosystem,
                   style: ZplayType.subtitle.toStyle(
                     color: tokens.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'ZPlay is an all-in-one entertainment client bringing together movies, TV series, anime, live IPTV, music, manga, and audiobooks into a unified, high-performance interface with custom Liquid Glass visuals.',
+                  l10nOf(context).auxAboutSettingsPageZplayIsAnAllInOneEntertainment,
                   style: ZplayType.body
                       .toStyle(color: tokens.textSecondary)
                       .copyWith(height: 1.45),
@@ -87,40 +78,40 @@ class AboutSettingsPage extends StatelessWidget {
 
           // Architecture & Core Technologies
           Text(
-            'CORE TECHNOLOGIES',
+            l10nOf(context).uiAboutSettingsPageCoreTechnologies,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
 
           _buildTechTile(
             context: context,
-            title: 'High-Performance Video Engine',
-            subtitle: 'Powered by embedded media_kit / libmpv with hardware-accelerated decoding.',
+            title: l10nOf(context).uiAboutSettingsPageHighPerformanceVideoEngine,
+            subtitle: l10nOf(context).uiAboutSettingsPagePoweredByEmbeddedMediaKitLibmpv,
           ),
           const SizedBox(height: 10),
           _buildTechTile(
             context: context,
-            title: 'Debrid & Multi-Source Scrapers',
-            subtitle: 'Direct high-speed cloud playback via Real-Debrid, TorBox, and Stremio addons.',
+            title: l10nOf(context).auxAboutSettingsPageDebridMultiSourceScrapers,
+            subtitle: l10nOf(context).auxAboutSettingsPageDirectHighSpeedCloudPlaybackViaReal,
           ),
           const SizedBox(height: 10),
           _buildTechTile(
             context: context,
-            title: 'Liquid Glass GLSL Shaders',
-            subtitle: 'Custom real-time optical refraction, lenses, and fluid physics.',
+            title: l10nOf(context).auxAboutSettingsPageLiquidGlassGlslShaders,
+            subtitle: l10nOf(context).auxAboutSettingsPageCustomRealTimeOpticalRefractionLensesAnd,
           ),
           const SizedBox(height: 10),
           _buildTechTile(
             context: context,
-            title: 'Trakt & Cloud Synchronization',
-            subtitle: 'Cross-platform watchlist, episode tracking, and playback scrobbling.',
+            title: l10nOf(context).auxAboutSettingsPageTraktCloudSynchronization,
+            subtitle: l10nOf(context).auxAboutSettingsPageCrossPlatformWatchlistEpisodeTrackingAndPlayback,
           ),
 
           const SizedBox(height: 24),
 
           // Credits & Licence
           Text(
-            'CREDITS & LICENCE',
+            l10nOf(context).uiAboutSettingsPageCreditsLicence,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -129,16 +120,24 @@ class AboutSettingsPage extends StatelessWidget {
             context: context,
             icon: Icons.code_rounded,
             title: 'ZPlay',
-            subtitle: 'Independent fork maintained by tzero86',
+            subtitle: l10nOf(context).uiAboutSettingsPageIndependentForkMaintainedByTzero86,
             url: 'https://github.com/tzero86/ZPlay',
           ),
           const SizedBox(height: 10),
           _buildLinkTile(
             context: context,
             icon: Icons.history_edu_rounded,
-            title: 'Based on PlayTorrio V3',
-            subtitle: 'Original project by Ayman (@ayman708-UX)',
+            title: l10nOf(context).uiAboutSettingsPageBasedOnPlaytorrioV3,
+            subtitle: l10nOf(context).uiAboutSettingsPageOriginalProjectByAymanAyman708Ux,
             url: 'https://github.com/ayman708-UX/PlayTorrioV3',
+          ),
+          const SizedBox(height: 10),
+          _buildLinkTile(
+            context: context,
+            icon: Icons.info_outline,
+            title: 'Bangumi Data',
+            subtitle: l10nOf(context).animeTitleDataAttribution,
+            url: 'https://github.com/bangumi-data/bangumi-data',
           ),
           const SizedBox(height: 10),
           _buildTmdbAttributionTile(context),
@@ -147,7 +146,7 @@ class AboutSettingsPage extends StatelessWidget {
 
           const SizedBox(height: 16),
           Text(
-            'Poppins is bundled under the SIL Open Font License 1.1.',
+            l10nOf(context).auxAboutSettingsPagePoppinsIsBundledUnderTheSilOpen,
             style: ZplayType.bodySmall.toStyle(color: tokens.textDisabled),
           ),
         ],
@@ -244,7 +243,7 @@ class AboutSettingsPage extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            'This product uses the TMDB API but is not endorsed or certified by TMDB.',
+            l10nOf(context).uiAboutSettingsPageThisProductUsesTheTmdbApi,
             style: ZplayType.bodySmall
                 .toStyle(color: tokens.textSecondary)
                 .copyWith(height: 1.35),
@@ -278,8 +277,7 @@ class AboutSettingsPage extends StatelessWidget {
       icon: Icons.gavel_rounded,
       title: 'GNU GPL v3.0',
       subtitle:
-          'ZPlay is a modified version of PlayTorrio V3, distributed under the '
-          'GNU General Public License v3.0. Tap to read the licence.',
+          l10nOf(context).aboutUpstreamLicense,
       trailing: Icon(
         Icons.chevron_right_rounded,
         size: 20,
@@ -287,7 +285,7 @@ class AboutSettingsPage extends StatelessWidget {
       ),
       onTap: () => showLicensePage(
         context: context,
-        applicationName: 'ZPlay',
+        applicationName: 'Kiru',
         applicationLegalese: 'Copyright (C) 2026 tzero86\n'
             'Based on PlayTorrio V3, Copyright (C) 2026 Ayman\n'
             'https://github.com/tzero86/ZPlay\n'

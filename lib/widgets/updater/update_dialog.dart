@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'dart:io';
 
@@ -108,14 +110,14 @@ class _UpdateDialogState extends State<UpdateDialog> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'UPDATE AVAILABLE',
+                            l10nOf(context).updateAvailableHeading,
                             style: ZplayType.overline.toStyle(
                               color: tokens.accent,
                             ),
                           ),
                           const SizedBox(height: ZplaySpacing.s4),
                           Text(
-                            'Version ${widget.updateInfo.latestVersion}',
+                            l10nOf(context).dynamicUpdateDialogVersion((widget.updateInfo.latestVersion).toString()),
                             style: ZplayType.titleLarge.toStyle(
                               color: tokens.textPrimary,
                             ),
@@ -148,7 +150,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Current',
+                                l10nOf(context).auxUpdateDialogCurrent,
                                 style: ZplayType.caption.toStyle(
                                   color: tokens.textMuted,
                                 ),
@@ -170,7 +172,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                'Latest',
+                                l10nOf(context).auxUpdateDialogLatest,
                                 style: ZplayType.caption.toStyle(
                                   color: tokens.textMuted,
                                 ),
@@ -192,7 +194,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
 
                     // Release notes header & box
                     Text(
-                      "WHAT'S NEW",
+                      l10nOf(context).updateWhatsNewHeading,
                       style: ZplayType.overline.toStyle(
                         color: tokens.textMuted,
                       ),
@@ -271,7 +273,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Downloading...',
+                                l10nOf(context).auxUpdateDialogDownloading,
                                 style: ZplayType.label.toStyle(
                                   color: tokens.accent,
                                 ),
@@ -332,7 +334,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                             ),
                           ),
                           child: Text(
-                            'Later',
+                            l10nOf(context).uiCloudstreamMarketplaceModalLater,
                             style: ZplayType.label.toStyle(
                               color: tokens.textEmphasis,
                             ),
@@ -359,7 +361,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'Update Now',
+                                l10nOf(context).auxUpdateDialogUpdateNow,
                                 style: ZplayType.label.toStyle(),
                               ),
                               const SizedBox(width: ZplaySpacing.s8),
@@ -413,20 +415,18 @@ class _UpdateDialogState extends State<UpdateDialog> {
       builder: (dialogContext) => AlertDialog(
         backgroundColor: context.tokens.surfaceOverlay,
         title: Text(
-          'Update could not be verified',
+          l10nOf(context).auxUpdateDialogUpdateCouldNotBeVerified,
           style: ZplayType.title.toStyle(color: context.tokens.textPrimary),
         ),
         content: Text(
-          'This release does not publish a SHA-256 checksum, so ZPlay will '
-          'not install it automatically. Open the release page and verify '
-          'the download yourself before installing it.',
+          l10nOf(context).updateChecksumWarning,
           style: ZplayType.body.toStyle(color: context.tokens.textEmphasis),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
             child: Text(
-              'Cancel',
+              l10nOf(context).actionCancel,
               style: ZplayType.label.toStyle(
                 color: context.tokens.textEmphasis,
               ),
@@ -438,7 +438,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
               backgroundColor: context.tokens.accent,
               foregroundColor: context.tokens.onAccent,
             ),
-            child: Text('Open release page', style: ZplayType.label.toStyle()),
+            child: Text(l10nOf(context).auxUpdateDialogOpenReleasePage, style: ZplayType.label.toStyle()),
           ),
         ],
       ),
@@ -492,8 +492,8 @@ class _UpdateDialogState extends State<UpdateDialog> {
                       WakelockPlus.disable();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: const Text(
-                            'Please enable "Install unknown apps" permission for ZPlay in Android settings.',
+                          content: Text(
+                            l10nOf(context).auxUpdateDialogPleaseEnableInstallUnknownAppsPermissionFor,
                           ),
                           duration: const Duration(seconds: 5),
                           backgroundColor: context.tokens.warning,
@@ -654,7 +654,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                 ),
                 const SizedBox(width: ZplaySpacing.s12),
                 Text(
-                  'Download Complete',
+                  l10nOf(context).auxUpdateDialogDownloadComplete,
                   style: ZplayType.title.toStyle(
                     color: context.tokens.textPrimary,
                   ),
@@ -692,7 +692,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                   ),
                   const SizedBox(height: ZplaySpacing.s16),
                   Text(
-                    'Make the file executable and run it:\nchmod +x "$fileName"\n./$fileName',
+                    l10nOf(context).updateExecutableInstructions(fileName),
                     style: ZplayType.body.toStyle(
                       color: context.tokens.textEmphasis,
                     ),
@@ -710,7 +710,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                     if (context.mounted) Navigator.of(context).pop();
                   },
                   child: Text(
-                    'Open Folder',
+                    l10nOf(context).auxUpdateDialogOpenFolder,
                     style: ZplayType.label.toStyle(
                       color: context.tokens.textEmphasis,
                     ),
@@ -751,7 +751,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
         setState(() => _isDownloading = false);
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Download failed: $e')));
+        ).showSnackBar(SnackBar(content: Text(l10nOf(context).dynamicUpdateDialogDownloadFailed((e).toString()))));
       }
     }
   }

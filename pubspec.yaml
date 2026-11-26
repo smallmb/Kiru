@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  win32_registry: ^2.1.0
   flutter:
     sdk: flutter
   flutter_localizations:
@@ -182,6 +183,8 @@ flutter:
     # Launcher art is generated from assets/icon.png by flutter_launcher_icons,
     # which reads it at build time; only the small variant ships in the bundle.
     - assets/icon_small.png
+    - assets/metadata/anime_titles_zh.json
+    - assets/metadata/BANGUMI_DATA_NOTICE.txt
     - assets/fonts/
     # Anime4K ships as a 39-file upstream set, but the presets in
     # PlayerSettings reference only these; the other 30 files were extracted on

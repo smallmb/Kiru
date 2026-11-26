@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -255,7 +257,7 @@ class _AnimeArabicDetailsPageState extends State<AnimeArabicDetailsPage>
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(backgroundColor: tokens.accent),
                               onPressed: _loadDetails,
-                              child: const Text('Retry'),
+                              child: Text(l10nOf(context).actionRetry),
                             ),
                           ],
                         ),
@@ -419,7 +421,7 @@ class _AnimeArabicDetailsPageState extends State<AnimeArabicDetailsPage>
 
   Widget _buildMetaDetails(String title) {
     final tokens = ZplayTokens.of(context);
-    final status = _details?.status ?? widget.anime.tag ?? 'يعرض الآن';
+    final status = _details?.status ?? widget.anime.tag ?? l10nOf(context).arabicSectionAiringNow15;
     final rating = _details?.rating ?? widget.anime.rating;
     final year = _details?.year;
     final studio = _details?.studio;
@@ -504,7 +506,7 @@ class _AnimeArabicDetailsPageState extends State<AnimeArabicDetailsPage>
                 orElse: () => _details!.episodes.first,
               );
               return PillButton(
-                label: 'مشاهدة الحلقة $targetEpNum',
+                label: l10nOf(context).dynamicAnimeArabicDetailsPageWatchEpisode((targetEpNum).toString()),
                 icon: Icons.play_arrow_rounded,
                 onPressed: () => _playEpisode(targetEp),
               );
@@ -530,7 +532,7 @@ class _AnimeArabicDetailsPageState extends State<AnimeArabicDetailsPage>
                   child: Padding(
                     padding: const EdgeInsets.only(top: 6),
                     child: Text(
-                      _isSynopsisExpanded ? 'عرض أقل' : 'عرض المزيد',
+                      _isSynopsisExpanded ? l10nOf(context).arabicSectionShowLess16 : l10nOf(context).arabicSectionShowMore17,
                       style: ZplayType.label.toStyle(color: tokens.accent),
                     ),
                   ),
@@ -571,7 +573,7 @@ class _AnimeArabicDetailsPageState extends State<AnimeArabicDetailsPage>
         // Section Header
         _onRailGrid(
           SectionHeader(
-            title: 'الحلقات',
+            title: l10nOf(context).arabicSectionEpisodes18,
             count: totalEpisodes,
             trailing: totalEpisodes > 1
                 ? SizedBox(
@@ -583,7 +585,7 @@ class _AnimeArabicDetailsPageState extends State<AnimeArabicDetailsPage>
                       onSubmitted: _jumpToEpisode,
                       style: ZplayType.label.toStyle(color: tokens.textPrimary),
                       decoration: InputDecoration(
-                        hintText: 'اذهب لرقم...',
+                        hintText: l10nOf(context).arabicSectionJumpToEpisode19,
                         hintStyle:
                             ZplayType.bodySmall.toStyle(color: tokens.textMuted),
                         contentPadding: const EdgeInsets.symmetric(
@@ -759,14 +761,14 @@ class _AnimeArabicDetailsPageState extends State<AnimeArabicDetailsPage>
                         borderRadius: ZplayRadius.xsAll,
                       ),
                       child: Text(
-                        'EP ${episode.number}',
+                        l10nOf(context).dynamicAnimeArabicDetailsPageEp((episode.number).toString()),
                         style: ZplayType.caption.copyWith(weight: FontWeight.w900).toStyle(color: tokens.textPrimary),
                       ),
                     ),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
-                        episode.title.isNotEmpty ? episode.title : 'الحلقة ${episode.number}',
+                        episode.title.isNotEmpty ? episode.title : l10nOf(context).arabicEpisodeNumber(episode.number.toString()),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: ZplayType.bodySmall.copyWith(weight: FontWeight.w600).toStyle(color: tokens.textPrimary),
@@ -804,7 +806,7 @@ class _AnimeArabicDetailsPageState extends State<AnimeArabicDetailsPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _onRailGrid(const SectionHeader(title: 'أنميات ذات صلة')),
+          _onRailGrid(SectionHeader(title: l10nOf(context).arabicSectionRelatedAnime20)),
           const SizedBox(height: 14),
           MouseRegion(
             onEnter: (_) => setState(() => _isHoveringRecs = true),

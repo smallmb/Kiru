@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -455,7 +457,7 @@ if (mounted) {
                       vertical: ZplaySpacing.s12,
                     ),
                     child: Text(
-                      'Select Channel',
+                      l10nOf(context).auxMultinutzPageSelectChannel,
                       style: ZplayType.title.toStyle(color: tokens.textPrimary),
                     ),
                   ),
@@ -466,11 +468,11 @@ if (mounted) {
                       labelColor: tokens.accent,
                       unselectedLabelColor: tokens.textSecondary,
                       indicatorColor: tokens.accent,
-                      tabs: const [
-                        Tab(text: 'Xtreme'),
+                      tabs: [
+                        const Tab(text: 'Xtreme'),
                         Tab(text: 'M3U'),
                         Tab(text: 'IPTV'),
-                        Tab(text: 'Custom URL'),
+                        Tab(text: l10nOf(context).finalMultinutzPageCustomUrl),
                       ],
                     ),
                   ),
@@ -576,7 +578,7 @@ if (i < quickChannels.length) {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Stream Details',
+            l10nOf(context).auxMultinutzPageStreamDetails,
             style: ZplayType.subtitle
                 .copyWith(weight: FontWeight.w700)
                 .toStyle(color: tokens.textPrimary),
@@ -703,7 +705,7 @@ if (i < quickChannels.length) {
         return AlertDialog(
           backgroundColor: tokens.surfaceOverlay,
           title: Text(
-            'Stream URL for $name',
+            l10nOf(context).dynamicMultinutzPageStreamUrlFor((name).toString()),
             style: ZplayType.title.toStyle(color: tokens.textPrimary),
           ),
           content: TextField(
@@ -725,7 +727,7 @@ if (i < quickChannels.length) {
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(
-                'Cancel',
+                l10nOf(context).actionCancel,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
             ),
@@ -741,7 +743,7 @@ if (i < quickChannels.length) {
                 backgroundColor: tokens.accent,
                 foregroundColor: tokens.onAccent,
               ),
-              child: Text('Add', style: ZplayType.label.toStyle(color: tokens.onAccent)),
+              child: Text(l10nOf(context).commonAddAction, style: ZplayType.label.toStyle(color: tokens.onAccent)),
             ),
           ],
         );
@@ -1042,7 +1044,7 @@ final gridContent = _fullscreenIndex != null
                       ),
                       const SizedBox(height: ZplaySpacing.s8),
                       Text(
-                        'Add Live Stream Feed',
+                        l10nOf(context).auxMultinutzPageAddLiveStreamFeed,
                         style: ZplayType.bodySmall
                             .copyWith(weight: FontWeight.w700)
                             .toStyle(color: tokens.textSecondary),
@@ -1219,7 +1221,7 @@ final gridContent = _fullscreenIndex != null
                   _buildGlassButton(
                     icon: Icons.arrow_back_rounded,
                     isSelected: false,
-                    tooltip: 'Back to Live TV',
+                    tooltip: l10nOf(context).auxMultinutzPageBackToLiveTv,
                     onTap: () => Navigator.pop(context),
                   ),
                   const SizedBox(width: 10),
@@ -1236,7 +1238,7 @@ final gridContent = _fullscreenIndex != null
                       Icon(Icons.dashboard_rounded, color: tokens.onAccent, size: 18),
                       const SizedBox(width: 6),
                       Text(
-                        'MULTI STREAMS',
+                        l10nOf(context).multiStreamsHeading,
                         style: ZplayType.label.toStyle(color: tokens.onAccent),
                       ),
                     ],
@@ -1261,14 +1263,14 @@ final gridContent = _fullscreenIndex != null
                         _buildGlassButton(
                           icon: Icons.chevron_left_rounded,
                           isSelected: false,
-                          tooltip: 'Previous Layout',
+                          tooltip: l10nOf(context).auxMultinutzPagePreviousLayout,
                           onTap: _navigateLayoutBackward,
                         ),
                         const SizedBox(width: 8),
                         _buildGlassButton(
                           icon: Icons.chevron_right_rounded,
                           isSelected: false,
-                          tooltip: 'Next Layout',
+                          tooltip: l10nOf(context).auxMultinutzPageNextLayout,
                           onTap: _navigateLayoutForward,
                         ),
                         const SizedBox(width: ZplaySpacing.s12),
@@ -1278,7 +1280,7 @@ final gridContent = _fullscreenIndex != null
                             Icon(Icons.view_comfy_rounded, color: tokens.accent, size: 16),
                             const SizedBox(width: 6),
                             Text(
-                              '$_activeCells Stream${_activeCells > 1 ? "s" : ""}',
+                              l10nOf(context).dynamicMultinutzPageStream((_activeCells).toString(), (_activeCells > 1 ? "s" : "").toString()),
                               style: ZplayType.bodySmall
                                   .copyWith(weight: FontWeight.w700)
                                   .toStyle(color: tokens.textEmphasis),
@@ -1291,7 +1293,7 @@ final gridContent = _fullscreenIndex != null
                       _buildGlassButton(
                         icon: _isRearrangeMode ? Icons.check_rounded : Icons.swap_vert_rounded,
                         isSelected: _isRearrangeMode,
-                        tooltip: _isRearrangeMode ? 'Done Rearranging' : 'Rearrange Streams',
+                        tooltip: _isRearrangeMode ? l10nOf(context).finalMultinutzPageDoneRearranging : 'Rearrange Streams',
                         onTap: () {
                           setState(() {
                             _isRearrangeMode = !_isRearrangeMode;
@@ -1302,14 +1304,14 @@ final gridContent = _fullscreenIndex != null
                       _buildGlassButton(
                         icon: Icons.volume_off_rounded,
                         isSelected: false,
-                        tooltip: 'Mute All',
+                        tooltip: l10nOf(context).auxMultinutzPageMuteAll,
                         onTap: _muteAll,
                       ),
                       const SizedBox(width: 8),
                       _buildGlassButton(
                         icon: Icons.delete_sweep_rounded,
                         isSelected: false,
-                        tooltip: 'Clear All Windows',
+                        tooltip: l10nOf(context).auxMultinutzPageClearAllWindows,
                         onTap: _closeAll,
                       ),
                     ],

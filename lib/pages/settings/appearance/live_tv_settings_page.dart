@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import '../../../services/theme/app_theme_service.dart';
 import '../../../services/theme/design_tokens.dart';
@@ -20,13 +23,13 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
     final palette = AppThemeService.currentPalette.value;
 
     return SettingsScaffold(
-      title: 'Live TV & Sports UI',
+      title: l10nOf(context).appearanceLiveTvTitle,
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         children: [
           // ── 1. Hero Spotlight Carousel ──
           Text(
-            'LIVE SPOTLIGHT & HERO BANNER',
+            l10nOf(context).auxLiveTvSettingsPageLiveSpotlightHeroBanner,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -36,7 +39,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
 
           // ── 2. Card Layout & Poster Density ──
           Text(
-            'CHANNEL CARDS & POSTER DENSITY',
+            l10nOf(context).auxLiveTvSettingsPageChannelCardsPosterDensity,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -46,7 +49,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
 
           // ── 3. Category Visibility & Ordering ──
           Text(
-            'SECTIONS & CATEGORY MANAGER',
+            l10nOf(context).auxLiveTvSettingsPageSectionsCategoryManager,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -56,7 +59,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
 
           // ── 4. Portals Modal Customization ──
           Text(
-            'PORTALS & PLAYLISTS MODAL',
+            l10nOf(context).auxLiveTvSettingsPagePortalsPlaylistsModal,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -66,7 +69,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
 
           // ── 5. Portal Browser Customization ──
           Text(
-            'PORTAL BROWSER & CHANNEL GUIDE',
+            l10nOf(context).auxLiveTvSettingsPagePortalBrowserChannelGuide,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -76,7 +79,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
 
           // ── 6. Public Stream Sources ──
           Text(
-            'STREAM SOURCES',
+            l10nOf(context).auxLiveTvSettingsPageStreamSources,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -128,12 +131,12 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Show Live Spotlight Banner',
+                          l10nOf(context).auxLiveTvSettingsPageShowLiveSpotlightBanner,
                           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Featured championship matches and top broadcast channels at the top',
+                          l10nOf(context).auxLiveTvSettingsPageFeaturedChampionshipMatchesAndTopBroadcastChannels,
                           style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                         ),
                       ],
@@ -157,7 +160,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
 
                 // Style Selection
                 Text(
-                  'Hero Banner Style',
+                  l10nOf(context).auxLiveTvSettingsPageHeroBannerStyle,
                   style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
                 ),
                 const SizedBox(height: 8),
@@ -172,7 +175,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       },
                       options: [
                         for (final style in HeroStyle.values)
-                          SegmentedTabOption(value: style, label: style.label),
+                          SegmentedTabOption(value: style, label: configLabel(context, style.label)),
                       ],
                     );
                   },
@@ -193,12 +196,12 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Auto-Rotate Channels',
+                                l10nOf(context).auxLiveTvSettingsPageAutoRotateChannels,
                                 style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                'Automatically cycle through featured live events',
+                                l10nOf(context).auxLiveTvSettingsPageAutomaticallyCycleThroughFeaturedLiveEvents,
                                 style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                               ),
                             ],
@@ -230,11 +233,11 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  'Rotation Interval',
+                                  l10nOf(context).auxLiveTvSettingsPageRotationInterval,
                                   style: ZplayType.label.toStyle(color: tokens.textEmphasis),
                                 ),
                                 Text(
-                                  '$seconds seconds',
+                                  l10nOf(context).dynamicLiveTvSettingsPageSeconds((seconds).toString()),
                                   style: ZplayType.labelNumeric.toStyle(color: palette.primaryColor),
                                 ),
                               ],
@@ -278,7 +281,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
         children: [
           // Density Choice
           Text(
-            'Channel Card Size',
+            l10nOf(context).auxLiveTvSettingsPageChannelCardSize,
             style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
           ),
           const SizedBox(height: 8),
@@ -293,7 +296,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                 },
                 options: [
                   for (final density in CardDensity.values)
-                    SegmentedTabOption(value: density, label: density.label),
+                    SegmentedTabOption(value: density, label: configLabel(context, density.label)),
                 ],
               );
             },
@@ -315,7 +318,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Card Hover Scale Zoom',
+                        l10nOf(context).auxLiveTvSettingsPageCardHoverScaleZoom,
                         style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
                       ),
                       Text(
@@ -360,12 +363,12 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Show LIVE / HD Stream Badge',
+                          l10nOf(context).auxLiveTvSettingsPageShowLiveHdStreamBadge,
                           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Display radiant live broadcast badge on channel corners',
+                          l10nOf(context).auxLiveTvSettingsPageDisplayRadiantLiveBroadcastBadgeOnChannel,
                           style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                         ),
                       ],
@@ -396,12 +399,12 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Show Channel Category Tag',
+                          l10nOf(context).auxLiveTvSettingsPageShowChannelCategoryTag,
                           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Show category label below channel name',
+                          l10nOf(context).auxLiveTvSettingsPageShowCategoryLabelBelowChannelName,
                           style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                         ),
                       ],
@@ -432,12 +435,12 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Show Feed Health Badge',
+                          l10nOf(context).auxLiveTvSettingsPageShowFeedHealthBadge,
                           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Mark a channel as alive, unchecked or dead on the Boxing row',
+                          l10nOf(context).auxLiveTvSettingsPageMarkAChannelAsAliveUncheckedOr,
                           style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                         ),
                       ],
@@ -474,12 +477,12 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Channel Categories & Sections',
+                        l10nOf(context).auxLiveTvSettingsPageChannelCategoriesSections,
                         style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        'Toggle visibility of Live TV rows',
+                        l10nOf(context).auxLiveTvSettingsPageToggleVisibilityOfLiveTvRows,
                         style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                       ),
                     ],
@@ -487,7 +490,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                   TextButton.icon(
                     onPressed: () => IptvSettings.resetCategories(),
                     icon: const Icon(Icons.refresh_rounded, size: 16),
-                    label: Text('Reset All', style: ZplayType.label.toStyle()),
+                    label: Text(l10nOf(context).auxLiveTvSettingsPageResetAll, style: ZplayType.label.toStyle()),
                     style: TextButton.styleFrom(
                       foregroundColor: palette.primaryColor,
                     ),
@@ -529,7 +532,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Portal Card Display Style',
+            l10nOf(context).auxLiveTvSettingsPagePortalCardDisplayStyle,
             style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
           ),
           const SizedBox(height: 8),
@@ -544,7 +547,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                 },
                 options: [
                   for (final s in PortalCardStyle.values)
-                    SegmentedTabOption(value: s, label: s.label),
+                    SegmentedTabOption(value: s, label: configLabel(context, s.label)),
                 ],
               );
             },
@@ -564,12 +567,12 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Show Portal Expiry Date',
+                          l10nOf(context).auxLiveTvSettingsPageShowPortalExpiryDate,
                           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Display subscription expiration tag on portal cards',
+                          l10nOf(context).auxLiveTvSettingsPageDisplaySubscriptionExpirationTagOnPortalCards,
                           style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                         ),
                       ],
@@ -599,12 +602,12 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Show Max Active Connections Tag',
+                          l10nOf(context).auxLiveTvSettingsPageShowMaxActiveConnectionsTag,
                           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Display current and max concurrent streaming connections',
+                          l10nOf(context).auxLiveTvSettingsPageDisplayCurrentAndMaxConcurrentStreamingConnections,
                           style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                         ),
                       ],
@@ -625,7 +628,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
           const SizedBox(height: 12),
 
           Text(
-            'Default Starting Tab',
+            l10nOf(context).auxLiveTvSettingsPageDefaultStartingTab,
             style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
           ),
           const SizedBox(height: 8),
@@ -635,9 +638,9 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
               return SegmentedTabs<int>(
                 selected: tabIdx,
                 onSelected: IptvSettings.setDefaultPortalTab,
-                options: const [
-                  SegmentedTabOption(value: 0, label: 'Xtream Panels'),
-                  SegmentedTabOption(value: 1, label: 'M3U Playlists'),
+                options: [
+                  SegmentedTabOption(value: 0, label: l10nOf(context).auxLiveTvSettingsPageXtreamPanels),
+                  SegmentedTabOption(value: 1, label: l10nOf(context).auxLiveTvSettingsPageM3uPlaylists),
                 ],
               );
             },
@@ -655,7 +658,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Channel Stream Layout Mode',
+            l10nOf(context).auxIptvPortalBrowserPageChannelStreamLayoutMode,
             style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
           ),
           const SizedBox(height: 8),
@@ -670,7 +673,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                 },
                 options: [
                   for (final l in PortalBrowserLayout.values)
-                    SegmentedTabOption(value: l, label: l.label),
+                    SegmentedTabOption(value: l, label: configLabel(context, l.label)),
                 ],
               );
             },
@@ -694,11 +697,11 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Grid Stream Columns',
+                            l10nOf(context).auxIptvPortalBrowserPageGridStreamColumns,
                             style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
                           ),
                           Text(
-                            '$cols Columns',
+                            l10nOf(context).dynamicLiveTvSettingsPageColumns((cols).toString()),
                             style: ZplayType.labelNumeric.toStyle(color: palette.primaryColor),
                           ),
                         ],
@@ -739,7 +742,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Category Sidebar Width',
+                        l10nOf(context).auxLiveTvSettingsPageCategorySidebarWidth,
                         style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
                       ),
                       Text(
@@ -783,12 +786,12 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Show Channel Stream Logos',
+                          l10nOf(context).auxIptvPortalBrowserPageShowChannelStreamLogos,
                           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Display channel poster and logos in stream rows',
+                          l10nOf(context).auxLiveTvSettingsPageDisplayChannelPosterAndLogosInStream,
                           style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                         ),
                       ],
@@ -818,12 +821,12 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Show EPG "Now Playing" Snippet',
+                          l10nOf(context).auxIptvPortalBrowserPageShowEpgNowPlayingSnippet,
                           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Display current television guide title below channel',
+                          l10nOf(context).auxLiveTvSettingsPageDisplayCurrentTelevisionGuideTitleBelowChannel,
                           style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                         ),
                       ],
@@ -853,12 +856,12 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Show Category Stream Counts',
+                          l10nOf(context).auxIptvPortalBrowserPageShowCategoryStreamCounts,
                           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Show number of available streams next to category names',
+                          l10nOf(context).auxLiveTvSettingsPageShowNumberOfAvailableStreamsNextTo,
                           style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                         ),
                       ],
@@ -895,12 +898,12 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Include Free Public Sources',
+                      l10nOf(context).auxLiveTvSettingsPageIncludeFreePublicSources,
                       style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Add public M3U playlists (e.g. iptv-org) to a channel\'s stream list',
+                      l10nOf(context).appearancePublicPlaylistHelp,
                       style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                     ),
                   ],

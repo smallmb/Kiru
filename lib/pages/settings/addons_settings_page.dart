@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -135,7 +137,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            '${addon.manifest.name} connected to $_selectedDebridService',
+            l10nOf(context).dynamicAddonsSettingsPageConnectedTo((addon.manifest.name).toString(), (_selectedDebridService).toString()),
           ),
           behavior: SnackBarBehavior.floating,
           backgroundColor: context.tokens.success,
@@ -194,7 +196,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('${addon.manifest.name} installed successfully!'),
+          content: Text(l10nOf(context).dynamicAddonsSettingsPageInstalledSuccessfully((addon.manifest.name).toString())),
           behavior: SnackBarBehavior.floating,
           backgroundColor: context.tokens.success,
         ),
@@ -226,20 +228,18 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             side: tokens.hairlineStrong,
           ),
           title: Text(
-            'Share your Debrid key?',
+            l10nOf(context).uiAddonsSettingsPageShareYourDebridKey,
             style: ZplayType.title.toStyle(color: tokens.textPrimary),
           ),
           content: Text(
-            'This addon URL contains a Debrid placeholder. ZPlay will fill it '
-            'with your saved key, so the addon server receives that key in the '
-            'request URL. Only continue if you trust this addon.',
+            l10nOf(context).addonCredentialSharingWarning,
             style: ZplayType.body.toStyle(color: tokens.textSecondary),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
               child: Text(
-                'Cancel',
+                l10nOf(context).uiAddonsSettingsPageCancel,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
             ),
@@ -256,7 +256,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                   vertical: 12,
                 ),
               ),
-              child: Text('Continue', style: ZplayType.label.toStyle()),
+              child: Text(l10nOf(context).uiAddonsSettingsPageContinue, style: ZplayType.label.toStyle()),
             ),
           ],
         );
@@ -278,7 +278,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             side: tokens.hairlineStrong,
           ),
           title: Text(
-            'Add Stremio Addon',
+            l10nOf(context).uiAddonsSettingsPageAddStremioAddon,
             style: ZplayType.title.toStyle(color: tokens.textPrimary),
           ),
           content: Column(
@@ -286,7 +286,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Paste the Stremio addon manifest.json URL to install catalogs, metadata, streams, or subtitles.',
+                l10nOf(context).uiAddonsSettingsPagePasteTheStremioAddonManifestJson,
                 style: ZplayType.body.toStyle(color: tokens.textSecondary),
               ),
               const SizedBox(height: ZplaySpacing.s16),
@@ -326,7 +326,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(
-                'Cancel',
+                l10nOf(context).uiAddonsSettingsPageCancel,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
             ),
@@ -343,7 +343,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                   vertical: 12,
                 ),
               ),
-              child: Text('Install', style: ZplayType.label.toStyle()),
+              child: Text(l10nOf(context).uiAddonsSettingsPageInstall, style: ZplayType.label.toStyle()),
             ),
           ],
         );
@@ -368,16 +368,16 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             borderRadius: ZplayRadius.lgAll,
             side: tokens.hairlineStrong,
           ),
-          title: Text('Remove ${addon.manifest.name}?'),
+          title: Text(l10nOf(context).dynamicAddonsSettingsPageRemove((addon.manifest.name).toString())),
           content: Text(
-            'Its catalogs and metadata will be removed from your home page.',
+            l10nOf(context).auxAddonsSettingsPageItsCatalogsAndMetadataWillBeRemoved,
             style: ZplayType.body.toStyle(color: tokens.textSecondary),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(
-                'Cancel',
+                l10nOf(context).uiAddonsSettingsPageCancel,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
             ),
@@ -394,7 +394,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 ),
               ),
               child: Text(
-                'Remove',
+                l10nOf(context).uiAddonsSettingsPageRemove,
                 style: ZplayType.label.toStyle(color: tokens.textPrimary),
               ),
             ),
@@ -414,7 +414,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Repository added successfully!'),
+          content: Text(l10nOf(context).uiAddonsSettingsPageRepositoryAddedSuccessfully),
           behavior: SnackBarBehavior.floating,
           backgroundColor: context.tokens.success,
         ),
@@ -430,16 +430,16 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
               borderRadius: ZplayRadius.lgAll,
               side: tokens.hairlineStrong,
             ),
-            title: const Text('Install Repository Plugins?'),
+            title: Text(l10nOf(context).uiAddonsSettingsPageInstallRepositoryPlugins),
             content: Text(
-              'Would you like to install all plugins from this repository now so their streaming sources become available immediately on the watch screen?',
+              l10nOf(context).auxAddonsSettingsPageWouldYouLikeToInstallAllPlugins,
               style: ZplayType.body.toStyle(color: tokens.textEmphasis),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
                 child: Text(
-                  'Browse Later',
+                  l10nOf(context).uiAddonsSettingsPageBrowseLater,
                   style: ZplayType.label.toStyle(color: tokens.textSecondary),
                 ),
               ),
@@ -453,7 +453,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                   ),
                 ),
                 child: Text(
-                  'Install All Now',
+                  l10nOf(context).uiAddonsSettingsPageInstallAllNow,
                   style: ZplayType.label.toStyle(),
                 ),
               ),
@@ -492,7 +492,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             side: tokens.hairlineStrong,
           ),
           title: Text(
-            'Installing Plugins',
+            l10nOf(context).uiAddonsSettingsPageInstallingPlugins,
             style: ZplayType.title.toStyle(color: tokens.textPrimary),
           ),
           content: Column(
@@ -522,7 +522,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Successfully installed $count plugins from repository!',
+            l10nOf(context).dynamicAddonsSettingsPageSuccessfullyInstalledPluginsFromRepository((count).toString()),
           ),
           backgroundColor: context.tokens.success,
           behavior: SnackBarBehavior.floating,
@@ -534,7 +534,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Installation error: $e'),
+          content: Text(l10nOf(context).dynamicAddonsSettingsPageInstallationError((e).toString())),
           backgroundColor: context.tokens.danger,
           behavior: SnackBarBehavior.floating,
         ),
@@ -556,7 +556,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             side: tokens.hairlineStrong,
           ),
           title: Text(
-            'Add CloudStream Repository',
+            l10nOf(context).uiAddonsSettingsPageAddCloudstreamRepository,
             style: ZplayType.title.toStyle(color: tokens.textPrimary),
           ),
           content: Column(
@@ -564,7 +564,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Paste the repository URL (supports cloudstreamrepo://, repo.json, or plugins.json).',
+                l10nOf(context).auxAddonsSettingsPagePasteTheRepositoryUrlSupportsCloudstreamrepoRepo,
                 style: ZplayType.body.toStyle(color: tokens.textSecondary),
               ),
               const SizedBox(height: ZplaySpacing.s16),
@@ -608,14 +608,14 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
               },
               icon: Icon(Icons.hub_rounded, size: 16, color: tokens.accent),
               label: Text(
-                'Browse Marketplace',
+                l10nOf(context).uiAddonsSettingsPageBrowseMarketplace,
                 style: ZplayType.label.toStyle(color: tokens.accent),
               ),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(
-                'Cancel',
+                l10nOf(context).uiAddonsSettingsPageCancel,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
             ),
@@ -632,7 +632,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                   vertical: 12,
                 ),
               ),
-              child: Text('Add Repository', style: ZplayType.label.toStyle()),
+              child: Text(l10nOf(context).uiAddonsSettingsPageAddRepository, style: ZplayType.label.toStyle()),
             ),
           ],
         );
@@ -651,16 +651,16 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             borderRadius: ZplayRadius.lgAll,
             side: tokens.hairlineStrong,
           ),
-          title: Text('Remove ${ext.name}?'),
+          title: Text(l10nOf(context).dynamicAddonsSettingsPageRemove((ext.name).toString())),
           content: Text(
-            'This CloudStream extension will be uninstalled.',
+            l10nOf(context).auxAddonsSettingsPageThisCloudstreamExtensionWillBeUninstalled,
             style: ZplayType.body.toStyle(color: tokens.textSecondary),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(
-                'Cancel',
+                l10nOf(context).uiAddonsSettingsPageCancel,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
             ),
@@ -677,7 +677,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 ),
               ),
               child: Text(
-                'Remove',
+                l10nOf(context).uiAddonsSettingsPageRemove,
                 style: ZplayType.label.toStyle(color: tokens.textPrimary),
               ),
             ),
@@ -710,7 +710,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             children: [
               Icon(Icons.delete_sweep_rounded, color: tokens.danger, size: 22),
               const SizedBox(width: 10),
-              Text('Remove $count Plugin${count > 1 ? 's' : ''}?'),
+              Text(l10nOf(context).addonsRemoveCount(count)),
             ],
           ),
           content: Text(
@@ -723,7 +723,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             TextButton(
               onPressed: () => Navigator.pop(dialogCtx),
               child: Text(
-                'Cancel',
+                l10nOf(context).uiAddonsSettingsPageCancel,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
             ),
@@ -746,7 +746,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                         ),
                         const SizedBox(width: ZplaySpacing.s8),
                         Text(
-                          'Successfully removed $count plugin${count > 1 ? 's' : ''}.',
+                          l10nOf(context).addonsRemovedCount(count),
                         ),
                       ],
                     ),
@@ -762,7 +762,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                   borderRadius: ZplayRadius.smAll,
                 ),
               ),
-              child: Text('Remove ($count)', style: ZplayType.label.toStyle()),
+              child: Text(l10nOf(context).dynamicAddonsSettingsPageRemove2((count).toString()), style: ZplayType.label.toStyle()),
             ),
           ],
         );
@@ -781,16 +781,16 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             borderRadius: ZplayRadius.lgAll,
             side: tokens.hairlineStrong,
           ),
-          title: Text('Remove ${repo.name}?'),
+          title: Text(l10nOf(context).dynamicAddonsSettingsPageRemove((repo.name).toString())),
           content: Text(
-            'Plugins from this repository will not be deleted, but repository updates will no longer be fetched.',
+            l10nOf(context).auxAddonsSettingsPagePluginsFromThisRepositoryWillNotBe,
             style: ZplayType.body.toStyle(color: tokens.textSecondary),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(
-                'Cancel',
+                l10nOf(context).uiAddonsSettingsPageCancel,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
             ),
@@ -807,7 +807,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 ),
               ),
               child: Text(
-                'Remove',
+                l10nOf(context).uiAddonsSettingsPageRemove,
                 style: ZplayType.label.toStyle(color: tokens.textPrimary),
               ),
             ),
@@ -823,7 +823,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
     final csExtensions = _csManager.installedExtensions;
 
     return SettingsScaffold(
-      title: 'Addons & Extensions',
+      title: l10nOf(context).uiAddonsSettingsPageAddonsExtensions,
       child: ListView(
         padding: const EdgeInsets.symmetric(
           horizontal: ZplaySpacing.s16,
@@ -842,7 +842,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
               children: [
                 Expanded(
                   child: _TabButton(
-                    title: 'Stremio Addons',
+                    title: l10nOf(context).uiAddonsSettingsPageStremioAddons,
                     icon: Icons.extension_rounded,
                     count: addons.length,
                     isSelected: _selectedTabIndex == 0,
@@ -880,7 +880,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
         Padding(
           padding: const EdgeInsets.only(bottom: ZplaySpacing.s20),
           child: Text(
-            'Addons provide metadata, catalogs, and streaming sources. Hold and drag to reorder priority. Providers higher up load and appear first in watch sources.',
+            l10nOf(context).uiAddonsSettingsPageAddonsProvideMetadataCatalogsAndStreaming,
             style: ZplayType.body.toStyle(color: tokens.textSecondary),
           ),
         ),
@@ -898,7 +898,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
           children: [
             Expanded(
               child: Text(
-                'INSTALLED PROVIDERS & ADDONS',
+                l10nOf(context).uiAddonsSettingsPageInstalledProvidersAddons,
                 style: ZplayType.overline.toStyle(color: tokens.textMuted),
                 overflow: TextOverflow.ellipsis,
               ),
@@ -914,7 +914,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 borderRadius: ZplayRadius.xsAll,
               ),
               child: Text(
-                '${addons.length} Total',
+                l10nOf(context).dynamicAddonsSettingsPageTotal((addons.length).toString()),
                 style: ZplayType.caption.toStyle(color: tokens.accent),
               ),
             ),
@@ -935,12 +935,12 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 ),
                 const SizedBox(height: ZplaySpacing.s12),
                 Text(
-                  'No Addons Installed',
+                  l10nOf(context).uiAddonsSettingsPageNoAddonsInstalled,
                   style: ZplayType.title.toStyle(color: tokens.textEmphasis),
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Click "Add Addon" above to install a Stremio manifest URL.',
+                  l10nOf(context).uiAddonsSettingsPageClickAddAddonAboveToInstall,
                   textAlign: TextAlign.center,
                   style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
                 ),
@@ -1021,13 +1021,13 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'DEBRID ADDONS',
+          l10nOf(context).uiAddonsSettingsPageDebridAddons,
           style: ZplayType.overline.toStyle(color: tokens.textMuted),
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: ZplaySpacing.s4),
         Text(
-          'Installs the addon for the Debrid provider selected in Settings and fills your saved key in at request time, so the key is never stored twice.',
+          l10nOf(context).auxAddonsSettingsPageInstallsTheAddonForTheDebridProvider,
           style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
         ),
         const SizedBox(height: ZplaySpacing.s12),
@@ -1039,7 +1039,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
           ),
 
         Text(
-          'Addons that take the key as a plain URL parameter accept a {realdebrid} style placeholder. Addons that hide it inside a base64 config blob have to be pasted fully configured instead.',
+          l10nOf(context).addonCredentialPlaceholderHelp('{realdebrid}'),
           style: ZplayType.caption.toStyle(color: tokens.textMuted),
         ),
       ],
@@ -1077,7 +1077,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
         Padding(
           padding: const EdgeInsets.only(bottom: ZplaySpacing.s16),
           child: Text(
-            'CloudStream (.cs3) extensions provide stream providers directly from popular media sites. Extensions run locally in a sandboxed sidecar or native ART engine.',
+            l10nOf(context).auxAddonsSettingsPageCloudstreamCs3ExtensionsProvideStreamProvidersDirectly,
             style: ZplayType.body.toStyle(color: tokens.textSecondary),
           ),
         ),
@@ -1124,8 +1124,8 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                           children: [
                             Text(
                               isReady
-                                  ? 'CloudStream Engine Ready'
-                                  : 'Runtime Setup Required',
+                                  ? l10nOf(context).uiFinalAddonsSettingsPageCloudstreamEngineReady
+                                  : l10nOf(context).uiFinalAddonsSettingsPageRuntimeSetupRequired,
                               style: ZplayType.subtitle.toStyle(
                                 color: tokens.textPrimary,
                               ),
@@ -1133,7 +1133,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                             const SizedBox(height: ZplaySpacing.s2),
                             Text(
                               isReady
-                                  ? 'Native engine active and listening for queries.'
+                                  ? l10nOf(context).uiFinalAddonsSettingsPageNativeEngineActiveAndListeningFor
                                   : (isDownloading
                                         ? (_csDownloader.status.value.isNotEmpty
                                               ? _csDownloader.status.value
@@ -1238,7 +1238,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                         runSpacing: 4,
                         children: [
                           Text(
-                            'Repository Marketplace',
+                            l10nOf(context).uiAddonsSettingsPageRepositoryMarketplace,
                             style: ZplayType.subtitle.toStyle(
                               color: tokens.textPrimary,
                             ),
@@ -1260,7 +1260,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                               ),
                             ),
                             child: Text(
-                              '45+ Repos',
+                              l10nOf(context).auxAddonsSettingsPage45Repos,
                               style: ZplayType.caption.toStyle(
                                 color: tokens.success,
                               ),
@@ -1270,7 +1270,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                       ),
                       const SizedBox(height: ZplaySpacing.s4),
                       Text(
-                        'Browse curated Turkish, 3rabi, English, Hindi & global repos with direct install links.',
+                        l10nOf(context).auxAddonsSettingsPageBrowseCuratedTurkish3rabiEnglishHindiGlobal,
                         style: ZplayType.bodySmall.toStyle(
                           color: tokens.textSecondary,
                         ),
@@ -1324,7 +1324,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                     const SizedBox(width: ZplaySpacing.s8),
                     Flexible(
                       child: Text(
-                        'Browse Available Plugins',
+                        l10nOf(context).uiAddonsSettingsPageBrowseAvailablePlugins,
                         style: ZplayType.label.toStyle(color: tokens.onAccent),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -1374,7 +1374,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                     const SizedBox(width: ZplaySpacing.s8),
                     Flexible(
                       child: Text(
-                        'Add Repository',
+                        l10nOf(context).uiAddonsSettingsPageAddRepository,
                         style: ZplayType.label.toStyle(color: tokens.accent),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -1436,8 +1436,8 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 ),
                 label: Text(
                   allSelected
-                      ? 'Deselect All'
-                      : (anySelected ? 'Deselect All' : 'Select All'),
+                      ? l10nOf(context).uiFinalAddonsSettingsPageDeselectAll
+                      : (anySelected ? l10nOf(context).uiFinalAddonsSettingsPageDeselectAll : l10nOf(context).uiFinalAddonsSettingsPageSelectAll),
                   style: ZplayType.caption.toStyle(
                     color: anySelected ? tokens.accent : tokens.textEmphasis,
                   ),
@@ -1465,7 +1465,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 onPressed: () => _confirmRemoveSelectedCsExtensions(installed),
                 icon: const Icon(Icons.delete_sweep_rounded, size: 14),
                 label: Text(
-                  'Remove (${_selectedCsExtensionKeys.length})',
+                  l10nOf(context).dynamicAddonsSettingsPageRemove2((_selectedCsExtensionKeys.length).toString()),
                   style: ZplayType.caption.toStyle(),
                 ),
                 style: ElevatedButton.styleFrom(
@@ -1494,7 +1494,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 borderRadius: ZplayRadius.xsAll,
               ),
               child: Text(
-                '${installed.length} Total',
+                l10nOf(context).dynamicAddonsSettingsPageTotal((installed.length).toString()),
                 style: ZplayType.caption.toStyle(color: tokens.accent),
               ),
             );
@@ -1507,7 +1507,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                     children: [
                       Expanded(
                         child: Text(
-                          'INSTALLED EXTENSIONS',
+                          l10nOf(context).uiAddonsSettingsPageInstalledExtensions,
                           style: ZplayType.overline.toStyle(
                             color: tokens.textMuted,
                           ),
@@ -1538,7 +1538,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             return Row(
               children: [
                 Text(
-                  'INSTALLED CLOUDSTREAM EXTENSIONS',
+                  l10nOf(context).uiAddonsSettingsPageInstalledCloudstreamExtensions,
                   style: ZplayType.overline.toStyle(color: tokens.textMuted),
                 ),
                 const Spacer(),
@@ -1569,12 +1569,12 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 ),
                 const SizedBox(height: ZplaySpacing.s12),
                 Text(
-                  'No Extensions Installed',
+                  l10nOf(context).uiAddonsSettingsPageNoExtensionsInstalled,
                   style: ZplayType.title.toStyle(color: tokens.textEmphasis),
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  'Click "Browse Available Plugins" to find and install extensions.',
+                  l10nOf(context).uiAddonsSettingsPageClickBrowseAvailablePluginsToFind,
                   textAlign: TextAlign.center,
                   style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
                 ),
@@ -1621,7 +1621,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
         Row(
           children: [
             Text(
-              'REPOSITORIES',
+              l10nOf(context).uiAddonsSettingsPageRepositories,
               style: ZplayType.overline.toStyle(color: tokens.textMuted),
             ),
             const Spacer(),
@@ -1635,7 +1635,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 borderRadius: ZplayRadius.xsAll,
               ),
               child: Text(
-                '${repos.length} Repos',
+                l10nOf(context).dynamicAddonsSettingsPageRepos((repos.length).toString()),
                 style: ZplayType.caption.toStyle(color: tokens.textSecondary),
               ),
             ),
@@ -1656,7 +1656,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 const SizedBox(width: 14),
                 Expanded(
                   child: Text(
-                    'No custom repositories added. Click "Add Repository" to subscribe to a CloudStream repository.',
+                    l10nOf(context).uiAddonsSettingsPageNoCustomRepositoriesAddedClickAdd,
                     style: ZplayType.bodySmall.toStyle(
                       color: tokens.textSecondary,
                     ),
@@ -1713,14 +1713,14 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                       icon: const Icon(Icons.download_rounded, size: 20),
                       color: tokens.accent,
                       splashRadius: 18,
-                      tooltip: 'Install all plugins from this repository',
+                      tooltip: l10nOf(context).uiAddonsSettingsPageInstallAllPluginsFromThisRepository,
                       onPressed: () => _installAllFromRepo(repo.url),
                     ),
                     IconButton(
                       icon: const Icon(Icons.storefront_rounded, size: 19),
                       color: tokens.textEmphasis,
                       splashRadius: 18,
-                      tooltip: 'Browse repository plugins',
+                      tooltip: l10nOf(context).uiAddonsSettingsPageBrowseRepositoryPlugins,
                       onPressed: () async {
                         await CloudStreamRepoModal.show(context);
                         if (mounted) setState(() {});
@@ -1730,7 +1730,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                       icon: const Icon(Icons.delete_outline_rounded, size: 18),
                       color: tokens.textMuted,
                       splashRadius: 18,
-                      tooltip: 'Remove repository',
+                      tooltip: l10nOf(context).uiAddonsSettingsPageRemoveRepository,
                       onPressed: () => _confirmRemoveCsRepo(repo),
                     ),
                   ],
@@ -1755,7 +1755,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Runtime setup error: $e'),
+              content: Text(l10nOf(context).dynamicAddonsSettingsPageRuntimeSetupError((e).toString())),
               backgroundColor: tokens.danger,
               behavior: SnackBarBehavior.floating,
             ),
@@ -1763,7 +1763,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
         }
       },
       icon: const Icon(Icons.download_rounded, size: 16),
-      label: Text('Setup Engine', style: ZplayType.label.toStyle()),
+      label: Text(l10nOf(context).uiAddonsSettingsPageSetupEngine, style: ZplayType.label.toStyle()),
       style: ElevatedButton.styleFrom(
         backgroundColor: tokens.accent,
         foregroundColor: tokens.onAccent,
@@ -1920,7 +1920,7 @@ class _AddonCard extends StatelessWidget {
                   ? tokens.textEmphasis
                   : tokens.textDisabled,
               onPressed: onMoveUp,
-              tooltip: 'Move up in priority',
+              tooltip: l10nOf(context).uiAddonsSettingsPageMoveUpInPriority,
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
               visualDensity: VisualDensity.compact,
@@ -1931,7 +1931,7 @@ class _AddonCard extends StatelessWidget {
                   ? tokens.textEmphasis
                   : tokens.textDisabled,
               onPressed: onMoveDown,
-              tooltip: 'Move down in priority',
+              tooltip: l10nOf(context).uiAddonsSettingsPageMoveDownInPriority,
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
               visualDensity: VisualDensity.compact,
@@ -1953,7 +1953,7 @@ class _AddonCard extends StatelessWidget {
             borderRadius: ZplayRadius.xsAll,
           ),
           child: Text(
-            isP2p ? 'BUILT-IN TORRENT' : 'BUILT-IN HTTP',
+            isP2p ? l10nOf(context).finalAddonsSettingsPageBuiltInTorrent : 'BUILT-IN HTTP',
             style: ZplayType.overline.toStyle(color: providerColor),
           ),
         );
@@ -1962,7 +1962,7 @@ class _AddonCard extends StatelessWidget {
           icon: const Icon(Icons.delete_outline_rounded, size: 19),
           color: tokens.danger.withValues(alpha: ZplayOpacity.textSecondary),
           onPressed: onRemove,
-          tooltip: 'Remove addon',
+          tooltip: l10nOf(context).uiAddonsSettingsPageRemoveAddon,
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
           visualDensity: VisualDensity.compact,
@@ -2099,7 +2099,7 @@ class _AddonCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 5),
                           Text(
-                            'FUNCTIONS',
+                            l10nOf(context).uiAddonsSettingsPageFunctions,
                             style: ZplayType.overline.toStyle(
                               color: tokens.textSecondary,
                             ),
@@ -2114,7 +2114,7 @@ class _AddonCard extends StatelessWidget {
                           if (hasCatalogs)
                             _FeatureToggleChip(
                               icon: Icons.grid_view_rounded,
-                              label: 'Catalogs',
+                              label: l10nOf(context).uiAddonsSettingsPageCatalogs,
                               count: m.catalogs.isNotEmpty
                                   ? m.catalogs.length
                                   : null,
@@ -2126,7 +2126,7 @@ class _AddonCard extends StatelessWidget {
                           if (hasSearch)
                             _FeatureToggleChip(
                               icon: Icons.search_rounded,
-                              label: 'Search',
+                              label: l10nOf(context).uiAddonsSettingsPageSearch,
                               isEnabled: addon.enableSearch,
                               onTap: () => onUpdateFeature(
                                 enableSearch: !addon.enableSearch,
@@ -2135,7 +2135,7 @@ class _AddonCard extends StatelessWidget {
                           if (hasStreams)
                             _FeatureToggleChip(
                               icon: Icons.play_circle_outline_rounded,
-                              label: 'Sources',
+                              label: l10nOf(context).uiAddonsSettingsPageSources,
                               isEnabled: addon.enableStreams,
                               onTap: () => onUpdateFeature(
                                 enableStreams: !addon.enableStreams,
@@ -2144,7 +2144,7 @@ class _AddonCard extends StatelessWidget {
                           if (hasSubtitles)
                             _FeatureToggleChip(
                               icon: Icons.subtitles_rounded,
-                              label: 'Subtitles',
+                              label: l10nOf(context).uiAddonsSettingsPageSubtitles,
                               isEnabled: addon.enableSubtitles,
                               onTap: () => onUpdateFeature(
                                 enableSubtitles: !addon.enableSubtitles,
@@ -2390,7 +2390,7 @@ class _AddAddonButton extends StatelessWidget {
               Icon(Icons.add_rounded, color: tokens.accent, size: 22),
             const SizedBox(width: 10),
             Text(
-              isLoading ? 'Installing...' : 'Add Addon',
+              isLoading ? l10nOf(context).finalAddonsSettingsPageInstalling : 'Add Addon',
               style: ZplayType.subtitle.toStyle(color: tokens.accent),
             ),
           ],
@@ -2468,7 +2468,7 @@ class _DebridAddonCard extends StatelessWidget {
               ),
             const SizedBox(width: 6),
             Text(
-              isBusy ? 'Connecting...' : 'Connect',
+              isBusy ? l10nOf(context).finalAddonsSettingsPageConnecting : 'Connect',
               style: ZplayType.bodySmall.toStyle(
                 color: isServiceReady ? tokens.accent : tokens.textDisabled,
               ),
@@ -2494,7 +2494,7 @@ class _DebridAddonCard extends StatelessWidget {
           ),
         ),
         child: Text(
-          'Disconnect',
+          l10nOf(context).uiAddonsSettingsPageDisconnect,
           style: ZplayType.bodySmall.toStyle(color: tokens.danger),
         ),
       ),
@@ -2548,7 +2548,7 @@ class _DebridAddonCard extends StatelessWidget {
                               borderRadius: ZplayRadius.xsAll,
                             ),
                             child: Text(
-                              'Connected',
+                              l10nOf(context).uiAddonsSettingsPageConnected,
                               style: ZplayType.caption.toStyle(
                                 color: tokens.accent,
                               ),
@@ -2575,8 +2575,8 @@ class _DebridAddonCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   isServiceReady
-                      ? 'Uses your $selectedService key'
-                      : 'No Debrid provider is set up yet',
+                      ? l10nOf(context).addonsUsesServiceKey(selectedService)
+                      : l10nOf(context).uiFinalAddonsSettingsPageNoDebridProviderIsSetUp,
                   style: ZplayType.caption.toStyle(
                     color: isServiceReady
                         ? tokens.textMuted
@@ -2591,7 +2591,7 @@ class _DebridAddonCard extends StatelessWidget {
           if (!isServiceReady) ...[
             const SizedBox(height: ZplaySpacing.s4),
             Text(
-              'Set up a Debrid provider in Settings first, then come back to connect it.',
+              l10nOf(context).auxAddonsSettingsPageSetUpADebridProviderInSettings,
               style: ZplayType.caption.toStyle(color: tokens.textMuted),
             ),
           ],

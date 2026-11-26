@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../palette_picker.dart';
@@ -28,13 +31,13 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
     final myListCount = MyListService.items.value.length;
 
     return SettingsScaffold(
-      title: 'Home Page UI & Themes',
+      title: l10nOf(context).appearanceHomeTitle,
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         children: [
           // ── 1. Color Schemes & Themes ──
           Text(
-            'COLOR THEMES & ACCENTS',
+            l10nOf(context).auxHomeUiSettingsPageColorThemesAccents,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -44,7 +47,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
 
           // ── 2. Ambient Background Lighting & Moving Glows ──
           Text(
-            'AMBIENT BACKGROUND LIGHTING & MOVING GLOWS',
+            l10nOf(context).auxHomeUiSettingsPageAmbientBackgroundLightingMovingGlows,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -54,7 +57,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
 
           // ── 2b. Custom Wallpaper & Background Photo ──
           Text(
-            'CUSTOM BACKGROUND & WALLPAPER',
+            l10nOf(context).auxHomeUiSettingsPageCustomBackgroundWallpaper,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -105,14 +108,14 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Custom Wallpaper & Lighting Blend',
+                              l10nOf(context).auxHomeUiSettingsPageCustomWallpaperLightingBlend,
                               style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                             ),
                             const SizedBox(height: 3),
                             Text(
                               hasWallpaper
-                                  ? 'Custom background active with ambient light blending'
-                                  : 'Upload photos or choose curated dark wallpapers',
+                                  ? l10nOf(context).uiFinalHomeUiSettingsPageCustomBackgroundActiveWithAmbientLight
+                                  : l10nOf(context).uiFinalHomeUiSettingsPageUploadPhotosOrChooseCuratedDark,
                               style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                             ),
                           ],
@@ -130,7 +133,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
 
           // ── 3. "Because you have on your list" Section ──
           Text(
-            'SMART RECOMMENDATIONS ("BECAUSE YOU HAVE ON YOUR LIST")',
+            l10nOf(context).auxHomeUiSettingsPageSmartRecommendationsBecauseYouHaveOnYour,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -140,7 +143,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
 
           // ── 3b. Curated Collections ──
           Text(
-            'CURATED COLLECTIONS',
+            l10nOf(context).auxHomeUiSettingsPageCuratedCollections,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -150,7 +153,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
 
           // ── 4. Hero Carousel & Spotlight ──
           Text(
-            'HERO BANNER & SPOTLIGHT',
+            l10nOf(context).auxHomeUiSettingsPageHeroBannerSpotlight,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -160,7 +163,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
 
           // ── 5. Card Layout & Poster Density ──
           Text(
-            'POSTER CARDS & DENSITY',
+            l10nOf(context).auxHomeUiSettingsPagePosterCardsDensity,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -170,7 +173,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
 
           // ── 6. Feature Shortcuts & Buttons ──
           Text(
-            'HEADER SHORTCUTS & BUTTONS',
+            l10nOf(context).auxHomeUiSettingsPageHeaderShortcutsButtons,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -229,7 +232,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                               Icon(Icons.auto_awesome_motion_rounded, size: 14, color: palette.primaryColor),
                               const SizedBox(width: 6),
                               Text(
-                                'LIVE LIGHTING ENGINE PREVIEW',
+                                l10nOf(context).auxHomeUiSettingsPageLiveLightingEnginePreview,
                                 style: ZplayType.overline.toStyle(color: tokens.textEmphasis),
                               ),
                             ],
@@ -265,12 +268,12 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Moving Ambient Lights & Glows',
+                          l10nOf(context).auxHomeUiSettingsPageMovingAmbientLightsGlows,
                           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Drifting faded light waves & floating color orbs in background',
+                          l10nOf(context).auxHomeUiSettingsPageDriftingFadedLightWavesFloatingColorOrbs,
                           style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                         ),
                       ],
@@ -294,7 +297,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
 
                 // Lighting Pattern / Position
                 Text(
-                  'Lighting Pattern & Position',
+                  l10nOf(context).auxHomeUiSettingsPageLightingPatternPosition,
                   style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
                 ),
                 const SizedBox(height: 8),
@@ -309,7 +312,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                       },
                       options: [
                         for (final pat in AmbientLightPattern.values)
-                          SegmentedTabOption(value: pat, label: pat.label),
+                          SegmentedTabOption(value: pat, label: configLabel(context, pat.label)),
                       ],
                     );
                   },
@@ -331,7 +334,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Glow Strength / Intensity',
+                              l10nOf(context).auxHomeUiSettingsPageGlowStrengthIntensity,
                               style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
                             ),
                             Text(
@@ -374,7 +377,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Motion Flow Speed',
+                              l10nOf(context).auxHomeUiSettingsPageMotionFlowSpeed,
                               style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
                             ),
                             Text(
@@ -439,12 +442,12 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Smart Recommendations',
+                      l10nOf(context).auxHomeUiSettingsPageSmartRecommendations,
                       style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Configure personalized & algorithmic recommendation sliders',
+                      l10nOf(context).auxHomeUiSettingsPageConfigurePersonalizedAlgorithmicRecommendationSliders,
                       style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                     ),
                   ],
@@ -459,8 +462,8 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
 
           // 1. Because You Have... (My List)
           _buildRecommendationToggleRow(
-            title: '"Because You Have..." (My List)',
-            subtitle: 'BestSimilar recommendations based on titles saved in My List',
+            title: l10nOf(context).auxHomeUiSettingsPageBecauseYouHaveMyList,
+            subtitle: l10nOf(context).auxHomeUiSettingsPageBestsimilarRecommendationsBasedOnTitlesSavedIn,
             listenable: HomePageSettings.enableSimilar,
             onChanged: (val) {
               HomePageSettings.setEnableSimilar(val);
@@ -470,8 +473,8 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
 
           // 2. Because You're Watching... (Continue Watching)
           _buildRecommendationToggleRow(
-            title: '"Because You\'re Watching..."',
-            subtitle: 'BestSimilar recommendations based on active Continue Watching titles',
+            title: l10nOf(context).homeBecauseWatching,
+            subtitle: l10nOf(context).auxHomeUiSettingsPageBestsimilarRecommendationsBasedOnActiveContinueWatching,
             listenable: HomePageSettings.enableWatchingSimilar,
             onChanged: (val) {
               HomePageSettings.setEnableWatchingSimilar(val);
@@ -482,11 +485,9 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
           // Not a recommendation source like the two above, but it belongs with
           // them: it decides which of the addon rails reach the shelf at all.
           _buildRecommendationToggleRow(
-            title: 'Hide Rails With No Artwork',
+            title: l10nOf(context).auxHomeUiSettingsPageHideRailsWithNoArtwork,
             subtitle:
-                'Drops a Home rail when none of its titles can show a picture. '
-                'A landscape tile has no name under it, so such a rail is a row '
-                'of blank rectangles.',
+                l10nOf(context).homeHideArtlessRailsHelp,
             listenable: HomePageSettings.hideArtlessRails,
             onChanged: (val) {
               HomePageSettings.setHideArtlessRails(val);
@@ -500,10 +501,10 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
             builder: (context, snapshot) {
               final isAuthed = snapshot.data ?? false;
               return _buildRecommendationToggleRow(
-                title: 'Trakt Recommendations',
+                title: l10nOf(context).auxHomeUiSettingsPageTraktRecommendations,
                 subtitle: isAuthed
-                    ? 'Personalized recommendations computed by Trakt'
-                    : 'Requires Trakt login in Settings -> Trakt',
+                    ? l10nOf(context).finalHomeUiSettingsPagePersonalizedRecommendationsComputedByTrakt
+                    : l10nOf(context).appearanceDetailRequiresTraktLoginInSettingsTrakt,
                 listenable: HomePageSettings.enableTraktRecommendations,
                 trailingExtra: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -520,7 +521,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                     ),
                   ),
                   child: Text(
-                    isAuthed ? 'CONNECTED' : 'DISCONNECTED',
+                    isAuthed ? l10nOf(context).finalSimklSettingsPageConnected : l10nOf(context).appearanceDetailDisconnected,
                     style: ZplayType.overline.toStyle(color: isAuthed ? const Color(0xFFFF5252) : tokens.textMuted),
                   ),
                 ),
@@ -538,10 +539,10 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
             builder: (context, snapshot) {
               final isAuthed = snapshot.data ?? false;
               return _buildRecommendationToggleRow(
-                title: 'Simkl Recommendations',
+                title: l10nOf(context).auxHomeUiSettingsPageSimklRecommendations,
                 subtitle: isAuthed
-                    ? 'Top-rated & personalized suggestions from Simkl'
-                    : 'Requires Simkl login in Settings -> Simkl',
+                    ? l10nOf(context).finalHomeUiSettingsPageTopRatedPersonalizedSuggestionsFromSimkl
+                    : l10nOf(context).appearanceDetailRequiresSimklLoginInSettingsSimkl,
                 listenable: HomePageSettings.enableSimklRecommendations,
                 trailingExtra: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -558,7 +559,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                     ),
                   ),
                   child: Text(
-                    isAuthed ? 'CONNECTED' : 'DISCONNECTED',
+                    isAuthed ? l10nOf(context).finalSimklSettingsPageConnected : l10nOf(context).appearanceDetailDisconnected,
                     style: ZplayType.overline.toStyle(color: isAuthed ? const Color(0xFF40C4FF) : tokens.textMuted),
                   ),
                 ),
@@ -576,7 +577,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
 
           // Position Dropdown
           Text(
-            'Recommendation Sliders Position on Home Page',
+            l10nOf(context).auxHomeUiSettingsPageRecommendationSlidersPositionOnHomePage,
             style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
           ),
           const SizedBox(height: 6),
@@ -603,7 +604,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                 items: SimilarSectionPosition.values.map((p) {
                   return DropdownMenuItem(
                     value: p,
-                    child: Text(p.label),
+                    child: Text(configLabel(context, p.label)),
                   );
                 }).toList(),
                 onChanged: (newPos) {
@@ -678,8 +679,8 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
     return Padding(
       padding: const EdgeInsets.all(18),
       child: _buildRecommendationToggleRow(
-        title: 'Collections',
-        subtitle: 'Show curated collection rails on the Home page',
+        title: l10nOf(context).browseVerticalCollections,
+        subtitle: l10nOf(context).auxHomeUiSettingsPageShowCuratedCollectionRailsOnTheHome,
         listenable: CollectionsService.showOnHome,
         onChanged: (val) {
           CollectionsService.showOnHome.value = val;
@@ -721,12 +722,12 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Show Hero Spotlight Banner',
+                          l10nOf(context).auxHomeUiSettingsPageShowHeroSpotlightBanner,
                           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Featured rotation banner at the top of the home page',
+                          l10nOf(context).auxHomeUiSettingsPageFeaturedRotationBannerAtTheTopOf,
                           style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                         ),
                       ],
@@ -760,7 +761,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
 
                   // Hero Style Selector
                   Text(
-                    'Spotlight Style',
+                    l10nOf(context).auxHomeUiSettingsPageSpotlightStyle,
                     style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
                   ),
                   const SizedBox(height: 8),
@@ -775,7 +776,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                         },
                         options: [
                           for (final style in HeroStyle.values)
-                            SegmentedTabOption(value: style, label: style.label),
+                            SegmentedTabOption(value: style, label: configLabel(context, style.label)),
                         ],
                       );
                     },
@@ -794,12 +795,12 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Auto-Rotate Spotlight',
+                              l10nOf(context).auxHomeUiSettingsPageAutoRotateSpotlight,
                               style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              'Cycles through featured titles automatically',
+                              l10nOf(context).auxHomeUiSettingsPageCyclesThroughFeaturedTitlesAutomatically,
                               style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                             ),
                           ],
@@ -823,7 +824,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                         return Row(
                           children: [
                             Text(
-                              'Interval: ${seconds}s',
+                              l10nOf(context).dynamicHomeUiSettingsPageIntervalS((seconds).toString()),
                               style: ZplayType.labelNumeric.toStyle(color: tokens.textEmphasis),
                             ),
                             Expanded(
@@ -869,12 +870,12 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Ambient Backdrop Lighting',
+                          l10nOf(context).auxHomeUiSettingsPageAmbientBackdropLighting,
                           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Soft diffused color glow behind active hero poster',
+                          l10nOf(context).auxHomeUiSettingsPageSoftDiffusedColorGlowBehindActiveHero,
                           style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                         ),
                       ],
@@ -909,7 +910,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Poster Size & Grid Density',
+            l10nOf(context).auxHomeUiSettingsPagePosterSizeGridDensity,
             style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
           ),
           const SizedBox(height: 8),
@@ -924,7 +925,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                 },
                 options: [
                   for (final density in CardDensity.values)
-                    SegmentedTabOption(value: density, label: density.label),
+                    SegmentedTabOption(value: density, label: configLabel(context, density.label)),
                 ],
               );
             },
@@ -945,12 +946,12 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Show IMDB Rating Badges',
+                          l10nOf(context).auxHomeUiSettingsPageShowImdbRatingBadges,
                           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Display rating star pill on poster corners',
+                          l10nOf(context).auxHomeUiSettingsPageDisplayRatingStarPillOnPosterCorners,
                           style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                         ),
                       ],
@@ -984,7 +985,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                     children: [
                       Expanded(
                         child: Text(
-                          'Poster Hover Zoom Scale',
+                          l10nOf(context).auxHomeUiSettingsPagePosterHoverZoomScale,
                           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                         ),
                       ),
@@ -1051,12 +1052,12 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'TV Airing Calendar',
+                          l10nOf(context).homeAiringCalendar,
                           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Show TV Calendar buttons on Home bar & sliders',
+                          l10nOf(context).auxHomeUiSettingsPageShowTvCalendarButtonsOnHomeBar,
                           style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                         ),
                       ],
@@ -1101,12 +1102,12 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'AI Recommendation Quiz',
+                          l10nOf(context).auxHomeUiSettingsPageAiRecommendationQuiz,
                           style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          'Show AI Quiz button on Home & Search bars',
+                          l10nOf(context).auxHomeUiSettingsPageShowAiQuizButtonOnHomeSearch,
                           style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
                         ),
                       ],

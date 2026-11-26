@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/media_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -259,9 +262,9 @@ class _PlayerLoadingOverlayState extends State<PlayerLoadingOverlay>
 
     final String primaryLabel = canFindSource
         ? (finding
-              ? (widget.findSourceProgress ?? 'Finding a working source…')
-              : 'Find best source')
-        : 'Choose another source';
+              ? (widget.findSourceProgress ?? mediaLabel(context, 'Finding a working source…'))
+              : mediaLabel(context, 'Find best source'))
+        : mediaLabel(context, 'Choose another source');
 
     final Widget primary = _StallAction(
       focusNode: widget.entryFocusNode,
@@ -312,7 +315,7 @@ class _PlayerLoadingOverlayState extends State<PlayerLoadingOverlay>
               ),
               const SizedBox(width: ZplaySpacing.s8),
               Text(
-                'PLAYBACK ISSUE',
+                l10nOf(context).uiPlayerLoadingOverlayPlaybackIssue,
                 style: ZplayType.overline
                     .copyWith(letterSpacing: 1.2)
                     .toStyle(color: tokens.textMuted),
@@ -321,7 +324,7 @@ class _PlayerLoadingOverlayState extends State<PlayerLoadingOverlay>
           ),
           const SizedBox(height: ZplaySpacing.s8),
           Text(
-            "This source isn't responding",
+            l10nOf(context).uiPlayerLoadingOverlayThisSourceIsnTResponding,
             style: ZplayType.title.toStyle(color: tokens.textPrimary),
           ),
           const SizedBox(height: ZplaySpacing.s8),
@@ -348,18 +351,18 @@ class _PlayerLoadingOverlayState extends State<PlayerLoadingOverlay>
               if (canFindSource)
                 _StallAction(
                   filled: false,
-                  label: 'Choose another source',
+                  label: l10nOf(context).uiPlayerLoadingOverlayChooseAnotherSource,
                   onPressed: widget.onChooseSource,
                 ),
               _StallAction(
                 quiet: quietEscapes,
-                label: 'Go back',
+                label: l10nOf(context).uiPlayerLoadingOverlayGoBack,
                 onPressed: widget.onGoBack,
               ),
               if (widget.onCopyDiagnostic != null)
                 _StallAction(
                   quiet: quietEscapes,
-                  label: 'Copy diagnostic',
+                  label: l10nOf(context).uiPlayerLoadingOverlayCopyDiagnostic,
                   onPressed: widget.onCopyDiagnostic!,
                 ),
             ],

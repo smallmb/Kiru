@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import '../../services/theme/design_tokens.dart';
 import 'player_glass.dart';
@@ -59,7 +61,7 @@ class PlayerAspectMenu extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
-          PlayerMenuHeader(title: 'ASPECT RATIO', onClose: onClose),
+          PlayerMenuHeader(title: l10nOf(context).uiPlayerAspectMenuAspectRatio, onClose: onClose),
 
           const SizedBox(height: 6),
 
@@ -67,7 +69,12 @@ class PlayerAspectMenu extends StatelessWidget {
           Column(
             children: aspectOptions.map((opt) {
               return PlayerMenuOption(
-                label: opt.label,
+                label: switch (opt.id) {
+                  'fit' => l10nOf(context).aspectFit,
+                  'cover' => l10nOf(context).aspectCover,
+                  'fill' => l10nOf(context).aspectStretch,
+                  _ => opt.label,
+                },
                 selected: currentFit == opt.fit,
                 onTap: () {
                   onFitSelected(opt.fit);
@@ -88,7 +95,7 @@ class PlayerAspectMenu extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Subtitle Size Scale',
+                  l10nOf(context).uiPlayerAspectMenuSubtitleSizeScale,
                   style: ZplayType.bodySmall
                       .copyWith(size: 12.5, weight: FontWeight.w500)
                       .toStyle(color: PlayerTheme.inkMuted),

@@ -1,3 +1,6 @@
+import 'package:zplay/l10n/config_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -89,7 +92,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
         ),
         title: screenW < 600
             ? Text(
-                'Music Player Studio',
+                l10nOf(context).auxMusicPageMusicPlayerStudio,
                 style: ZplayType.title.toStyle(color: tokens.textPrimary),
               )
             : Row(
@@ -111,12 +114,12 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Custom Music Player Studio',
+                          l10nOf(context).auxMusicPlayerStudioPageCustomMusicPlayerStudio,
                           style: ZplayType.title.toStyle(color: tokens.textPrimary),
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          'Design the fullscreen player, drag components, customize physics & liquid glass',
+                          l10nOf(context).auxMusicPlayerStudioPageDesignTheFullscreenPlayerDragComponentsCustomize,
                           style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -128,7 +131,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
         actions: [
           if (screenW < 520)
             IconButton(
-              tooltip: 'Apply As Active Player',
+              tooltip: l10nOf(context).auxAudiobookPlayerStudioPageApplyAsActivePlayer,
               onPressed: _applyAsActivePlayer,
               icon: Icon(Icons.check_circle_rounded, color: palette.primaryColor, size: 24),
             )
@@ -136,7 +139,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
             TextButton.icon(
               onPressed: _applyAsActivePlayer,
               icon: Icon(Icons.check_circle_rounded, color: tokens.textPrimary, size: 18),
-              label: Text('Apply Active', style: ZplayType.label.toStyle(color: tokens.textPrimary)),
+              label: Text(l10nOf(context).auxMusicPlayerStudioPageApplyActive, style: ZplayType.label.toStyle(color: tokens.textPrimary)),
               style: TextButton.styleFrom(
                 backgroundColor: palette.primaryColor.withValues(alpha: 0.25),
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -192,7 +195,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
                                 ),
                                 const SizedBox(width: 6),
                                 Text(
-                                  'Studio Designer',
+                                  l10nOf(context).auxAudiobookPlayerStudioPageStudioDesigner,
                                   style: ZplayType.label.toStyle(
                                     color: _mobileViewMode == 0 ? tokens.textPrimary : tokens.textSecondary,
                                   ),
@@ -226,7 +229,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
                                 ),
                                 const SizedBox(width: 6),
                                 Text(
-                                  'Live Preview Canvas',
+                                  l10nOf(context).auxAudiobookPlayerStudioPageLivePreviewCanvas,
                                   style: ZplayType.label.toStyle(
                                     color: _mobileViewMode == 1 ? tokens.textPrimary : tokens.textSecondary,
                                   ),
@@ -253,7 +256,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
                                 backgroundColor: palette.primaryColor,
                                 icon: Icon(Icons.touch_app_rounded, color: tokens.textPrimary, size: 18),
                                 label: Text(
-                                  'Test Live Canvas',
+                                  l10nOf(context).auxAudiobookPlayerStudioPageTestLiveCanvas,
                                   style: ZplayType.label.toStyle(color: tokens.textPrimary),
                                 ),
                               ),
@@ -271,7 +274,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
                                 backgroundColor: tokens.surfaceRaised,
                                 icon: Icon(Icons.arrow_back_rounded, color: palette.primaryColor, size: 18),
                                 label: Text(
-                                  'Back to Customizer',
+                                  l10nOf(context).auxAudiobookPlayerStudioPageBackToCustomizer,
                                   style: ZplayType.label.toStyle(color: tokens.textPrimary),
                                 ),
                               ),
@@ -289,7 +292,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
     MusicSettings.setSelectedFullscreenPreset(MusicFullscreenPreset.customStudio);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Text('Custom Fullscreen Player Studio layout set as active player!'),
+        content: Text(l10nOf(context).auxMusicPlayerStudioPageCustomFullscreenPlayerStudioLayoutSetAs),
         backgroundColor: palette.primaryColor,
         behavior: SnackBarBehavior.floating,
       ),
@@ -385,7 +388,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
                     Icon(Icons.music_note_rounded, color: palette.primaryColor, size: 12),
                     const SizedBox(width: 4),
                     Text(
-                      'FULLSCREEN LIVE STUDIO',
+                      l10nOf(context).auxMusicPlayerStudioPageFullscreenLiveStudio,
                       style: ZplayType.overline.toStyle(color: palette.primaryColor),
                     ),
                   ],
@@ -477,7 +480,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
                 Icon(Icons.diamond_rounded, size: 12, color: tokens.info),
                 const SizedBox(width: 4),
                 Text(
-                  'FLAC 24-BIT / 96KHZ LOSSLESS',
+                  l10nOf(context).auxMusicPlayerStudioPageFlac24Bit96khzLossless,
                   style: ZplayType.overline.toStyle(color: tokens.info),
                 ),
               ],
@@ -551,7 +554,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
               OutlinedButton.icon(
                 onPressed: () => setState(() => _showLyricsPreview = true),
                 icon: Icon(Icons.format_quote_rounded, color: palette.primaryColor, size: 15),
-                label: Text('Synced Lyrics', style: ZplayType.caption.toStyle(color: tokens.textPrimary)),
+                label: Text(l10nOf(context).auxMusicPageSyncedLyrics, style: ZplayType.caption.toStyle(color: tokens.textPrimary)),
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: palette.primaryColor.withValues(alpha: 0.4)),
                   shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
@@ -562,7 +565,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
               OutlinedButton.icon(
                 onPressed: () => setState(() => _showQueuePreview = true),
                 icon: Icon(Icons.queue_music_rounded, color: palette.primaryColor, size: 15),
-                label: Text('Playing Queue', style: ZplayType.caption.toStyle(color: tokens.textPrimary)),
+                label: Text(l10nOf(context).auxMusicPagePlayingQueue, style: ZplayType.caption.toStyle(color: tokens.textPrimary)),
                 style: OutlinedButton.styleFrom(
                   side: BorderSide(color: palette.primaryColor.withValues(alpha: 0.4)),
                   shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
@@ -812,7 +815,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Synced Lyrics Sandbox', style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
+                  Text(l10nOf(context).auxMusicPlayerStudioPageSyncedLyricsSandbox, style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
                   IconButton(
                     icon: Icon(Icons.close_rounded, color: tokens.textEmphasis, size: 18),
                     onPressed: () => setState(() => _showLyricsPreview = false),
@@ -862,7 +865,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Playing Queue Sandbox (4 Tracks)', style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
+                  Text(l10nOf(context).auxMusicPlayerStudioPagePlayingQueueSandbox4Tracks, style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
                   IconButton(
                     icon: Icon(Icons.close_rounded, color: tokens.textEmphasis, size: 18),
                     onPressed: () => setState(() => _showQueuePreview = false),
@@ -923,10 +926,10 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              _buildTabChip(0, Icons.drag_indicator_rounded, 'Drag & Drop Layout', palette),
-              _buildTabChip(1, Icons.graphic_eq_rounded, 'Seek Bar Canvas', palette),
-              _buildTabChip(2, Icons.touch_app_rounded, 'Play Button & Physics', palette),
-              _buildTabChip(3, Icons.album_rounded, 'Artwork & Turntable', palette),
+              _buildTabChip(0, Icons.drag_indicator_rounded, l10nOf(context).appearanceDetailDragDropLayout, palette),
+              _buildTabChip(1, Icons.graphic_eq_rounded, l10nOf(context).appearanceDetailSeekBarCanvas, palette),
+              _buildTabChip(2, Icons.touch_app_rounded, l10nOf(context).appearanceDetailPlayButtonPhysics, palette),
+              _buildTabChip(3, Icons.album_rounded, l10nOf(context).appearanceDetailArtworkTurntable, palette),
             ],
           ),
         ),
@@ -975,14 +978,14 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
   Widget _buildDragAndDropLayoutSection(AppThemePalette palette) {
     final tokens = context.tokens;
     final componentNames = {
-      'artwork': 'Album Art & Vinyl Turntable',
-      'title': 'Track, Artist & Album Titles',
-      'trackInfo': 'Track Title & Quality Badge',
-      'qualityBadge': 'Lossless Hi-Res Audio Quality Badge',
-      'seekbar': 'Seek Bar Scrubber Canvas',
-      'mainControls': 'Primary Controls (Play, Pause, Skip, Shuffle, Repeat)',
-      'secondaryControls': 'Secondary Controls (Volume Slider)',
-      'extraActions': 'Synced Lyrics & Queue Quick Buttons',
+      'artwork': l10nOf(context).appearanceDetailAlbumArtVinylTurntable,
+      'title': l10nOf(context).appearanceDetailTrackArtistAlbumTitles,
+      'trackInfo': l10nOf(context).appearanceDetailTrackTitleQualityBadge,
+      'qualityBadge': l10nOf(context).appearanceDetailLosslessHiResAudioQualityBadge,
+      'seekbar': l10nOf(context).appearanceDetailSeekBarScrubberCanvas,
+      'mainControls': l10nOf(context).appearanceDetailPrimaryControlsPlayPauseSkipShuffleRepeat,
+      'secondaryControls': l10nOf(context).appearanceDetailSecondaryControlsVolumeSlider,
+      'extraActions': l10nOf(context).appearanceDetailSyncedLyricsQueueQuickButtons,
     };
 
     final componentIcons = {
@@ -1007,14 +1010,14 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
                 Icon(Icons.drag_indicator_rounded, color: palette.primaryColor, size: 18),
                 const SizedBox(width: 8),
                 Text(
-                  'Fullscreen Player Drag & Drop Arranger',
+                  l10nOf(context).auxMusicPlayerStudioPageFullscreenPlayerDragDropArranger,
                   style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                 ),
               ],
             ),
             const SizedBox(height: 6),
             Text(
-              'Hold and drag any block to reorder the layout of your fullscreen player in real-time.',
+              l10nOf(context).auxMusicPlayerStudioPageHoldAndDragAnyBlockToReorder,
               style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
             ),
             const SizedBox(height: 16),
@@ -1087,14 +1090,14 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
                 Icon(Icons.graphic_eq_rounded, color: palette.primaryColor, size: 18),
                 const SizedBox(width: 8),
                 Text(
-                  'Seek Bar Canvas Scrubber Engine',
+                  l10nOf(context).auxMusicPlayerStudioPageSeekBarCanvasScrubberEngine,
                   style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                 ),
               ],
             ),
             const SizedBox(height: 6),
             Text(
-              'Select how audio waveforms and scrubbing tracks render across your music player.',
+              l10nOf(context).auxMusicPlayerStudioPageSelectHowAudioWaveformsAndScrubbingTracks,
               style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
             ),
             const SizedBox(height: 16),
@@ -1142,12 +1145,12 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              s.label,
+                              configLabel(context, s.label),
                               style: ZplayType.label.toStyle(color: tokens.textPrimary),
                             ),
                             const SizedBox(height: 3),
                             Text(
-                              s.description,
+                              configLabel(context, s.description),
                               style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                             ),
                           ],
@@ -1177,7 +1180,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
             Icon(Icons.play_circle_filled_rounded, color: palette.primaryColor, size: 18),
             const SizedBox(width: 8),
             Text(
-              'Play Button Aesthetic & Style',
+              l10nOf(context).auxMusicPlayerStudioPagePlayButtonAestheticStyle,
               style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
             ),
           ],
@@ -1194,7 +1197,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
               },
               options: [
                 for (final b in MusicPlayButtonStyle.values)
-                  SegmentedTabOption(value: b, label: b.label),
+                  SegmentedTabOption(value: b, label: configLabel(context, b.label)),
               ],
             );
           },
@@ -1206,14 +1209,14 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
             Icon(Icons.touch_app_rounded, color: palette.primaryColor, size: 18),
             const SizedBox(width: 8),
             Text(
-              'Hover & Touch Physics Engine',
+              l10nOf(context).auxMusicPlayerStudioPageHoverTouchPhysicsEngine,
               style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
             ),
           ],
         ),
         const SizedBox(height: 6),
         Text(
-          'Select the interactive physics feedback applied when hovering or pressing controls.',
+          l10nOf(context).auxMusicPlayerStudioPageSelectTheInteractivePhysicsFeedbackAppliedWhen,
           style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
         ),
         const SizedBox(height: 12),
@@ -1228,7 +1231,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
               },
               options: [
                 for (final h in MusicHoverEffect.values)
-                  SegmentedTabOption(value: h, label: h.label),
+                  SegmentedTabOption(value: h, label: configLabel(context, h.label)),
               ],
             );
           },
@@ -1241,7 +1244,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
           child: Column(
             children: [
               Text(
-                'Live Physics Testing Pad',
+                l10nOf(context).auxMusicPlayerStudioPageLivePhysicsTestingPad,
                 style: ZplayType.label.toStyle(color: palette.primaryColor),
               ),
               const SizedBox(height: 12),
@@ -1274,14 +1277,14 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
                 Icon(Icons.album_rounded, color: palette.primaryColor, size: 18),
                 const SizedBox(width: 8),
                 Text(
-                  'Artwork & Turntable Presentation',
+                  l10nOf(context).auxMusicPlayerStudioPageArtworkTurntablePresentation,
                   style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                 ),
               ],
             ),
             const SizedBox(height: 6),
             Text(
-              'Select how album covers, vinyl turntable animations, and cards display in the player.',
+              l10nOf(context).auxMusicPlayerStudioPageSelectHowAlbumCoversVinylTurntableAnimations,
               style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
             ),
             const SizedBox(height: 16),
@@ -1324,7 +1327,7 @@ class _MusicPlayerStudioPageState extends State<MusicPlayerStudioPage> with Sing
                       const SizedBox(width: 14),
                       Expanded(
                         child: Text(
-                          a.label,
+                          configLabel(context, a.label),
                           style: ZplayType.label.toStyle(color: tokens.textPrimary),
                         ),
                       ),

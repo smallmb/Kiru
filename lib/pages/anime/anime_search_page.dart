@@ -1,8 +1,12 @@
+import 'package:zplay/l10n/media_labels.dart';
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../models/anime/anime_media.dart';
-import '../../services/anime/anilist_service.dart';
+import '../../services/anime/anime_metadata_service.dart';
+import '../../services/anime/anime_source_settings.dart';
 import '../../services/theme/design_tokens.dart';
 import '../../utils/navigation/route_transitions.dart';
 import '../../widgets/anime/anime_slider_section.dart';
@@ -67,6 +71,8 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
   List<AnimeMedia> _popularSeasonList = [];
   List<AnimeMedia> _topRatedList = [];
   bool _loadingInitial = true;
+  int _initialRevision = 0;
+  int _searchRevision = 0;
 
   static const _genres = [
     'Action', 'Adventure', 'Comedy', 'Drama', 'Ecchi', 'Fantasy',
@@ -93,14 +99,22 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
     super.initState();
     _isArabicMode = widget.initialArabicMode;
     _scrollController.addListener(_syncBand);
+    AnimeSourceSettings.revision.addListener(_onSourceChanged);
     _loadInitialSliders();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
     });
   }
 
+  void _onSourceChanged() {
+    if(!mounted || _isArabicMode) return;
+    _loadInitialSliders();
+    if(_searchController.text.trim().isNotEmpty || _hasActiveFilters) _performSearch();
+  }
+
   @override
   void dispose() {
+    AnimeSourceSettings.revision.removeListener(_onSourceChanged);
     _searchController.dispose();
     _focusNode.dispose();
     _scrollController.removeListener(_syncBand);
@@ -128,11 +142,12 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
       _sort != 'TRENDING_DESC';
 
   void _loadInitialSliders() async {
+    final revision = ++_initialRevision;
     setState(() => _loadingInitial = true);
     try {
       if (_isArabicMode) {
         final feed = await AnimeArabicService.instance.getHome();
-        if (mounted) {
+        if (mounted && revision == _initialRevision) {
           setState(() {
             _trendingList = (feed.trending.isNotEmpty ? feed.trending : feed.spotlight)
                 .map((c) {
@@ -156,12 +171,12 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
       }
 
       final results = await Future.wait([
-        AnilistService.instance.fetchTrendingAnime(page: 1, perPage: 20),
-        AnilistService.instance.fetchPopularThisSeason(page: 1, perPage: 20),
-        AnilistService.instance.fetchTopRated(page: 1, perPage: 20),
+        AnimeMetadataService.instance.fetchTrendingAnime(page: 1, perPage: 20),
+        AnimeMetadataService.instance.fetchPopularThisSeason(page: 1, perPage: 20),
+        AnimeMetadataService.instance.fetchTopRated(page: 1, perPage: 20),
       ]);
 
-      if (mounted) {
+      if (mounted && revision == _initialRevision) {
         setState(() {
           _trendingList = results[0];
           _popularSeasonList = results[1];
@@ -170,7 +185,7 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
         });
       }
     } catch (_) {
-      if (mounted) {
+      if (mounted && revision == _initialRevision) {
         setState(() {
           _loadingInitial = false;
         });
@@ -183,6 +198,7 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
 
     final trimmed = query.trim();
     if (trimmed.isEmpty && !_hasActiveFilters) {
+      _searchRevision++;
       setState(() {
         _allResults.clear();
         _isLoading = false;
@@ -196,6 +212,7 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
   }
 
   void _performSearch([String? query]) async {
+    final revision = ++_searchRevision;
     final q = (query ?? _searchController.text).trim();
     setState(() {
       _isLoading = true;
@@ -204,7 +221,7 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
     try {
       if (_isArabicMode) {
         final cards = await AnimeArabicService.instance.search(q);
-        if (!mounted) return;
+        if (!mounted || revision != _searchRevision) return;
         final list = <AnimeMedia>[];
         for (final c in cards) {
           _arabicCardsMap[c.slug.hashCode.abs()] = c;
@@ -217,7 +234,7 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
         return;
       }
 
-      final results = await AnilistService.instance.searchAnime(
+      final results = await AnimeMetadataService.instance.searchAnime(
         q,
         genre: _genre,
         year: _year,
@@ -228,14 +245,14 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
         isAdult: _allowAdult,
         perPage: 35,
       );
-      if (!mounted) return;
+      if (!mounted || revision != _searchRevision) return;
 
       setState(() {
         _allResults = results;
         _isLoading = false;
       });
     } catch (e) {
-      if (!mounted) return;
+      if (!mounted || revision != _searchRevision) return;
       setState(() {
         _isLoading = false;
         _allResults = [];
@@ -318,7 +335,7 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
                         onTap: () =>
                             Navigator.of(ctx).pop(_PickResult<T>(null, true)),
                         child: Text(
-                          'Clear',
+                          l10nOf(context).uiAnimeSearchPageClear,
                           style: ZplayType.label.toStyle(color: tokens.accent),
                         ),
                       ),
@@ -415,16 +432,13 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
     final now = DateTime.now().year;
     final years = List.generate(40, (i) => now + 1 - i);
     _pickFromList<int>(
-      title: 'Release Year',
+      title: l10nOf(context).uiAnimeSearchPageReleaseYear,
       items: years,
       label: (y) => '$y',
       current: _year,
       onSelected: (v) => _year = v,
     );
   }
-
-  String _capitalize(String s) =>
-      s.isEmpty ? s : s[0] + s.substring(1).toLowerCase();
 
   /// The quiet body every header chip wears: one surface fill, no border and no
   /// state colour of its own. Data state is carried by the glyph and label the
@@ -624,7 +638,7 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
                                 onChanged: _onSearchChanged,
                                 onSubmitted: _performSearch,
                                 decoration: InputDecoration(
-                                  hintText: 'Search anime, movies, OVAs...',
+                                  hintText: l10nOf(context).uiAnimeSearchPageSearchAnimeMoviesOvas,
                                   hintStyle: ZplayType.body.toStyle(
                                     color: tokens.textMuted,
                                   ),
@@ -672,7 +686,7 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
                             // or a coloured border: the accent marks the mode
                             // the page is in, the fill stays constant.
                             child: Text(
-                              _isArabicMode ? '🇸🇦 Arabic' : '🇯🇵 Anime',
+                              _isArabicMode ? l10nOf(context).finalAnimeSearchPageArabic : '🇯🇵 Anime',
                               style: ZplayType.label
                                   .copyWith(
                                     weight: _isArabicMode
@@ -752,12 +766,12 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
                         children: [
                         // Sort Dropdown
                         _buildFilterDropdownButton(
-                          label: 'Sort: ${_sorts[_sort] ?? "Trending"}',
+                          label: l10nOf(context).dynamicAnimeSearchPageSort(mediaLabel(context, _sorts[_sort] ?? "Trending")),
                           active: _sort != 'TRENDING_DESC',
                           onTap: () => _pickFromList<String>(
-                            title: 'Sort By',
+                            title: l10nOf(context).uiAnimeSearchPageSortBy,
                             items: _sorts.keys.toList(),
-                            label: (k) => _sorts[k]!,
+                            label: (k) => mediaLabel(context, _sorts[k]!),
                             current: _sort,
                             onSelected: (v) => _sort = v ?? 'TRENDING_DESC',
                           ),
@@ -765,12 +779,12 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
 
                         // Genre Dropdown
                         _buildFilterDropdownButton(
-                          label: _genre ?? 'Genre',
+                          label: mediaLabel(context, _genre ?? 'Genre'),
                           active: _genre != null,
                           onTap: () => _pickFromList<String>(
-                            title: 'Genre',
+                            title: l10nOf(context).uiAnimeSearchPageGenre,
                             items: _genres,
-                            label: (g) => g,
+                            label: (g) => mediaLabel(context, g),
                             current: _genre,
                             onSelected: (v) => _genre = v,
                           ),
@@ -778,19 +792,19 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
 
                         // Year Dropdown
                         _buildFilterDropdownButton(
-                          label: _year != null ? '$_year' : 'Year',
+                          label: _year != null ? '$_year' : mediaLabel(context, 'Year'),
                           active: _year != null,
                           onTap: _pickYear,
                         ),
 
                         // Season Dropdown
                         _buildFilterDropdownButton(
-                          label: _season != null ? _capitalize(_season!) : 'Season',
+                          label: mediaLabel(context, _season ?? 'Season'),
                           active: _season != null,
                           onTap: () => _pickFromList<String>(
-                            title: 'Season',
+                            title: l10nOf(context).uiAnimeSearchPageSeason,
                             items: _seasons,
-                            label: (s) => _capitalize(s),
+                            label: (s) => mediaLabel(context, s),
                             current: _season,
                             onSelected: (v) => _season = v,
                           ),
@@ -798,12 +812,12 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
 
                         // Format Dropdown
                         _buildFilterDropdownButton(
-                          label: _format ?? 'Format',
+                          label: mediaLabel(context, _format ?? 'Format'),
                           active: _format != null,
                           onTap: () => _pickFromList<String>(
-                            title: 'Format',
+                            title: l10nOf(context).uiAnimeSearchPageFormat,
                             items: _formats,
-                            label: (f) => f,
+                            label: (f) => mediaLabel(context, f),
                             current: _format,
                             onSelected: (v) => _format = v,
                           ),
@@ -811,12 +825,12 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
 
                         // Status Dropdown
                         _buildFilterDropdownButton(
-                          label: _status != null ? _capitalize(_status!.replaceAll('_', ' ')) : 'Status',
+                          label: mediaLabel(context, _status ?? 'Status'),
                           active: _status != null,
                           onTap: () => _pickFromList<String>(
-                            title: 'Status',
+                            title: l10nOf(context).uiAnimeSearchPageStatus,
                             items: _statuses,
-                            label: (s) => _capitalize(s.replaceAll('_', ' ')),
+                            label: (s) => mediaLabel(context, s),
                             current: _status,
                             onSelected: (v) => _status = v,
                           ),
@@ -838,7 +852,7 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
                                   ),
                                   const SizedBox(width: ZplaySpacing.s4),
                                   Text(
-                                    'Reset',
+                                    l10nOf(context).uiAnimeSearchPageReset,
                                     style: ZplayType.label.toStyle(
                                       color: tokens.textEmphasis,
                                     ),
@@ -893,14 +907,14 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
                     ),
                     const SizedBox(height: ZplaySpacing.s16),
                     Text(
-                      'No anime found matching your criteria',
+                      l10nOf(context).uiAnimeSearchPageNoAnimeFoundMatchingYour,
                       style: ZplayType.subtitle.toStyle(
                         color: tokens.textEmphasis,
                       ),
                     ),
                     const SizedBox(height: ZplaySpacing.s8),
                     Text(
-                      'Try different keywords or clearing filters',
+                      l10nOf(context).uiAnimeSearchPageTryDifferentKeywordsOrClearing,
                       style: ZplayType.body.toStyle(color: tokens.textMuted),
                     ),
                   ],
@@ -918,22 +932,22 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
                 children: [
                   if (tvSeries.isNotEmpty)
                     AnimeSliderSection(
-                      title: 'Anime TV Series',
-                      subtitle: '${tvSeries.length} Results',
+                      title: l10nOf(context).uiAnimeSearchPageAnimeTvSeries,
+                      subtitle: l10nOf(context).animeSearchResultCount(tvSeries.length),
                       animeList: tvSeries,
                       onAnimeTap: _openDetails,
                     ),
                   if (movies.isNotEmpty)
                     AnimeSliderSection(
-                      title: 'Anime Movies',
-                      subtitle: '${movies.length} Results',
+                      title: l10nOf(context).uiAnimeSearchPageAnimeMovies,
+                      subtitle: l10nOf(context).animeSearchResultCount(movies.length),
                       animeList: movies,
                       onAnimeTap: _openDetails,
                     ),
                   if (ovasAndOthers.isNotEmpty)
                     AnimeSliderSection(
-                      title: 'OVAs, ONAs & Specials',
-                      subtitle: '${ovasAndOthers.length} Results',
+                      title: l10nOf(context).uiAnimeSearchPageOvasOnasSpecials,
+                      subtitle: l10nOf(context).animeSearchResultCount(ovasAndOthers.length),
                       animeList: ovasAndOthers,
                       onAnimeTap: _openDetails,
                     ),
@@ -952,19 +966,19 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
                 children: [
                   if (_trendingList.isNotEmpty)
                     AnimeSliderSection(
-                      title: 'Trending Anime',
+                      title: l10nOf(context).uiAnimeSearchPageTrendingAnime,
                       animeList: _trendingList,
                       onAnimeTap: _openDetails,
                     ),
                   if (_popularSeasonList.isNotEmpty)
                     AnimeSliderSection(
-                      title: 'Popular This Season',
+                      title: l10nOf(context).uiAnimeSearchPagePopularThisSeason,
                       animeList: _popularSeasonList,
                       onAnimeTap: _openDetails,
                     ),
                   if (_topRatedList.isNotEmpty)
                     AnimeSliderSection(
-                      title: 'All-Time Top Rated',
+                      title: l10nOf(context).uiAnimeSearchPageAllTimeTopRated,
                       animeList: _topRatedList,
                       onAnimeTap: _openDetails,
                     ),

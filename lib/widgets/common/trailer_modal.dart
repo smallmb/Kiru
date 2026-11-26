@@ -30,6 +30,8 @@
 /// is always one press away.
 library;
 
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:io';
 import 'dart:math' as math;
 
@@ -343,7 +345,7 @@ class _TrailerModalState extends State<TrailerModal> {
                 ),
                 if (hasTitle)
                   Text(
-                    'Trailer',
+                    l10nOf(context).uiHeroBannerTrailer,
                     style: ZplayType.caption.toStyle(color: tokens.textMuted),
                   ),
               ],
@@ -384,19 +386,19 @@ class _TrailerModalState extends State<TrailerModal> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Trailer unavailable',
+              l10nOf(context).auxTrailerModalTrailerUnavailable,
               textAlign: TextAlign.center,
               style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
             ),
             const SizedBox(height: ZplaySpacing.s4),
             Text(
-              'This trailer could not be played in the app.',
+              l10nOf(context).auxTrailerModalThisTrailerCouldNotBePlayedIn,
               textAlign: TextAlign.center,
               style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
             ),
             const SizedBox(height: ZplaySpacing.s16),
             PillButton(
-              label: 'Watch on YouTube',
+              label: l10nOf(context).auxTrailerModalWatchOnYoutube,
               icon: Icons.open_in_new_rounded,
               variant: PillVariant.secondary,
               onPressed: _openExternal,
@@ -533,7 +535,7 @@ class _CloseButton extends StatelessWidget {
     final tokens = context.tokens;
     return Semantics(
       button: true,
-      label: 'Close trailer',
+      label: l10nOf(context).auxTrailerModalCloseTrailer,
       child: FocusableCard(
         onTap: onPressed,
         builder: (context, state) => CardFocusRing(

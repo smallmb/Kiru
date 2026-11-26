@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../services/debrid/debrid_service.dart';
@@ -164,7 +166,7 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
         behavior: SnackBarBehavior.floating,
         backgroundColor: isError ? tokens.danger : tokens.accent,
         action: SnackBarAction(
-          label: 'Dismiss',
+          label: l10nOf(context).uiDebridSettingsPageDismiss,
           textColor: tokens.onAccent,
           onPressed: () {},
         ),
@@ -179,7 +181,7 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
     final tokens = context.tokens;
 
     return SettingsScaffold(
-      title: 'Debrid & Cloud Streaming',
+      title: l10nOf(context).uiDebridSettingsPageDebridCloudStreaming,
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         children: [
@@ -187,7 +189,7 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: Text(
-              'Stream torrents and magnet links instantly through high-speed cloud debrid providers without local peer-to-peer downloading.',
+              l10nOf(context).auxDebridSettingsPageStreamTorrentsAndMagnetLinksInstantlyThrough,
               style: ZplayType.body.toStyle(color: tokens.textSecondary),
             ),
           ),
@@ -227,14 +229,14 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Use Debrid for Streams',
+                            l10nOf(context).uiDebridSettingsPageUseDebridForStreams,
                             style: ZplayType.subtitle.toStyle(
                               color: tokens.textPrimary,
                             ),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Route torrent links through cloud servers',
+                            l10nOf(context).uiDebridSettingsPageRouteTorrentLinksThroughCloudServers,
                             style: ZplayType.bodySmall.toStyle(
                               color: tokens.textSecondary,
                             ),
@@ -277,7 +279,7 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                 ),
                 const SizedBox(height: 14),
                 Text(
-                  'When enabled, all torrents from ZPlay and Stremio addons are resolved exclusively through your active Debrid provider without touching the local torrent engine.',
+                  l10nOf(context).auxDebridSettingsPageWhenEnabledAllTorrentsFromZplayAnd,
                   style: ZplayType.bodySmall.toStyle(
                     color: tokens.textSecondary,
                   ),
@@ -290,7 +292,7 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
 
           // Active Provider Selector
           Text(
-            'ACTIVE PROVIDER',
+            l10nOf(context).uiDebridSettingsPageActiveProvider,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 10),
@@ -301,12 +303,12 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Select Default Debrid Provider',
+                  l10nOf(context).uiDebridSettingsPageSelectDefaultDebridProvider,
                   style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'ZPlay will send requests to this provider when streaming.',
+                  l10nOf(context).uiDebridSettingsPageZplayWillSendRequestsToThis,
                   style: ZplayType.bodySmall.toStyle(
                     color: tokens.textSecondary,
                   ),
@@ -375,7 +377,7 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
 
           // Provider API Keys
           Text(
-            'PROVIDER CREDENTIALS',
+            l10nOf(context).uiDebridSettingsPageProviderCredentials,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 10),
@@ -491,7 +493,7 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                     borderRadius: ZplayRadius.xsAll,
                   ),
                   child: Text(
-                    'ACTIVE',
+                    l10nOf(context).uiDebridSettingsPageActive,
                     style: ZplayType.caption.toStyle(color: tokens.accent),
                   ),
                 ),
@@ -531,7 +533,7 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                   obscureText: isObscured,
                   style: ZplayType.label.toStyle(color: tokens.textPrimary),
                   decoration: InputDecoration(
-                    hintText: 'Paste API Key / Token',
+                    hintText: l10nOf(context).uiDebridSettingsPagePasteApiKeyToken,
                     hintStyle: ZplayType.bodySmall.toStyle(
                       color: tokens.textDisabled,
                     ),
@@ -559,7 +561,7 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                             icon: Icon(Icons.clear_rounded, color: tokens.textMuted, size: 16),
                             padding: const EdgeInsets.all(4),
                             constraints: const BoxConstraints(),
-                            tooltip: 'Clear',
+                            tooltip: l10nOf(context).uiDebridSettingsPageClear,
                             onPressed: () {
                               controller.clear();
                               setState(() {});
@@ -573,7 +575,7 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                           ),
                           padding: const EdgeInsets.all(4),
                           constraints: const BoxConstraints(),
-                          tooltip: isObscured ? 'Show Key' : 'Hide Key',
+                          tooltip: isObscured ? l10nOf(context).finalDebridSettingsPageShowKey : l10nOf(context).finalDebridSettingsPageHideKey,
                           onPressed: () {
                             setState(() {
                               _obscuredMap[name] = !isObscured;
@@ -584,7 +586,7 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                           icon: Icon(Icons.content_paste_rounded, color: tokens.accent, size: 16),
                           padding: const EdgeInsets.all(4),
                           constraints: const BoxConstraints(),
-                          tooltip: 'Paste from Clipboard',
+                          tooltip: l10nOf(context).uiDebridSettingsPagePasteFromClipboard,
                           onPressed: () => _pasteToController(controller),
                         ),
                         const SizedBox(width: 4),
@@ -610,7 +612,7 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                         child: CircularProgressIndicator(strokeWidth: 2, color: tokens.onAccent),
                       )
                     : Text(
-                        'Save',
+                        l10nOf(context).uiDebridSettingsPageSave,
                         style: ZplayType.label.toStyle(),
                       ),
               ),

@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -184,7 +186,7 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
                       children: [
                         IconButton(
                           icon: Icon(Icons.arrow_back_ios_new_rounded, color: tokens.textPrimary, size: 20),
-                          tooltip: 'Back to Library',
+                          tooltip: l10nOf(context).auxEpubReaderPageBackToLibrary,
                           onPressed: () => Navigator.of(context).pop(),
                         ),
                         const SizedBox(width: 12),
@@ -214,17 +216,17 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
                         ),
                         IconButton(
                           icon: Icon(Icons.zoom_in_rounded, color: tokens.textPrimary, size: 22),
-                          tooltip: 'Zoom In',
+                          tooltip: l10nOf(context).auxPdfReaderPageZoomIn,
                           onPressed: () => _pdfController.zoomUp(),
                         ),
                         IconButton(
                           icon: Icon(Icons.zoom_out_rounded, color: tokens.textPrimary, size: 22),
-                          tooltip: 'Zoom Out',
+                          tooltip: l10nOf(context).auxPdfReaderPageZoomOut,
                           onPressed: () => _pdfController.zoomDown(),
                         ),
                         IconButton(
                           icon: Icon(Icons.fullscreen_rounded, color: tokens.textPrimary, size: 24),
-                          tooltip: 'Fullscreen (F)',
+                          tooltip: l10nOf(context).playerFullscreen,
                           onPressed: () => WindowService.instance.toggleFullscreen(),
                         ),
                       ],
@@ -251,7 +253,7 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
                       children: [
                         IconButton(
                           icon: Icon(Icons.chevron_left_rounded, color: tokens.textPrimary, size: 28),
-                          tooltip: 'Previous Page',
+                          tooltip: l10nOf(context).auxPdfReaderPagePreviousPage,
                           onPressed: _currentPage > 1
                               ? () => _pdfController.goToPage(pageNumber: _currentPage - 1)
                               : null,
@@ -264,7 +266,7 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Page $_currentPage of $_pageCount',
+                                    l10nOf(context).dynamicPdfReaderPagePageOf((_currentPage).toString(), (_pageCount).toString()),
                                     style: ZplayType.bodySmall
                                         .copyWith(weight: FontWeight.w600)
                                         .toStyle(color: tokens.textEmphasis),
@@ -302,7 +304,7 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
                         ),
                         IconButton(
                           icon: Icon(Icons.chevron_right_rounded, color: tokens.textPrimary, size: 28),
-                          tooltip: 'Next Page',
+                          tooltip: l10nOf(context).auxPdfReaderPageNextPage,
                           onPressed: _currentPage < _pageCount
                               ? () => _pdfController.goToPage(pageNumber: _currentPage + 1)
                               : null,

@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 
 import '../../models/my_list/my_list_item.dart';
@@ -130,18 +132,18 @@ class _MyListPageState extends State<MyListPage> {
         backgroundColor: tokens.surfaceOverlay,
         shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.mdAll),
         title: Text(
-          'Remove from My List?',
+          l10nOf(context).uiMyListPageRemoveFromMyList,
           style: ZplayType.title.toStyle(color: tokens.textPrimary),
         ),
         content: Text(
-          'Remove "${item.title}" from your list?',
+          l10nOf(context).libraryRemoveTitle(item.title),
           style: ZplayType.body.toStyle(color: tokens.textSecondary),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
             child: Text(
-              'Cancel',
+              l10nOf(context).uiMyListPageCancel,
               style: ZplayType.label.toStyle(color: tokens.textSecondary),
             ),
           ),
@@ -152,7 +154,7 @@ class _MyListPageState extends State<MyListPage> {
               foregroundColor: tokens.textPrimary,
               shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
             ),
-            child: Text('Remove', style: ZplayType.label.toStyle()),
+            child: Text(l10nOf(context).uiMyListPageRemove, style: ZplayType.label.toStyle()),
           ),
         ],
       ),
@@ -363,7 +365,7 @@ class _MyListPageState extends State<MyListPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'My List',
+                  l10nOf(context).uiMyListPageMyList,
                   style: ZplayType.titleLarge.toStyle(
                     color: tokens.textPrimary,
                   ),
@@ -413,7 +415,7 @@ class _MyListPageState extends State<MyListPage> {
                     ),
                   const SizedBox(width: ZplaySpacing.s4),
                   Text(
-                    isSyncing ? 'Syncing...' : 'Cloud Synced',
+                    isSyncing ? l10nOf(context).finalMyListPageSyncing : 'Cloud Synced',
                     style: ZplayType.caption.toStyle(
                       color: tokens.textSecondary,
                     ),
@@ -469,14 +471,14 @@ class _MyListPageState extends State<MyListPage> {
               // focus.
               Expanded(
                 child: TabStrip<String>(
-                  options: const [
-                    TabStripOption(value: 'all', label: 'All'),
-                    TabStripOption(value: 'movie', label: 'Movies'),
-                    TabStripOption(value: 'series', label: 'TV Shows'),
+                  options: [
+                    TabStripOption(value: 'all', label: l10nOf(context).uiMyListPageAll),
+                    TabStripOption(value: 'movie', label: l10nOf(context).uiMyListPageMovies),
+                    TabStripOption(value: 'series', label: l10nOf(context).uiMyListPageTvShows),
                   ],
                   selected: _filterType,
                   onSelected: (type) => setState(() => _filterType = type),
-                  semanticsLabel: 'Filter saved titles',
+                  semanticsLabel: l10nOf(context).uiMyListPageFilterSavedTitles,
                   height: television ? ZplaySpacing.s48 : 44,
                 ),
               ),
@@ -516,10 +518,10 @@ class _MyListPageState extends State<MyListPage> {
                       color: tokens.textPrimary,
                     ),
                     icon: Icon(Icons.sort_rounded, color: tokens.accent, size: 16),
-                    items: const [
-                      DropdownMenuItem(value: 'recent', child: Text('Recently Added')),
-                      DropdownMenuItem(value: 'title', child: Text('Alphabetical')),
-                      DropdownMenuItem(value: 'year', child: Text('Release Year')),
+                    items: [
+                      DropdownMenuItem(value: 'recent', child: Text(l10nOf(context).uiMyListPageRecentlyAdded)),
+                      DropdownMenuItem(value: 'title', child: Text(l10nOf(context).uiMyListPageAlphabetical)),
+                      DropdownMenuItem(value: 'year', child: Text(l10nOf(context).uiMyListPageReleaseYear)),
                     ],
                     onChanged: (v) => setState(() => _sortBy = v!),
                   ),
@@ -555,7 +557,7 @@ class _MyListPageState extends State<MyListPage> {
               onChanged: (v) => setState(() => _searchQuery = v),
               style: ZplayType.label.toStyle(color: tokens.textPrimary),
               decoration: InputDecoration(
-                hintText: 'Search saved titles...',
+                hintText: l10nOf(context).uiMyListPageSearchSavedTitles,
                 hintStyle: ZplayType.label.toStyle(color: tokens.textDisabled),
                 prefixIcon: Icon(Icons.search_rounded, color: tokens.textMuted, size: 18),
                 suffixIcon: _searchQuery.isNotEmpty
@@ -597,21 +599,21 @@ class _MyListPageState extends State<MyListPage> {
           ),
           const SizedBox(height: ZplaySpacing.s16),
           Text(
-            isListEmpty ? 'Your list is empty' : 'No titles found',
+            isListEmpty ? l10nOf(context).finalMyListPageYourListIsEmpty : 'No titles found',
             style: ZplayType.titleLarge.toStyle(color: tokens.textPrimary),
           ),
           const SizedBox(height: ZplaySpacing.s8),
           Text(
             isListEmpty
-                ? 'Save your favorite movies and TV shows to watch anytime'
-                : 'Try adjusting your search query or filter settings',
+                ? l10nOf(context).uiFinalMyListPageSaveYourFavoriteMoviesAndTv
+                : l10nOf(context).uiFinalMyListPageTryAdjustingYourSearchQueryOr,
             textAlign: TextAlign.center,
             style: ZplayType.body.toStyle(color: tokens.textSecondary),
           ),
           if (!isListEmpty) ...[
             const SizedBox(height: ZplaySpacing.s16),
             PillButton(
-              label: 'Reset Filters',
+              label: l10nOf(context).uiMyListPageResetFilters,
               icon: Icons.filter_alt_off_rounded,
               onPressed: () {
                 _searchController.clear();

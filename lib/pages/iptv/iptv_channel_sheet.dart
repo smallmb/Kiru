@@ -1,3 +1,5 @@
+import 'package:zplay/l10n/l10n.dart';
+
 import 'package:flutter/material.dart';
 import '../../models/iptv/iptv_models.dart';
 import '../../services/theme/design_tokens.dart';
@@ -148,7 +150,7 @@ class _IptvChannelSheetState extends State<IptvChannelSheet> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Removed $count stream feed${count == 1 ? "" : "s"}'),
+          content: Text(l10nOf(context).dynamicIptvChannelSheetRemovedStreamFeed((count).toString(), (count == 1 ? "" : "s").toString())),
           duration: const Duration(seconds: 2),
           backgroundColor: context.tokens.surfaceOverlay,
         ),
@@ -260,7 +262,7 @@ class _IptvChannelSheetState extends State<IptvChannelSheet> {
                                   borderRadius: ZplayRadius.xsAll,
                                 ),
                                 child: Text(
-                                  'LIVE',
+                                  l10nOf(context).channelLiveBadge,
                                   style: ZplayType.overline.toStyle(color: tokens.textPrimary),
                                 ),
                               ),
@@ -283,7 +285,7 @@ class _IptvChannelSheetState extends State<IptvChannelSheet> {
                     // Pen / Edit Button
                     if (results.isNotEmpty)
                       Tooltip(
-                        message: _isSelecting ? 'Cancel Selection' : 'Manage / Delete Channels',
+                        message: _isSelecting ? l10nOf(context).finalIptvChannelSheetCancelSelection : 'Manage / Delete Channels',
                         child: FocusableInkWell(
                           borderRadius: ZplayRadius.smAll,
                           onTap: () {
@@ -335,7 +337,7 @@ class _IptvChannelSheetState extends State<IptvChannelSheet> {
                       style: ZplayType.label.toStyle(color: tokens.textPrimary),
                       cursorColor: tokens.accent,
                       decoration: InputDecoration(
-                        hintText: 'Search ${results.length} channels (e.g. 1080p, 4K, feed name)...',
+                        hintText: l10nOf(context).dynamicIptvChannelSheetSearchChannelsEG1080p4k((results.length).toString()),
                         hintStyle: ZplayType.label.toStyle(color: tokens.textMuted),
                         prefixIcon: Icon(
                           Icons.search_rounded,
@@ -404,7 +406,7 @@ class _IptvChannelSheetState extends State<IptvChannelSheet> {
                               ),
                               const SizedBox(width: ZplaySpacing.s8),
                               Text(
-                                allSelected ? 'Deselect All' : 'Select All',
+                                allSelected ? l10nOf(context).finalIptvChannelSheetDeselectAll : 'Select All',
                                 style: ZplayType.label.toStyle(),
                               ),
                             ],
@@ -438,7 +440,7 @@ class _IptvChannelSheetState extends State<IptvChannelSheet> {
                               ),
                               const SizedBox(width: ZplaySpacing.s8),
                               Text(
-                                'Delete (${_selectedUrls.length})',
+                                l10nOf(context).dynamicIptvChannelSheetDelete((_selectedUrls.length).toString()),
                                 style: ZplayType.caption.toStyle(
                                   color: _selectedUrls.isEmpty ? tokens.textMuted : tokens.onAccent,
                                 ),
@@ -498,7 +500,7 @@ class _IptvChannelSheetState extends State<IptvChannelSheet> {
                                 vertical: ZplaySpacing.s8,
                               ),
                               child: Text(
-                                'Stop',
+                                l10nOf(context).auxIptvChannelSheetStop,
                                 style: ZplayType.caption.toStyle(color: tokens.danger),
                               ),
                             ),
@@ -524,19 +526,19 @@ class _IptvChannelSheetState extends State<IptvChannelSheet> {
                                 CircularProgressIndicator(color: tokens.accent),
                                 const SizedBox(height: ZplaySpacing.s16),
                                 Text(
-                                  'Scanning all verified portals in parallel…',
+                                  l10nOf(context).auxIptvChannelSheetScanningAllVerifiedPortalsInParallel,
                                   style: ZplayType.body.toStyle(color: tokens.textEmphasis),
                                 ),
                               ] else ...[
                                 Icon(Icons.tv_off_rounded, color: tokens.textMuted, size: 48),
                                 const SizedBox(height: ZplaySpacing.s12),
                                 Text(
-                                  'No alive streams discovered yet.',
+                                  l10nOf(context).auxIptvChannelSheetNoAliveStreamsDiscoveredYet,
                                   style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
-                                  'Tap "Scan More Portals" to discover fresh feeds.',
+                                  l10nOf(context).auxIptvChannelSheetTapScanMorePortalsToDiscoverFresh,
                                   style: ZplayType.label.toStyle(color: tokens.textMuted),
                                 ),
                               ],
@@ -554,7 +556,7 @@ class _IptvChannelSheetState extends State<IptvChannelSheet> {
                                   Icon(Icons.search_off_rounded, color: tokens.textMuted, size: 48),
                                   const SizedBox(height: ZplaySpacing.s12),
                                   Text(
-                                    'No feeds match "$_searchQuery"',
+                                    l10nOf(context).dynamicIptvChannelSheetNoFeedsMatch((_searchQuery).toString()),
                                     style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
                                   ),
                                   const SizedBox(height: ZplaySpacing.s8),
@@ -570,7 +572,7 @@ class _IptvChannelSheetState extends State<IptvChannelSheet> {
                                         vertical: ZplaySpacing.s8,
                                       ),
                                       child: Text(
-                                        'Clear Search',
+                                        l10nOf(context).auxIptvChannelSheetClearSearch,
                                         style: ZplayType.label.toStyle(color: tokens.accent),
                                       ),
                                     ),
@@ -712,7 +714,7 @@ class _IptvChannelSheetState extends State<IptvChannelSheet> {
                                                           borderRadius: ZplayRadius.xsAll,
                                                         ),
                                                         child: Text(
-                                                          'FREE',
+                                                          l10nOf(context).channelFreeBadge,
                                                           style: ZplayType.overline.toStyle(color: tokens.textEmphasis),
                                                         ),
                                                       ),
@@ -772,7 +774,7 @@ class _IptvChannelSheetState extends State<IptvChannelSheet> {
                     if (results.isNotEmpty)
                       Expanded(
                         child: PillButton(
-                          label: 'Watch Live',
+                          label: l10nOf(context).auxIptvHeroCarouselWatchLive,
                           icon: Icons.play_arrow_rounded,
                           expand: true,
                           onPressed: display.isNotEmpty
@@ -805,7 +807,7 @@ class _IptvChannelSheetState extends State<IptvChannelSheet> {
                             ),
                             const SizedBox(width: ZplaySpacing.s8),
                             Text(
-                              'Scan More',
+                              l10nOf(context).auxIptvChannelSheetScanMore,
                               style: ZplayType.label.toStyle(
                                 color: isScanning ? tokens.textMuted : tokens.textPrimary,
                               ),

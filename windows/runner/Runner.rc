@@ -95,7 +95,7 @@ BEGIN
             // folder plus company\product). Keep them in sync with the
             // application identity, currently %APPDATA%\tzero86\zplay.
             VALUE "CompanyName", "tzero86" "\0"
-            VALUE "FileDescription", "ZPlay" "\0"
+            VALUE "FileDescription", "Kiru" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "zplay" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2026 tzero86. All rights reserved." "\0"
