@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:async';
@@ -12,7 +13,6 @@ import '../../services/books/reader_settings.dart';
 import '../../services/theme/design_tokens.dart';
 import '../../services/window/window_service.dart';
 import '../../services/discord/discord_rpc_service.dart';
-import '../../widgets/common/custom_scroll_track.dart';
 import 'widgets/comic_reader_view.dart';
 import 'widgets/epub_content_view.dart';
 import 'widgets/focus_mode_view.dart';
@@ -473,18 +473,6 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                     ),
                   ),
 
-                  // ── Custom Scroll Track (Desktop Only) ──
-                  if (!isComicMode &&
-                      !_loading &&
-                      _error == null &&
-                      _bookData != null &&
-                      MediaQuery.sizeOf(context).width > 800)
-                    Positioned(
-                      right: 24,
-                      bottom: 40,
-                      child: CustomScrollTrack(controller: _scrollController),
-                    ),
-
                   // ── Hairline Progress Bar Pinned to Absolute Bottom (Always Visible) ──
                   Positioned(
                     bottom: 0,
@@ -551,7 +539,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
         // without drawing a frame around them.
         child: Row(
           children: [
-            IconButton(
+            KiruIconButton(
               icon: Icon(
                 Icons.arrow_back_ios_new_rounded,
                 color: ReaderTokens.textPrimary,
@@ -561,7 +549,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
               onPressed: () => Navigator.of(context).pop(),
             ),
             const SizedBox(width: ReaderTokens.space4),
-            IconButton(
+            KiruIconButton(
               icon: Icon(
                 Icons.menu_book_rounded,
                 color: ReaderTokens.textPrimary,
@@ -586,7 +574,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
 
             // Text-Specific Controls
             if (!isComicMode) ...[
-              IconButton(
+              KiruIconButton(
                 icon: Icon(
                   Icons.center_focus_strong_rounded,
                   color: settings.focusModeActive
@@ -600,13 +588,15 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                   ReaderSettings.toggleFocusMode();
                 },
               ),
-              IconButton(
+              KiruIconButton(
                 icon: Icon(
                   Icons.tune_rounded,
                   color: ReaderTokens.textPrimary,
                   size: 20,
                 ),
-                tooltip: l10nOf(context).auxEpubReaderPageAppearanceCustomization,
+                tooltip: l10nOf(
+                  context,
+                ).auxEpubReaderPageAppearanceCustomization,
                 onPressed: () => ReaderCustomizationSheet.show(
                   context,
                   realBookSampleText: _getSamplePreviewText(),
@@ -614,7 +604,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
               ),
             ],
 
-            IconButton(
+            KiruIconButton(
               icon: Icon(
                 Icons.fullscreen_rounded,
                 color: ReaderTokens.textPrimary,
@@ -665,13 +655,15 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
         // gradient scrim below it carries the legibility. No hairline, no band.
         child: Row(
           children: [
-            IconButton(
+            KiruIconButton(
               icon: Icon(
                 Icons.chevron_left_rounded,
                 color: ReaderTokens.textPrimary,
                 size: 26,
               ),
-              tooltip: l10nOf(context).auxEpubReaderPagePreviousChapterLeftArrow,
+              tooltip: l10nOf(
+                context,
+              ).auxEpubReaderPagePreviousChapterLeftArrow,
               onPressed: _currentChapterIndex > 0
                   ? () => _goToChapter(_currentChapterIndex - 1)
                   : null,
@@ -685,13 +677,19 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      l10nOf(context).dynamicEpubReaderPageChOf((current).toString(), (total).toString()),
+                      l10nOf(context).dynamicEpubReaderPageChOf(
+                        (current).toString(),
+                        (total).toString(),
+                      ),
                       style: ZplayType.label
                           .copyWith(weight: FontWeight.w600)
                           .toStyle(color: ReaderTokens.textPrimary),
                     ),
                     Text(
-                      l10nOf(context).dynamicEpubReaderPageMinLeft((percent).toString(), (minsLeft).toString()),
+                      l10nOf(context).dynamicEpubReaderPageMinLeft(
+                        (percent).toString(),
+                        (minsLeft).toString(),
+                      ),
                       style: ZplayType.bodySmall.toStyle(
                         color: ReaderTokens.textSecondary,
                       ),
@@ -700,7 +698,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                 ),
               ),
             ),
-            IconButton(
+            KiruIconButton(
               icon: Icon(
                 Icons.chevron_right_rounded,
                 color: ReaderTokens.textPrimary,
@@ -793,12 +791,16 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                OutlinedButton(
+                KiruButton(
+                  kind: KiruButtonKind.outline,
                   onPressed: () => Navigator.of(context).pop(),
                   child: Text(l10nOf(context).auxEpubReaderPageBackToLibrary),
                 ),
                 const SizedBox(width: ReaderTokens.space12),
-                FilledButton(onPressed: _loadBook, child: Text(l10nOf(context).actionRetry)),
+                KiruButton(
+                  onPressed: _loadBook,
+                  child: Text(l10nOf(context).actionRetry),
+                ),
               ],
             ),
           ],
@@ -869,7 +871,9 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
               child: toc.isEmpty
                   ? Center(
                       child: Text(
-                        l10nOf(context).auxEpubReaderPageNoTableOfContentsAvailable,
+                        l10nOf(
+                          context,
+                        ).auxEpubReaderPageNoTableOfContentsAvailable,
                         style: ZplayType.bodySmall.toStyle(
                           color: ReaderTokens.textMuted,
                         ),
@@ -883,7 +887,7 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
                         final isSelected =
                             item.chapterIndex == _currentChapterIndex;
 
-                        return ListTile(
+                        return KiruListTile(
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: ReaderTokens.space24,
                             vertical: ReaderTokens.space4,

@@ -1641,6 +1641,10 @@ class _HeroSlideState extends State<HeroSlide>
               // the strip above it that used to be bare.
               final extent = constraints.maxHeight;
               final band = math.max(0.0, extent - bleedTop);
+              final topScrimAlpha = switch (FormFactorService.of(context)) {
+                FormFactor.medium || FormFactor.expanded => 0.22,
+                _ => 0.55,
+              };
               double stop(double inBand) =>
                   extent <= 0 ? inBand : (bleedTop + band * inBand) / extent;
               // Baked, not a live gradient shader - see [BakedGradient]:
@@ -1650,7 +1654,8 @@ class _HeroSlideState extends State<HeroSlide>
                 gradient: LinearGradient(
                   stops: [0.0, stop(0.12), stop(0.42), 1.0],
                   colors: [
-                    tokens.bg.withValues(alpha: 0.55),
+                    // 桌面顶部的导航已提供独立的文字遮罩，这里减轻暗幕以保留海报原色。
+                    tokens.bg.withValues(alpha: topScrimAlpha),
                     tokens.bg.withValues(alpha: 0.0),
                     tokens.bg.withValues(alpha: 0.55),
                     // Ends where Home's backdrop band starts (0.90), so the
@@ -1729,16 +1734,18 @@ class _HeroSlideState extends State<HeroSlide>
                     LocalizedMovieTitle(
                       movie: movie,
                       builder: (context, title, localized) => _HeroTitle(
-                      title: title,
-                      logoUrl: localized ? null : logo,
-                      isCompact: isCompact || heroStyle == HeroStyle.minimalist,
-                      // A short band gets the smaller title, so the name is never
-                      // the thing that gets cut. The 46 px title is two lines of
-                      // 54 dp; at 32 px it is one line of 38, which is the
-                      // difference between the slide fitting and the name
-                      // disappearing off the top of the band.
-                      shrink: shrinkTitle,
-                    )),
+                        title: title,
+                        logoUrl: localized ? null : logo,
+                        isCompact:
+                            isCompact || heroStyle == HeroStyle.minimalist,
+                        // A short band gets the smaller title, so the name is never
+                        // the thing that gets cut. The 46 px title is two lines of
+                        // 54 dp; at 32 px it is one line of 38, which is the
+                        // difference between the slide fitting and the name
+                        // disappearing off the top of the band.
+                        shrink: shrinkTitle,
+                      ),
+                    ),
 
                     SizedBox(
                       height: heroStyle == HeroStyle.minimalist

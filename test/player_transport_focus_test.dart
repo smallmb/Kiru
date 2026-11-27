@@ -214,8 +214,9 @@ class _PlayerHarnessState extends State<_PlayerHarness> {
                     key: _s.topBarKey,
                     title: 'A title',
                     onBack: () => _say('back'),
-                    onToggleEpisodes:
-                        _s.withEpisodes ? () => _say('episodes') : null,
+                    onToggleEpisodes: _s.withEpisodes
+                        ? () => _say('episodes')
+                        : null,
                     onShowSources: () => _say('sources'),
                     onCopyStreamUrl: () => _say('copy-url'),
                     onDownload: () => _say('download'),
@@ -247,12 +248,15 @@ class _PlayerHarnessState extends State<_PlayerHarness> {
                       isFullscreen: _s.fullscreen,
                       hasPrevEpisode: _s.withEpisodes,
                       hasNextEpisode: _s.withEpisodes,
-                      onToggleEpisodes:
-                          _s.withEpisodes ? () => _say('episodes') : null,
-                      onPrevEpisode:
-                          _s.withEpisodes ? () => _say('prev-episode') : null,
-                      onNextEpisode:
-                          _s.withEpisodes ? () => _say('next-episode') : null,
+                      onToggleEpisodes: _s.withEpisodes
+                          ? () => _say('episodes')
+                          : null,
+                      onPrevEpisode: _s.withEpisodes
+                          ? () => _say('prev-episode')
+                          : null,
+                      onNextEpisode: _s.withEpisodes
+                          ? () => _say('next-episode')
+                          : null,
                       entryFocusNode: _s.entry,
                       onPlayPause: () {
                         setState(() => _s.playing = !_s.playing);
@@ -336,7 +340,7 @@ String _focused(WidgetTester tester, _Screen screen) {
     find.ancestor(
       of: of,
       matching: find.byWidgetPredicate(
-        (w) => w is FocusableCard && w.focusNode == screen.entry,
+        (w) => w is PlayerIconButton && w.focusNode == screen.entry,
       ),
     ),
   )) {
@@ -356,15 +360,20 @@ String _focused(WidgetTester tester, _Screen screen) {
   }
   final icon = find.ancestor(of: of, matching: find.byType(PlayerIconButton));
   if (tester.any(icon)) {
-    return tester.widget<PlayerIconButton>(icon.first).tooltip ?? 'unnamed-icon';
+    return tester.widget<PlayerIconButton>(icon.first).tooltip ??
+        'unnamed-icon';
   }
-  if (tester.any(find.ancestor(of: of, matching: find.byType(PlayerVolumeControl)))) {
+  if (tester.any(
+    find.ancestor(of: of, matching: find.byType(PlayerVolumeControl)),
+  )) {
     return 'Volume';
   }
   if (tester.any(find.ancestor(of: of, matching: find.byType(PlayerSeekBar)))) {
     return 'Seek';
   }
-  if (tester.any(find.ancestor(of: of, matching: find.byType(PlayerTransport)))) {
+  if (tester.any(
+    find.ancestor(of: of, matching: find.byType(PlayerTransport)),
+  )) {
     return 'unclassified-transport-control';
   }
   return 'page';
@@ -377,7 +386,11 @@ Future<void> _tap(WidgetTester tester, LogicalKeyboardKey key) async {
 
 /// Walks the transport from the entry control, one step per arrow press, and
 /// reports the controls focus landed on in order.
-Future<List<String>> _sweep(WidgetTester tester, _Screen screen, {int steps = 12}) async {
+Future<List<String>> _sweep(
+  WidgetTester tester,
+  _Screen screen, {
+  int steps = 12,
+}) async {
   final seen = <String>[_focused(tester, screen)];
   for (var i = 0; i < steps; i++) {
     await _tap(tester, LogicalKeyboardKey.arrowRight);
@@ -400,8 +413,11 @@ Future<void> _walkTo(WidgetTester tester, _Screen screen, String label) async {
     if (_focused(tester, screen) == label) return;
     await _tap(tester, LogicalKeyboardKey.arrowRight);
   }
-  expect(_focused(tester, screen), label,
-      reason: '$label is not reachable by moving right from the play button');
+  expect(
+    _focused(tester, screen),
+    label,
+    reason: '$label is not reachable by moving right from the play button',
+  );
 }
 
 /// The colour the ring around [of] is painted in, or null when it paints none.
@@ -444,11 +460,15 @@ Color? _ringColour(WidgetTester tester, Finder of) {
 void _expectRingOnFocusedControl(WidgetTester tester, String what) {
   final node = FocusManager.instance.primaryFocus!;
   final control = find.byElementPredicate((e) => e == node.context);
-  final rings = find.descendant(of: control, matching: find.byType(CardFocusRing));
+  final rings = find.descendant(
+    of: control,
+    matching: find.byType(CardFocusRing),
+  );
   expect(
     rings,
     findsOneWidget,
-    reason: '$what must carry the app focus ring: on a television the ring is '
+    reason:
+        '$what must carry the app focus ring: on a television the ring is '
         'the only thing that says where the remote is',
   );
   expect(
@@ -464,7 +484,8 @@ void _expectRingOnFocusedControl(WidgetTester tester, String what) {
   expect(
     find.byWidgetPredicate((w) => w is CardFocusRing && w.focused),
     findsOneWidget,
-    reason: 'one indicator on screen: $what is where the remote is, and no '
+    reason:
+        'one indicator on screen: $what is where the remote is, and no '
         'other control may be lit beside it',
   );
 }
@@ -478,28 +499,41 @@ Color? _iconColour(WidgetTester tester, IconData icon) =>
 void main() {
   tearDown(() => DeviceProfile.debugSetTelevision(value: false));
 
-  testWidgets('opening the HUD puts primary focus on the play button', (tester) async {
+  testWidgets('opening the HUD puts primary focus on the play button', (
+    tester,
+  ) async {
     final screen = _Screen(television: true);
     addTearDown(screen.dispose);
     await _pump(tester, screen);
 
-    expect(screen.entry.hasPrimaryFocus, isTrue,
-        reason: 'the overlay must open on a real control, not on the page node');
+    expect(
+      screen.entry.hasPrimaryFocus,
+      isTrue,
+      reason: 'the overlay must open on a real control, not on the page node',
+    );
     expect(_focused(tester, screen), 'Play/Pause');
 
     // Not merely focused: on screen, and wired to an action.
     final rect = tester.getRect(find.byIcon(Icons.pause_rounded));
-    final bounds = Offset.zero & tester.view.physicalSize / tester.view.devicePixelRatio;
-    expect(bounds.contains(rect.center), isTrue,
-        reason: 'the focused control must be inside the canvas, not off-screen');
+    final bounds =
+        Offset.zero & tester.view.physicalSize / tester.view.devicePixelRatio;
+    expect(
+      bounds.contains(rect.center),
+      isTrue,
+      reason: 'the focused control must be inside the canvas, not off-screen',
+    );
     final before = screen.playing;
     await _tap(tester, LogicalKeyboardKey.select);
-    expect(screen.playing, isNot(before),
-        reason: 'the centre key must activate the control that holds focus');
+    expect(
+      screen.playing,
+      isNot(before),
+      reason: 'the centre key must activate the control that holds focus',
+    );
   });
 
-  testWidgets('every transport control is reachable by D-pad and activatable',
-      (tester) async {
+  testWidgets('every transport control is reachable by D-pad and activatable', (
+    tester,
+  ) async {
     final screen = _Screen(television: true);
     addTearDown(screen.dispose);
     await _pump(tester, screen);
@@ -517,8 +551,11 @@ void main() {
       'Audio Tracks',
       'Fullscreen (F)',
     ]) {
-      expect(seen, contains(expected),
-          reason: '$expected must be reachable by moving the D-pad');
+      expect(
+        seen,
+        contains(expected),
+        reason: '$expected must be reachable by moving the D-pad',
+      );
     }
 
     // And each one acts when the centre key is pressed. The sweep above left
@@ -539,30 +576,43 @@ void main() {
       await _walkTo(tester, screen, entry.key);
       screen.calls.clear();
       await _tap(tester, LogicalKeyboardKey.select);
-      expect(screen.calls, contains(entry.value),
-          reason: 'the centre key on ${entry.key} must run its action');
+      expect(
+        screen.calls,
+        contains(entry.value),
+        reason: 'the centre key on ${entry.key} must run its action',
+      );
     }
   });
 
-  testWidgets('the timeline takes left and right and the position moves',
-      (tester) async {
+  testWidgets('the timeline takes left and right and the position moves', (
+    tester,
+  ) async {
     final screen = _Screen(television: true);
     addTearDown(screen.dispose);
     await _pump(tester, screen);
 
     // Up from the play button is the timeline.
     await _tap(tester, LogicalKeyboardKey.arrowUp);
-    expect(_focused(tester, screen), 'Seek',
-        reason: 'the transport row sits under the timeline, so up reaches it');
+    expect(
+      _focused(tester, screen),
+      'Seek',
+      reason: 'the transport row sits under the timeline, so up reaches it',
+    );
 
     expect(find.text('0:00'), findsOneWidget);
     await _tap(tester, LogicalKeyboardKey.arrowRight);
     await tester.pump();
 
-    expect(screen.position.value, const Duration(seconds: 10),
-        reason: 'right on the timeline seeks ten seconds forward');
-    expect(find.text('0:10'), findsOneWidget,
-        reason: 'the new position has to be visible in the timeline readout');
+    expect(
+      screen.position.value,
+      const Duration(seconds: 10),
+      reason: 'right on the timeline seeks ten seconds forward',
+    );
+    expect(
+      find.text('0:10'),
+      findsOneWidget,
+      reason: 'the new position has to be visible in the timeline readout',
+    );
     expect(find.text('0:00'), findsNothing);
 
     await _tap(tester, LogicalKeyboardKey.arrowLeft);
@@ -580,18 +630,27 @@ void main() {
 
     final before = screen.volume;
     await _tap(tester, LogicalKeyboardKey.arrowUp);
-    expect(screen.volume, greaterThan(before),
-        reason: 'up on the volume track must raise the volume');
+    expect(
+      screen.volume,
+      greaterThan(before),
+      reason: 'up on the volume track must raise the volume',
+    );
     await _tap(tester, LogicalKeyboardKey.arrowDown);
     expect(screen.volume, closeTo(before, 0.001));
 
     // And left and right still walk the row from the track: a control that ate
     // an arrow along the row would put the right-hand buttons out of reach.
     await _tap(tester, LogicalKeyboardKey.arrowRight);
-    expect(_focused(tester, screen), isNot('Volume'),
-        reason: 'the track must not swallow the row-walking arrows');
-    expect(screen.volume, closeTo(before, 0.001),
-        reason: 'right is traversal here, not a volume change');
+    expect(
+      _focused(tester, screen),
+      isNot('Volume'),
+      reason: 'the track must not swallow the row-walking arrows',
+    );
+    expect(
+      screen.volume,
+      closeTo(before, 0.001),
+      reason: 'right is traversal here, not a volume change',
+    );
   });
 
   testWidgets('the focused control is visibly focused', (tester) async {
@@ -601,19 +660,29 @@ void main() {
 
     // The timeline paints a ring only while it holds focus.
     final seekBar = find.byType(PlayerSeekBar);
-    expect(_ringColour(tester, seekBar), isNull,
-        reason: 'an unfocused timeline must not draw a ring');
+    expect(
+      _ringColour(tester, seekBar),
+      isNull,
+      reason: 'an unfocused timeline must not draw a ring',
+    );
     await _tap(tester, LogicalKeyboardKey.arrowUp);
     expect(_focused(tester, screen), 'Seek');
-    expect(_ringColour(tester, seekBar)?.a, greaterThan(0),
-        reason: 'a focused timeline must draw the ring, or nobody can see where '
-            'the arrows will seek');
+    expect(
+      _ringColour(tester, seekBar)?.a,
+      greaterThan(0),
+      reason:
+          'a focused timeline must draw the ring, or nobody can see where '
+          'the arrows will seek',
+    );
 
     // The volume track answers focus the same way.
     final volume = find.byType(PlayerVolumeControl);
     await _walkTo(tester, screen, 'Volume');
-    expect(_ringColour(tester, volume)?.a, greaterThan(0),
-        reason: 'the volume track must show focus, it has no hover on a remote');
+    expect(
+      _ringColour(tester, volume)?.a,
+      greaterThan(0),
+      reason: 'the volume track must show focus, it has no hover on a remote',
+    );
 
     // And a button still brightens its icon, which is the fill half of the
     // treatment it shared with hover before it had a ring - the ring is the
@@ -623,12 +692,16 @@ void main() {
     await _tap(tester, LogicalKeyboardKey.arrowRight);
     expect(_focused(tester, screen), isNot('Subtitles'));
     final unfocused = _iconColour(tester, Icons.subtitles_rounded);
-    expect(focused, isNot(unfocused),
-        reason: 'the focused button must read differently from its neighbours');
+    expect(
+      focused,
+      isNot(unfocused),
+      reason: 'the focused button must read differently from its neighbours',
+    );
   });
 
-  testWidgets('every control in the transport carries the app focus ring',
-      (tester) async {
+  testWidgets('every control in the transport carries the app focus ring', (
+    tester,
+  ) async {
     // The 960x540 device pass found this was the last place in the app where the
     // focused control was not the ember ring: the transport's buttons answered
     // focus with their own translucent disc, and the two tracks and the
@@ -667,7 +740,9 @@ void main() {
     }
   });
 
-  testWidgets('the dedicated volume keys work whatever holds focus', (tester) async {
+  testWidgets('the dedicated volume keys work whatever holds focus', (
+    tester,
+  ) async {
     final screen = _Screen(television: true);
     addTearDown(screen.dispose);
     await _pump(tester, screen);
@@ -680,8 +755,12 @@ void main() {
 
     var volume = screen.volume;
     await _tap(tester, LogicalKeyboardKey.audioVolumeUp);
-    expect(screen.volume, greaterThan(volume),
-        reason: 'the hardware volume key must survive the remote taking over the transport');
+    expect(
+      screen.volume,
+      greaterThan(volume),
+      reason:
+          'the hardware volume key must survive the remote taking over the transport',
+    );
     volume = screen.volume;
     await _tap(tester, LogicalKeyboardKey.audioVolumeDown);
     expect(screen.volume, lessThan(volume));
@@ -693,8 +772,11 @@ void main() {
     expect(screen.entry.hasPrimaryFocus, isTrue);
     volume = screen.volume;
     await _tap(tester, LogicalKeyboardKey.audioVolumeUp);
-    expect(screen.volume, greaterThan(volume),
-        reason: 'a HUD control holding focus must not swallow the volume rocker');
+    expect(
+      screen.volume,
+      greaterThan(volume),
+      reason: 'a HUD control holding focus must not swallow the volume rocker',
+    );
   });
 
   testWidgets('a pointer device keeps the arrow-key map', (tester) async {
@@ -702,28 +784,44 @@ void main() {
     addTearDown(screen.dispose);
     await _pump(tester, screen);
 
-    expect(screen.page.hasPrimaryFocus, isTrue,
-        reason: 'a desktop keeps the page node focused and draws no ring');
+    expect(
+      screen.page.hasPrimaryFocus,
+      isTrue,
+      reason: 'a desktop keeps the page node focused and draws no ring',
+    );
 
     final volume = screen.volume;
     await _tap(tester, LogicalKeyboardKey.arrowUp);
-    expect(screen.volume, greaterThan(volume),
-        reason: 'up is still the volume on a pointer device');
-    expect(FocusManager.instance.primaryFocus, same(screen.page),
-        reason: 'and the arrow must not have moved focus');
+    expect(
+      screen.volume,
+      greaterThan(volume),
+      reason: 'up is still the volume on a pointer device',
+    );
+    expect(
+      FocusManager.instance.primaryFocus,
+      same(screen.page),
+      reason: 'and the arrow must not have moved focus',
+    );
 
     await _tap(tester, LogicalKeyboardKey.arrowRight);
-    expect(screen.calls, contains('relative:10'),
-        reason: 'right is still a ten second seek on a pointer device');
+    expect(
+      screen.calls,
+      contains('relative:10'),
+      reason: 'right is still a ten second seek on a pointer device',
+    );
 
     screen.calls.clear();
     await _tap(tester, LogicalKeyboardKey.space);
-    expect(screen.calls, contains('playpause'),
-        reason: 'space is still play/pause');
+    expect(
+      screen.calls,
+      contains('playpause'),
+      reason: 'space is still play/pause',
+    );
   });
 
-  testWidgets('a series row reaches the right-hand cluster past the track',
-      (tester) async {
+  testWidgets('a series row reaches the right-hand cluster past the track', (
+    tester,
+  ) async {
     // The report's television was on a series, so the centre group and the
     // episodes trigger are in the row. The assertions above walk a row without
     // them, and the report stops exactly where this row continues: play, -10,
@@ -742,13 +840,17 @@ void main() {
       'Subtitle Sync',
       'Fullscreen (F)',
     ]) {
-      expect(seen, contains(expected),
-          reason: '$expected must be reachable on a series row');
+      expect(
+        seen,
+        contains(expected),
+        reason: '$expected must be reachable on a series row',
+      );
     }
   });
 
-  testWidgets('a D-pad press enters the HUD when the page node holds focus',
-      (tester) async {
+  testWidgets('a D-pad press enters the HUD when the page node holds focus', (
+    tester,
+  ) async {
     // The state the report's television was in, and the one the assertions above
     // never build: the HUD is up, but the page node holds focus anyway.
     //
@@ -763,43 +865,58 @@ void main() {
 
     screen.page.requestFocus();
     await tester.pump();
-    expect(screen.page.hasPrimaryFocus, isTrue,
-        reason: 'precondition: the page node took focus back');
+    expect(
+      screen.page.hasPrimaryFocus,
+      isTrue,
+      reason: 'precondition: the page node took focus back',
+    );
 
     await _tap(tester, LogicalKeyboardKey.arrowRight);
-    expect(_focused(tester, screen), isNot('page'),
-        reason: 'a D-pad press must land in the HUD, not dead-end on the page');
+    expect(
+      _focused(tester, screen),
+      isNot('page'),
+      reason: 'a D-pad press must land in the HUD, not dead-end on the page',
+    );
   });
 
-  testWidgets('the player claims focus on entry so a route cannot answer first',
-      (tester) async {
-    // What a television does, and what the report describes. The pushed route
-    // has a focus scope of its own and it takes focus; the player's page node
-    // sits inside it, so a key is delivered to whichever holds primary focus.
-    // Relying on `autofocus` to win that contest is what left a HUD on screen
-    // that no D-pad press ever reached, with only the platform's media keys
-    // still doing anything.
-    //
-    // So the player takes focus itself once it is on screen. This asserts the
-    // two halves: that it can claim focus, and that the HUD answers once it
-    // has.
-    final screen = _Screen(television: true);
-    addTearDown(screen.dispose);
-    await _pump(tester, screen);
+  testWidgets(
+    'the player claims focus on entry so a route cannot answer first',
+    (tester) async {
+      // What a television does, and what the report describes. The pushed route
+      // has a focus scope of its own and it takes focus; the player's page node
+      // sits inside it, so a key is delivered to whichever holds primary focus.
+      // Relying on `autofocus` to win that contest is what left a HUD on screen
+      // that no D-pad press ever reached, with only the platform's media keys
+      // still doing anything.
+      //
+      // So the player takes focus itself once it is on screen. This asserts the
+      // two halves: that it can claim focus, and that the HUD answers once it
+      // has.
+      final screen = _Screen(television: true);
+      addTearDown(screen.dispose);
+      await _pump(tester, screen);
 
-    screen.page.requestFocus();
-    await tester.pump();
+      screen.page.requestFocus();
+      await tester.pump();
 
-    expect(screen.page.hasPrimaryFocus, isTrue,
-        reason: 'the player must be able to hold primary focus itself');
+      expect(
+        screen.page.hasPrimaryFocus,
+        isTrue,
+        reason: 'the player must be able to hold primary focus itself',
+      );
 
-    await _tap(tester, LogicalKeyboardKey.arrowRight);
-    expect(screen.entry.hasPrimaryFocus, isTrue,
-        reason: 'with the player focused, a D-pad press enters the HUD');
-  });
+      await _tap(tester, LogicalKeyboardKey.arrowRight);
+      expect(
+        screen.entry.hasPrimaryFocus,
+        isTrue,
+        reason: 'with the player focused, a D-pad press enters the HUD',
+      );
+    },
+  );
 
-  testWidgets('the top bar is reachable from the transport on a television',
-      (tester) async {
+  testWidgets('the top bar is reachable from the transport on a television', (
+    tester,
+  ) async {
     // The other half of the report: "Same for the source control and any top
     // right corner controls the player has". Those live in the top bar, above
     // the transport row, and a television reaches them by moving up out of the
@@ -811,9 +928,13 @@ void main() {
     await _pump(tester, screen);
 
     await _tap(tester, LogicalKeyboardKey.arrowUp);
-    expect(_focused(tester, screen), 'Back',
-        reason: 'the top bar is the nearest focusable above the transport row, '
-            'so one press up reaches it');
+    expect(
+      _focused(tester, screen),
+      'Back',
+      reason:
+          'the top bar is the nearest focusable above the transport row, '
+          'so one press up reaches it',
+    );
 
     // The walk itself. `Sources` sits one step right of Back on a series, and
     // the contract must stand aside for that step: before the header joined
@@ -822,15 +943,22 @@ void main() {
     // entry and the ring never moved along the bar. Landing on Sources is
     // therefore the assertion that the gate reads the header too.
     await _tap(tester, LogicalKeyboardKey.arrowRight);
-    expect(_focused(tester, screen), 'Sources',
-        reason: 'with the ring on the header, right walks the bar instead of '
-            'returning focus to the transport');
+    expect(
+      _focused(tester, screen),
+      'Sources',
+      reason:
+          'with the ring on the header, right walks the bar instead of '
+          'returning focus to the transport',
+    );
 
     // And the header's controls still act: the contract must not swallow the
     // centre press while the bar owns focus.
     await _tap(tester, LogicalKeyboardKey.select);
-    expect(screen.calls, contains('sources'),
-        reason: 'select on the Sources chip opens the panel');
+    expect(
+      screen.calls,
+      contains('sources'),
+      reason: 'select on the Sources chip opens the panel',
+    );
   });
 
   group('the remote contract on a television', () {
@@ -882,12 +1010,20 @@ void main() {
         calls: calls,
       );
 
-      expect(result, KeyEventResult.handled,
-          reason: 'the event must not fall through to a traversal that finds '
-              'nothing from a full-screen page node');
-      expect(calls, ['show-controls', 'focus-controls'],
-          reason: 'the HUD comes up and the transport takes focus in that '
-              'order, so the same press lands the ring on a control');
+      expect(
+        result,
+        KeyEventResult.handled,
+        reason:
+            'the event must not fall through to a traversal that finds '
+            'nothing from a full-screen page node',
+      );
+      expect(
+        calls,
+        ['show-controls', 'focus-controls'],
+        reason:
+            'the HUD comes up and the transport takes focus in that '
+            'order, so the same press lands the ring on a control',
+      );
     });
 
     test('an arrow in an open HUD only steps into it', () {
@@ -900,8 +1036,9 @@ void main() {
         calls: calls,
       );
 
-      expect(calls, ['focus-controls'],
-          reason: 'an open HUD is not re-shown, it is entered');
+      expect(calls, [
+        'focus-controls',
+      ], reason: 'an open HUD is not re-shown, it is entered');
     });
 
     test('a pointer device keeps the arrow-key map', () {
@@ -914,9 +1051,13 @@ void main() {
         calls: calls,
       );
 
-      expect(calls, ['volume'],
-          reason: 'a keyboard user on a desktop still gets up and down for '
-              'the volume, with focus left where it is');
+      expect(
+        calls,
+        ['volume'],
+        reason:
+            'a keyboard user on a desktop still gets up and down for '
+            'the volume, with focus left where it is',
+      );
     });
   });
 }

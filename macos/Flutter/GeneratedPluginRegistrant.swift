@@ -8,7 +8,6 @@ import Foundation
 import file_picker
 import flutter_secure_storage_darwin
 import media_kit_libs_macos_video
-import media_kit_video
 import package_info_plus
 import pdfium_flutter
 import screen_retriever_macos
@@ -17,6 +16,7 @@ import sqflite_darwin
 import torrserver_flutter
 import url_launcher_macos
 import wakelock_plus
+import media_kit_video
 import webview_flutter_wkwebview
 import window_manager
 
@@ -24,7 +24,6 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FilePickerPlugin.register(with: registry.registrar(forPlugin: "FilePickerPlugin"))
   FlutterSecureStorageDarwinPlugin.register(with: registry.registrar(forPlugin: "FlutterSecureStorageDarwinPlugin"))
   MediaKitLibsMacosVideoPlugin.register(with: registry.registrar(forPlugin: "MediaKitLibsMacosVideoPlugin"))
-  MediaKitVideoPlugin.register(with: registry.registrar(forPlugin: "MediaKitVideoPlugin"))
   FPPPackageInfoPlusPlugin.register(with: registry.registrar(forPlugin: "FPPPackageInfoPlusPlugin"))
   PDFiumFlutterPlugin.register(with: registry.registrar(forPlugin: "PDFiumFlutterPlugin"))
   ScreenRetrieverMacosPlugin.register(with: registry.registrar(forPlugin: "ScreenRetrieverMacosPlugin"))
@@ -33,6 +32,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   TorrserverFlutterPlugin.register(with: registry.registrar(forPlugin: "TorrserverFlutterPlugin"))
   UrlLauncherPlugin.register(with: registry.registrar(forPlugin: "UrlLauncherPlugin"))
   WakelockPlusMacosPlugin.register(with: registry.registrar(forPlugin: "WakelockPlusMacosPlugin"))
+  MediaKitVideoPlugin.register(with: registry.registrar(forPlugin: "MediaKitVideoPlugin"))
   WebViewFlutterPlugin.register(with: registry.registrar(forPlugin: "WebViewFlutterPlugin"))
   WindowManagerPlugin.register(with: registry.registrar(forPlugin: "WindowManagerPlugin"))
 }

@@ -1,3 +1,5 @@
+import '../ui/kiru_toast.dart';
+import '../ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:async';
@@ -325,9 +327,15 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
       widget.onClose();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10nOf(context).dynamicTextSyncOverlayErrorSavingSync((e).toString()))));
+        KiruToastMessenger.of(context).showSnackBar(
+          KiruToast(
+            content: Text(
+              l10nOf(
+                context,
+              ).dynamicTextSyncOverlayErrorSavingSync((e).toString()),
+            ),
+          ),
+        );
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -421,16 +429,24 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                             children: [
                               Text(
                                 _sectionMode
-                                    ? l10nOf(context).uiFinalTextSyncOverlayFixSection
-                                    : l10nOf(context).uiFinalTextSyncOverlaySubtitleTiming,
+                                    ? l10nOf(
+                                        context,
+                                      ).uiFinalTextSyncOverlayFixSection
+                                    : l10nOf(
+                                        context,
+                                      ).uiFinalTextSyncOverlaySubtitleTiming,
                                 style: ZplayType.overline
                                     .copyWith(weight: FontWeight.w800)
                                     .toStyle(color: PlayerTheme.inkSubtle),
                               ),
                               Text(
                                 _sectionMode
-                                    ? l10nOf(context).uiFinalTextSyncOverlaySelectRangeSync
-                                    : l10nOf(context).uiFinalTextSyncOverlaySpeechDialogueSync,
+                                    ? l10nOf(
+                                        context,
+                                      ).uiFinalTextSyncOverlaySelectRangeSync
+                                    : l10nOf(
+                                        context,
+                                      ).uiFinalTextSyncOverlaySpeechDialogueSync,
                                 style: ZplayType.body
                                     .copyWith(
                                       size: isLandscapeMobile ? 14 : 16,
@@ -503,14 +519,16 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                           ),
                           const SizedBox(width: 6),
                           Expanded(
-                            child: TextField(
+                            child: KiruFormField(
                               controller: _searchController,
                               style: ZplayType.bodySmall
                                   .copyWith(size: isLandscapeMobile ? 12 : 12.5)
                                   .toStyle(color: PlayerTheme.ink),
                               onSubmitted: (_) => _goToNextMatch(),
                               decoration: InputDecoration(
-                                hintText: l10nOf(context).uiTextSyncOverlaySearchDialogue,
+                                hintText: l10nOf(
+                                  context,
+                                ).uiTextSyncOverlaySearchDialogue,
                                 hintStyle: ZplayType.bodySmall.toStyle(
                                   color: PlayerTheme.inkSubtle,
                                 ),
@@ -836,7 +854,9 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                                                       ZplayRadius.xsAll,
                                                 ),
                                                 child: Text(
-                                                  l10nOf(context).uiTextSyncOverlayNow,
+                                                  l10nOf(
+                                                    context,
+                                                  ).uiTextSyncOverlayNow,
                                                   style: ZplayType.overline
                                                       .copyWith(
                                                         weight: FontWeight.w800,
@@ -869,7 +889,7 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                                       color: PlayerTheme.raised,
                                       child: Row(
                                         children: [
-                                          ElevatedButton.icon(
+                                          KiruButton(
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor:
                                                   PlayerTheme.accent,
@@ -889,8 +909,10 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                                               Icons.check_rounded,
                                               size: 14,
                                             ),
-                                            label: Text(
-                                              l10nOf(context).uiTextSyncOverlaySyncFromHere,
+                                            child: Text(
+                                              l10nOf(
+                                                context,
+                                              ).uiTextSyncOverlaySyncFromHere,
                                               style: ZplayType.caption
                                                   .copyWith(
                                                     weight: FontWeight.w600,
@@ -901,7 +923,8 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                                                 _handleSyncFromHere(index),
                                           ),
                                           const SizedBox(width: 6),
-                                          OutlinedButton.icon(
+                                          KiruButton(
+                                            kind: KiruButtonKind.outline,
                                             style: OutlinedButton.styleFrom(
                                               foregroundColor:
                                                   PlayerTheme.inkMuted,
@@ -923,8 +946,10 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                                               Icons.play_arrow_rounded,
                                               size: 14,
                                             ),
-                                            label: Text(
-                                              l10nOf(context).uiTextSyncOverlayJumpHere,
+                                            child: Text(
+                                              l10nOf(
+                                                context,
+                                              ).uiTextSyncOverlayJumpHere,
                                               style: ZplayType.caption
                                                   .toStyle(),
                                             ),
@@ -946,7 +971,7 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                               left: 0,
                               right: 0,
                               child: Center(
-                                child: FilledButton.icon(
+                                child: KiruButton(
                                   style: FilledButton.styleFrom(
                                     backgroundColor: PlayerTheme.accent,
                                     foregroundColor: tokens.onAccent,
@@ -964,7 +989,7 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                                     Icons.arrow_downward_rounded,
                                     size: 13,
                                   ),
-                                  label: Text(
+                                  child: Text(
                                     l10nOf(context).uiTextSyncOverlayJumpToNow,
                                     style: ZplayType.caption
                                         .copyWith(weight: FontWeight.bold)
@@ -1029,7 +1054,8 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
               const SizedBox(width: ZplaySpacing.s4),
               _NudgeButton(label: '+0.1s', onTap: () => _handleNudge(0.1)),
               const Spacer(),
-              TextButton.icon(
+              KiruButton(
+                kind: KiruButtonKind.ghost,
                 style: TextButton.styleFrom(
                   foregroundColor: _sectionMode
                       ? PlayerTheme.accent
@@ -1048,8 +1074,10 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 icon: const Icon(Icons.content_cut_rounded, size: 12),
-                label: Text(
-                  _sectionMode ? l10nOf(context).finalTextSyncOverlaySelecting : 'Fix section',
+                child: Text(
+                  _sectionMode
+                      ? l10nOf(context).finalTextSyncOverlaySelecting
+                      : 'Fix section',
                   style: ZplayType.caption.toStyle(),
                 ),
                 onPressed: () {
@@ -1062,18 +1090,15 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
               ),
               if (_isDirty) ...[
                 const SizedBox(width: ZplaySpacing.s4),
-                IconButton(
+                PlayerIconButton(
+                  size: 26,
+                  iconSize: 15,
                   icon: Icon(
                     Icons.replay_rounded,
                     size: 15,
                     color: PlayerTheme.inkSubtle,
                   ),
                   tooltip: l10nOf(context).uiTextSyncOverlayResetTiming,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(
-                    minWidth: 26,
-                    minHeight: 26,
-                  ),
                   onPressed: _handleReset,
                 ),
               ],
@@ -1087,7 +1112,8 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
             children: [
               Expanded(
                 flex: 2,
-                child: OutlinedButton.icon(
+                child: KiruButton(
+                  kind: KiruButtonKind.outline,
                   style: OutlinedButton.styleFrom(
                     foregroundColor: tokens.textPrimary,
                     side: BorderSide(color: PlayerTheme.edgeSoft),
@@ -1104,7 +1130,7 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                     _isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
                     size: 15,
                   ),
-                  label: Text(
+                  child: Text(
                     _isPlaying ? l10nOf(context).playerPause : 'Play',
                     style: ZplayType.caption
                         .copyWith(size: isLandscapeMobile ? 11 : 12)
@@ -1126,7 +1152,7 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
               const SizedBox(width: ZplaySpacing.s8),
               Expanded(
                 flex: 3,
-                child: ElevatedButton.icon(
+                child: KiruButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: PlayerTheme.accent,
                     foregroundColor: tokens.onAccent,
@@ -1143,14 +1169,16 @@ class _TextSyncOverlayState extends State<TextSyncOverlay> {
                       ? SizedBox(
                           width: 13,
                           height: 13,
-                          child: CircularProgressIndicator(
+                          child: KiruLoader(
                             color: tokens.onAccent,
                             strokeWidth: 1.8,
                           ),
                         )
                       : const Icon(Icons.check_rounded, size: 15),
-                  label: Text(
-                    _isSaving ? l10nOf(context).finalTextSyncOverlaySaving : 'Save Timing',
+                  child: Text(
+                    _isSaving
+                        ? l10nOf(context).finalTextSyncOverlaySaving
+                        : 'Save Timing',
                     style: ZplayType.caption
                         .copyWith(
                           size: isLandscapeMobile ? 11 : 12,

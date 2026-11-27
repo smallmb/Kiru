@@ -59,6 +59,16 @@ import 'settings_app_bar.dart';
 /// [actions] is passed through untouched - a page that wants trailing controls
 /// (the Liquid Glass reset button) keeps them and its position, and one that
 /// does not is a shorter call.
+/// Indicates the right-hand detail navigator of the desktop settings workspace.
+class SettingsWorkspaceScope extends InheritedWidget {
+  const SettingsWorkspaceScope({super.key, required super.child});
+  static bool of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<SettingsWorkspaceScope>() !=
+      null;
+  @override
+  bool updateShouldNotify(SettingsWorkspaceScope oldWidget) => false;
+}
+
 class SettingsScaffold extends StatelessWidget {
   const SettingsScaffold({
     super.key,
@@ -83,6 +93,22 @@ class SettingsScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (SettingsWorkspaceScope.of(context)) {
+      return Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: SettingsAppBar(title: title, actions: actions),
+        body: Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: maxWidth + 160),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: child,
+            ),
+          ),
+        ),
+      );
+    }
     return AnimatedAmbientBackground(
       child: Scaffold(
         // No fill: the ambient canvas behind this scaffold is the page surface,

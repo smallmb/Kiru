@@ -25,6 +25,10 @@
 /// form factor and for nothing else.
 library;
 
+import 'package:zplay/services/window/window_service.dart';
+
+import 'package:zplay/widgets/ui/kiru_controls.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -203,8 +207,24 @@ void main() {
       // capsule's own padding.
       final bar = tester.getRect(find.byType(ShellRail));
       expect(bar, const Rect.fromLTWH(0, 0, 1920, 64));
-      final settings = tester.getRect(find.byTooltip('Settings'));
-      expect(settings.right, closeTo(1920 - 24 - 4, 1));
+      final settings = tester.getRect(
+        find.byWidgetPredicate(
+          (w) =>
+              (w is KiruTooltip && w.message == 'Settings') ||
+              (w is Tooltip && w.message == 'Settings'),
+        ),
+      );
+      if (WindowService.instance.usesCustomCaptionBar) {
+        final close = tester.getRect(
+          find.byWidgetPredicate(
+            (w) => w is KiruTooltip && w.message == 'Close window',
+          ),
+        );
+        expect(close.right, closeTo(1920 - 12, 1));
+        expect(settings.right, lessThan(close.left));
+      } else {
+        expect(settings.right, closeTo(1920 - 24, 1));
+      }
     });
   });
 
@@ -253,8 +273,20 @@ void main() {
       // the harness with a pending timer when the tree comes down.
       await tester.pump(const Duration(seconds: 2));
       final rects = (
-        quiz: tester.getRect(find.byTooltip('AI Taste Quiz')),
-        calendar: tester.getRect(find.byTooltip('TV Airing Calendar')),
+        quiz: tester.getRect(
+          find.byWidgetPredicate(
+            (w) =>
+                (w is KiruTooltip && w.message == 'AI Taste Quiz') ||
+                (w is Tooltip && w.message == 'AI Taste Quiz'),
+          ),
+        ),
+        calendar: tester.getRect(
+          find.byWidgetPredicate(
+            (w) =>
+                (w is KiruTooltip && w.message == 'TV Airing Calendar') ||
+                (w is Tooltip && w.message == 'TV Airing Calendar'),
+          ),
+        ),
       );
       await tester.pumpWidget(const SizedBox.shrink());
       return rects;

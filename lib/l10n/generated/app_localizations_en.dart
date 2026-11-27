@@ -69,6 +69,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shellExitFullscreenTooltip => 'Exit Fullscreen (F11)';
 
   @override
+  String get shellMinimizeWindowTooltip => 'Minimize window';
+
+  @override
+  String get shellMaximizeWindowTooltip => 'Maximize window';
+
+  @override
+  String get shellRestoreWindowTooltip => 'Restore window';
+
+  @override
+  String get shellCloseWindowTooltip => 'Close window';
+
+  @override
   String get errorLoadFailed => 'Could not load movies';
 
   @override
@@ -6882,7 +6894,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get configCopyDeepOpticalRefractionGlassSheetsPoweredBy =>
-      'Deep optical refraction glass sheets powered by liquid_glass_easy';
+      'Frosted panels with Gaussian backdrop blur';
 
   @override
   String get configCopyCinematicPosterFocus => 'Cinematic Poster Focus';

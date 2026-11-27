@@ -18,6 +18,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart' as f;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -84,14 +85,19 @@ Future<void> _dpadToRow(WidgetTester tester, Finder row) async {
     return false;
   }
 
-  if (await walk(LogicalKeyboardKey.arrowDown, find.byType(FocusableCard).first)) {
+  if (await walk(
+    LogicalKeyboardKey.arrowDown,
+    find.byType(FocusableCard).first,
+  )) {
     return;
   }
   if (await walk(LogicalKeyboardKey.arrowUp, find.byType(FocusableCard).last)) {
     return;
   }
-  fail('the D-pad never reached the row in either direction; it walked: '
-      '${path.join(' -> ')}');
+  fail(
+    'the D-pad never reached the row in either direction; it walked: '
+    '${path.join(' -> ')}',
+  );
 }
 
 /// Whether [node]'s centre is inside [rect] - i.e. the row is what is marked.
@@ -115,7 +121,9 @@ Text _valueText(WidgetTester tester, Finder row, String value) =>
     tester.widget<Text>(find.descendant(of: row, matching: find.text(value)));
 
 bool _switchValue(WidgetTester tester, Finder row) => tester
-    .widget<Switch>(find.descendant(of: row, matching: find.byType(Switch)))
+    .widget<f.FSwitch>(
+      find.descendant(of: row, matching: find.byType(f.FSwitch)),
+    )
     .value;
 
 Future<void> _pumpSettings(WidgetTester tester) async {
@@ -197,11 +205,15 @@ void main() {
     // The row is the target now, so a pointer press anywhere on it has to run
     // the setting - and only once, because both the row and the switch under
     // it own a tap handler.
-    await tester.tap(find.descendant(of: row, matching: find.text('Adult Content')));
+    await tester.tap(
+      find.descendant(of: row, matching: find.text('Adult Content')),
+    );
     await tester.pump();
     expect(ContentSettings.adultEnabled.value, isTrue);
 
-    await tester.tap(find.descendant(of: row, matching: find.byType(Switch)));
+    await tester.tap(
+      find.descendant(of: row, matching: find.byType(f.FSwitch)),
+    );
     await tester.pump();
     expect(ContentSettings.adultEnabled.value, isFalse);
   });
@@ -230,7 +242,7 @@ void main() {
         reason: '$title does not mark focus',
       );
       expect(
-        find.descendant(of: row, matching: find.byType(Switch)),
+        find.descendant(of: row, matching: find.byType(f.FSwitch)),
         findsOneWidget,
         reason: '$title has to keep the switch that shows its state',
       );

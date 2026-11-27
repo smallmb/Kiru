@@ -1,3 +1,4 @@
+import '../ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -148,12 +149,10 @@ class IptvChannelCard extends StatelessWidget {
                                               child: SizedBox(
                                                 width: 24,
                                                 height: 24,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                      strokeWidth: 2,
-                                                      color:
-                                                          tokens.textDisabled,
-                                                    ),
+                                                child: KiruLoader(
+                                                  strokeWidth: 2,
+                                                  color: tokens.textDisabled,
+                                                ),
                                               ),
                                             ),
                                             errorWidget: (_, _, _) =>

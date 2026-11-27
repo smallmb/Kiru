@@ -7,6 +7,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart' as f;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zplay/widgets/player/player_loading_overlay.dart';
@@ -110,7 +111,7 @@ void main() {
 
     expect(find.text('Testing 4 of 12…'), findsOneWidget);
     expect(find.text('Find best source'), findsNothing);
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.byType(f.FCircularProgress), findsOneWidget);
 
     await pressDpad(tester, LogicalKeyboardKey.select);
 

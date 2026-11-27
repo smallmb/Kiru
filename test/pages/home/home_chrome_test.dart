@@ -201,10 +201,7 @@ void main() {
             'page is the duplicated navigation bar this removes.',
       );
       expect(
-        find.descendant(
-          of: find.byType(HomePage),
-          matching: find.text('ZPlay'),
-        ),
+        find.descendant(of: find.byType(HomePage), matching: find.text('Kiru')),
         findsNothing,
         reason: 'the wordmark belongs to the shell, not to the page',
       );
@@ -238,7 +235,7 @@ void main() {
           'a phone has no shell top bar to carry the mark, so Home draws it',
     );
     expect(
-      find.descendant(of: find.byType(HomePage), matching: find.text('ZPlay')),
+      find.descendant(of: find.byType(HomePage), matching: find.text('Kiru')),
       findsOneWidget,
       reason: 'the wordmark sits beside the mark on the phone row',
     );

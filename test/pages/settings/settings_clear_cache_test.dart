@@ -49,12 +49,15 @@ Future<void> _pumpSettings(WidgetTester tester) async {
 /// background animates forever and would time out rather than fail.
 Future<void> _driveClearCacheControl(WidgetTester tester) async {
   await _pumpSettings(tester);
+  await tester.tap(find.byKey(const ValueKey('settings-section-APP')));
+  await tester.pump();
 
   final row = _row('Clear cache');
   expect(
     row,
     findsOneWidget,
-    reason: 'the clear-cache row has to be a focusable card or a remote '
+    reason:
+        'the clear-cache row has to be a focusable card or a remote '
         'cannot reach it',
   );
   await tester.tap(row);
@@ -141,11 +144,7 @@ void main() {
 
       await _driveClearCacheControl(tester);
 
-      expect(
-        imageClears,
-        1,
-        reason: 'the artwork disk cache must be emptied',
-      );
+      expect(imageClears, 1, reason: 'the artwork disk cache must be emptied');
       await MetadataService.suggestionSearch(query: 'primed');
       expect(
         metaRequests,

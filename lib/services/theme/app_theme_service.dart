@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'design_tokens.dart';
+import 'fonts/font_registry.dart';
 
 /// The one background ramp in the app.
 ///
@@ -222,7 +223,7 @@ abstract final class AppThemeService {
   /// `pubspec.yaml`; the bundle ships 400/500/600/700, which is exactly the
   /// set [ZplayTextToken.weight] is restricted to, so no token asks for a
   /// weight the family has to synthesise.
-  static const String _fontFamily = 'Poppins';
+  static String get _fontFamily => FontRegistry.primary;
 
   /// The Material type scale, mapped from [ZplayType] rather than restated.
   ///
@@ -261,15 +262,14 @@ abstract final class AppThemeService {
       useMaterial3: true,
       colorSchemeSeed: palette.primaryColor,
       fontFamily: _fontFamily,
+      fontFamilyFallback: [...FontRegistry.fallback, FontRegistry.timerFamily],
       textTheme: _textThemeFor(tokens),
       extensions: [tokens],
       appBarTheme: AppBarTheme(
         backgroundColor: palette.appBarBackgroundColor,
         surfaceTintColor: Colors.transparent,
       ),
-      cardTheme: CardThemeData(
-        color: palette.cardBackgroundColor,
-      ),
+      cardTheme: CardThemeData(color: palette.cardBackgroundColor),
       // From here down, every text style names [fontFamily] explicitly. The
       // component sub-themes install their styles in a [DefaultTextStyle],
       // which replaces the ambient style outright rather than merging with it

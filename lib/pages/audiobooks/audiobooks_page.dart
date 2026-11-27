@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:async';
@@ -99,7 +100,9 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
     AudiobookSettings.changeNotifier.removeListener(_onSettingsChanged);
     AppThemeService.currentPalette.removeListener(_onSettingsChanged);
     Paper2AudioService.instance.jobs.removeListener(_onSettingsChanged);
-    CustomAudiobookService.instance.audiobooks.removeListener(_onSettingsChanged);
+    CustomAudiobookService.instance.audiobooks.removeListener(
+      _onSettingsChanged,
+    );
     _searchController.dispose();
     _searchFocusNode.dispose();
     _continueScrollController.removeListener(_updateContinueScrollArrows);
@@ -139,7 +142,8 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
   void _updateContinueScrollArrows() {
     if (!_continueScrollController.hasClients) return;
     final canLeft = _continueScrollController.position.pixels > 10;
-    final canRight = _continueScrollController.position.pixels <
+    final canRight =
+        _continueScrollController.position.pixels <
         _continueScrollController.position.maxScrollExtent - 10;
     if (canLeft == _canScrollContinueLeft &&
         canRight == _canScrollContinueRight) {
@@ -226,9 +230,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
       builder: (ctx) {
         return Dialog(
           backgroundColor: tokens.surfaceOverlay,
-          shape: const RoundedRectangleBorder(
-            borderRadius: ZplayRadius.lgAll,
-          ),
+          shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.lgAll),
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 480),
             child: Padding(
@@ -242,8 +244,12 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                       Icon(Icons.tune_rounded, color: tokens.accent, size: 20),
                       const SizedBox(width: ZplaySpacing.s12),
                       Text(
-                        l10nOf(context).auxAudiobooksPageCustomizeAudiobookSection,
-                        style: ZplayType.title.toStyle(color: tokens.textPrimary),
+                        l10nOf(
+                          context,
+                        ).auxAudiobooksPageCustomizeAudiobookSection,
+                        style: ZplayType.title.toStyle(
+                          color: tokens.textPrimary,
+                        ),
                       ),
                       const Spacer(),
                       FocusableInkWell(
@@ -280,7 +286,9 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                     valueListenable: AudiobookSettings.cardDensity,
                     builder: (context, density, _) {
                       return SegmentedTabs<AudiobookCardDensity>(
-                        semanticsLabel: l10nOf(context).auxAudiobooksPageAudiobookPosterCardDensity,
+                        semanticsLabel: l10nOf(
+                          context,
+                        ).auxAudiobooksPageAudiobookPosterCardDensity,
                         selected: density,
                         onSelected: AudiobookSettings.setCardDensity,
                         options: [
@@ -299,15 +307,20 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                   ValueListenableBuilder<bool>(
                     valueListenable: AudiobookSettings.enableSpotlight,
                     builder: (context, enabled, _) {
-                      return SwitchListTile.adaptive(
+                      return KiruSwitchRow(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          l10nOf(context).auxAudiobooksPageFeaturedHeroSpotlightCarousel,
-                          style: ZplayType.label.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).auxAudiobooksPageFeaturedHeroSpotlightCarousel,
+                          style: ZplayType.label.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         value: enabled,
                         activeColor: tokens.accent,
-                        onChanged: (val) => AudiobookSettings.setEnableSpotlight(val),
+                        onChanged: (val) =>
+                            AudiobookSettings.setEnableSpotlight(val),
                       );
                     },
                   ),
@@ -315,15 +328,20 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                   ValueListenableBuilder<bool>(
                     valueListenable: AudiobookSettings.enableAmbientLights,
                     builder: (context, enabled, _) {
-                      return SwitchListTile.adaptive(
+                      return KiruSwitchRow(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          l10nOf(context).auxAudiobooksPageMovingAmbientBackgroundGlow,
-                          style: ZplayType.label.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).auxAudiobooksPageMovingAmbientBackgroundGlow,
+                          style: ZplayType.label.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         value: enabled,
                         activeColor: tokens.accent,
-                        onChanged: (val) => AudiobookSettings.setEnableAmbientLights(val),
+                        onChanged: (val) =>
+                            AudiobookSettings.setEnableAmbientLights(val),
                       );
                     },
                   ),
@@ -331,15 +349,20 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                   ValueListenableBuilder<bool>(
                     valueListenable: AudiobookSettings.showContinueListening,
                     builder: (context, show, _) {
-                      return SwitchListTile.adaptive(
+                      return KiruSwitchRow(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          l10nOf(context).auxAudiobooksPageShowContinueListeningCarousel,
-                          style: ZplayType.label.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).auxAudiobooksPageShowContinueListeningCarousel,
+                          style: ZplayType.label.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         value: show,
                         activeColor: tokens.accent,
-                        onChanged: (val) => AudiobookSettings.setShowContinueListening(val),
+                        onChanged: (val) =>
+                            AudiobookSettings.setShowContinueListening(val),
                       );
                     },
                   ),
@@ -350,14 +373,18 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                   // to another surface, and its column is sized by it.
                   PillButton(
                     variant: PillVariant.secondary,
-                    label: l10nOf(context).auxAudiobooksPageOpenPlayerStudioThemes,
+                    label: l10nOf(
+                      context,
+                    ).auxAudiobooksPageOpenPlayerStudioThemes,
                     icon: Icons.palette_rounded,
                     expand: true,
                     onPressed: () {
                       Navigator.pop(ctx);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const AudiobookSettingsPage()),
+                        MaterialPageRoute(
+                          builder: (_) => const AudiobookSettingsPage(),
+                        ),
                       );
                     },
                   ),
@@ -384,7 +411,9 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
     final showCategoryPills = AudiobookSettings.showCategoryPills.value;
     final cardDensity = AudiobookSettings.cardDensity.value;
 
-    final spotlightBook = _searchResults.isNotEmpty ? _searchResults.first : null;
+    final spotlightBook = _searchResults.isNotEmpty
+        ? _searchResults.first
+        : null;
 
     // What the studio banner shows: the audiobook with saved progress is the one
     // "now playing", so it outranks the featured spotlight. Either can be
@@ -403,9 +432,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
           if (ambientEnabled)
             const Positioned.fill(child: AnimatedAmbientBackground())
           else
-            Positioned.fill(
-              child: Container(color: tokens.bg),
-            ),
+            Positioned.fill(child: Container(color: tokens.bg)),
 
           // ── Main Content Scroll ──
           CustomScrollView(
@@ -448,11 +475,17 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                           children: [
                             Text(
                               l10nOf(context).auxAudiobooksPageAudiobookHub,
-                              style: ZplayType.titleLarge.toStyle(color: tokens.textPrimary),
+                              style: ZplayType.titleLarge.toStyle(
+                                color: tokens.textPrimary,
+                              ),
                             ),
                             Text(
-                              l10nOf(context).auxAudiobooksPageExploreStreamListenToThousandsOfStories,
-                              style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
+                              l10nOf(
+                                context,
+                              ).auxAudiobooksPageExploreStreamListenToThousandsOfStories,
+                              style: ZplayType.bodySmall.toStyle(
+                                color: tokens.textSecondary,
+                              ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -463,11 +496,15 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                       // AI Generator & Studio
                       _ChromeActionButton(
                         icon: Icons.auto_awesome_rounded,
-                        tooltip: l10nOf(context).auxAudiobooksPageAudiobookGeneratorStudio,
+                        tooltip: l10nOf(
+                          context,
+                        ).auxAudiobooksPageAudiobookGeneratorStudio,
                         onTap: () async {
                           await Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (_) => const GenerateAudiobookScreen()),
+                            MaterialPageRoute(
+                              builder: (_) => const GenerateAudiobookScreen(),
+                            ),
                           );
                           _loadContinueListening();
                         },
@@ -476,7 +513,9 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                       // Quick Customize
                       _ChromeActionButton(
                         icon: Icons.tune_rounded,
-                        tooltip: l10nOf(context).auxAudiobooksPageAudiobookCustomizer,
+                        tooltip: l10nOf(
+                          context,
+                        ).auxAudiobooksPageAudiobookCustomizer,
                         onTap: () => _showAudiobookCustomizer(context),
                       ),
                     ],
@@ -504,7 +543,7 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                       color: tokens.surface,
                       borderRadius: ZplayRadius.mdAll,
                     ),
-                    child: TextField(
+                    child: KiruFormField(
                       controller: _searchController,
                       focusNode: _searchFocusNode,
                       style: ZplayType.body.toStyle(color: tokens.textPrimary),
@@ -512,9 +551,16 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                       onChanged: _onSearchChanged,
                       onSubmitted: _performSearch,
                       decoration: InputDecoration(
-                        hintText: l10nOf(context).auxAudiobooksPageSearchAudiobooksByTitleAuthorOrGenre,
-                        hintStyle: ZplayType.body.toStyle(color: tokens.textMuted),
-                        prefixIcon: Icon(Icons.search_rounded, color: tokens.accent),
+                        hintText: l10nOf(
+                          context,
+                        ).auxAudiobooksPageSearchAudiobooksByTitleAuthorOrGenre,
+                        hintStyle: ZplayType.body.toStyle(
+                          color: tokens.textMuted,
+                        ),
+                        prefixIcon: Icon(
+                          Icons.search_rounded,
+                          color: tokens.accent,
+                        ),
                         suffixIcon: _searchController.text.isNotEmpty
                             ? FocusableInkWell(
                                 onTap: () {
@@ -571,7 +617,9 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                       ],
                       selected: _selectedCategory,
                       onSelected: _selectCategory,
-                      semanticsLabel: l10nOf(context).auxAudiobooksPageAudiobookGenres,
+                      semanticsLabel: l10nOf(
+                        context,
+                      ).auxAudiobooksPageAudiobookGenres,
                       height: television ? ZplaySpacing.s64 : ZplaySpacing.s48,
                     ),
                   ),
@@ -593,15 +641,11 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
 
               // Continue Listening Section (If available)
               if (showContinue && _continueListeningList.isNotEmpty)
-                SliverToBoxAdapter(
-                  child: _buildContinueListeningSection(),
-                ),
+                SliverToBoxAdapter(child: _buildContinueListeningSection()),
 
               // Generated & Personal Audiobooks Studio Shelf
               if (!_isSearching)
-                SliverToBoxAdapter(
-                  child: _buildGeneratedAndUploadedSection(),
-                ),
+                SliverToBoxAdapter(child: _buildGeneratedAndUploadedSection()),
 
               // Discovery Header. The count is the shared header's muted tabular
               // number rather than a second accent badge: accent is the signal
@@ -626,11 +670,15 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        CircularProgressIndicator(color: tokens.accent),
+                        KiruLoader(color: tokens.accent),
                         const SizedBox(height: ZplaySpacing.s16),
                         Text(
-                          l10nOf(context).auxAudiobooksPageScrapingHighQualityAudiobookSources,
-                          style: ZplayType.body.toStyle(color: tokens.textEmphasis),
+                          l10nOf(
+                            context,
+                          ).auxAudiobooksPageScrapingHighQualityAudiobookSources,
+                          style: ZplayType.body.toStyle(
+                            color: tokens.textEmphasis,
+                          ),
                         ),
                       ],
                     ),
@@ -642,7 +690,9 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                   // The shared failure view: it names what failed and offers the
                   // retry the bare red sentence never did.
                   child: ErrorView(
-                    title: l10nOf(context).auxAudiobooksPageCouldNotLoadAudiobooks,
+                    title: l10nOf(
+                      context,
+                    ).auxAudiobooksPageCouldNotLoadAudiobooks,
                     error: _errorMessage,
                     onRetry: () => _performSearch(_searchController.text),
                   ),
@@ -652,8 +702,12 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                   hasScrollBody: false,
                   child: Center(
                     child: Text(
-                      l10nOf(context).auxAudiobooksPageNoAudiobooksFoundTryAnotherSearchQuery,
-                      style: ZplayType.subtitle.toStyle(color: tokens.textSecondary),
+                      l10nOf(
+                        context,
+                      ).auxAudiobooksPageNoAudiobooksFoundTryAnotherSearchQuery,
+                      style: ZplayType.subtitle.toStyle(
+                        color: tokens.textSecondary,
+                      ),
                     ),
                   ),
                 )
@@ -669,24 +723,23 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                   ),
                   sliver: SliverGrid(
                     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: (isMobile ? 150 : 180) * cardDensity.scale,
+                      maxCrossAxisExtent:
+                          (isMobile ? 150 : 180) * cardDensity.scale,
                       childAspectRatio: 0.60,
                       crossAxisSpacing: isMobile ? 12 : 16,
                       mainAxisSpacing: isMobile ? 12 : 16,
                     ),
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final book = _searchResults[index];
-                        final heroTag = 'audiobook-cover-$index-${book.uuid.isNotEmpty ? book.uuid : book.title}';
-                        return _AudiobookCard(
-                          key: ValueKey('book-$index-${book.uuid}'),
-                          book: book,
-                          heroTag: heroTag,
-                          onReturn: _loadContinueListening,
-                        );
-                      },
-                      childCount: _searchResults.length,
-                    ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final book = _searchResults[index];
+                      final heroTag =
+                          'audiobook-cover-$index-${book.uuid.isNotEmpty ? book.uuid : book.title}';
+                      return _AudiobookCard(
+                        key: ValueKey('book-$index-${book.uuid}'),
+                        book: book,
+                        heroTag: heroTag,
+                        onReturn: _loadContinueListening,
+                      );
+                    }, childCount: _searchResults.length),
                   ),
                 ),
             ],
@@ -719,7 +772,9 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
 
     // A saved entry whose chapter list came back empty cannot be resumed into
     // the player, so it falls back to the detail route with everything else.
-    final resumable = resume != null && resume.chapters.isNotEmpty ? resume : null;
+    final resumable = resume != null && resume.chapters.isNotEmpty
+        ? resume
+        : null;
     final subject = resumable?.audiobook ?? book;
     final heroTag = resumable != null
         ? 'studio-banner-${resumable.key}'
@@ -784,14 +839,22 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                               'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                         },
                         fit: BoxFit.cover,
-                        placeholder: (_, __) => Container(color: tokens.surfaceRaised),
+                        placeholder: (_, __) =>
+                            Container(color: tokens.surfaceRaised),
                         errorWidget: (_, __, ___) => Container(
                           color: tokens.surfaceRaised,
-                          child: Icon(Icons.headphones_rounded, color: tokens.textMuted),
-                        ))
+                          child: Icon(
+                            Icons.headphones_rounded,
+                            color: tokens.textMuted,
+                          ),
+                        ),
+                      )
                     : Container(
                         color: tokens.surfaceRaised,
-                        child: Icon(Icons.headphones_rounded, color: tokens.textMuted),
+                        child: Icon(
+                          Icons.headphones_rounded,
+                          color: tokens.textMuted,
+                        ),
                       ),
               ),
             ),
@@ -805,7 +868,9 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  resumable != null ? 'NOW PLAYING AUDIOBOOK' : 'SPOTLIGHT FEATURED',
+                  resumable != null
+                      ? 'NOW PLAYING AUDIOBOOK'
+                      : 'SPOTLIGHT FEATURED',
                   style: ZplayType.overline.toStyle(color: tokens.accent),
                 ),
                 const SizedBox(height: ZplaySpacing.s4),
@@ -838,17 +903,21 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                       Expanded(
                         child: ClipRRect(
                           borderRadius: ZplayRadius.fullAll,
-                          child: LinearProgressIndicator(
+                          child: KiruProgress(
                             value: percent,
                             minHeight: ZplaySpacing.s4,
                             backgroundColor: tokens.borderStrong,
-                            valueColor: AlwaysStoppedAnimation<Color>(tokens.accent),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              tokens.accent,
+                            ),
                           ),
                         ),
                       ),
                       const SizedBox(width: ZplaySpacing.s12),
                       Text(
-                        l10nOf(context).dynamicAudiobooksPageLeft((_formatRemaining(remaining)).toString()),
+                        l10nOf(context).dynamicAudiobooksPageLeft(
+                          (_formatRemaining(remaining)).toString(),
+                        ),
                         style: ZplayType.caption
                             .copyWith(weight: FontWeight.w600)
                             .toStyle(color: tokens.textSecondary),
@@ -969,8 +1038,9 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                                 audiobook: item.audiobook,
                                 chapters: item.chapters,
                                 initialChapterIndex: item.chapterIndex,
-                                initialPosition:
-                                    Duration(milliseconds: item.positionMs),
+                                initialPosition: Duration(
+                                  milliseconds: item.positionMs,
+                                ),
                               ),
                             ),
                           );
@@ -1068,7 +1138,11 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                   color: tokens.accentSubtle,
                   borderRadius: ZplayRadius.smAll,
                 ),
-                child: Icon(Icons.auto_stories_rounded, color: tokens.accent, size: 20),
+                child: Icon(
+                  Icons.auto_stories_rounded,
+                  color: tokens.accent,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: ZplaySpacing.s16),
               Expanded(
@@ -1076,14 +1150,20 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      l10nOf(context).auxAudiobooksPageAiAudiobookStudioEpubGenerator,
+                      l10nOf(
+                        context,
+                      ).auxAudiobooksPageAiAudiobookStudioEpubGenerator,
                       style: ZplayType.label
                           .copyWith(weight: FontWeight.w700)
                           .toStyle(color: tokens.textPrimary),
                     ),
                     Text(
-                      l10nOf(context).auxAudiobooksPageGenerateAudiobooksFromEpubsOrImportYour,
-                      style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                      l10nOf(
+                        context,
+                      ).auxAudiobooksPageGenerateAudiobooksFromEpubsOrImportYour,
+                      style: ZplayType.caption.toStyle(
+                        color: tokens.textSecondary,
+                      ),
                     ),
                   ],
                 ),
@@ -1094,7 +1174,9 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                 onPressed: () async {
                   await Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const GenerateAudiobookScreen()),
+                    MaterialPageRoute(
+                      builder: (_) => const GenerateAudiobookScreen(),
+                    ),
                   );
                   _loadContinueListening();
                 },
@@ -1114,7 +1196,9 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SectionHeader(
-            title: l10nOf(context).auxAudiobooksPageMyGeneratedUploadedAudiobooks,
+            title: l10nOf(
+              context,
+            ).auxAudiobooksPageMyGeneratedUploadedAudiobooks,
             count: jobs.length + uploaded.length,
             // The shared header's trailing slot rather than a `TextButton.icon`
             // beside it: one row height, one heading type, and a control that is
@@ -1123,7 +1207,9 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
               onTap: () async {
                 await Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const GenerateAudiobookScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => const GenerateAudiobookScreen(),
+                  ),
                 );
                 _loadContinueListening();
               },
@@ -1132,17 +1218,25 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                 alpha: ZplayOpacity.borderDefault,
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: ZplaySpacing.s12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: ZplaySpacing.s12,
+                ),
                 child: SizedBox(
                   height: 44,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.tune_rounded, size: 18, color: tokens.textSecondary),
+                      Icon(
+                        Icons.tune_rounded,
+                        size: 18,
+                        color: tokens.textSecondary,
+                      ),
                       const SizedBox(width: ZplaySpacing.s4),
                       Text(
                         l10nOf(context).auxAudiobooksPageStudio,
-                        style: ZplayType.label.toStyle(color: tokens.textSecondary),
+                        style: ZplayType.label.toStyle(
+                          color: tokens.textSecondary,
+                        ),
                       ),
                     ],
                   ),
@@ -1160,7 +1254,10 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
               children: [
                 // Render Generated Jobs
                 ...jobs.map((job) {
-                  final cleanTitle = job.fileName.replaceAll(RegExp(r'\.epub$', caseSensitive: false), '');
+                  final cleanTitle = job.fileName.replaceAll(
+                    RegExp(r'\.epub$', caseSensitive: false),
+                    '',
+                  );
                   final isDone = job.isDone;
                   final isFailed = job.isFailed;
 
@@ -1192,8 +1289,13 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                             borderRadius: ZplayRadius.smAll,
                           ),
                           clipBehavior: Clip.antiAlias,
-                          child: job.coverPath != null && File(job.coverPath!).existsSync()
-                              ? Image.file(File(job.coverPath!), fit: BoxFit.cover)
+                          child:
+                              job.coverPath != null &&
+                                  File(job.coverPath!).existsSync()
+                              ? Image.file(
+                                  File(job.coverPath!),
+                                  fit: BoxFit.cover,
+                                )
                               : Icon(
                                   Icons.headphones_rounded,
                                   color: tokens.textDisabled,
@@ -1216,13 +1318,25 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                               ),
                               const SizedBox(height: 3),
                               Text(
-                                isDone ? l10nOf(context).audiobookVoiceName(job.voiceId) : (isFailed ? 'Failed' : l10nOf(context).audiobookGeneratingProgress((job.progress * 100).round())),
+                                isDone
+                                    ? l10nOf(
+                                        context,
+                                      ).audiobookVoiceName(job.voiceId)
+                                    : (isFailed
+                                          ? 'Failed'
+                                          : l10nOf(
+                                              context,
+                                            ).audiobookGeneratingProgress(
+                                              (job.progress * 100).round(),
+                                            )),
                                 style: ZplayType.caption
                                     .copyWith(weight: FontWeight.w600)
                                     .toStyle(
                                       color: isDone
                                           ? tokens.success
-                                          : (isFailed ? tokens.danger : tokens.warning),
+                                          : (isFailed
+                                                ? tokens.danger
+                                                : tokens.warning),
                                     ),
                               ),
                               const SizedBox(height: ZplaySpacing.s8),
@@ -1234,7 +1348,8 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                                   label: l10nOf(context).playerPlay,
                                   icon: Icons.play_arrow_rounded,
                                   onPressed: () {
-                                    final streamOrLocalPath = job.localAudioPath ?? job.downloadUrl!;
+                                    final streamOrLocalPath =
+                                        job.localAudioPath ?? job.downloadUrl!;
                                     final book = Audiobook(
                                       uuid: 'p2a_${job.runId}',
                                       audioBookId: 'p2a_${job.runId}',
@@ -1250,7 +1365,12 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                                       AudiobookPageRoute(
                                         page: AudiobookPlayerScreen(
                                           audiobook: book,
-                                          chapters: [AudiobookChapter(title: cleanTitle, url: streamOrLocalPath)],
+                                          chapters: [
+                                            AudiobookChapter(
+                                              title: cleanTitle,
+                                              url: streamOrLocalPath,
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     );
@@ -1259,8 +1379,10 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                               else if (!isFailed)
                                 ClipRRect(
                                   borderRadius: ZplayRadius.xsAll,
-                                  child: LinearProgressIndicator(
-                                    value: job.progress > 0 ? job.progress : null,
+                                  child: KiruProgress(
+                                    value: job.progress > 0
+                                        ? job.progress
+                                        : null,
                                     backgroundColor: tokens.borderDefault,
                                     color: tokens.accent,
                                     minHeight: 4,
@@ -1301,8 +1423,13 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                             borderRadius: ZplayRadius.smAll,
                           ),
                           clipBehavior: Clip.antiAlias,
-                          child: b.coverPath != null && File(b.coverPath!).existsSync()
-                              ? Image.file(File(b.coverPath!), fit: BoxFit.cover)
+                          child:
+                              b.coverPath != null &&
+                                  File(b.coverPath!).existsSync()
+                              ? Image.file(
+                                  File(b.coverPath!),
+                                  fit: BoxFit.cover,
+                                )
                               : Icon(
                                   Icons.library_music_rounded,
                                   color: tokens.textDisabled,
@@ -1325,10 +1452,14 @@ class _AudiobooksPageState extends State<AudiobooksPage> {
                               ),
                               const SizedBox(height: 3),
                               Text(
-                                l10nOf(context).dynamicAudiobooksPageLocal((b.author).toString()),
+                                l10nOf(context).dynamicAudiobooksPageLocal(
+                                  (b.author).toString(),
+                                ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                                style: ZplayType.caption.toStyle(
+                                  color: tokens.textSecondary,
+                                ),
                               ),
                               const SizedBox(height: ZplaySpacing.s8),
                               PillButton(
@@ -1380,13 +1511,15 @@ class _ContinueListeningCard extends StatelessWidget {
     final item = progress;
     final book = item.audiobook;
     final hasCover = book.coverImage.isNotEmpty;
-    final heroTag = 'continue-cover-${book.uuid.isNotEmpty ? book.uuid : book.title}';
+    final heroTag =
+        'continue-cover-${book.uuid.isNotEmpty ? book.uuid : book.title}';
 
     final percent = item.durationMs > 0
         ? (item.positionMs / item.durationMs).clamp(0.0, 1.0)
         : 0.0;
 
-    final currentChapterTitle = item.chapters.isNotEmpty && item.chapterIndex < item.chapters.length
+    final currentChapterTitle =
+        item.chapters.isNotEmpty && item.chapterIndex < item.chapters.length
         ? item.chapters[item.chapterIndex].title
         : 'Chapter ${item.chapterIndex + 1}';
 
@@ -1441,14 +1574,16 @@ class _ContinueListeningCard extends StatelessWidget {
                                         imageUrl: book.coverImage,
                                         cacheManager: AppImageCache.manager,
                                         fit: BoxFit.cover,
-                                        placeholder: (_, __) => Container(color: tokens.surface),
+                                        placeholder: (_, __) =>
+                                            Container(color: tokens.surface),
                                         errorWidget: (_, __, ___) => Container(
                                           color: tokens.surface,
                                           child: Icon(
                                             Icons.headphones_rounded,
                                             color: tokens.textMuted,
                                           ),
-                                        ))
+                                        ),
+                                      )
                                     : Container(
                                         color: tokens.surface,
                                         child: Icon(
@@ -1480,22 +1615,30 @@ class _ContinueListeningCard extends StatelessWidget {
                                   currentChapterTitle,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                                  style: ZplayType.caption.toStyle(
+                                    color: tokens.textSecondary,
+                                  ),
                                 ),
                                 const SizedBox(height: ZplaySpacing.s8),
                                 // Progress bar
                                 ClipRRect(
                                   borderRadius: ZplayRadius.xsAll,
-                                  child: LinearProgressIndicator(
+                                  child: KiruProgress(
                                     value: percent,
                                     minHeight: ZplaySpacing.s4,
                                     backgroundColor: tokens.borderDefault,
-                                    valueColor: AlwaysStoppedAnimation<Color>(tokens.accent),
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      tokens.accent,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(height: ZplaySpacing.s4),
                                 Text(
-                                  l10nOf(context).dynamicAudiobooksPageCompleted(((percent * 100).toInt()).toString()),
+                                  l10nOf(
+                                    context,
+                                  ).dynamicAudiobooksPageCompleted(
+                                    ((percent * 100).toInt()).toString(),
+                                  ),
                                   style: ZplayType.caption
                                       .copyWith(weight: FontWeight.w600)
                                       .toStyle(color: tokens.accent),
@@ -1516,7 +1659,9 @@ class _ContinueListeningCard extends StatelessWidget {
                             ),
                             child: Icon(
                               Icons.play_arrow_rounded,
-                              color: state.highlighted ? tokens.onAccent : tokens.accent,
+                              color: state.highlighted
+                                  ? tokens.onAccent
+                                  : tokens.accent,
                               size: 20,
                             ),
                           ),
@@ -1547,7 +1692,9 @@ class _ContinueListeningCard extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(ZplaySpacing.s4),
                         decoration: BoxDecoration(
-                          color: state.highlighted ? tokens.danger : tokens.surfaceOverlay,
+                          color: state.highlighted
+                              ? tokens.danger
+                              : tokens.surfaceOverlay,
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -1606,7 +1753,7 @@ class _ChromeActionButton extends StatelessWidget {
         ? ZplaySpacing.s48
         : 44.0;
 
-    return Tooltip(
+    return KiruTooltip(
       message: tooltip,
       child: FocusableInkWell(
         onTap: onTap,
@@ -1652,10 +1799,7 @@ class _AudiobookCard extends StatelessWidget {
         await Navigator.push(
           context,
           AudiobookPageRoute(
-            page: AudiobookDetailPage(
-              audiobook: book,
-              heroTag: heroTag,
-            ),
+            page: AudiobookDetailPage(audiobook: book, heroTag: heroTag),
           ),
         );
         onReturn?.call();
@@ -1715,7 +1859,8 @@ class _AudiobookCard extends StatelessWidget {
                                   cacheManager: AppImageCache.manager,
                                   width: double.infinity,
                                   fit: BoxFit.cover,
-                                  placeholder: (_, __) => Container(color: tokens.surface),
+                                  placeholder: (_, __) =>
+                                      Container(color: tokens.surface),
                                   errorWidget: (_, __, ___) => Container(
                                     color: tokens.surface,
                                     child: Icon(
@@ -1723,7 +1868,8 @@ class _AudiobookCard extends StatelessWidget {
                                       size: 40,
                                       color: tokens.textMuted,
                                     ),
-                                  ))
+                                  ),
+                                )
                               : Container(
                                   color: tokens.surface,
                                   child: Center(
@@ -1759,12 +1905,16 @@ class _AudiobookCard extends StatelessWidget {
                             author.isNotEmpty ? author : book.source,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                            style: ZplayType.caption.toStyle(
+                              color: tokens.textSecondary,
+                            ),
                           ),
                           const SizedBox(height: ZplaySpacing.s4),
                           Builder(
                             builder: (context) {
-                              final isTorrent = book.source.toLowerCase().contains('audiobookbay');
+                              final isTorrent = book.source
+                                  .toLowerCase()
+                                  .contains('audiobookbay');
                               return Container(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: ZplaySpacing.s4,
@@ -1792,13 +1942,17 @@ class _AudiobookCard extends StatelessWidget {
                                     ],
                                     Flexible(
                                       child: Text(
-                                        isTorrent ? 'AUDIOBOOKBAY' : book.source.toUpperCase(),
+                                        isTorrent
+                                            ? 'AUDIOBOOKBAY'
+                                            : book.source.toUpperCase(),
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: ZplayType.overline
                                             .copyWith(size: 9)
                                             .toStyle(
-                                              color: isTorrent ? tokens.warning : tokens.accent,
+                                              color: isTorrent
+                                                  ? tokens.warning
+                                                  : tokens.accent,
                                             ),
                                       ),
                                     ),

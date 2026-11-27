@@ -1,3 +1,5 @@
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -171,13 +173,15 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                       Icon(Icons.tune_rounded, color: tokens.accent, size: 20),
                       const SizedBox(width: ZplaySpacing.s8),
                       Text(
-                        l10nOf(context).auxIptvPortalBrowserPageCustomizePortalBrowser,
+                        l10nOf(
+                          context,
+                        ).auxIptvPortalBrowserPageCustomizePortalBrowser,
                         style: ZplayType.title.toStyle(
                           color: tokens.textPrimary,
                         ),
                       ),
                       const Spacer(),
-                      IconButton(
+                      KiruIconButton(
                         icon: Icon(
                           Icons.close_rounded,
                           color: tokens.textMuted,
@@ -190,7 +194,9 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                   const SizedBox(height: ZplaySpacing.s16),
                   // Was a hairline divider; hierarchy comes from the type above.
                   Text(
-                    l10nOf(context).auxIptvPortalBrowserPageChannelStreamLayoutMode,
+                    l10nOf(
+                      context,
+                    ).auxIptvPortalBrowserPageChannelStreamLayoutMode,
                     style: ZplayType.label.toStyle(color: tokens.textPrimary),
                   ),
                   const SizedBox(height: 8),
@@ -204,7 +210,10 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                         },
                         options: [
                           for (final l in PortalBrowserLayout.values)
-                            SegmentedTabOption(value: l, label: configLabel(context, l.label)),
+                            SegmentedTabOption(
+                              value: l,
+                              label: configLabel(context, l.label),
+                            ),
                         ],
                       );
                     },
@@ -229,13 +238,19 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    l10nOf(context).auxIptvPortalBrowserPageGridStreamColumns,
+                                    l10nOf(
+                                      context,
+                                    ).auxIptvPortalBrowserPageGridStreamColumns,
                                     style: ZplayType.label.toStyle(
                                       color: tokens.textPrimary,
                                     ),
                                   ),
                                   Text(
-                                    l10nOf(context).dynamicIptvPortalBrowserPageCols((cols).toString()),
+                                    l10nOf(
+                                      context,
+                                    ).dynamicIptvPortalBrowserPageCols(
+                                      (cols).toString(),
+                                    ),
                                     style: ZplayType.label.toStyle(
                                       color: tokens.accent,
                                     ),
@@ -249,7 +264,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                                   thumbColor: tokens.accent,
                                   trackHeight: 3,
                                 ),
-                                child: Slider(
+                                child: KiruSlider(
                                   value: cols.toDouble(),
                                   min: 2,
                                   max: 6,
@@ -271,10 +286,12 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                   ValueListenableBuilder<bool>(
                     valueListenable: IptvSettings.showStreamLogos,
                     builder: (context, showLogos, _) {
-                      return SwitchListTile.adaptive(
+                      return KiruSwitchRow(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          l10nOf(context).auxIptvPortalBrowserPageShowChannelStreamLogos,
+                          l10nOf(
+                            context,
+                          ).auxIptvPortalBrowserPageShowChannelStreamLogos,
                           style: ZplayType.body.toStyle(
                             color: tokens.textPrimary,
                           ),
@@ -290,10 +307,12 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                   ValueListenableBuilder<bool>(
                     valueListenable: IptvSettings.showEpgSnippet,
                     builder: (context, showEpg, _) {
-                      return SwitchListTile.adaptive(
+                      return KiruSwitchRow(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          l10nOf(context).auxIptvPortalBrowserPageShowEpgNowPlayingSnippet,
+                          l10nOf(
+                            context,
+                          ).auxIptvPortalBrowserPageShowEpgNowPlayingSnippet,
                           style: ZplayType.body.toStyle(
                             color: tokens.textPrimary,
                           ),
@@ -308,10 +327,12 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                   ValueListenableBuilder<bool>(
                     valueListenable: IptvSettings.showCategoryCount,
                     builder: (context, showCount, _) {
-                      return SwitchListTile.adaptive(
+                      return KiruSwitchRow(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          l10nOf(context).auxIptvPortalBrowserPageShowCategoryStreamCounts,
+                          l10nOf(
+                            context,
+                          ).auxIptvPortalBrowserPageShowCategoryStreamCounts,
                           style: ZplayType.body.toStyle(
                             color: tokens.textPrimary,
                           ),
@@ -592,11 +613,9 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
   /// message at all.
   void _reportUnplayable(IptvStream stream) {
     debugPrint('[IPTV] "${stream.name}" has no playable stream URL');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          l10nOf(context).iptvNoPlayableStream(stream.name),
-        ),
+    KiruToastMessenger.of(context).showSnackBar(
+      KiruToast(
+        content: Text(l10nOf(context).iptvNoPlayableStream(stream.name)),
       ),
     );
   }
@@ -834,14 +853,18 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                         ),
                         const SizedBox(width: ZplaySpacing.s8),
                         Text(
-                          l10nOf(context).auxIptvPortalBrowserPageSelectCategory,
+                          l10nOf(
+                            context,
+                          ).auxIptvPortalBrowserPageSelectCategory,
                           style: ZplayType.title.toStyle(
                             color: tokens.textPrimary,
                           ),
                         ),
                         const Spacer(),
                         Text(
-                          l10nOf(context).dynamicIptvPortalBrowserPageTotal((_categories.length).toString()),
+                          l10nOf(context).dynamicIptvPortalBrowserPageTotal(
+                            (_categories.length).toString(),
+                          ),
                           style: ZplayType.bodySmall.toStyle(
                             color: tokens.textMuted,
                           ),
@@ -933,7 +956,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                   ),
                   child: Row(
                     children: [
-                      IconButton(
+                      KiruIconButton(
                         icon: Icon(
                           Icons.arrow_back_rounded,
                           color: tokens.textPrimary,
@@ -970,7 +993,11 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                               Row(
                                 children: [
                                   Text(
-                                    l10nOf(context).dynamicIptvPortalBrowserPageExpiry((widget.portal!.expiry).toString()),
+                                    l10nOf(
+                                      context,
+                                    ).dynamicIptvPortalBrowserPageExpiry(
+                                      (widget.portal!.expiry).toString(),
+                                    ),
                                     style: ZplayType.caption.toStyle(
                                       color: tokens.textMuted,
                                     ),
@@ -986,7 +1013,14 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                                   ),
                                   const SizedBox(width: ZplaySpacing.s12),
                                   Text(
-                                    l10nOf(context).dynamicIptvPortalBrowserPageConnections((widget.portal!.activeConnections).toString(), (widget.portal!.maxConnections).toString()),
+                                    l10nOf(
+                                      context,
+                                    ).dynamicIptvPortalBrowserPageConnections(
+                                      (widget.portal!.activeConnections)
+                                          .toString(),
+                                      (widget.portal!.maxConnections)
+                                          .toString(),
+                                    ),
                                     style: ZplayType.caption.toStyle(
                                       color: tokens.textMuted,
                                     ),
@@ -1054,7 +1088,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                       if (_activeSection == IptvSection.live &&
                           widget.portal != null) ...[
                         const SizedBox(width: ZplaySpacing.s12),
-                        ElevatedButton.icon(
+                        KiruButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: _isCheckingAlive
                                 ? tokens.danger
@@ -1072,15 +1106,18 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                               ? const SizedBox(
                                   width: 14,
                                   height: 14,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
+                                  child: KiruLoader(strokeWidth: 2),
                                 )
                               : const Icon(Icons.speed_rounded, size: 16),
-                          label: Text(
+                          child: Text(
                             _isCheckingAlive
-                                ? l10nOf(context).iptvStopHealthCheck(_aliveChecked, _aliveTotal)
-                                : l10nOf(context).uiFinalIptvPortalBrowserPageCheckHealth,
+                                ? l10nOf(context).iptvStopHealthCheck(
+                                    _aliveChecked,
+                                    _aliveTotal,
+                                  )
+                                : l10nOf(
+                                    context,
+                                  ).uiFinalIptvPortalBrowserPageCheckHealth,
                             style: ZplayType.label.toStyle(
                               color: tokens.onAccent,
                             ),
@@ -1093,13 +1130,15 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
 
                       const SizedBox(width: ZplaySpacing.s8),
 
-                      IconButton(
+                      KiruIconButton(
                         icon: Icon(
                           Icons.tune_rounded,
                           color: tokens.textSecondary,
                           size: 20,
                         ),
-                        tooltip: l10nOf(context).auxIptvPortalBrowserPageCustomizePortalBrowserLayout,
+                        tooltip: l10nOf(
+                          context,
+                        ).auxIptvPortalBrowserPageCustomizePortalBrowserLayout,
                         onPressed: () => _showBrowserCustomizer(context),
                       ),
                     ],
@@ -1119,7 +1158,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                       // Top Bar: Back, Portal Title, Health button
                       Row(
                         children: [
-                          IconButton(
+                          KiruIconButton(
                             icon: Icon(
                               Icons.arrow_back_rounded,
                               color: tokens.textPrimary,
@@ -1149,7 +1188,15 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                                 ),
                                 if (widget.portal != null)
                                   Text(
-                                    l10nOf(context).dynamicIptvPortalBrowserPageConn((widget.portal!.activeConnections).toString(), (widget.portal!.maxConnections).toString(), (widget.portal!.expiry).toString()),
+                                    l10nOf(
+                                      context,
+                                    ).dynamicIptvPortalBrowserPageConn(
+                                      (widget.portal!.activeConnections)
+                                          .toString(),
+                                      (widget.portal!.maxConnections)
+                                          .toString(),
+                                      (widget.portal!.expiry).toString(),
+                                    ),
                                     style: ZplayType.caption.toStyle(
                                       color: tokens.textMuted,
                                     ),
@@ -1161,13 +1208,15 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                           ),
                           if (_activeSection == IptvSection.live &&
                               widget.portal != null)
-                            IconButton(
-                              tooltip: l10nOf(context).auxIptvPortalBrowserPageCheckHealth,
+                            KiruIconButton(
+                              tooltip: l10nOf(
+                                context,
+                              ).auxIptvPortalBrowserPageCheckHealth,
                               icon: _isCheckingAlive
                                   ? SizedBox(
                                       width: 18,
                                       height: 18,
-                                      child: CircularProgressIndicator(
+                                      child: KiruLoader(
                                         strokeWidth: 2,
                                         color: tokens.danger,
                                       ),
@@ -1181,13 +1230,15 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
                                   ? () => setState(() => _cancelAlive = true)
                                   : _startAliveCheck,
                             ),
-                          IconButton(
+                          KiruIconButton(
                             icon: Icon(
                               Icons.tune_rounded,
                               color: tokens.textSecondary,
                               size: 20,
                             ),
-                            tooltip: l10nOf(context).auxIptvPortalBrowserPageCustomize,
+                            tooltip: l10nOf(
+                              context,
+                            ).auxIptvPortalBrowserPageCustomize,
                             onPressed: () => _showBrowserCustomizer(context),
                           ),
                         ],
@@ -1304,14 +1355,14 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
               // ── MAIN CONTENT (SPLIT VIEW ON DESKTOP, FULL-WIDTH ON MOBILE) ──
               Expanded(
                 child: _isLoading
-                    ? Center(
-                        child: CircularProgressIndicator(color: tokens.accent),
-                      )
+                    ? Center(child: KiruLoader(color: tokens.accent))
                     : _errorMessage != null
                     ? ErrorView(
                         error: _errorMessage,
                         onRetry: _loadSectionData,
-                        title: l10nOf(context).auxIptvPortalBrowserPageCouldNotLoadThisPortal,
+                        title: l10nOf(
+                          context,
+                        ).auxIptvPortalBrowserPageCouldNotLoadThisPortal,
                       )
                     : isDesktop
                     ? Row(
@@ -1498,14 +1549,15 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
     bool large = false,
     double height = 38,
     double? width,
-    EdgeInsetsGeometry contentPadding =
-        const EdgeInsets.symmetric(vertical: ZplaySpacing.s8),
+    EdgeInsetsGeometry contentPadding = const EdgeInsets.symmetric(
+      vertical: ZplaySpacing.s8,
+    ),
   }) {
     final tokens = context.tokens;
     return SizedBox(
       width: width,
       height: height,
-      child: TextField(
+      child: KiruFormField(
         controller: controller,
         style: (large ? ZplayType.body : ZplayType.bodySmall).toStyle(
           color: tokens.textPrimary,
@@ -1519,7 +1571,7 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
             size: 18,
           ),
           suffixIcon: query.isNotEmpty
-              ? IconButton(
+              ? KiruIconButton(
                   icon: Icon(
                     Icons.close_rounded,
                     color: tokens.textMuted,
@@ -1679,7 +1731,9 @@ class _IptvPortalBrowserPageState extends State<IptvPortalBrowserPage> {
               ),
               const SizedBox(height: ZplaySpacing.s8),
               Text(
-                l10nOf(context).auxIptvPortalBrowserPageTapTheStarIconOnAnyChannel,
+                l10nOf(
+                  context,
+                ).auxIptvPortalBrowserPageTapTheStarIconOnAnyChannel,
                 textAlign: TextAlign.center,
                 style: ZplayType.body.toStyle(color: tokens.textMuted),
               ),
@@ -2022,7 +2076,11 @@ class _LiveChannelRowState extends State<_LiveChannelRow> {
     // ring is drawn on the target; the compact row's ring hugs the bare glyph.
     final ringChild = size == null
         ? glyph
-        : SizedBox(width: size, height: size, child: Center(child: glyph));
+        : SizedBox(
+            width: size,
+            height: size,
+            child: Center(child: glyph),
+          );
     return FocusableCard(
       onTap: widget.onToggleFavorite,
       builder: (context, starState) => CardFocusRing(
@@ -2157,9 +2215,7 @@ class _LiveChannelRowState extends State<_LiveChannelRow> {
             width: 30,
             child: Text(
               indexFormatted,
-              style: ZplayType.labelNumeric.toStyle(
-                color: tokens.textDisabled,
-              ),
+              style: ZplayType.labelNumeric.toStyle(color: tokens.textDisabled),
             ),
           ),
           const SizedBox(width: ZplaySpacing.s8),
@@ -2196,9 +2252,7 @@ class _LiveChannelRowState extends State<_LiveChannelRow> {
                     size: 20,
                   ),
           ),
-          SizedBox(
-            width: isVerySmall ? ZplaySpacing.s8 : ZplaySpacing.s12,
-          ),
+          SizedBox(width: isVerySmall ? ZplaySpacing.s8 : ZplaySpacing.s12),
         ],
 
         // ── CHANNEL IDENTITY ──
@@ -2267,7 +2321,9 @@ class _LiveChannelRowState extends State<_LiveChannelRow> {
                         ),
                         if (nextEpg != null) ...[
                           TextSpan(
-                            text: l10nOf(context).uiFinalIptvPortalBrowserPageNext,
+                            text: l10nOf(
+                              context,
+                            ).uiFinalIptvPortalBrowserPageNext,
                             style: ZplayType.caption.toStyle(
                               color: tokens.textMuted,
                             ),
@@ -2325,7 +2381,7 @@ class _LiveChannelRowState extends State<_LiveChannelRow> {
         SizedBox(
           width: actionSize,
           height: actionSize,
-          child: IconButton(
+          child: KiruIconButton(
             icon: Icon(
               widget.isFavorite
                   ? Icons.star_rounded
@@ -2427,9 +2483,7 @@ class _LiveChannelRowState extends State<_LiveChannelRow> {
                 ),
                 child: Text(
                   '#${widget.index}',
-                  style: ZplayType.caption.toStyle(
-                    color: tokens.textSecondary,
-                  ),
+                  style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                 ),
               ),
 
@@ -2852,7 +2906,7 @@ class _SeriesEpisodesSheetState extends State<_SeriesEpisodesSheet> {
                     style: ZplayType.title.toStyle(color: tokens.textPrimary),
                   ),
                 ),
-                IconButton(
+                KiruIconButton(
                   icon: Icon(Icons.close_rounded, color: tokens.textMuted),
                   onPressed: () => Navigator.pop(context),
                 ),
@@ -2862,12 +2916,14 @@ class _SeriesEpisodesSheetState extends State<_SeriesEpisodesSheet> {
 
           Expanded(
             child: _isLoading
-                ? Center(child: CircularProgressIndicator(color: tokens.accent))
+                ? Center(child: KiruLoader(color: tokens.accent))
                 : _error != null
                 ? ErrorView(
                     error: _error,
                     onRetry: _loadEpisodes,
-                    title: l10nOf(context).auxIptvPortalBrowserPageCouldNotLoadEpisodes,
+                    title: l10nOf(
+                      context,
+                    ).auxIptvPortalBrowserPageCouldNotLoadEpisodes,
                   )
                 : ListView.separated(
                     padding: const EdgeInsets.symmetric(

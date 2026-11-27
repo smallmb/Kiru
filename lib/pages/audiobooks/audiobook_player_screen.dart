@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -7,7 +8,6 @@ import 'dart:math' as math;
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 import 'package:media_kit/media_kit.dart';
 
 import '../../models/audiobook/audiobook_model.dart';
@@ -487,7 +487,9 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
                       ),
                       const SizedBox(width: 10),
                       Text(
-                        l10nOf(context).auxAudiobookPlayerScreenAudioPlayerStyleStudio,
+                        l10nOf(
+                          context,
+                        ).auxAudiobookPlayerScreenAudioPlayerStyleStudio,
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16.5,
@@ -518,7 +520,9 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
                   const SizedBox(height: ZplaySpacing.s20),
 
                   Text(
-                    l10nOf(context).auxAudiobookPlayerScreenSelectPlayerDesignPreset,
+                    l10nOf(
+                      context,
+                    ).auxAudiobookPlayerScreenSelectPlayerDesignPreset,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 13,
@@ -530,7 +534,9 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
                     valueListenable: AudiobookSettings.selectedPlayerPreset,
                     builder: (context, currentPreset, _) {
                       return SegmentedTabs<AudiobookPlayerPreset>(
-                        semanticsLabel: l10nOf(context).auxAudiobookPlayerScreenAudioPlayerDesignPreset,
+                        semanticsLabel: l10nOf(
+                          context,
+                        ).auxAudiobookPlayerScreenAudioPlayerDesignPreset,
                         selected: currentPreset,
                         onSelected: AudiobookSettings.setSelectedPlayerPreset,
                         options: [
@@ -547,7 +553,9 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
                   const SizedBox(height: 14),
 
                   Text(
-                    l10nOf(context).auxAudiobookPlayerScreenSeekBarScrubberStyle,
+                    l10nOf(
+                      context,
+                    ).auxAudiobookPlayerScreenSeekBarScrubberStyle,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 13,
@@ -559,7 +567,9 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
                     valueListenable: AudiobookSettings.customSeekbarStyle,
                     builder: (context, currentStyle, _) {
                       return SegmentedTabs<AudiobookSeekbarStyle>(
-                        semanticsLabel: l10nOf(context).auxAudiobookPlayerScreenSeekBarScrubberStyle2,
+                        semanticsLabel: l10nOf(
+                          context,
+                        ).auxAudiobookPlayerScreenSeekBarScrubberStyle2,
                         selected: currentStyle,
                         onSelected: AudiobookSettings.setCustomSeekbarStyle,
                         options: [
@@ -576,7 +586,9 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
                   const SizedBox(height: 14),
 
                   Text(
-                    l10nOf(context).auxAudiobookPlayerScreenPlayPauseButtonStyle,
+                    l10nOf(
+                      context,
+                    ).auxAudiobookPlayerScreenPlayPauseButtonStyle,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 13,
@@ -588,7 +600,9 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
                     valueListenable: AudiobookSettings.customPlayButtonStyle,
                     builder: (context, currentStyle, _) {
                       return SegmentedTabs<AudiobookPlayButtonStyle>(
-                        semanticsLabel: l10nOf(context).auxAudiobookPlayerScreenPlayPauseButtonStyle2,
+                        semanticsLabel: l10nOf(
+                          context,
+                        ).auxAudiobookPlayerScreenPlayPauseButtonStyle2,
                         selected: currentStyle,
                         onSelected: AudiobookSettings.setCustomPlayButtonStyle,
                         options: [
@@ -611,7 +625,9 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
                   SizedBox(
                     width: double.infinity,
                     child: PillButton(
-                      label: l10nOf(context).auxAudiobookPlayerScreenOpenDragDropPlayerStudio,
+                      label: l10nOf(
+                        context,
+                      ).auxAudiobookPlayerScreenOpenDragDropPlayerStudio,
                       icon: Icons.dashboard_customize_rounded,
                       expand: true,
                       onPressed: () {
@@ -942,11 +958,10 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
               ],
               Transform.scale(
                 scale: isMobile ? 0.75 : 0.85,
-                child: Switch(
+                child: KiruSwitch(
                   value: _autoplayNext,
                   onChanged: (val) => setState(() => _autoplayNext = val),
                   activeColor: context.tokens.accent,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
               ),
             ],
@@ -957,7 +972,9 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
             icon: Icons.tune_rounded,
             size: isMobile ? 20 : 24,
             palette: palette,
-            tooltip: l10nOf(context).auxAudiobookPlayerScreenCustomizeAudioPlayer,
+            tooltip: l10nOf(
+              context,
+            ).auxAudiobookPlayerScreenCustomizeAudioPlayer,
             onTap: () => _showPlayerCustomizer(context),
           ),
           SizedBox(width: isMobile ? 4 : 6),
@@ -990,7 +1007,7 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(color: palette.primaryColor),
+            KiruLoader(color: palette.primaryColor),
             const SizedBox(height: 18),
             Text(
               _statusMessage,
@@ -1446,7 +1463,8 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
                 case 'chaptersButton':
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
-                    child: OutlinedButton.icon(
+                    child: KiruButton(
+                      kind: KiruButtonKind.outline,
                       onPressed: () =>
                           setState(() => _showChaptersDrawer = true),
                       icon: Icon(
@@ -1454,8 +1472,10 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
                         color: palette.primaryColor,
                         size: 18,
                       ),
-                      label: Text(
-                        l10nOf(context).auxAudiobookPlayerScreenOpenChaptersPanel,
+                      child: Text(
+                        l10nOf(
+                          context,
+                        ).auxAudiobookPlayerScreenOpenChaptersPanel,
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -1656,7 +1676,11 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
           ),
           const SizedBox(height: 6),
           Text(
-            l10nOf(context).dynamicAudiobookPlayerScreenChapterOf((_currentChapterIndex + 1).toString(), (widget.chapters.length).toString(), (widget.audiobook.title).toString()),
+            l10nOf(context).dynamicAudiobookPlayerScreenChapterOf(
+              (_currentChapterIndex + 1).toString(),
+              (widget.chapters.length).toString(),
+              (widget.audiobook.title).toString(),
+            ),
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.6),
@@ -1812,56 +1836,11 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
 
     if (style == AudiobookPlayButtonStyle.liquidGlassNeo) {
       borderRadius = BorderRadius.circular(20);
-      final glassStyle = LiquidGlassStyle(
-        shape: LiquidGlassShape.continuousRoundedRectangle(
-          cornerRadius: 20,
-          clipQuality: LiquidGlassClipQuality.exact,
-          borderWidth: 1.6,
-          lightIntensity: 1.5,
-          // 0xE6 is 0.90 alpha, so this is the [textPrimary] white at its
-          // existing ARGB weight. It is the glass lens's light source, not a
-          // surface, but it belongs to the same "near-white" family and no
-          // separate token carries it.
-          lightColor: Colors.white.withValues(alpha: ZplayOpacity.textPrimary),
-          lightDirection: 115,
-          borderType: const OpticalBorder(
-            borderSaturation: 1.5,
-            ambientIntensity: 1.2,
-            borderSolidity: 0.2,
-            lightSpread: 0.7,
-          ),
-        ),
-        appearance: LiquidGlassAppearance(
-          color: palette.primaryColor.withValues(alpha: 0.16),
-          saturation: 1.25,
-          blur: const LiquidGlassBlur(sigmaX: 3.5, sigmaY: 3.5),
-          shadow: LiquidGlassShadow(
-            blur: 18,
-            opacity: 0.45,
-            color: palette.primaryColor,
-          ),
-        ),
-        refraction: const LiquidGlassRefraction(
-          magnification: 1.04,
-          chromaticAberration: 0.0035,
-          refractionType: OpticalRefraction(
-            refraction: 1.55,
-            refractionWidth: 24,
-            depth: 0.85,
-          ),
-        ),
-      );
-
-      buttonCore = LiquidGlassLens(
-        style: glassStyle,
-        visibility: true,
-        useImpellerBackdrop: true,
-        child: Container(
-          width: 58,
-          height: 58,
-          alignment: Alignment.center,
-          child: Icon(icon, color: Colors.white, size: 34),
-        ),
+      buttonCore = Container(
+        width: 58,
+        height: 58,
+        alignment: Alignment.center,
+        child: Icon(icon, color: Colors.white, size: 34),
       );
     } else if (style == AudiobookPlayButtonStyle.roundedSquare) {
       borderRadius = BorderRadius.circular(16);
@@ -1901,7 +1880,9 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
             Icon(icon, color: Colors.white, size: 24),
             const SizedBox(width: 6),
             Text(
-              _isPlaying ? l10nOf(context).finalAudiobookPlayerScreenPause : 'PLAY',
+              _isPlaying
+                  ? l10nOf(context).finalAudiobookPlayerScreenPause
+                  : 'PLAY',
               style: const TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w900,
@@ -2007,7 +1988,9 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                  l10nOf(context).auxAudiobookPlayerScreenAudiobookChapters,
+                                  l10nOf(
+                                    context,
+                                  ).auxAudiobookPlayerScreenAudiobookChapters,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 17,
@@ -2028,7 +2011,11 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
-                                l10nOf(context).dynamicAudiobookPlayerScreenChapters((widget.chapters.length).toString()),
+                                l10nOf(
+                                  context,
+                                ).dynamicAudiobookPlayerScreenChapters(
+                                  (widget.chapters.length).toString(),
+                                ),
                                 style: TextStyle(
                                   color: palette.primaryColor,
                                   fontSize: 10.5,
@@ -2073,7 +2060,7 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
                             color: context.tokens.surface,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: TextField(
+                          child: KiruFormField(
                             onChanged: (val) =>
                                 setState(() => _chapterSearchQuery = val),
                             style: const TextStyle(
@@ -2081,7 +2068,9 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
                               fontSize: 13,
                             ),
                             decoration: InputDecoration(
-                              hintText: l10nOf(context).auxAudiobookPlayerScreenFilterChaptersByName,
+                              hintText: l10nOf(
+                                context,
+                              ).auxAudiobookPlayerScreenFilterChaptersByName,
                               hintStyle: TextStyle(
                                 color: Colors.white.withValues(alpha: 0.35),
                                 fontSize: 13,
@@ -2175,7 +2164,7 @@ class _PlayerIconButton extends StatelessWidget {
       ),
     );
 
-    return Tooltip(
+    return KiruTooltip(
       message: tooltip ?? '',
       child: InteractivePhysicsButton.audiobook(
         effect: AudiobookSettings.customHoverEffect.value,
@@ -2236,7 +2225,7 @@ class _VolumeButtonState extends State<_VolumeButton> {
                 inactiveTrackColor: Colors.white24,
                 thumbColor: Colors.white,
               ),
-              child: Slider(
+              child: KiruSlider(
                 value: widget.volume,
                 min: 0.0,
                 max: 1.0,

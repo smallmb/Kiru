@@ -1,3 +1,5 @@
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -137,12 +139,12 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
   void _showSnack(String msg, {bool isError = false}) {
     if (!mounted) return;
     final tokens = context.tokens;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+    KiruToastMessenger.of(context).showSnackBar(
+      KiruToast(
         content: Text(msg, style: ZplayType.subtitle.toStyle()),
         behavior: SnackBarBehavior.floating,
         backgroundColor: isError ? tokens.danger : tokens.accent,
-        action: SnackBarAction(
+        action: KiruToastAction(
           label: l10nOf(context).uiTmdbSettingsPageDismiss,
           textColor: tokens.onAccent,
           onPressed: () {},
@@ -233,7 +235,10 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
               ),
               if (hasKey)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 7,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: tokens.accent.withValues(
                       alpha: ZplayOpacity.borderStrong,
@@ -251,21 +256,25 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
           Text(
             hasKey
                 ? l10nOf(context).uiFinalTmdbSettingsPageSavedOnThisDeviceEnterA
-                : l10nOf(context).uiFinalTmdbSettingsPageFreeKeyFromThemoviedbOrg,
+                : l10nOf(
+                    context,
+                  ).uiFinalTmdbSettingsPageFreeKeyFromThemoviedbOrg,
             style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
           ),
           const SizedBox(height: 10),
           Row(
             children: [
               Expanded(
-                child: TextField(
+                child: KiruFormField(
                   controller: _keyCtrl,
                   obscureText: _obscured,
                   enableSuggestions: false,
                   autocorrect: false,
                   style: ZplayType.label.toStyle(color: tokens.textPrimary),
                   decoration: InputDecoration(
-                    hintText: l10nOf(context).uiTmdbSettingsPagePasteYourTmdbApiKey,
+                    hintText: l10nOf(
+                      context,
+                    ).uiTmdbSettingsPagePasteYourTmdbApiKey,
                     hintStyle: ZplayType.bodySmall.toStyle(
                       color: tokens.textDisabled,
                     ),
@@ -291,7 +300,7 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
                     suffixIcon: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        IconButton(
+                        KiruIconButton(
                           icon: Icon(
                             _obscured
                                 ? Icons.visibility_off_rounded
@@ -301,12 +310,14 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
                           ),
                           padding: const EdgeInsets.all(4),
                           constraints: const BoxConstraints(),
-                          tooltip: _obscured ? l10nOf(context).finalDebridSettingsPageShowKey : l10nOf(context).finalDebridSettingsPageHideKey,
+                          tooltip: _obscured
+                              ? l10nOf(context).finalDebridSettingsPageShowKey
+                              : l10nOf(context).finalDebridSettingsPageHideKey,
                           onPressed: () {
                             setState(() => _obscured = !_obscured);
                           },
                         ),
-                        IconButton(
+                        KiruIconButton(
                           icon: Icon(
                             Icons.content_paste_rounded,
                             color: tokens.accent,
@@ -314,7 +325,9 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
                           ),
                           padding: const EdgeInsets.all(4),
                           constraints: const BoxConstraints(),
-                          tooltip: l10nOf(context).uiTmdbSettingsPagePasteFromClipboard,
+                          tooltip: l10nOf(
+                            context,
+                          ).uiTmdbSettingsPagePasteFromClipboard,
                           onPressed: _pasteFromClipboard,
                         ),
                         const SizedBox(width: 4),
@@ -324,7 +337,7 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
                 ),
               ),
               const SizedBox(width: ZplaySpacing.s8),
-              ElevatedButton(
+              KiruButton(
                 onPressed: _busy ? null : _saveAndTest,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: tokens.accent,
@@ -342,12 +355,15 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
                     ? SizedBox(
                         width: 16,
                         height: 16,
-                        child: CircularProgressIndicator(
+                        child: KiruLoader(
                           strokeWidth: 2,
                           color: tokens.onAccent,
                         ),
                       )
-                    : Text(l10nOf(context).uiTmdbSettingsPageSaveAndTest, style: ZplayType.label.toStyle()),
+                    : Text(
+                        l10nOf(context).uiTmdbSettingsPageSaveAndTest,
+                        style: ZplayType.label.toStyle(),
+                      ),
               ),
             ],
           ),
@@ -369,7 +385,8 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
                 ),
               ),
               const SizedBox(width: ZplaySpacing.s8),
-              TextButton(
+              KiruButton(
+                kind: KiruButtonKind.ghost,
                 onPressed: hasKey && !_busy ? _clearKey : null,
                 style: TextButton.styleFrom(
                   foregroundColor: tokens.danger,
@@ -381,7 +398,10 @@ class _TmdbSettingsPageState extends State<TmdbSettingsPage> {
                     borderRadius: ZplayRadius.smAll,
                   ),
                 ),
-                child: Text(l10nOf(context).uiTmdbSettingsPageClearKey, style: ZplayType.label.toStyle()),
+                child: Text(
+                  l10nOf(context).uiTmdbSettingsPageClearKey,
+                  style: ZplayType.label.toStyle(),
+                ),
               ),
             ],
           ),

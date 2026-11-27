@@ -1,3 +1,5 @@
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:io';
@@ -99,9 +101,13 @@ class _BookDetailSheetState extends State<BookDetailSheet> {
     } catch (e) {
       if (!mounted) return;
       setState(() => _isDownloading = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10nOf(context).dynamicBookDetailSheetFailedToDownloadBook((e).toString())),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(
+              context,
+            ).dynamicBookDetailSheetFailedToDownloadBook((e).toString()),
+          ),
           backgroundColor: context.tokens.danger,
         ),
       );
@@ -322,7 +328,10 @@ class _BookDetailSheetState extends State<BookDetailSheet> {
                               .toStyle(color: tokens.textEmphasis),
                         ),
                         Text(
-                          l10nOf(context).dynamicBookDetailSheetCompleted(((progress.progressPercent * 100).round()).toString()),
+                          l10nOf(context).dynamicBookDetailSheetCompleted(
+                            ((progress.progressPercent * 100).round())
+                                .toString(),
+                          ),
                           style: ZplayType.bodySmall
                               .copyWith(weight: FontWeight.bold)
                               .toStyle(color: tokens.accent),
@@ -332,7 +341,7 @@ class _BookDetailSheetState extends State<BookDetailSheet> {
                     const SizedBox(height: ZplaySpacing.s8),
                     ClipRRect(
                       borderRadius: ZplayRadius.xsAll,
-                      child: LinearProgressIndicator(
+                      child: KiruProgress(
                         value: progress.progressPercent,
                         backgroundColor: tokens.borderStrong,
                         color: tokens.accent,
@@ -354,9 +363,13 @@ class _BookDetailSheetState extends State<BookDetailSheet> {
                       Expanded(
                         child: PillButton(
                           label: _isDownloading
-                              ? l10nOf(context).bookDownloadingProgress((_downloadProgress * 100).round())
+                              ? l10nOf(context).bookDownloadingProgress(
+                                  (_downloadProgress * 100).round(),
+                                )
                               : hasProgress
-                              ? l10nOf(context).uiFinalBookDetailSheetResumeReading
+                              ? l10nOf(
+                                  context,
+                                ).uiFinalBookDetailSheetResumeReading
                               : l10nOf(context).uiFinalBookDetailSheetReadNow,
                           icon: hasProgress
                               ? Icons.play_arrow_rounded
@@ -372,7 +385,9 @@ class _BookDetailSheetState extends State<BookDetailSheet> {
                         const SizedBox(width: ZplaySpacing.s12),
                         _SheetIconAction(
                           icon: Icons.record_voice_over_rounded,
-                          tooltip: l10nOf(context).auxBookDetailSheetGenerateAiAudiobookTts,
+                          tooltip: l10nOf(
+                            context,
+                          ).auxBookDetailSheetGenerateAiAudiobookTts,
                           onTap: () async {
                             Navigator.pop(context);
                             Navigator.push(
@@ -389,7 +404,9 @@ class _BookDetailSheetState extends State<BookDetailSheet> {
                         const SizedBox(width: ZplaySpacing.s12),
                         _SheetIconAction(
                           icon: Icons.delete_outline_rounded,
-                          tooltip: l10nOf(context).auxBookDetailSheetDeleteDownloadedFile,
+                          tooltip: l10nOf(
+                            context,
+                          ).auxBookDetailSheetDeleteDownloadedFile,
                           danger: true,
                           onTap: () async {
                             await BookDownloadService.instance.deleteBook(
@@ -415,7 +432,9 @@ class _BookDetailSheetState extends State<BookDetailSheet> {
                       book.series.isNotEmpty) ...[
                     Transform.translate(
                       offset: const Offset(-ZplaySpacing.s16, 0),
-                      child: SectionHeader(title: l10nOf(context).auxBookDetailSheetInformation),
+                      child: SectionHeader(
+                        title: l10nOf(context).auxBookDetailSheetInformation,
+                      ),
                     ),
                     const SizedBox(height: ZplaySpacing.s4),
                     if (book.publisher.isNotEmpty)
@@ -438,7 +457,9 @@ class _BookDetailSheetState extends State<BookDetailSheet> {
                   if (book.description.isNotEmpty) ...[
                     Transform.translate(
                       offset: const Offset(-ZplaySpacing.s16, 0),
-                      child: SectionHeader(title: l10nOf(context).auxBookDetailSheetOverview),
+                      child: SectionHeader(
+                        title: l10nOf(context).auxBookDetailSheetOverview,
+                      ),
                     ),
                     const SizedBox(height: ZplaySpacing.s4),
                     Text(
@@ -512,7 +533,7 @@ class _SheetIconAction extends StatelessWidget {
     final side = PillButton.heightFor(context);
     final tint = danger ? tokens.danger : tokens.accent;
 
-    return Tooltip(
+    return KiruTooltip(
       message: tooltip,
       child: FocusableCard(
         onTap: onTap,

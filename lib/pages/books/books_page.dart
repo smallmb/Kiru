@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:async';
@@ -11,7 +12,6 @@ import '../../services/layout/form_factor.dart';
 import '../../services/theme/design_tokens.dart';
 import '../../widgets/common/animated_ambient_background.dart';
 import '../../widgets/common/card_badges.dart';
-import '../../widgets/common/custom_scroll_track.dart';
 import '../../widgets/common/error_view.dart';
 import '../../widgets/common/focusable_card.dart';
 import '../../widgets/common/pill_button.dart';
@@ -172,9 +172,7 @@ class _BooksPageState extends State<BooksPage> {
       body: Stack(
         children: [
           // ── Ambient Animated Background ──
-          const Positioned.fill(
-            child: AnimatedAmbientBackground(),
-          ),
+          const Positioned.fill(child: AnimatedAmbientBackground()),
 
           // ── Main Content ──
           SafeArea(
@@ -184,24 +182,16 @@ class _BooksPageState extends State<BooksPage> {
               physics: const BouncingScrollPhysics(),
               slivers: [
                 // Top App Bar & Search Header
-                SliverToBoxAdapter(
-                  child: _buildHeader(),
-                ),
+                SliverToBoxAdapter(child: _buildHeader()),
 
                 // E-Reader control banner: font engine + type size/margins
-                SliverToBoxAdapter(
-                  child: _buildReaderControlBanner(isMobile),
-                ),
+                SliverToBoxAdapter(child: _buildReaderControlBanner(isMobile)),
 
                 // Filters (Language & Formats)
-                SliverToBoxAdapter(
-                  child: _buildFilters(),
-                ),
+                SliverToBoxAdapter(child: _buildFilters()),
 
                 // Continue Reading Horizontal Slider
-                const SliverToBoxAdapter(
-                  child: ContinueReadingSlider(),
-                ),
+                const SliverToBoxAdapter(child: ContinueReadingSlider()),
 
                 // Catalog Title. The shared rail header, so the shelf's heading
                 // is the same object every other rail in the app uses: one
@@ -221,8 +211,9 @@ class _BooksPageState extends State<BooksPage> {
                       title: _searchController.text.trim().isNotEmpty
                           ? 'Results for "${_searchController.text.trim()}"'
                           : 'Discover Books',
-                      count:
-                          !_loading && _books.isNotEmpty ? _books.length : null,
+                      count: !_loading && _books.isNotEmpty
+                          ? _books.length
+                          : null,
                     ),
                   ),
                 ),
@@ -246,16 +237,26 @@ class _BooksPageState extends State<BooksPage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.search_off_rounded, color: tokens.textMuted, size: 56),
+                          Icon(
+                            Icons.search_off_rounded,
+                            color: tokens.textMuted,
+                            size: 56,
+                          ),
                           const SizedBox(height: ZplaySpacing.s12),
                           Text(
                             l10nOf(context).auxBooksPageNoBooksFound,
-                            style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
+                            style: ZplayType.subtitle.toStyle(
+                              color: tokens.textEmphasis,
+                            ),
                           ),
                           const SizedBox(height: ZplaySpacing.s4),
                           Text(
-                            l10nOf(context).auxBooksPageTrySearchingForAnotherTitleAuthorOr,
-                            style: ZplayType.label.toStyle(color: tokens.textMuted),
+                            l10nOf(
+                              context,
+                            ).auxBooksPageTrySearchingForAnotherTitleAuthorOr,
+                            style: ZplayType.label.toStyle(
+                              color: tokens.textMuted,
+                            ),
                           ),
                         ],
                       ),
@@ -263,19 +264,18 @@ class _BooksPageState extends State<BooksPage> {
                   )
                 else
                   SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: ZplaySpacing.s24),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: ZplaySpacing.s24,
+                    ),
                     sliver: SliverGrid(
                       gridDelegate: _booksGridDelegate(isMobile),
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final book = _books[index];
-                          return _BookCard(
-                            book: book,
-                            onTap: () => BookDetailSheet.show(context, book),
-                          );
-                        },
-                        childCount: _books.length,
-                      ),
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final book = _books[index];
+                        return _BookCard(
+                          book: book,
+                          onTap: () => BookDetailSheet.show(context, book),
+                        );
+                      }, childCount: _books.length),
                     ),
                   ),
 
@@ -283,9 +283,11 @@ class _BooksPageState extends State<BooksPage> {
                 if (_loadingMore)
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: ZplaySpacing.s32),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: ZplaySpacing.s32,
+                      ),
                       child: Center(
-                        child: CircularProgressIndicator(
+                        child: KiruLoader(
                           strokeWidth: 2.5,
                           color: tokens.accent,
                         ),
@@ -295,19 +297,14 @@ class _BooksPageState extends State<BooksPage> {
 
                 SliverToBoxAdapter(
                   // The SafeArea above is bottom:false, so the trailing gap carries the gesture inset.
-                  child: SizedBox(height: ZplaySpacing.s24 + MediaQuery.paddingOf(context).bottom),
+                  child: SizedBox(
+                    height:
+                        ZplaySpacing.s24 + MediaQuery.paddingOf(context).bottom,
+                  ),
                 ),
               ],
             ),
           ),
-          // ── Custom Scroll Track (Desktop Only) ──
-          if (MediaQuery.sizeOf(context).width > 800)
-            Positioned(
-              right: 24,
-              bottom: 40,
-              child: CustomScrollTrack(controller: _scrollController),
-            ),
-
         ],
       ),
     );
@@ -348,17 +345,27 @@ class _BooksPageState extends State<BooksPage> {
               borderRadius: ZplayRadius.smAll,
               border: Border.fromBorderSide(tokens.hairline),
             ),
-            child: TextField(
+            child: KiruFormField(
               controller: _searchController,
               onChanged: _onSearchChanged,
               style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
               decoration: InputDecoration(
-                hintText: l10nOf(context).auxBooksPageSearchMillionsOfBooksAuthors,
+                hintText: l10nOf(
+                  context,
+                ).auxBooksPageSearchMillionsOfBooksAuthors,
                 hintStyle: ZplayType.body.toStyle(color: tokens.textDisabled),
-                prefixIcon: Icon(Icons.search_rounded, color: tokens.textMuted, size: 19),
+                prefixIcon: Icon(
+                  Icons.search_rounded,
+                  color: tokens.textMuted,
+                  size: 19,
+                ),
                 suffixIcon: _searchController.text.isNotEmpty
-                    ? IconButton(
-                        icon: Icon(Icons.clear_rounded, color: tokens.textSecondary, size: 18),
+                    ? KiruIconButton(
+                        icon: Icon(
+                          Icons.clear_rounded,
+                          color: tokens.textSecondary,
+                          size: 18,
+                        ),
                         onPressed: () {
                           _searchController.clear();
                           _onSearchChanged('');
@@ -409,7 +416,7 @@ class _BooksPageState extends State<BooksPage> {
           final sizeChipLabel = isMobile
               ? '${settings.fontSize.round()} pt · ${_marginLabel(settings.marginPreset)}'
               : 'Font Size: ${settings.fontSize.round()} pt · '
-                  'Margins: ${_marginLabel(settings.marginPreset)}';
+                    'Margins: ${_marginLabel(settings.marginPreset)}';
 
           return Row(
             children: [
@@ -479,7 +486,10 @@ class _BooksPageState extends State<BooksPage> {
       ),
       child: TabStrip<String?>(
         options: [
-          TabStripOption<String?>(value: null, label: l10nOf(context).auxBooksPageAllFormats),
+          TabStripOption<String?>(
+            value: null,
+            label: l10nOf(context).auxBooksPageAllFormats,
+          ),
           const TabStripOption<String?>(value: 'epub', label: 'EPUB'),
           const TabStripOption<String?>(value: 'pdf', label: 'PDF'),
           const TabStripOption<String?>(value: 'mobi', label: 'MOBI'),
@@ -578,10 +588,7 @@ class _BookCard extends StatelessWidget {
   final BookResult book;
   final VoidCallback onTap;
 
-  const _BookCard({
-    required this.book,
-    required this.onTap,
-  });
+  const _BookCard({required this.book, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -637,19 +644,32 @@ class _BookCard extends StatelessWidget {
                                     placeholder: (_, __) => Container(
                                       color: tokens.surface,
                                       child: Center(
-                                        child: Icon(Icons.menu_book_rounded, color: tokens.textDisabled, size: 36),
+                                        child: Icon(
+                                          Icons.menu_book_rounded,
+                                          color: tokens.textDisabled,
+                                          size: 36,
+                                        ),
                                       ),
                                     ),
                                     errorWidget: (_, __, ___) => Container(
                                       color: tokens.surface,
                                       child: Center(
-                                        child: Icon(Icons.menu_book_rounded, color: tokens.textDisabled, size: 36),
+                                        child: Icon(
+                                          Icons.menu_book_rounded,
+                                          color: tokens.textDisabled,
+                                          size: 36,
+                                        ),
                                       ),
-                                    ))
+                                    ),
+                                  )
                                 : Container(
                                     color: tokens.surface,
                                     child: Center(
-                                      child: Icon(Icons.menu_book_rounded, color: tokens.textDisabled, size: 36),
+                                      child: Icon(
+                                        Icons.menu_book_rounded,
+                                        color: tokens.textDisabled,
+                                        size: 36,
+                                      ),
                                     ),
                                   ),
                           ),
@@ -683,7 +703,9 @@ class _BookCard extends StatelessWidget {
                                 ),
                                 child: Text(
                                   book.year,
-                                  style: ZplayType.caption.toStyle(color: tokens.textEmphasis),
+                                  style: ZplayType.caption.toStyle(
+                                    color: tokens.textEmphasis,
+                                  ),
                                 ),
                               ),
                             ),
@@ -691,16 +713,21 @@ class _BookCard extends StatelessWidget {
                           // In-Progress Bar directly on Cover Bottom Edge. The
                           // clip rounds it with the cover, so it needs no radius
                           // of its own.
-                          if (progress != null && progress.progressPercent > 0.01)
+                          if (progress != null &&
+                              progress.progressPercent > 0.01)
                             Positioned(
                               bottom: 0,
                               left: 0,
                               right: 0,
-                              child: LinearProgressIndicator(
+                              child: KiruProgress(
                                 value: progress.progressPercent,
                                 minHeight: ZplaySpacing.s4,
-                                backgroundColor: tokens.bg.withValues(alpha: 0.5),
-                                valueColor: AlwaysStoppedAnimation<Color>(tokens.accent),
+                                backgroundColor: tokens.bg.withValues(
+                                  alpha: 0.5,
+                                ),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  tokens.accent,
+                                ),
                               ),
                             ),
                         ],

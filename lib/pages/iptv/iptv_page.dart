@@ -1,12 +1,11 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
-import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../services/theme/app_theme_service.dart';
 import '../../services/theme/design_tokens.dart';
-import '../../services/theme/glass_settings.dart';
 import '../../services/iptv/hardcoded_channels.dart';
 import '../../services/iptv/iptv_controller.dart';
 import '../../services/iptv/iptv_settings.dart';
@@ -17,7 +16,6 @@ import '../../shell/app_shell_scope.dart';
 import '../../utils/navigation/route_transitions.dart';
 import '../../services/layout/form_factor.dart';
 import '../../widgets/common/animated_ambient_background.dart';
-import '../../widgets/common/custom_scroll_track.dart';
 import '../../widgets/common/focusable_card.dart';
 import '../../widgets/common/hover_scroll_rail.dart';
 import '../../widgets/iptv/iptv_hero_carousel.dart';
@@ -329,17 +327,12 @@ class _IptvPageState extends State<IptvPage> {
   void _navigateToSearch() {
     Navigator.push(
       context,
-      FadeThroughRoute(
-        page: IptvSearchPage(quickChannels: _quickChannels),
-      ),
+      FadeThroughRoute(page: IptvSearchPage(quickChannels: _quickChannels)),
     );
   }
 
   void _navigateToMultiStreams() {
-    Navigator.push(
-      context,
-      FadeThroughRoute(page: const MultiNutzPage()),
-    );
+    Navigator.push(context, FadeThroughRoute(page: const MultiNutzPage()));
   }
 
   @override
@@ -483,8 +476,9 @@ class _IptvPageState extends State<IptvPage> {
                   title: catName,
                   subtitle: categoryMap[catName]!.$1,
                   channels: categoryMap[catName]!.$2,
-                  healthByChannelId:
-                      catName == _boxingCategory ? _boxingHealth : null,
+                  healthByChannelId: catName == _boxingCategory
+                      ? _boxingHealth
+                      : null,
                   onChannelTap: _openChannel,
                 ),
 
@@ -523,44 +517,18 @@ class _IptvPageState extends State<IptvPage> {
           onSourcesTap: () => IptvPortalsModal.show(context),
         ),
       ),
-
-      // Custom Scroll Track (Matching Home & Anime Page)
-      if (MediaQuery.sizeOf(context).width > 800)
-        Positioned(
-          right: ZplaySpacing.s24,
-          bottom: ZplaySpacing.s40,
-          child: CustomScrollTrack(controller: _scrollController),
-        ),
     ];
 
     return Scaffold(
       backgroundColor: tokens.bg,
-      body: ValueListenableBuilder<bool>(
-        valueListenable: GlassSettings.enabled,
-        builder: (context, enabled, _) {
-          final overlays = Stack(children: overlayChildren);
-          if (enabled) {
-            return LiquidGlassView(
-              realTimeCapture: true,
-              useSync: true,
-              pixelRatio: 0.85,
-              refreshRate: LiquidGlassRefreshRate.deviceRefreshRate,
-              regionCapture: true,
-              backgroundWidget: backgroundContent,
-              child: overlays,
-            );
-          }
-
-          return Container(
-            color: tokens.bg,
-            child: Stack(
-              children: [
-                RepaintBoundary(child: backgroundContent),
-                ...overlayChildren,
-              ],
-            ),
-          );
-        },
+      body: Container(
+        color: tokens.bg,
+        child: Stack(
+          children: [
+            RepaintBoundary(child: backgroundContent),
+            ...overlayChildren,
+          ],
+        ),
       ),
     );
   }
@@ -685,7 +653,9 @@ class _IptvGlassAppBar extends StatelessWidget {
           // chip - the chip was the only box in a row that carries no other, and
           // a count is a caption, not a control.
           Text(
-            l10nOf(context).dynamicIptvPageChannels((HardcodedChannels.all.length).toString()),
+            l10nOf(context).dynamicIptvPageChannels(
+              (HardcodedChannels.all.length).toString(),
+            ),
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
 
@@ -734,7 +704,6 @@ class _IptvGlassAppBar extends StatelessWidget {
     );
   }
 }
-
 
 class _GlassActionButton extends StatefulWidget {
   final IconData icon;
@@ -793,7 +762,7 @@ class _GlassActionButtonState extends State<_GlassActionButton> {
           child: CardFocusRing(
             focused: state.focused,
             radius: ZplayRadius.smAll,
-            child: Tooltip(
+            child: KiruTooltip(
               message: widget.tooltip,
               child: SizedBox(
                 height: widget.size,
@@ -893,7 +862,7 @@ class _QuickChannelsSlider extends StatelessWidget {
                 style: ZplayType.title.toStyle(color: tokens.textPrimary),
               ),
               const Spacer(),
-              IconButton(
+              KiruIconButton(
                 icon: const Icon(Icons.add_circle_outline_rounded, size: 24),
                 color: tokens.accent,
                 tooltip: l10nOf(context).auxIptvPageAddQuickChannel,
@@ -1034,7 +1003,8 @@ class _QuickChannelCard extends StatelessWidget {
                       width: FormFactorService.of(context) == FormFactor.compact
                           ? 40.0
                           : kMinInteractiveDimension,
-                      height: FormFactorService.of(context) == FormFactor.compact
+                      height:
+                          FormFactorService.of(context) == FormFactor.compact
                           ? 40.0
                           : kMinInteractiveDimension,
                       child: Center(
@@ -1168,7 +1138,7 @@ class _AddQuickChannelDialogState extends State<_AddQuickChannelDialog> {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    return AlertDialog(
+    return KiruAlertDialog(
       backgroundColor: tokens.surfaceOverlay,
       shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.mdAll),
       title: Text(
@@ -1183,7 +1153,7 @@ class _AddQuickChannelDialogState extends State<_AddQuickChannelDialog> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextFormField(
+                KiruFormField(
                   controller: _nameCtrl,
                   style: ZplayType.body.toStyle(color: tokens.textPrimary),
                   decoration: InputDecoration(
@@ -1203,7 +1173,7 @@ class _AddQuickChannelDialogState extends State<_AddQuickChannelDialog> {
                 Row(
                   children: [
                     Expanded(
-                      child: TextFormField(
+                      child: KiruFormField(
                         controller: _shortCtrl,
                         style: ZplayType.body.toStyle(
                           color: tokens.textPrimary,
@@ -1222,7 +1192,7 @@ class _AddQuickChannelDialogState extends State<_AddQuickChannelDialog> {
                     ),
                     const SizedBox(width: 16),
                     Expanded(
-                      child: DropdownButtonFormField<String>(
+                      child: KiruDropdown<String>(
                         value: _selectedCategory,
                         dropdownColor: tokens.surfaceOverlay,
                         style: ZplayType.body.toStyle(
@@ -1258,7 +1228,7 @@ class _AddQuickChannelDialogState extends State<_AddQuickChannelDialog> {
                   ],
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
+                KiruFormField(
                   controller: _keywordsCtrl,
                   style: ZplayType.body.toStyle(color: tokens.textPrimary),
                   decoration: InputDecoration(
@@ -1298,11 +1268,13 @@ class _AddQuickChannelDialogState extends State<_AddQuickChannelDialog> {
                         radius: ZplayRadius.smAll,
                         child: Container(
                           width:
-                              FormFactorService.of(context) == FormFactor.compact
+                              FormFactorService.of(context) ==
+                                  FormFactor.compact
                               ? 36
                               : kMinInteractiveDimension,
                           height:
-                              FormFactorService.of(context) == FormFactor.compact
+                              FormFactorService.of(context) ==
+                                  FormFactor.compact
                               ? 36
                               : kMinInteractiveDimension,
                           decoration: BoxDecoration(
@@ -1326,14 +1298,15 @@ class _AddQuickChannelDialogState extends State<_AddQuickChannelDialog> {
         ),
       ),
       actions: [
-        TextButton(
+        KiruButton(
+          kind: KiruButtonKind.ghost,
           onPressed: () => Navigator.pop(context),
           child: Text(
             l10nOf(context).actionCancel,
             style: ZplayType.label.toStyle(color: tokens.textEmphasis),
           ),
         ),
-        ElevatedButton(
+        KiruButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: tokens.accent,
             foregroundColor: tokens.onAccent,

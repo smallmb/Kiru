@@ -1,3 +1,6 @@
+import '../../widgets/ui/kiru_tappable.dart';
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
@@ -23,10 +26,12 @@ class CloudStreamMarketplaceModal extends StatefulWidget {
   }
 
   @override
-  State<CloudStreamMarketplaceModal> createState() => _CloudStreamMarketplaceModalState();
+  State<CloudStreamMarketplaceModal> createState() =>
+      _CloudStreamMarketplaceModalState();
 }
 
-class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModal> {
+class _CloudStreamMarketplaceModalState
+    extends State<CloudStreamMarketplaceModal> {
   final _manager = CloudStreamManager.instance;
   final _service = CloudStreamMarketplaceService.instance;
   final TextEditingController _searchController = TextEditingController();
@@ -165,13 +170,25 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
       await _manager.addRepo(repo.url);
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
           content: Row(
             children: [
-              Icon(Icons.check_circle_rounded, color: tokens.onAccent, size: 18),
+              Icon(
+                Icons.check_circle_rounded,
+                color: tokens.onAccent,
+                size: 18,
+              ),
               const SizedBox(width: 8),
-              Expanded(child: Text(l10nOf(context).dynamicCloudstreamMarketplaceModalAddedSuccessfully((repo.name).toString()))),
+              Expanded(
+                child: Text(
+                  l10nOf(
+                    context,
+                  ).dynamicCloudstreamMarketplaceModalAddedSuccessfully(
+                    (repo.name).toString(),
+                  ),
+                ),
+              ),
             ],
           ),
           backgroundColor: tokens.success,
@@ -182,10 +199,14 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
       // Offer to install plugins immediately
       final shouldInstallAll = await showDialog<bool>(
         context: context,
-        builder: (ctx) => AlertDialog(
+        builder: (ctx) => KiruAlertDialog(
           backgroundColor: tokens.surfaceOverlay,
           shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.mdAll),
-          title: Text(l10nOf(context).dynamicCloudstreamMarketplaceModalInstallPlugins((repo.name).toString())),
+          title: Text(
+            l10nOf(context).dynamicCloudstreamMarketplaceModalInstallPlugins(
+              (repo.name).toString(),
+            ),
+          ),
           content: Text(
             repo.plugins.isNotEmpty
                 ? 'This repository includes ${repo.plugins.length} plugins (${repo.plugins.take(3).join(', ')}...). Install all plugins now so their stream sources appear immediately?'
@@ -193,19 +214,22 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
             style: ZplayType.body.toStyle(color: tokens.textEmphasis),
           ),
           actions: [
-            TextButton(
+            KiruButton(
+              kind: KiruButtonKind.ghost,
               onPressed: () => Navigator.pop(ctx, false),
               child: Text(
                 l10nOf(context).uiCloudstreamMarketplaceModalLater,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
             ),
-            ElevatedButton(
+            KiruButton(
               onPressed: () => Navigator.pop(ctx, true),
               style: ElevatedButton.styleFrom(
                 backgroundColor: tokens.accent,
                 foregroundColor: tokens.onAccent,
-                shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: ZplayRadius.smAll,
+                ),
               ),
               child: Text(
                 l10nOf(context).uiCloudstreamMarketplaceModalInstallAllNow,
@@ -221,8 +245,8 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
           content: Text(e.toString().replaceFirst('Exception: ', '')),
           backgroundColor: tokens.danger,
           behavior: SnackBarBehavior.floating,
@@ -241,18 +265,20 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        return AlertDialog(
+        return KiruAlertDialog(
           backgroundColor: tokens.surfaceOverlay,
           shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.mdAll),
           title: Text(
-            l10nOf(context).uiCloudstreamMarketplaceModalInstallingRepositoryPlugins,
+            l10nOf(
+              context,
+            ).uiCloudstreamMarketplaceModalInstallingRepositoryPlugins,
             style: ZplayType.title.toStyle(color: tokens.textPrimary),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: 8),
-              CircularProgressIndicator(color: tokens.accent),
+              KiruLoader(color: tokens.accent),
               const SizedBox(height: 16),
               ValueListenableBuilder<String>(
                 valueListenable: _manager.busyMessage,
@@ -273,9 +299,15 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
       if (mounted) Navigator.pop(context);
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10nOf(context).dynamicCloudstreamMarketplaceModalPluginsInstalledAndReady((count).toString())),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(
+              context,
+            ).dynamicCloudstreamMarketplaceModalPluginsInstalledAndReady(
+              (count).toString(),
+            ),
+          ),
           backgroundColor: tokens.success,
           behavior: SnackBarBehavior.floating,
         ),
@@ -284,9 +316,13 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
     } catch (e) {
       if (mounted) Navigator.pop(context);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10nOf(context).dynamicCloudstreamMarketplaceModalInstallationError((e).toString())),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(context).dynamicCloudstreamMarketplaceModalInstallationError(
+              (e).toString(),
+            ),
+          ),
           backgroundColor: tokens.danger,
           behavior: SnackBarBehavior.floating,
         ),
@@ -315,30 +351,29 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
         child: Icon(Icons.hub_rounded, color: tokens.accent, size: 20),
       ),
       title: l10nOf(context).uiCloudstreamMarketplaceModalMarketplace,
-      subtitle:
-          l10nOf(context).dynamicCloudstreamMarketplaceModalReposDirectInstallLinksVerifiedProviders((_repos.length).toString()),
+      subtitle: l10nOf(context)
+          .dynamicCloudstreamMarketplaceModalReposDirectInstallLinksVerifiedProviders(
+            (_repos.length).toString(),
+          ),
       status: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          IconButton(
-            tooltip: l10nOf(context).uiCloudstreamMarketplaceModalRefreshListFromWeb,
+          KiruIconButton(
+            tooltip: l10nOf(
+              context,
+            ).uiCloudstreamMarketplaceModalRefreshListFromWeb,
             icon: _isRefreshing
                 ? SizedBox(
                     width: 16,
                     height: 16,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: tokens.accent,
-                    ),
+                    child: KiruLoader(strokeWidth: 2, color: tokens.accent),
                   )
-                : Icon(
-                    Icons.refresh_rounded,
-                    color: tokens.textSecondary,
-                  ),
-            onPressed:
-                _isRefreshing ? null : () => _loadRepos(forceRefresh: true),
+                : Icon(Icons.refresh_rounded, color: tokens.textSecondary),
+            onPressed: _isRefreshing
+                ? null
+                : () => _loadRepos(forceRefresh: true),
           ),
-          IconButton(
+          KiruIconButton(
             icon: Icon(Icons.close_rounded, color: tokens.textEmphasis),
             onPressed: () => Navigator.pop(context),
           ),
@@ -356,20 +391,24 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
                 borderRadius: ZplayRadius.smAll,
                 border: Border.all(color: tokens.borderDefault),
               ),
-              child: TextField(
+              child: KiruFormField(
                 controller: _searchController,
                 style: ZplayType.body.toStyle(color: tokens.textPrimary),
                 onChanged: (val) => setState(() => _searchQuery = val),
                 decoration: InputDecoration(
-                  hintText: l10nOf(context).uiCloudstreamMarketplaceModalSearchRepositoryOrPluginEG,
-                  hintStyle: ZplayType.bodySmall.toStyle(color: tokens.textDisabled),
+                  hintText: l10nOf(
+                    context,
+                  ).uiCloudstreamMarketplaceModalSearchRepositoryOrPluginEG,
+                  hintStyle: ZplayType.bodySmall.toStyle(
+                    color: tokens.textDisabled,
+                  ),
                   prefixIcon: Icon(
                     Icons.search_rounded,
                     size: 18,
                     color: tokens.textMuted,
                   ),
                   suffixIcon: _searchController.text.isNotEmpty
-                      ? IconButton(
+                      ? KiruIconButton(
                           icon: Icon(
                             Icons.close_rounded,
                             size: 16,
@@ -382,7 +421,10 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
                         )
                       : null,
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 8,
+                  ),
                 ),
               ),
             ),
@@ -397,14 +439,17 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
               children: [
                 Material(
                   color: Colors.transparent,
-                  child: InkWell(
+                  child: KiruTappable(
                     borderRadius: ZplayRadius.lgAll,
                     onTap: () {
                       if (_categoryScrollController.hasClients) {
-                        final target = (_categoryScrollController.offset - 180).clamp(
-                          0.0,
-                          _categoryScrollController.position.maxScrollExtent,
-                        );
+                        final target = (_categoryScrollController.offset - 180)
+                            .clamp(
+                              0.0,
+                              _categoryScrollController
+                                  .position
+                                  .maxScrollExtent,
+                            );
                         _categoryScrollController.animateTo(
                           target,
                           duration: const Duration(milliseconds: 250),
@@ -435,22 +480,32 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
                     child: ListView.builder(
                       controller: _categoryScrollController,
                       scrollDirection: Axis.horizontal,
-                      itemCount: CloudStreamMarketplaceService.categories.length,
+                      itemCount:
+                          CloudStreamMarketplaceService.categories.length,
                       itemBuilder: (context, idx) {
-                        final cat = CloudStreamMarketplaceService.categories[idx];
+                        final cat =
+                            CloudStreamMarketplaceService.categories[idx];
                         final isSelected = _selectedCategory == cat;
-                        final count = cat == 'All' ? _repos.length : _repos.where((r) => r.category == cat).length;
+                        final count = cat == 'All'
+                            ? _repos.length
+                            : _repos.where((r) => r.category == cat).length;
                         final emoji = _getCategoryEmoji(cat);
 
                         return Padding(
                           padding: const EdgeInsets.only(right: 8),
                           child: FocusableCard(
-                            onTap: () => setState(() => _selectedCategory = cat),
+                            onTap: () =>
+                                setState(() => _selectedCategory = cat),
                             builder: (_, state) => AnimatedContainer(
                               duration: ZplayMotion.base,
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 6,
+                              ),
                               decoration: BoxDecoration(
-                                color: isSelected ? tokens.accentSubtle : tokens.surfaceOverlay,
+                                color: isSelected
+                                    ? tokens.accentSubtle
+                                    : tokens.surfaceOverlay,
                                 borderRadius: ZplayRadius.smAll,
                                 border: Border.all(
                                   color: isSelected
@@ -461,7 +516,10 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text(emoji, style: ZplayType.bodySmall.toStyle()),
+                                  Text(
+                                    emoji,
+                                    style: ZplayType.bodySmall.toStyle(),
+                                  ),
                                   const SizedBox(width: 6),
                                   Text(
                                     cat,
@@ -479,7 +537,10 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
                                   ),
                                   const SizedBox(width: 6),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 5,
+                                      vertical: 1,
+                                    ),
                                     decoration: BoxDecoration(
                                       color: Colors.white.withValues(
                                         alpha: isSelected
@@ -509,14 +570,17 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
                 const SizedBox(width: 6),
                 Material(
                   color: Colors.transparent,
-                  child: InkWell(
+                  child: KiruTappable(
                     borderRadius: ZplayRadius.lgAll,
                     onTap: () {
                       if (_categoryScrollController.hasClients) {
-                        final target = (_categoryScrollController.offset + 180).clamp(
-                          0.0,
-                          _categoryScrollController.position.maxScrollExtent,
-                        );
+                        final target = (_categoryScrollController.offset + 180)
+                            .clamp(
+                              0.0,
+                              _categoryScrollController
+                                  .position
+                                  .maxScrollExtent,
+                            );
                         _categoryScrollController.animateTo(
                           target,
                           duration: const Duration(milliseconds: 250),
@@ -549,386 +613,510 @@ class _CloudStreamMarketplaceModalState extends State<CloudStreamMarketplaceModa
           // Repositories List
           Expanded(
             child: _isLoading
-                ? Center(
-                    child: CircularProgressIndicator(color: tokens.accent),
-                  )
+                ? Center(child: KiruLoader(color: tokens.accent))
                 : _filteredRepos.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.search_off_rounded,
-                              size: 48,
-                              color: tokens.textDisabled,
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              l10nOf(context).dynamicCloudstreamMarketplaceModalNoRepositoriesFoundFor((_searchQuery).toString()),
-                              style: ZplayType.body.toStyle(color: tokens.textSecondary),
-                            ),
-                          ],
+                ? Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.search_off_rounded,
+                          size: 48,
+                          color: tokens.textDisabled,
                         ),
-                      )
-                    : ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: _filteredRepos.length,
-                        itemBuilder: (context, index) {
-                          final repo = _filteredRepos[index];
-                          final isInstalled = _manager.isRepoInstalled(repo.url);
-                          final isAdding = _addingRepoUrls.contains(repo.url);
-                          final isExpanded = _expandedRepos.contains(repo.url);
-                          final catColor = _getCategoryColor(repo.category);
+                        const SizedBox(height: 12),
+                        Text(
+                          l10nOf(
+                            context,
+                          ).dynamicCloudstreamMarketplaceModalNoRepositoriesFoundFor(
+                            (_searchQuery).toString(),
+                          ),
+                          style: ZplayType.body.toStyle(
+                            color: tokens.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: _filteredRepos.length,
+                    itemBuilder: (context, index) {
+                      final repo = _filteredRepos[index];
+                      final isInstalled = _manager.isRepoInstalled(repo.url);
+                      final isAdding = _addingRepoUrls.contains(repo.url);
+                      final isExpanded = _expandedRepos.contains(repo.url);
+                      final catColor = _getCategoryColor(repo.category);
 
-                          // Search highlight check
-                          final query = _searchQuery.trim().toLowerCase();
-                          final matchingPlugins = query.isNotEmpty
-                              ? repo.plugins.where((p) => p.toLowerCase().contains(query)).toList()
-                              : <String>[];
+                      // Search highlight check
+                      final query = _searchQuery.trim().toLowerCase();
+                      final matchingPlugins = query.isNotEmpty
+                          ? repo.plugins
+                                .where((p) => p.toLowerCase().contains(query))
+                                .toList()
+                          : <String>[];
 
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16),
-                              child: Column(
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Top row: Title + Category badge
+                              Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Top row: Title + Category badge
-                                  Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              repo.name,
-                                              style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
-                                            ),
-                                            const SizedBox(height: 6),
-                                            Wrap(
-                                              spacing: 8,
-                                              runSpacing: 4,
-                                              children: [
-                                                Container(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
-                                                  decoration: BoxDecoration(
-                                                    color: catColor.withValues(
-                                                      alpha: ZplayOpacity.overlayHover,
-                                                    ),
-                                                    borderRadius: ZplayRadius.xsAll,
-                                                    border: Border.all(
-                                                      color: catColor.withValues(
-                                                        alpha: ZplayOpacity.textDisabled,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  child: Row(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: [
-                                                      Text(
-                                                        _getCategoryEmoji(repo.category),
-                                                        style: ZplayType.caption.toStyle(),
-                                                      ),
-                                                      const SizedBox(width: 4),
-                                                      Text(
-                                                        repo.category,
-                                                        style: ZplayType.caption.toStyle(color: catColor),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                if (repo.plugins.isNotEmpty)
-                                                  Container(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
-                                                    decoration: BoxDecoration(
-                                                      color: tokens.borderDefault,
-                                                      borderRadius: ZplayRadius.xsAll,
-                                                    ),
-                                                    child: Text(
-                                                      l10nOf(context).dynamicCloudstreamMarketplaceModalPlugins((repo.plugins.length).toString()),
-                                                      style: ZplayType.caption.toStyle(
-                                                        color: tokens.textEmphasis,
-                                                      ),
-                                                    ),
-                                                  ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      // Added status indicator
-                                      if (isInstalled)
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
-                                          decoration: BoxDecoration(
-                                            color: tokens.success.withValues(
-                                              alpha: ZplayOpacity.borderStrong,
-                                            ),
-                                            borderRadius: ZplayRadius.smAll,
-                                            border: Border.all(
-                                              color: tokens.success.withValues(
-                                                alpha: ZplayOpacity.textDisabled,
-                                              ),
-                                            ),
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(
-                                                Icons.check_circle_rounded,
-                                                color: tokens.success,
-                                                size: 14,
-                                              ),
-                                              const SizedBox(width: 4),
-                                              Text(
-                                                l10nOf(context).uiCloudstreamMarketplaceModalAdded,
-                                                style: ZplayType.caption.toStyle(
-                                                  color: tokens.success,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-
-                                  const SizedBox(height: 12),
-
-                                  // Direct Install Link Box
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                    decoration: BoxDecoration(
-                                      color: tokens.bg,
-                                      borderRadius: ZplayRadius.smAll,
-                                      border: Border.all(color: tokens.borderSubtle),
-                                    ),
-                                    child: Row(
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Icon(Icons.link_rounded, size: 14, color: tokens.textMuted),
-                                        const SizedBox(width: 6),
-                                        Expanded(
-                                          child: Text(
-                                            repo.url,
-                                            style: ZplayType.caption
-                                              .toStyle(color: tokens.textSecondary)
-                                              .copyWith(fontFamily: 'monospace'),
-                                            overflow: TextOverflow.ellipsis,
+                                        Text(
+                                          repo.name,
+                                          style: ZplayType.subtitle.toStyle(
+                                            color: tokens.textPrimary,
                                           ),
                                         ),
-                                        const SizedBox(width: 4),
-                                        FocusableCard(
-                                          onTap: () {
-                                            Clipboard.setData(ClipboardData(text: repo.url));
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(
-                                                content: Text(l10nOf(context).dynamicCloudstreamMarketplaceModalCopiedLink((repo.url).toString())),
-                                                duration: const Duration(seconds: 2),
-                                                behavior: SnackBarBehavior.floating,
+                                        const SizedBox(height: 6),
+                                        Wrap(
+                                          spacing: 8,
+                                          runSpacing: 4,
+                                          children: [
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 7,
+                                                    vertical: 2.5,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: catColor.withValues(
+                                                  alpha:
+                                                      ZplayOpacity.overlayHover,
+                                                ),
+                                                borderRadius: ZplayRadius.xsAll,
+                                                border: Border.all(
+                                                  color: catColor.withValues(
+                                                    alpha: ZplayOpacity
+                                                        .textDisabled,
+                                                  ),
+                                                ),
                                               ),
-                                            );
-                                          },
-                                          builder: (_, state) => Container(
-                                            padding: const EdgeInsets.all(4),
-                                            decoration: BoxDecoration(
-                                              color: tokens.borderDefault,
-                                              borderRadius: ZplayRadius.xsAll,
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    _getCategoryEmoji(
+                                                      repo.category,
+                                                    ),
+                                                    style: ZplayType.caption
+                                                        .toStyle(),
+                                                  ),
+                                                  const SizedBox(width: 4),
+                                                  Text(
+                                                    repo.category,
+                                                    style: ZplayType.caption
+                                                        .toStyle(
+                                                          color: catColor,
+                                                        ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                            child: Icon(
-                                              Icons.copy_rounded,
-                                              size: 12,
-                                              color: tokens.textEmphasis,
-                                            ),
-                                          ),
+                                            if (repo.plugins.isNotEmpty)
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 7,
+                                                      vertical: 2.5,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color: tokens.borderDefault,
+                                                  borderRadius:
+                                                      ZplayRadius.xsAll,
+                                                ),
+                                                child: Text(
+                                                  l10nOf(
+                                                    context,
+                                                  ).dynamicCloudstreamMarketplaceModalPlugins(
+                                                    (repo.plugins.length)
+                                                        .toString(),
+                                                  ),
+                                                  style: ZplayType.caption
+                                                      .toStyle(
+                                                        color:
+                                                            tokens.textEmphasis,
+                                                      ),
+                                                ),
+                                              ),
+                                          ],
                                         ),
                                       ],
                                     ),
                                   ),
-
-                                  // Matching search banner
-                                  if (matchingPlugins.isNotEmpty) ...[
-                                    const SizedBox(height: 8),
+                                  // Added status indicator
+                                  if (isInstalled)
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 9,
+                                        vertical: 4,
+                                      ),
                                       decoration: BoxDecoration(
-                                        color: tokens.accentSubtle,
-                                        borderRadius: ZplayRadius.xsAll,
+                                        color: tokens.success.withValues(
+                                          alpha: ZplayOpacity.borderStrong,
+                                        ),
+                                        borderRadius: ZplayRadius.smAll,
+                                        border: Border.all(
+                                          color: tokens.success.withValues(
+                                            alpha: ZplayOpacity.textDisabled,
+                                          ),
+                                        ),
                                       ),
                                       child: Row(
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Icon(Icons.auto_awesome_rounded, size: 12, color: tokens.accent),
-                                          const SizedBox(width: 6),
-                                          Expanded(
-                                            child: Text(
-                                              l10nOf(context).addonsContainsPlugins(matchingPlugins.join(', ')),
-                                              style: ZplayType.caption.toStyle(color: tokens.accent),
-                                              overflow: TextOverflow.ellipsis,
+                                          Icon(
+                                            Icons.check_circle_rounded,
+                                            color: tokens.success,
+                                            size: 14,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            l10nOf(
+                                              context,
+                                            ).uiCloudstreamMarketplaceModalAdded,
+                                            style: ZplayType.caption.toStyle(
+                                              color: tokens.success,
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
-                                  ],
+                                ],
+                              ),
 
-                                  // Plugins expandable list
-                                  if (repo.plugins.isNotEmpty) ...[
-                                    const SizedBox(height: 10),
-                                    InkWell(
+                              const SizedBox(height: 12),
+
+                              // Direct Install Link Box
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: tokens.bg,
+                                  borderRadius: ZplayRadius.smAll,
+                                  border: Border.all(
+                                    color: tokens.borderSubtle,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.link_rounded,
+                                      size: 14,
+                                      color: tokens.textMuted,
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: Text(
+                                        repo.url,
+                                        style: ZplayType.caption
+                                            .toStyle(
+                                              color: tokens.textSecondary,
+                                            )
+                                            .copyWith(fontFamily: 'monospace'),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    FocusableCard(
                                       onTap: () {
-                                        setState(() {
-                                          if (isExpanded) {
-                                            _expandedRepos.remove(repo.url);
-                                          } else {
-                                            _expandedRepos.add(repo.url);
-                                          }
-                                        });
-                                      },
-                                      borderRadius: ZplayRadius.xsAll,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 3),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              isExpanded ? l10nOf(context).finalCloudstreamMarketplaceModalHidePlugins : 'View all ${repo.plugins.length} plugins',
-                                              style: ZplayType.caption.toStyle(
-                                                color: tokens.accent,
-                                                opacity: ZplayOpacity.textPrimary,
+                                        Clipboard.setData(
+                                          ClipboardData(text: repo.url),
+                                        );
+                                        KiruToastMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          KiruToast(
+                                            content: Text(
+                                              l10nOf(
+                                                context,
+                                              ).dynamicCloudstreamMarketplaceModalCopiedLink(
+                                                (repo.url).toString(),
                                               ),
                                             ),
-                                            const SizedBox(width: 4),
-                                            Icon(
-                                              isExpanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
-                                              size: 16,
-                                              color: tokens.accent,
+                                            duration: const Duration(
+                                              seconds: 2,
                                             ),
-                                          ],
+                                            behavior: SnackBarBehavior.floating,
+                                          ),
+                                        );
+                                      },
+                                      builder: (_, state) => Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: tokens.borderDefault,
+                                          borderRadius: ZplayRadius.xsAll,
+                                        ),
+                                        child: Icon(
+                                          Icons.copy_rounded,
+                                          size: 12,
+                                          color: tokens.textEmphasis,
                                         ),
                                       ),
                                     ),
-                                    if (isExpanded) ...[
-                                      const SizedBox(height: 6),
-                                      Wrap(
-                                        spacing: 6,
-                                        runSpacing: 6,
-                                        children: repo.plugins.map((plugin) {
-                                          final isMatched = query.isNotEmpty && plugin.toLowerCase().contains(query);
-                                          return Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-                                            decoration: BoxDecoration(
-                                              color: isMatched
-                                                  ? tokens.accent.withValues(
-                                                      alpha: ZplayOpacity.textDisabled,
-                                                    )
-                                                  : tokens.borderSubtle,
-                                              borderRadius: ZplayRadius.xsAll,
-                                              border: Border.all(
-                                                color: isMatched
-                                                    ? tokens.accent
-                                                    : tokens.borderDefault,
-                                              ),
-                                            ),
-                                            child: Text(
-                                              plugin,
-                                              style: ZplayType.caption
-                                                  .toStyle(
-                                                    color: isMatched
-                                                        ? tokens.textPrimary
-                                                        : tokens.textEmphasis,
-                                                  )
-                                                  .copyWith(
-                                                    fontWeight: isMatched
-                                                        ? FontWeight.w700
-                                                        : FontWeight.w400,
-                                                  ),
-                                            ),
-                                          );
-                                        }).toList(),
+                                  ],
+                                ),
+                              ),
+
+                              // Matching search banner
+                              if (matchingPlugins.isNotEmpty) ...[
+                                const SizedBox(height: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: tokens.accentSubtle,
+                                    borderRadius: ZplayRadius.xsAll,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.auto_awesome_rounded,
+                                        size: 12,
+                                        color: tokens.accent,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Expanded(
+                                        child: Text(
+                                          l10nOf(context).addonsContainsPlugins(
+                                            matchingPlugins.join(', '),
+                                          ),
+                                          style: ZplayType.caption.toStyle(
+                                            color: tokens.accent,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
                                     ],
-                                  ],
+                                  ),
+                                ),
+                              ],
 
-                                  const SizedBox(height: 14),
-
-                                  // Actions row
-                                  Row(
-                                    children: [
-                                      if (!isInstalled)
-                                        Expanded(
-                                          child: ElevatedButton.icon(
-                                            onPressed: isAdding ? null : () => _addRepo(repo),
-                                            icon: isAdding
-                                                ? SizedBox(
-                                                    width: 14,
-                                                    height: 14,
-                                                    child: CircularProgressIndicator(
-                                                      strokeWidth: 2,
-                                                      color: tokens.onAccent,
-                                                    ),
-                                                  )
-                                                : const Icon(Icons.add_circle_outline_rounded, size: 16),
-                                            label: Text(
-                                              isAdding ? l10nOf(context).finalCloudstreamMarketplaceModalAddingRepository : 'Install Repository',
-                                              style: ZplayType.label.toStyle(),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: tokens.accent,
-                                              foregroundColor: tokens.onAccent,
-                                              padding: const EdgeInsets.symmetric(vertical: 10),
-                                              shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
-                                            ),
-                                          ),
-                                        )
-                                      else ...[
-                                        Expanded(
-                                          child: ElevatedButton.icon(
-                                            onPressed: () => _installAllPlugins(repo.url),
-                                            icon: const Icon(Icons.download_for_offline_rounded, size: 16),
-                                            label: Text(
-                                              l10nOf(context).uiCloudstreamMarketplaceModalInstallAllPlugins,
-                                              style: ZplayType.label.toStyle(),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: tokens.accent,
-                                              foregroundColor: tokens.onAccent,
-                                              padding: const EdgeInsets.symmetric(vertical: 9),
-                                              shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
-                                            ),
+                              // Plugins expandable list
+                              if (repo.plugins.isNotEmpty) ...[
+                                const SizedBox(height: 10),
+                                KiruTappable(
+                                  onTap: () {
+                                    setState(() {
+                                      if (isExpanded) {
+                                        _expandedRepos.remove(repo.url);
+                                      } else {
+                                        _expandedRepos.add(repo.url);
+                                      }
+                                    });
+                                  },
+                                  borderRadius: ZplayRadius.xsAll,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 3,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          isExpanded
+                                              ? l10nOf(
+                                                  context,
+                                                ).finalCloudstreamMarketplaceModalHidePlugins
+                                              : 'View all ${repo.plugins.length} plugins',
+                                          style: ZplayType.caption.toStyle(
+                                            color: tokens.accent,
+                                            opacity: ZplayOpacity.textPrimary,
                                           ),
                                         ),
-                                        const SizedBox(width: 8),
-                                        OutlinedButton.icon(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                            CloudStreamRepoModal.show(context);
-                                          },
-                                          icon: const Icon(Icons.manage_search_rounded, size: 16),
-                                          label: Text(
-                                            l10nOf(context).uiCloudstreamMarketplaceModalBrowse,
-                                            style: ZplayType.bodySmall.toStyle(),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          style: OutlinedButton.styleFrom(
-                                            foregroundColor: tokens.textEmphasis,
-                                            side: BorderSide(color: tokens.borderStrong),
-                                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
-                                            shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
-                                          ),
+                                        const SizedBox(width: 4),
+                                        Icon(
+                                          isExpanded
+                                              ? Icons.keyboard_arrow_up_rounded
+                                              : Icons
+                                                    .keyboard_arrow_down_rounded,
+                                          size: 16,
+                                          color: tokens.accent,
                                         ),
                                       ],
-                                    ],
+                                    ),
+                                  ),
+                                ),
+                                if (isExpanded) ...[
+                                  const SizedBox(height: 6),
+                                  Wrap(
+                                    spacing: 6,
+                                    runSpacing: 6,
+                                    children: repo.plugins.map((plugin) {
+                                      final isMatched =
+                                          query.isNotEmpty &&
+                                          plugin.toLowerCase().contains(query);
+                                      return Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 7,
+                                          vertical: 3,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: isMatched
+                                              ? tokens.accent.withValues(
+                                                  alpha:
+                                                      ZplayOpacity.textDisabled,
+                                                )
+                                              : tokens.borderSubtle,
+                                          borderRadius: ZplayRadius.xsAll,
+                                          border: Border.all(
+                                            color: isMatched
+                                                ? tokens.accent
+                                                : tokens.borderDefault,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          plugin,
+                                          style: ZplayType.caption
+                                              .toStyle(
+                                                color: isMatched
+                                                    ? tokens.textPrimary
+                                                    : tokens.textEmphasis,
+                                              )
+                                              .copyWith(
+                                                fontWeight: isMatched
+                                                    ? FontWeight.w700
+                                                    : FontWeight.w400,
+                                              ),
+                                        ),
+                                      );
+                                    }).toList(),
                                   ),
                                 ],
+                              ],
+
+                              const SizedBox(height: 14),
+
+                              // Actions row
+                              Row(
+                                children: [
+                                  if (!isInstalled)
+                                    Expanded(
+                                      child: KiruButton(
+                                        onPressed: isAdding
+                                            ? null
+                                            : () => _addRepo(repo),
+                                        icon: isAdding
+                                            ? SizedBox(
+                                                width: 14,
+                                                height: 14,
+                                                child: KiruLoader(
+                                                  strokeWidth: 2,
+                                                  color: tokens.onAccent,
+                                                ),
+                                              )
+                                            : const Icon(
+                                                Icons
+                                                    .add_circle_outline_rounded,
+                                                size: 16,
+                                              ),
+                                        child: Text(
+                                          isAdding
+                                              ? l10nOf(
+                                                  context,
+                                                ).finalCloudstreamMarketplaceModalAddingRepository
+                                              : 'Install Repository',
+                                          style: ZplayType.label.toStyle(),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: tokens.accent,
+                                          foregroundColor: tokens.onAccent,
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 10,
+                                          ),
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: ZplayRadius.smAll,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  else ...[
+                                    Expanded(
+                                      child: KiruButton(
+                                        onPressed: () =>
+                                            _installAllPlugins(repo.url),
+                                        icon: const Icon(
+                                          Icons.download_for_offline_rounded,
+                                          size: 16,
+                                        ),
+                                        child: Text(
+                                          l10nOf(
+                                            context,
+                                          ).uiCloudstreamMarketplaceModalInstallAllPlugins,
+                                          style: ZplayType.label.toStyle(),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: tokens.accent,
+                                          foregroundColor: tokens.onAccent,
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 9,
+                                          ),
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: ZplayRadius.smAll,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    KiruButton(
+                                      kind: KiruButtonKind.outline,
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        CloudStreamRepoModal.show(context);
+                                      },
+                                      icon: const Icon(
+                                        Icons.manage_search_rounded,
+                                        size: 16,
+                                      ),
+                                      child: Text(
+                                        l10nOf(
+                                          context,
+                                        ).uiCloudstreamMarketplaceModalBrowse,
+                                        style: ZplayType.bodySmall.toStyle(),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor: tokens.textEmphasis,
+                                        side: BorderSide(
+                                          color: tokens.borderStrong,
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 9,
+                                        ),
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: ZplayRadius.smAll,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ],
                               ),
-                            ),
-                          );
-                        },
-                      ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
           ),
         ],
       ),

@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_tappable.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -16,6 +17,7 @@ import '../../services/diagnostics/renderer_backend.dart';
 import 'appearance/audiobook_settings_page.dart';
 import 'appearance/custom_background_settings_page.dart';
 import 'appearance/home_ui_settings_page.dart';
+import 'appearance/font_settings_page.dart';
 import 'appearance/liquid_glass_settings_page.dart';
 import 'appearance/live_tv_settings_page.dart';
 import 'appearance/manga_settings_page.dart';
@@ -47,7 +49,9 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
           Padding(
             padding: const EdgeInsets.only(bottom: ZplaySpacing.s24),
             child: Text(
-              l10nOf(context).uiAppearanceSettingsPageFineTuneTheVisualAtmosphere,
+              l10nOf(
+                context,
+              ).uiAppearanceSettingsPageFineTuneTheVisualAtmosphere,
               style: ZplayType.body.toStyle(color: tokens.textSecondary),
             ),
           ),
@@ -57,6 +61,20 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
             title: l10nOf(context).uiAppearanceSettingsPageInterfaceAtmosphere,
             first: true,
             rows: [
+              SettingsNavRow(
+                icon: Icons.font_download_outlined,
+                iconColor: tokens.accent,
+                title: Localizations.localeOf(context).languageCode == 'zh'
+                    ? '字体与排版'
+                    : 'Typography',
+                subtitle: Localizations.localeOf(context).languageCode == 'zh'
+                    ? '中文、英文、数字、计时与本地字体插件'
+                    : 'Chinese, Latin, numeric, timing and local fonts',
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const FontSettingsPage()),
+                ),
+              ),
               // Custom Wallpaper & Atmosphere Background
               ValueListenableBuilder<CustomBackgroundData>(
                 valueListenable: CustomBackgroundService.notifier,
@@ -67,9 +85,12 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                       return SettingsNavRow(
                         icon: Icons.wallpaper_rounded,
                         iconColor: tokens.accent,
-                        title: l10nOf(context).uiAppearanceSettingsPageCustomBackgroundWallpaper,
-                        subtitle:
-                            l10nOf(context).auxAppearanceSettingsPageUploadCustomPhotosChooseCuratedDarkWallpapers,
+                        title: l10nOf(
+                          context,
+                        ).uiAppearanceSettingsPageCustomBackgroundWallpaper,
+                        subtitle: l10nOf(
+                          context,
+                        ).auxAppearanceSettingsPageUploadCustomPhotosChooseCuratedDarkWallpapers,
                         valueText: customBg.hasCustomBackground
                             ? l10nOf(context).appearanceDetailCustomActive
                             : l10nOf(context).appearanceDetailDefaultTheme,
@@ -101,10 +122,15 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                         iconColor: glassEnabled
                             ? tokens.accent
                             : tokens.textDisabled,
-                        title: l10nOf(context).uiAppearanceSettingsPageLiquidGlassSetup,
-                        subtitle:
-                            l10nOf(context).auxAppearanceSettingsPageAdjustHoverImpactWobbleSpringPhysicsLens,
-                        valueText: glassEnabled ? configLabel(context, preset.label) : l10nOf(context).appearanceDetailDisabled,
+                        title: l10nOf(
+                          context,
+                        ).auxLiquidGlassSettingsPageFrostedGlassBlur,
+                        subtitle: l10nOf(
+                          context,
+                        ).auxLiquidGlassSettingsPageGaussianBlurDiffusionAppliedBehindGlassComponents,
+                        valueText: glassEnabled
+                            ? l10nOf(context).stateEnabled
+                            : l10nOf(context).appearanceDetailDisabled,
                         onTap: () async {
                           await Navigator.push(
                             context,
@@ -128,9 +154,12 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                   return SettingsNavRow(
                     icon: Icons.palette_rounded,
                     iconColor: tokens.accent,
-                    title: l10nOf(context).uiAppearanceSettingsPageHomePageUiThemes,
-                    subtitle:
-                        l10nOf(context).auxAppearanceSettingsPageColorSchemesBecauseYouHaveOnYour,
+                    title: l10nOf(
+                      context,
+                    ).uiAppearanceSettingsPageHomePageUiThemes,
+                    subtitle: l10nOf(
+                      context,
+                    ).auxAppearanceSettingsPageColorSchemesBecauseYouHaveOnYour,
                     valueText: configLabel(context, currentPalette.name),
                     onTap: () async {
                       await Navigator.push(
@@ -155,16 +184,20 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                       return SettingsNavRow(
                         icon: Icons.live_tv_rounded,
                         iconColor: tokens.accent,
-                        title: l10nOf(context).uiAppearanceSettingsPageLiveTvSportsUi,
-                        subtitle:
-                            l10nOf(context).auxAppearanceSettingsPageBroadcastHeroSpotlightChannelCardDensityCategory,
-                        valueText: spotlightEnabled ? l10nOf(context).appearanceDetailSpotlightOn : l10nOf(context).appearanceDetailCompact,
+                        title: l10nOf(
+                          context,
+                        ).uiAppearanceSettingsPageLiveTvSportsUi,
+                        subtitle: l10nOf(
+                          context,
+                        ).auxAppearanceSettingsPageBroadcastHeroSpotlightChannelCardDensityCategory,
+                        valueText: spotlightEnabled
+                            ? l10nOf(context).appearanceDetailSpotlightOn
+                            : l10nOf(context).appearanceDetailCompact,
                         onTap: () async {
                           await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  const LiveTvSettingsPage(),
+                              builder: (context) => const LiveTvSettingsPage(),
                             ),
                           );
                           setState(() {});
@@ -191,9 +224,12 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                       return SettingsNavRow(
                         icon: Icons.menu_book_rounded,
                         iconColor: tokens.accent,
-                        title: l10nOf(context).uiAppearanceSettingsPageMangaUiReaderAtmosphere,
-                        subtitle:
-                            l10nOf(context).auxAppearanceSettingsPageAmbientMovingLightingCardDensityReadingLayout,
+                        title: l10nOf(
+                          context,
+                        ).uiAppearanceSettingsPageMangaUiReaderAtmosphere,
+                        subtitle: l10nOf(
+                          context,
+                        ).auxAppearanceSettingsPageAmbientMovingLightingCardDensityReadingLayout,
                         valueText: readingMode == MangaReadingMode.webtoon
                             ? l10nOf(context).appearanceDetailWebtoon
                             : l10nOf(context).appearanceDetailHorizontal,
@@ -201,8 +237,7 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                           await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  const MangaSettingsPage(),
+                              builder: (context) => const MangaSettingsPage(),
                             ),
                           );
                           setState(() {});
@@ -229,9 +264,12 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                       return SettingsNavRow(
                         icon: Icons.headphones_rounded,
                         iconColor: tokens.accent,
-                        title: l10nOf(context).uiAppearanceSettingsPageAudiobookUiPlayerStudio,
-                        subtitle:
-                            l10nOf(context).auxAppearanceSettingsPageHeroSpotlight5DistinctPlayerDesignsDrag,
+                        title: l10nOf(
+                          context,
+                        ).uiAppearanceSettingsPageAudiobookUiPlayerStudio,
+                        subtitle: l10nOf(
+                          context,
+                        ).auxAppearanceSettingsPageHeroSpotlight5DistinctPlayerDesignsDrag,
                         valueText: configLabel(context, playerPreset.label),
                         onTap: () async {
                           await Navigator.push(
@@ -259,9 +297,12 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                       return SettingsNavRow(
                         icon: Icons.music_note_rounded,
                         iconColor: tokens.accent,
-                        title: l10nOf(context).uiAppearanceSettingsPageMusicUiPlayerStudio,
-                        subtitle:
-                            l10nOf(context).auxAppearanceSettingsPageHeroSpotlightLosslessBadgesAndFullscreenPlayer,
+                        title: l10nOf(
+                          context,
+                        ).uiAppearanceSettingsPageMusicUiPlayerStudio,
+                        subtitle: l10nOf(
+                          context,
+                        ).auxAppearanceSettingsPageHeroSpotlightLosslessBadgesAndFullscreenPlayer,
                         valueText: configLabel(context, fullPreset.label),
                         onTap: () async {
                           await Navigator.push(
@@ -327,7 +368,9 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                           children: [
                             Expanded(
                               child: Text(
-                                l10nOf(context).uiAppearanceSettingsPageGraphicsBackend,
+                                l10nOf(
+                                  context,
+                                ).uiAppearanceSettingsPageGraphicsBackend,
                                 style: ZplayType.subtitle.toStyle(
                                   color: tokens.textPrimary,
                                 ),
@@ -376,7 +419,9 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
                   const SizedBox(width: ZplaySpacing.s8),
                   Expanded(
                     child: Text(
-                      l10nOf(context).uiAppearanceSettingsPageRestartTheAppToApply,
+                      l10nOf(
+                        context,
+                      ).uiAppearanceSettingsPageRestartTheAppToApply,
                       style: ZplayType.bodySmall.toStyle(
                         color: tokens.textMuted,
                       ),
@@ -401,7 +446,7 @@ class _AppearanceSettingsPageState extends State<AppearanceSettingsPage> {
     final color = tokens.accent;
     return Material(
       color: Colors.transparent,
-      child: InkWell(
+      child: KiruTappable(
         onTap: () => RendererBackendSettings.setBackend(backend),
         borderRadius: ZplayRadius.smAll,
         child: Container(

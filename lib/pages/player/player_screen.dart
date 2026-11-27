@@ -1,3 +1,6 @@
+import '../../widgets/ui/kiru_tappable.dart';
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/media_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -11,7 +14,6 @@ import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart' as mk;
 import 'package:wakelock_plus/wakelock_plus.dart';
-import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 
 import 'package:zplay/models/movie/video.dart';
 import 'package:zplay/models/movie/movie_detail.dart';
@@ -29,7 +31,6 @@ import '../../services/stream/best_source_finder.dart';
 import '../../services/stream/stream_service.dart';
 import '../../services/stream/torrent_stream_service.dart';
 import '../../services/theme/design_tokens.dart';
-import '../../services/theme/glass_settings.dart';
 import '../../services/trakt/trakt_service.dart';
 import '../../services/simkl/simkl_service.dart';
 import '../../services/player/player_settings.dart';
@@ -265,7 +266,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
         .where((ve.EngineTrack track) => track.id == index)
         .firstOrNull;
     engine.setAudioTrack(
-      match ?? ve.EngineTrack(id: index, title: l10nOf(context).dynamicPlayerScreenAudio((index).toString())),
+      match ??
+          ve.EngineTrack(
+            id: index,
+            title: l10nOf(context).dynamicPlayerScreenAudio((index).toString()),
+          ),
     );
   }
 
@@ -312,11 +317,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
         '[PlayerScreen] External subtitles are unavailable on ${engine.debugName}.',
       );
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              l10nOf(context).playerExternalSubtitleEngine,
-            ),
+        KiruToastMessenger.of(context).showSnackBar(
+          KiruToast(
+            content: Text(l10nOf(context).playerExternalSubtitleEngine),
             duration: Duration(seconds: 3),
           ),
         );
@@ -890,9 +893,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
   /// viewer reads it while playback continues. [_advisoryShownFor] latches the
   /// source it was raised for, so it appears once per title rather than on
   /// every rebuild, and is re-armed when a new source is opened.
-  final _upscaleHud = _TransientHud<bool>(
-    life: const Duration(seconds: 6),
-  );
+  final _upscaleHud = _TransientHud<bool>(life: const Duration(seconds: 6));
   String? _advisoryShownFor;
 
   /// Raises the advisory when the open source is one the selected mode should
@@ -2548,8 +2549,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
     _applyMpvSubtitleStyling();
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
           content: Text(l10nOf(context).playerSubtitleSwitched(embedded.title)),
           duration: const Duration(seconds: 2),
         ),
@@ -2577,9 +2578,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
     _requestNoSubtitle();
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10nOf(context).playerSubtitleDownloading(variant.language)),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(context).playerSubtitleDownloading(variant.language),
+          ),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -2588,8 +2591,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
     final path = await SubtitleService().downloadSubtitle(variant);
     if (path == null) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10nOf(context).uiPlayerScreenFailedToDownloadSubtitle)),
+        KiruToastMessenger.of(context).showSnackBar(
+          KiruToast(
+            content: Text(
+              l10nOf(context).uiPlayerScreenFailedToDownloadSubtitle,
+            ),
+          ),
         );
       }
       return;
@@ -2619,10 +2626,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
     }
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
           content: Text(
-            l10nOf(context).playerSubtitleLoaded(variant.language, _currentCues.length),
+            l10nOf(
+              context,
+            ).playerSubtitleLoaded(variant.language, _currentCues.length),
           ),
           duration: const Duration(seconds: 2),
         ),
@@ -2720,9 +2729,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
       _setSubtitleScale(_subtitleScale);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10nOf(context).uiPlayerScreenSubtitleTimingSynchronizedAndSaved),
+        KiruToastMessenger.of(context).showSnackBar(
+          KiruToast(
+            content: Text(
+              l10nOf(context).uiPlayerScreenSubtitleTimingSynchronizedAndSaved,
+            ),
           ),
         );
       }
@@ -2762,8 +2773,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
         '[PlayerScreen] Ignored non-fatal subtitle warning: $errorMsg',
       );
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+        KiruToastMessenger.of(context).showSnackBar(
+          KiruToast(
             content: Text(l10nOf(context).playerSubtitleLoadError(errorMsg)),
             duration: const Duration(seconds: 3),
           ),
@@ -3851,8 +3862,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
             } else if (_isLocked) {
               setState(() => _showUnlockButton = true);
               _startUnlockButtonTimer();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+              KiruToastMessenger.of(context).showSnackBar(
+                KiruToast(
                   content: Text(
                     l10nOf(context).uiPlayerScreenScreenIsLockedTapThe,
                   ),
@@ -4192,8 +4203,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
                     // sentence twice. The action below keeps its own semantics.
                     Semantics(
                       container: true,
-                      label:
-                          l10nOf(context).playerSourceRetrySemantics(sourceName, _resumeAttempts, _resumeAdvanceMaxAttempts),
+                      label: l10nOf(context).playerSourceRetrySemantics(
+                        sourceName,
+                        _resumeAttempts,
+                        _resumeAdvanceMaxAttempts,
+                      ),
                       child: ExcludeSemantics(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -4229,7 +4243,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                               ),
                             const SizedBox(height: ZplaySpacing.s32),
                             Text(
-                              l10nOf(context).uiPlayerScreenTestingOtherSourcesForYou,
+                              l10nOf(
+                                context,
+                              ).uiPlayerScreenTestingOtherSourcesForYou,
                               textAlign: TextAlign.center,
                               style: ZplayType.title.toStyle(
                                 color: tokens.textPrimary,
@@ -4237,7 +4253,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
                             ),
                             const SizedBox(height: ZplaySpacing.s8),
                             Text(
-                              l10nOf(context).playerSourceAttempt(sourceName, _resumeAttempts, _resumeAdvanceMaxAttempts),
+                              l10nOf(context).playerSourceAttempt(
+                                sourceName,
+                                _resumeAttempts,
+                                _resumeAdvanceMaxAttempts,
+                              ),
                               textAlign: TextAlign.center,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -4279,7 +4299,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       ),
                     ),
                     const SizedBox(height: ZplaySpacing.s32),
-                    TextButton.icon(
+                    KiruButton(
+                      kind: KiruButtonKind.ghost,
                       // The escape the stall overlay already offers, so a user who
                       // does not want to wait the chain out keeps it. Nothing to
                       // open when the resume handed over neither a detail nor an
@@ -4289,7 +4310,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           ? null
                           : _openSourcePicker,
                       icon: const Icon(Icons.swap_horiz_rounded, size: 18),
-                      label: Text(
+                      child: Text(
                         l10nOf(context).uiPlayerScreenChooseASourceMyself,
                         style: ZplayType.label
                             .copyWith(weight: FontWeight.w600)
@@ -4332,15 +4353,21 @@ class _PlayerScreenState extends State<PlayerScreen> {
 
     if (existing != null) {
       if (existing.status == DownloadStatus.downloading) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10nOf(context).uiPlayerScreenDownloadAlreadyInProgressIn),
+        KiruToastMessenger.of(context).showSnackBar(
+          KiruToast(
+            content: Text(
+              l10nOf(context).uiPlayerScreenDownloadAlreadyInProgressIn,
+            ),
           ),
         );
         return;
       } else if (existing.status == DownloadStatus.completed) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10nOf(context).uiPlayerScreenThisMediaIsAlreadyDownloaded)),
+        KiruToastMessenger.of(context).showSnackBar(
+          KiruToast(
+            content: Text(
+              l10nOf(context).uiPlayerScreenThisMediaIsAlreadyDownloaded,
+            ),
+          ),
         );
         return;
       }
@@ -4373,8 +4400,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
       );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+        KiruToastMessenger.of(context).showSnackBar(
+          KiruToast(
             content: Text(
               l10nOf(context).uiPlayerScreenDownloadStartedInBackgroundTrack,
             ),
@@ -4384,9 +4411,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10nOf(context).playerDownloadError(e.toString()))));
+        KiruToastMessenger.of(context).showSnackBar(
+          KiruToast(
+            content: Text(l10nOf(context).playerDownloadError(e.toString())),
+          ),
+        );
       }
     }
   }
@@ -4397,8 +4426,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
     if (url != null && url.isNotEmpty) {
       Clipboard.setData(ClipboardData(text: url));
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+        KiruToastMessenger.of(context).showSnackBar(
+          KiruToast(
             content: Row(
               children: [
                 Icon(Icons.link_rounded, color: tokens.success, size: 18),
@@ -4425,9 +4454,11 @@ class _PlayerScreenState extends State<PlayerScreen> {
       }
     } else {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10nOf(context).uiPlayerScreenNoActiveStreamUrlAvailable),
+        KiruToastMessenger.of(context).showSnackBar(
+          KiruToast(
+            content: Text(
+              l10nOf(context).uiPlayerScreenNoActiveStreamUrlAvailable,
+            ),
             duration: Duration(seconds: 2),
           ),
         );
@@ -4717,10 +4748,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           onToggleSubtitleMenu: () => _toggleMenu('subtitle'),
                           onToggleSubSync: () {
                             if (_selectedEmbeddedSubtitleIndex != null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                              KiruToastMessenger.of(context).showSnackBar(
+                                KiruToast(
                                   content: Text(
-                                    l10nOf(context).uiPlayerScreenSubtitleSyncIsNotSupported,
+                                    l10nOf(
+                                      context,
+                                    ).uiPlayerScreenSubtitleSyncIsNotSupported,
                                   ),
                                   duration: Duration(seconds: 2),
                                 ),
@@ -4729,10 +4762,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
                             }
                             if (_currentSubtitlePath == null ||
                                 _currentSubtitleVariant == null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                              KiruToastMessenger.of(context).showSnackBar(
+                                KiruToast(
                                   content: Text(
-                                    l10nOf(context).uiPlayerScreenPleaseLoadAnExternalSubtitle,
+                                    l10nOf(
+                                      context,
+                                    ).uiPlayerScreenPleaseLoadAnExternalSubtitle,
                                   ),
                                   duration: Duration(seconds: 2),
                                 ),
@@ -4791,10 +4826,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
               onToggleOff: _disableSubtitles,
               onOpenSyncBar: () {
                 if (_selectedEmbeddedSubtitleIndex != null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
+                  KiruToastMessenger.of(context).showSnackBar(
+                    KiruToast(
                       content: Text(
-                        l10nOf(context).uiPlayerScreenSubtitleSyncIsNotSupported13,
+                        l10nOf(
+                          context,
+                        ).uiPlayerScreenSubtitleSyncIsNotSupported13,
                       ),
                       duration: Duration(seconds: 2),
                     ),
@@ -4815,10 +4852,12 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 if (_selectedEmbeddedSubtitleIndex != null ||
                     _currentSubtitlePath == null ||
                     _currentCues.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
+                  KiruToastMessenger.of(context).showSnackBar(
+                    KiruToast(
                       content: Text(
-                        l10nOf(context).uiPlayerScreenSpeechSyncRequiresAnExternal,
+                        l10nOf(
+                          context,
+                        ).uiPlayerScreenSpeechSyncRequiresAnExternal,
                       ),
                       duration: Duration(seconds: 2),
                     ),
@@ -5233,7 +5272,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
             duration: const Duration(milliseconds: 200),
             child: Material(
               color: Colors.transparent,
-              child: InkWell(
+              child: KiruTappable(
                 onTap: _lockPlayer,
                 borderRadius: ZplayRadius.fullAll,
                 child: Container(
@@ -5282,7 +5321,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
             ignoring: !_showUnlockButton,
             child: Material(
               color: Colors.transparent,
-              child: InkWell(
+              child: KiruTappable(
                 onTap: _unlockPlayer,
                 borderRadius: ZplayRadius.xlAll,
                 child: Container(
@@ -5446,32 +5485,13 @@ class _PlayerScreenState extends State<PlayerScreen> {
     );
   }
 
-  Widget _buildPlayerBody() {
-    return ValueListenableBuilder<bool>(
-      valueListenable: GlassSettings.enabled,
-      builder: (context, enabled, _) {
-        if (enabled) {
-          return LiquidGlassView(
-            realTimeCapture: _showControls && !_isLoading,
-            useSync: true,
-            pixelRatio: 0.85,
-            refreshRate: LiquidGlassRefreshRate.deviceRefreshRate,
-            regionCapture: true,
-            backgroundWidget: _buildBackgroundStack(),
-            child: _buildControlsOverlay(),
-          );
-        }
-
-        return Stack(
-          fit: StackFit.expand,
-          children: [
-            RepaintBoundary(child: _buildBackgroundStack()),
-            RepaintBoundary(child: _buildControlsOverlay()),
-          ],
-        );
-      },
-    );
-  }
+  Widget _buildPlayerBody() => Stack(
+    fit: StackFit.expand,
+    children: [
+      RepaintBoundary(child: _buildBackgroundStack()),
+      RepaintBoundary(child: _buildControlsOverlay()),
+    ],
+  );
 }
 
 /// A value the player shows for a while and then takes away.
@@ -5714,10 +5734,7 @@ class _ToastHud extends StatelessWidget {
         decoration: BoxDecoration(
           color: tokens.surfaceOverlay.withValues(alpha: 0.90),
           borderRadius: ZplayRadius.mdAll,
-          border: Border.all(
-            color: accent.withValues(alpha: 0.5),
-            width: 1.2,
-          ),
+          border: Border.all(color: accent.withValues(alpha: 0.5), width: 1.2),
           boxShadow: [
             BoxShadow(
               color: accent.withValues(alpha: 0.25),

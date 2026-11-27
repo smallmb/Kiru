@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../services/theme/design_tokens.dart';
 import 'focusable_card.dart';
+import '../player/player_forui.dart';
 
 /// One option in a [SegmentedTabs] control.
 @immutable
@@ -384,7 +385,7 @@ class _Segment<T> extends StatelessWidget {
       // is part of that — excluding descendants would otherwise drop it.
       onTap: onTap,
       excludeSemantics: true,
-      child: FocusableCard(
+      child: PlayerTappable(
         onTap: onTap,
         builder: (context, state) {
           // The label is the second half of the selection mark, and its

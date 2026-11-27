@@ -71,6 +71,8 @@
 /// are written against.
 library;
 
+import 'package:zplay/widgets/ui/kiru_controls.dart';
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -814,7 +816,7 @@ void main() {
 
         final searchField = find.descendant(
           of: find.byType(SearchPage),
-          matching: find.byType(TextField),
+          matching: find.byType(KiruFormField),
         );
         expect(
           searchField,
@@ -978,7 +980,7 @@ void main() {
 
         final searchField = find.descendant(
           of: find.byType(SearchPage),
-          matching: find.byType(TextField),
+          matching: find.byType(KiruFormField),
         );
         final cardNode = Focus.maybeOf(
           tester.element(searchField),

@@ -249,8 +249,10 @@ class _PlayerSkipButtonState extends State<PlayerSkipButton>
                               splashColor: tokens.textPrimary.withValues(
                                 alpha: 0.25,
                               ),
-                              child: Tooltip(
-                                message: l10nOf(context).auxPlayerSkipButtonDismiss,
+                              child: PlayerTooltip(
+                                message: l10nOf(
+                                  context,
+                                ).auxPlayerSkipButtonDismiss,
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: isCompact ? 9 : 12,

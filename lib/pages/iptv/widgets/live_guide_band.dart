@@ -1,3 +1,4 @@
+import '../../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
@@ -198,7 +199,10 @@ class _LiveGuideBandState extends State<LiveGuideBand> {
     if (isCompact) {
       // On a phone the rows scroll with the page: a nested scroller inside a
       // nested scroller is a scroll trap on touch.
-      return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: rows);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: rows,
+      );
     }
 
     return DecoratedBox(
@@ -228,7 +232,9 @@ class _LiveGuideBandState extends State<LiveGuideBand> {
 
     final header = <Widget>[
       Text(
-        l10nOf(context).dynamicLiveGuideBandNowAiringOn((channel.name).toString()),
+        l10nOf(
+          context,
+        ).dynamicLiveGuideBandNowAiringOn((channel.name).toString()),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
         style: ZplayType.overline.toStyle(color: tokens.accent),
@@ -257,10 +263,7 @@ class _LiveGuideBandState extends State<LiveGuideBand> {
               // Fixed, not `Expanded`: on a phone this pane sits in the page's
               // own scroll view, where the vertical constraint is unbounded and
               // a flex child would throw.
-              const SizedBox(
-                height: 132,
-                child: Center(child: CircularProgressIndicator()),
-              )
+              const SizedBox(height: 132, child: Center(child: KiruLoader()))
             else if (now == null)
               _emptyState(context, channel, isCompact)
             else ...[
@@ -402,9 +405,7 @@ class _LiveGuideBandState extends State<LiveGuideBand> {
               duration: ZplayMotion.fast,
               curve: ZplayMotion.standard,
               height: height,
-              padding: const EdgeInsets.symmetric(
-                horizontal: ZplaySpacing.s16,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: ZplaySpacing.s16),
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: state.highlighted
@@ -423,9 +424,7 @@ class _LiveGuideBandState extends State<LiveGuideBand> {
                   const SizedBox(width: ZplaySpacing.s8),
                   Text(
                     l10nOf(context).auxLiveGuideBandFindLiveStreams,
-                    style: ZplayType.label.toStyle(
-                      color: tokens.textEmphasis,
-                    ),
+                    style: ZplayType.label.toStyle(color: tokens.textEmphasis),
                   ),
                 ],
               ),
@@ -499,9 +498,7 @@ class _GuideChannelRow extends StatelessWidget {
         child: AnimatedContainer(
           duration: ZplayMotion.fast,
           curve: ZplayMotion.standard,
-          constraints: BoxConstraints(
-            minHeight: isCompact ? 48.0 : 56.0,
-          ),
+          constraints: BoxConstraints(minHeight: isCompact ? 48.0 : 56.0),
           padding: const EdgeInsets.symmetric(
             horizontal: ZplaySpacing.s12,
             vertical: ZplaySpacing.s8,
@@ -509,7 +506,9 @@ class _GuideChannelRow extends StatelessWidget {
           decoration: BoxDecoration(
             color: selected
                 ? tokens.accentSubtle
-                : (state.highlighted ? tokens.borderDefault : Colors.transparent),
+                : (state.highlighted
+                      ? tokens.borderDefault
+                      : Colors.transparent),
             borderRadius: ZplayRadius.smAll,
           ),
           child: Row(

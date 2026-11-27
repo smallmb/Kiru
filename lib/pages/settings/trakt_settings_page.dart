@@ -1,3 +1,5 @@
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:async';
@@ -69,10 +71,12 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
     // shared one can be committed, so the id is the user's to supply; this says
     // so and says where.
     if (kTraktClientId.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
           content: Text(
-            l10nOf(context).traktPairingClientIdRequired(kTraktAppRegistrationUrl),
+            l10nOf(
+              context,
+            ).traktPairingClientIdRequired(kTraktAppRegistrationUrl),
           ),
         ),
       );
@@ -88,19 +92,16 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
     if (!mounted) return;
     if (res == null) {
       setState(() => _pairing = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            l10nOf(context).traktPairingRejected,
-          ),
-        ),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(content: Text(l10nOf(context).traktPairingRejected)),
       );
       return;
     }
 
     final userCode = res['user_code'] as String? ?? '';
     final deviceCode = res['device_code'] as String? ?? '';
-    final verifyUrl = res['verification_url'] as String? ?? 'https://trakt.tv/activate';
+    final verifyUrl =
+        res['verification_url'] as String? ?? 'https://trakt.tv/activate';
     final interval = (res['interval'] as int? ?? 5).clamp(2, 30);
 
     setState(() {
@@ -175,7 +176,9 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
           Padding(
             padding: const EdgeInsets.only(bottom: ZplaySpacing.s20),
             child: Text(
-              l10nOf(context).auxTraktSettingsPageConnectYourTraktTvAccountToSeamlessly,
+              l10nOf(
+                context,
+              ).auxTraktSettingsPageConnectYourTraktTvAccountToSeamlessly,
               style: ZplayType.body.toStyle(color: tokens.textSecondary),
             ),
           ),
@@ -193,10 +196,16 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
                       width: 44,
                       height: 44,
                       decoration: BoxDecoration(
-                        color: _traktBrand.withValues(alpha: ZplayOpacity.borderStrong),
+                        color: _traktBrand.withValues(
+                          alpha: ZplayOpacity.borderStrong,
+                        ),
                         borderRadius: ZplayRadius.smAll,
                       ),
-                      child: const Icon(Icons.movie_filter_rounded, color: _traktBrand, size: 24),
+                      child: const Icon(
+                        Icons.movie_filter_rounded,
+                        color: _traktBrand,
+                        size: 24,
+                      ),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -210,170 +219,258 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
                             children: [
                               Text(
                                 'Trakt.tv',
-                                style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                                style: ZplayType.subtitle.toStyle(
+                                  color: tokens.textPrimary,
+                                ),
                               ),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: ZplaySpacing.s8, vertical: ZplaySpacing.s2),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: ZplaySpacing.s8,
+                                  vertical: ZplaySpacing.s2,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: (_isAuthed ? tokens.success : tokens.borderDefault).withValues(alpha: ZplayOpacity.overlayHover),
+                                  color:
+                                      (_isAuthed
+                                              ? tokens.success
+                                              : tokens.borderDefault)
+                                          .withValues(
+                                            alpha: ZplayOpacity.overlayHover,
+                                          ),
                                   borderRadius: ZplayRadius.xsAll,
                                 ),
                                 child: Text(
-                                  _isAuthed ? l10nOf(context).finalSimklSettingsPageConnected : 'DISCONNECTED',
+                                  _isAuthed
+                                      ? l10nOf(
+                                          context,
+                                        ).finalSimklSettingsPageConnected
+                                      : 'DISCONNECTED',
                                   style: ZplayType.overline.toStyle(
-                                    color: _isAuthed ? tokens.success : tokens.textSecondary,
+                                    color: _isAuthed
+                                        ? tokens.success
+                                        : tokens.textSecondary,
                                   ),
                                 ),
                               ),
                             ],
                           ),
                           const SizedBox(height: 4),
+                          Text(
+                            _isLoading
+                                ? l10nOf(
+                                    context,
+                                  ).uiFinalTraktSettingsPageCheckingCredentials
+                                : _isAuthed
+                                ? l10nOf(context).accountLoggedInTrakt(
+                                    _username ?? 'Trakt User',
+                                  )
+                                : l10nOf(
+                                    context,
+                                  ).uiFinalTraktSettingsPageSignInToActivateTwoWay,
+                            style: ZplayType.body.toStyle(
+                              color: tokens.textSecondary,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+
+                Widget? actionWidget;
+                if (_isAuthed) {
+                  actionWidget = KiruButton(
+                    kind: KiruButtonKind.outline,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: tokens.danger,
+                      side: BorderSide(
+                        color: tokens.danger.withValues(
+                          alpha: ZplayOpacity.textMuted,
+                        ),
+                      ),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: ZplayRadius.smAll,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 10,
+                      ),
+                    ),
+                    onPressed: _logout,
+                    child: Text(
+                      l10nOf(context).uiTraktSettingsPageDisconnect,
+                      style: ZplayType.label.toStyle(),
+                    ),
+                  );
+                } else if (!_pairing) {
+                  actionWidget = KiruButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _traktBrand,
+                      foregroundColor: tokens.textPrimary,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: ZplayRadius.smAll,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: ZplaySpacing.s16,
+                        vertical: 10,
+                      ),
+                    ),
+                    onPressed: _startPairing,
+                    icon: const Icon(Icons.qr_code_rounded, size: 18),
+                    child: Text(
+                      l10nOf(context).uiTraktSettingsPagePairAccount,
+                      style: ZplayType.label.toStyle(),
+                    ),
+                  );
+                }
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (isNarrow) ...[
+                      infoWidget,
+                      if (actionWidget != null) ...[
+                        const SizedBox(height: 14),
+                        SizedBox(width: double.infinity, child: actionWidget),
+                      ],
+                    ] else ...[
+                      Row(
+                        children: [
+                          Expanded(child: infoWidget),
+                          if (actionWidget != null) ...[
+                            const SizedBox(width: 14),
+                            actionWidget,
+                          ],
+                        ],
+                      ),
+                    ],
+                    if (_pairing && _userCode != null) ...[
+                      const SizedBox(height: 20),
+                      KiruDivider(height: 16, color: tokens.borderStrong),
+                      const SizedBox(height: 16),
+                      Center(
+                        child: Column(
+                          children: [
                             Text(
-                              _isLoading
-                                  ? l10nOf(context).uiFinalTraktSettingsPageCheckingCredentials
-                                  : _isAuthed
-                                      ? l10nOf(context).accountLoggedInTrakt(_username ?? 'Trakt User')
-                                      : l10nOf(context).uiFinalTraktSettingsPageSignInToActivateTwoWay,
-                              style: ZplayType.body.toStyle(color: tokens.textSecondary),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
+                              l10nOf(
+                                context,
+                              ).uiTraktSettingsPageEnterThisActivationCodeAtTrakt,
+                              style: ZplayType.label.toStyle(
+                                color: tokens.textEmphasis,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            FocusableInkWell(
+                              onTap: () {
+                                Clipboard.setData(
+                                  ClipboardData(text: _userCode!),
+                                );
+                                KiruToastMessenger.of(context).showSnackBar(
+                                  KiruToast(
+                                    content: Text(
+                                      l10nOf(
+                                        context,
+                                      ).uiTraktSettingsPageCodeCopiedToClipboard,
+                                    ),
+                                  ),
+                                );
+                              },
+                              borderRadius: ZplayRadius.smAll,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: ZplaySpacing.s24,
+                                  vertical: 14,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: tokens.bg,
+                                  borderRadius: ZplayRadius.smAll,
+                                  border: Border.all(
+                                    color: _traktBrand.withValues(
+                                      alpha: ZplayOpacity.textSecondary,
+                                    ),
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      _userCode!,
+                                      // The code keeps its wide tracking; only the
+                                      // role's metrics come from the type scale.
+                                      style: ZplayType.titleLarge
+                                          .toStyle(color: tokens.textPrimary)
+                                          .copyWith(letterSpacing: 4),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Icon(
+                                      Icons.copy_rounded,
+                                      color: tokens.textEmphasis,
+                                      size: 20,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+                            KiruButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: tokens.borderStrong,
+                                foregroundColor: tokens.textPrimary,
+                                elevation: 0,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: ZplayRadius.smAll,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: ZplaySpacing.s16,
+                                  vertical: ZplaySpacing.s8,
+                                ),
+                              ),
+                              onPressed: () =>
+                                  _openBrowser('https://trakt.tv/activate'),
+                              icon: const Icon(
+                                Icons.open_in_browser_rounded,
+                                size: 16,
+                              ),
+                              child: Text(
+                                l10nOf(
+                                  context,
+                                ).uiTraktSettingsPageOpenTraktTvActivate,
+                                style: ZplayType.label.toStyle(),
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: KiruLoader(
+                                    strokeWidth: 2,
+                                    color: _traktBrand,
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  l10nOf(
+                                    context,
+                                  ).uiTraktSettingsPageWaitingForAuthorizationOnTraktTv,
+                                  style: ZplayType.bodySmall.toStyle(
+                                    color: tokens.textSecondary,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
                     ],
-                  );
-
-                  Widget? actionWidget;
-                  if (_isAuthed) {
-                    actionWidget = OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: tokens.danger,
-                        side: BorderSide(
-                          color: tokens.danger.withValues(alpha: ZplayOpacity.textMuted),
-                        ),
-                        shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                      ),
-                      onPressed: _logout,
-                      child: Text(l10nOf(context).uiTraktSettingsPageDisconnect, style: ZplayType.label.toStyle()),
-                    );
-                  } else if (!_pairing) {
-                    actionWidget = ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _traktBrand,
-                        foregroundColor: tokens.textPrimary,
-                        shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
-                        padding: const EdgeInsets.symmetric(horizontal: ZplaySpacing.s16, vertical: 10),
-                      ),
-                      onPressed: _startPairing,
-                      icon: const Icon(Icons.qr_code_rounded, size: 18),
-                      label: Text(l10nOf(context).uiTraktSettingsPagePairAccount, style: ZplayType.label.toStyle()),
-                    );
-                  }
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (isNarrow) ...[
-                        infoWidget,
-                        if (actionWidget != null) ...[
-                          const SizedBox(height: 14),
-                          SizedBox(width: double.infinity, child: actionWidget),
-                        ],
-                      ] else ...[
-                        Row(
-                          children: [
-                            Expanded(child: infoWidget),
-                            if (actionWidget != null) ...[
-                              const SizedBox(width: 14),
-                              actionWidget,
-                            ],
-                          ],
-                        ),
-                      ],
-                      if (_pairing && _userCode != null) ...[
-                        const SizedBox(height: 20),
-                        Divider(color: tokens.borderStrong),
-                        const SizedBox(height: 16),
-                        Center(
-                          child: Column(
-                            children: [
-                              Text(
-                                l10nOf(context).uiTraktSettingsPageEnterThisActivationCodeAtTrakt,
-                                style: ZplayType.label.toStyle(color: tokens.textEmphasis),
-                              ),
-                              const SizedBox(height: 12),
-                              FocusableInkWell(
-                                onTap: () {
-                                  Clipboard.setData(ClipboardData(text: _userCode!));
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(l10nOf(context).uiTraktSettingsPageCodeCopiedToClipboard)),
-                                  );
-                                },
-                                borderRadius: ZplayRadius.smAll,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: ZplaySpacing.s24, vertical: 14),
-                                  decoration: BoxDecoration(
-                                    color: tokens.bg,
-                                    borderRadius: ZplayRadius.smAll,
-                                    border: Border.all(color: _traktBrand.withValues(alpha: ZplayOpacity.textSecondary)),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        _userCode!,
-                                        // The code keeps its wide tracking; only the
-                                        // role's metrics come from the type scale.
-                                        style: ZplayType.titleLarge
-                                            .toStyle(color: tokens.textPrimary)
-                                            .copyWith(letterSpacing: 4),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Icon(Icons.copy_rounded, color: tokens.textEmphasis, size: 20),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 14),
-                              ElevatedButton.icon(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: tokens.borderStrong,
-                                  foregroundColor: tokens.textPrimary,
-                                  elevation: 0,
-                                  shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
-                                  padding: const EdgeInsets.symmetric(horizontal: ZplaySpacing.s16, vertical: ZplaySpacing.s8),
-                                ),
-                                onPressed: () => _openBrowser('https://trakt.tv/activate'),
-                                icon: const Icon(Icons.open_in_browser_rounded, size: 16),
-                                label: Text(l10nOf(context).uiTraktSettingsPageOpenTraktTvActivate, style: ZplayType.label.toStyle()),
-                              ),
-                              const SizedBox(height: 14),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const SizedBox(
-                                    width: 16,
-                                    height: 16,
-                                    child: CircularProgressIndicator(strokeWidth: 2, color: _traktBrand),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    l10nOf(context).uiTraktSettingsPageWaitingForAuthorizationOnTraktTv,
-                                    style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ],
-                  );
-                },
-              ),
+                  ],
+                );
+              },
             ),
+          ),
 
           const SizedBox(height: 24),
 
@@ -384,22 +481,44 @@ class _TraktSettingsPageState extends State<TraktSettingsPage> {
               style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
             ),
             const SizedBox(height: 12),
-            ListTile(
+            KiruListTile(
               leading: Icon(Icons.sync_rounded, color: tokens.accent),
-              title: Text(l10nOf(context).uiTraktSettingsPageSyncWatchlistContinueWatchingNow, style: ZplayType.body.toStyle(color: tokens.textPrimary)),
-              subtitle: Text(l10nOf(context).uiTraktSettingsPageManuallyTriggersAnImmediatePullFrom, style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
-              trailing: Icon(Icons.arrow_forward_ios_rounded, size: 14, color: tokens.textMuted),
+              title: Text(
+                l10nOf(
+                  context,
+                ).uiTraktSettingsPageSyncWatchlistContinueWatchingNow,
+                style: ZplayType.body.toStyle(color: tokens.textPrimary),
+              ),
+              subtitle: Text(
+                l10nOf(
+                  context,
+                ).uiTraktSettingsPageManuallyTriggersAnImmediatePullFrom,
+                style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
+              ),
+              trailing: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 14,
+                color: tokens.textMuted,
+              ),
               onTap: () async {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l10nOf(context).uiTraktSettingsPageSyncingWithTraktTv)),
+                KiruToastMessenger.of(context).showSnackBar(
+                  KiruToast(
+                    content: Text(
+                      l10nOf(context).uiTraktSettingsPageSyncingWithTraktTv,
+                    ),
+                  ),
                 );
                 await Future.wait([
                   MyListService.syncAll(),
                   ContinueWatchingService.syncCloudSessions(),
                 ]);
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10nOf(context).uiTraktSettingsPageTraktSyncComplete)),
+                  KiruToastMessenger.of(context).showSnackBar(
+                    KiruToast(
+                      content: Text(
+                        l10nOf(context).uiTraktSettingsPageTraktSyncComplete,
+                      ),
+                    ),
                   );
                 }
               },

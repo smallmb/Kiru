@@ -240,21 +240,14 @@ class _PlayerVolumeControlState extends State<PlayerVolumeControl> {
                             ),
                           ),
 
-                          // Filled track
-                          Container(
+                          // Forui progress fill, with the original non-linear gain scale.
+                          PlayerTrackFill(
+                            value: fillFraction,
                             height: 6,
-                            width: _trackWidth * fillFraction,
-                            decoration: BoxDecoration(
-                              gradient: isBoosting
-                                  ? LinearGradient(
-                                      colors: [
-                                        tokens.textPrimary,
-                                        tokens.warning,
-                                        if (widget.volume > 1.75) tokens.danger,
-                                      ],
-                                    )
-                                  : null,
-                              color: isBoosting ? null : tokens.textPrimary,
+                            fill: BoxDecoration(
+                              color: isBoosting
+                                  ? boostColor
+                                  : tokens.textPrimary,
                               borderRadius: ZplayRadius.fullAll,
                             ),
                           ),
@@ -273,16 +266,6 @@ class _PlayerVolumeControlState extends State<PlayerVolumeControl> {
                                     ? boostColor
                                     : tokens.textPrimary,
                                 shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: isBoosting
-                                        ? boostColor.withValues(alpha: 0.6)
-                                        : tokens.bg.withValues(alpha: 0.54),
-                                    blurRadius: isBoosting ? 6 : 4,
-                                    spreadRadius: isBoosting ? 1 : 0,
-                                    offset: const Offset(0, 1),
-                                  ),
-                                ],
                               ),
                             ),
                           ),

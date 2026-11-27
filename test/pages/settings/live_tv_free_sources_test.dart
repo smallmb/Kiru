@@ -10,6 +10,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart' as f;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,11 +40,9 @@ Future<void> _pumpPage(WidgetTester tester) async {
 
 /// The switch inside the row titled [_title].
 Finder _switchOfTheRow() => find.descendant(
-      of: find
-          .ancestor(of: find.text(_title), matching: find.byType(Row))
-          .first,
-      matching: find.byType(Switch),
-    );
+  of: find.ancestor(of: find.text(_title), matching: find.byType(Row)).first,
+  matching: find.byType(f.FSwitch),
+);
 
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues(<String, Object>{}));
@@ -60,7 +59,7 @@ void main() {
       reason: 'the switch lives in its own section of the Live TV page',
     );
     expect(
-      tester.widget<Switch>(_switchOfTheRow()).value,
+      tester.widget<f.FSwitch>(_switchOfTheRow()).value,
       IptvSettings.includeFreeSources.value,
       reason: 'the switch reports the setting, it does not hold its own copy',
     );
@@ -86,7 +85,7 @@ void main() {
       reason: 'the tap goes through the setting\'s own setter',
     );
     expect(
-      tester.widget<Switch>(_switchOfTheRow()).value,
+      tester.widget<f.FSwitch>(_switchOfTheRow()).value,
       isFalse,
       reason: 'the row re-reads the setting, so it shows the new value',
     );
@@ -100,7 +99,7 @@ void main() {
     );
 
     await tester.pump();
-    expect(tester.widget<Switch>(_switchOfTheRow()).value, isFalse);
+    expect(tester.widget<f.FSwitch>(_switchOfTheRow()).value, isFalse);
   });
 
   testWidgets('a session that had it off opens with it off', (tester) async {
@@ -110,7 +109,7 @@ void main() {
     await _pumpPage(tester);
 
     expect(
-      tester.widget<Switch>(_switchOfTheRow()).value,
+      tester.widget<f.FSwitch>(_switchOfTheRow()).value,
       isFalse,
       reason: 'the page must read the stored value, not the shipped default',
     );

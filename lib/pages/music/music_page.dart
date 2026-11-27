@@ -1,3 +1,6 @@
+import '../../widgets/ui/kiru_tappable.dart';
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:async';
@@ -358,7 +361,7 @@ class _MusicPageState extends State<MusicPage> {
     final tokens = context.tokens;
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => KiruAlertDialog(
         backgroundColor: tokens.surfaceOverlay,
         shape: RoundedRectangleBorder(
           borderRadius: ZplayRadius.lgAll,
@@ -420,7 +423,7 @@ class _MusicPageState extends State<MusicPage> {
               ),
               const SizedBox(height: ZplaySpacing.s16),
             ],
-            TextField(
+            KiruFormField(
               controller: controller,
               autofocus: true,
               style: ZplayType.body.toStyle(color: tokens.textPrimary),
@@ -476,8 +479,8 @@ class _MusicPageState extends State<MusicPage> {
       builder: (ctx) {
         final playlists = _libraryService.userPlaylists;
         final tokens = context.tokens;
-        return PerformanceLiquidLens(
-          style: PerformanceGlassStyles.sheet,
+        return FrostedSurface(
+          kind: FrostedSurfaceKind.sheet,
           child: Container(
             margin: const EdgeInsets.all(ZplaySpacing.s16),
             decoration: BoxDecoration(
@@ -527,7 +530,7 @@ class _MusicPageState extends State<MusicPage> {
                         ],
                       ),
                     ),
-                    IconButton(
+                    KiruIconButton(
                       icon: Icon(
                         Icons.close_rounded,
                         color: tokens.textEmphasis,
@@ -595,10 +598,16 @@ class _MusicPageState extends State<MusicPage> {
                             Expanded(
                               child: Text(
                                 isDownloaded
-                                    ? l10nOf(context).uiFinalMusicPageDownloadedOfflineTapToRemove
+                                    ? l10nOf(
+                                        context,
+                                      ).uiFinalMusicPageDownloadedOfflineTapToRemove
                                     : (isQueued
-                                          ? l10nOf(context).uiFinalMusicPageDownloadingQueued
-                                          : l10nOf(context).uiFinalMusicPageDownloadTrackOffline),
+                                          ? l10nOf(
+                                              context,
+                                            ).uiFinalMusicPageDownloadingQueued
+                                          : l10nOf(
+                                              context,
+                                            ).uiFinalMusicPageDownloadTrackOffline),
                                 style: ZplayType.label.toStyle(
                                   color: isDownloaded
                                       ? tokens.info
@@ -660,7 +669,9 @@ class _MusicPageState extends State<MusicPage> {
                           ),
                           const SizedBox(height: ZplaySpacing.s12),
                           PillButton(
-                            label: l10nOf(context).auxMusicPageCreateFirstPlaylist,
+                            label: l10nOf(
+                              context,
+                            ).auxMusicPageCreateFirstPlaylist,
                             onPressed: () {
                               Navigator.pop(ctx);
                               _showCreatePlaylistDialog(initialTrack: track);
@@ -739,7 +750,9 @@ class _MusicPageState extends State<MusicPage> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       Text(
-                                        l10nOf(context).dynamicMusicPageTracks((pl.tracks.length).toString()),
+                                        l10nOf(context).dynamicMusicPageTracks(
+                                          (pl.tracks.length).toString(),
+                                        ),
                                         style: ZplayType.bodySmall.toStyle(
                                           color: tokens.textSecondary,
                                         ),
@@ -1038,7 +1051,7 @@ class _MusicPageState extends State<MusicPage> {
     final tokens = context.tokens;
 
     if (_isLoading) {
-      return Center(child: CircularProgressIndicator(color: tokens.accent));
+      return Center(child: KiruLoader(color: tokens.accent));
     }
 
     // Exhaustive, so a view cannot be added without a body to show for it. The
@@ -1171,22 +1184,33 @@ class _MusicPageState extends State<MusicPage> {
         _gutter(
           TabStrip<String>(
             options: [
-              TabStripOption<String>(value: 'All', label: l10nOf(context).uiPlayerSubtitleMenuAll),
+              TabStripOption<String>(
+                value: 'All',
+                label: l10nOf(context).uiPlayerSubtitleMenuAll,
+              ),
               TabStripOption<String>(
                 value: 'Tracks',
-                label: l10nOf(context).dynamicMusicPageTracks2((_searchData.tracks.length).toString()),
+                label: l10nOf(context).dynamicMusicPageTracks2(
+                  (_searchData.tracks.length).toString(),
+                ),
               ),
               TabStripOption<String>(
                 value: 'Artists',
-                label: l10nOf(context).dynamicMusicPageArtists((_searchData.artists.length).toString()),
+                label: l10nOf(context).dynamicMusicPageArtists(
+                  (_searchData.artists.length).toString(),
+                ),
               ),
               TabStripOption<String>(
                 value: 'Albums',
-                label: l10nOf(context).dynamicMusicPageAlbums((_searchData.albums.length).toString()),
+                label: l10nOf(context).dynamicMusicPageAlbums(
+                  (_searchData.albums.length).toString(),
+                ),
               ),
               TabStripOption<String>(
                 value: 'Playlists',
-                label: l10nOf(context).dynamicMusicPagePlaylists((_searchData.playlists.length).toString()),
+                label: l10nOf(context).dynamicMusicPagePlaylists(
+                  (_searchData.playlists.length).toString(),
+                ),
               ),
             ],
             selected: _selectedFilter,
@@ -1199,9 +1223,7 @@ class _MusicPageState extends State<MusicPage> {
         if (_isSearching)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: ZplaySpacing.s48),
-            child: Center(
-              child: CircularProgressIndicator(color: tokens.accent),
-            ),
+            child: Center(child: KiruLoader(color: tokens.accent)),
           )
         else if (_searchData.tracks.isEmpty &&
             _searchData.artists.isEmpty &&
@@ -1271,7 +1293,10 @@ class _MusicPageState extends State<MusicPage> {
           if ((_selectedFilter == 'All' ||
                   _selectedFilter.startsWith('Artists')) &&
               _searchData.artists.isNotEmpty) ...[
-            SectionHeader(title: l10nOf(context).auxMusicPageArtists, count: _searchData.artists.length),
+            SectionHeader(
+              title: l10nOf(context).auxMusicPageArtists,
+              count: _searchData.artists.length,
+            ),
             const SizedBox(height: ZplaySpacing.s12),
             SizedBox(
               height: 130,
@@ -1341,7 +1366,9 @@ class _MusicPageState extends State<MusicPage> {
                   return _MusicCoverCard(
                     imageUrl: pl.coverUrl,
                     title: pl.title,
-                    subtitle: l10nOf(context).dynamicMusicPageTracks((pl.trackCount).toString()),
+                    subtitle: l10nOf(
+                      context,
+                    ).dynamicMusicPageTracks((pl.trackCount).toString()),
                     onTap: () => _openCuratedPlaylistModal(pl.id),
                   );
                 },
@@ -1372,7 +1399,10 @@ class _MusicPageState extends State<MusicPage> {
       controller: _scrollController,
       padding: _viewListPadding(context),
       children: [
-        SectionHeader(title: l10nOf(context).auxMusicPageBrowseMoodsGenres, count: genres.length),
+        SectionHeader(
+          title: l10nOf(context).auxMusicPageBrowseMoodsGenres,
+          count: genres.length,
+        ),
         const SizedBox(height: ZplaySpacing.s12),
         _gutter(
           GridView.builder(
@@ -1441,7 +1471,9 @@ class _MusicPageState extends State<MusicPage> {
       children: [
         SectionHeader(
           title: l10nOf(context).auxMusicPageRadioStationsLiveStreams,
-          subtitle: l10nOf(context).auxMusicPageContinuousMusicChannelsTunedToYourMood,
+          subtitle: l10nOf(
+            context,
+          ).auxMusicPageContinuousMusicChannelsTunedToYourMood,
         ),
         const SizedBox(height: ZplaySpacing.s12),
         _gutter(
@@ -1550,8 +1582,8 @@ class _MusicPageState extends State<MusicPage> {
               child: CardFocusRing(
                 focused: state.focused,
                 radius: ZplayRadius.lgAll,
-                child: PerformanceLiquidLens(
-                  style: PerformanceGlassStyles.menu,
+                child: FrostedSurface(
+                  kind: FrostedSurfaceKind.menu,
                   child: Container(
                     height: 110,
                     decoration: BoxDecoration(
@@ -1588,7 +1620,9 @@ class _MusicPageState extends State<MusicPage> {
                               ),
                               const SizedBox(height: ZplaySpacing.s4),
                               Text(
-                                l10nOf(context).dynamicMusicPageFavouriteTracks((liked.length).toString()),
+                                l10nOf(context).dynamicMusicPageFavouriteTracks(
+                                  (liked.length).toString(),
+                                ),
                                 style: ZplayType.bodySmall.toStyle(
                                   color: tokens.textSecondary,
                                 ),
@@ -1674,7 +1708,9 @@ class _MusicPageState extends State<MusicPage> {
                                   children: [
                                     Flexible(
                                       child: Text(
-                                        l10nOf(context).auxMusicPageDownloadedSongs,
+                                        l10nOf(
+                                          context,
+                                        ).auxMusicPageDownloadedSongs,
                                         style: ZplayType.title.toStyle(
                                           color: tokens.textPrimary,
                                         ),
@@ -1685,7 +1721,9 @@ class _MusicPageState extends State<MusicPage> {
                                     if (queue.isNotEmpty) ...[
                                       const SizedBox(width: ZplaySpacing.s8),
                                       Text(
-                                        l10nOf(context).dynamicMusicPageQueue((queue.length).toString()),
+                                        l10nOf(context).dynamicMusicPageQueue(
+                                          (queue.length).toString(),
+                                        ),
                                         style: ZplayType.overline.toStyle(
                                           color: tokens.textMuted,
                                         ),
@@ -1695,7 +1733,12 @@ class _MusicPageState extends State<MusicPage> {
                                 ),
                                 const SizedBox(height: ZplaySpacing.s4),
                                 Text(
-                                  l10nOf(context).dynamicMusicPageOfflineTracksMb((downloaded.length).toString(), (sizeMb).toString()),
+                                  l10nOf(
+                                    context,
+                                  ).dynamicMusicPageOfflineTracksMb(
+                                    (downloaded.length).toString(),
+                                    (sizeMb).toString(),
+                                  ),
                                   style: ZplayType.bodySmall.toStyle(
                                     color: tokens.textSecondary,
                                   ),
@@ -1730,7 +1773,10 @@ class _MusicPageState extends State<MusicPage> {
 
         // User Playlists Section
         if (playlists.isNotEmpty) ...[
-          SectionHeader(title: l10nOf(context).auxMusicPageCustomPlaylists, count: playlists.length),
+          SectionHeader(
+            title: l10nOf(context).auxMusicPageCustomPlaylists,
+            count: playlists.length,
+          ),
           const SizedBox(height: ZplaySpacing.s12),
           _gutter(
             GridView.builder(
@@ -1787,7 +1833,9 @@ class _MusicPageState extends State<MusicPage> {
                               overflow: TextOverflow.ellipsis,
                             ),
                             Text(
-                              l10nOf(context).dynamicMusicPageTracks((pl.tracks.length).toString()),
+                              l10nOf(context).dynamicMusicPageTracks(
+                                (pl.tracks.length).toString(),
+                              ),
                               style: ZplayType.bodySmall.toStyle(
                                 color: tokens.textSecondary,
                               ),
@@ -2105,7 +2153,7 @@ class _MusicTopHeader extends StatelessWidget {
                   ),
                   const SizedBox(width: ZplaySpacing.s8),
                   Expanded(
-                    child: TextField(
+                    child: KiruFormField(
                       controller: searchController,
                       focusNode: searchFocusNode,
                       onChanged: onSearchChanged,
@@ -2126,7 +2174,7 @@ class _MusicTopHeader extends StatelessWidget {
                     ),
                   ),
                   if (searchController.text.isNotEmpty)
-                    IconButton(
+                    KiruIconButton(
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                       icon: Icon(
@@ -2144,7 +2192,7 @@ class _MusicTopHeader extends StatelessWidget {
           const _AudioSourceSelectorButton(),
           if (!isMobile) ...[
             SizedBox(width: isMobile ? ZplaySpacing.s4 : ZplaySpacing.s8),
-            IconButton(
+            KiruIconButton(
               tooltip: l10nOf(context).auxMusicPageMusicPlayerStudio,
               icon: const Icon(
                 Icons.dashboard_customize_rounded,
@@ -2163,7 +2211,7 @@ class _MusicTopHeader extends StatelessWidget {
               },
             ),
             SizedBox(width: isMobile ? ZplaySpacing.s2 : ZplaySpacing.s4),
-            IconButton(
+            KiruIconButton(
               tooltip: l10nOf(context).auxMusicPageMusicAtmosphereSettings,
               icon: const Icon(Icons.palette_rounded, shadows: [_iconShadow]),
               color: tokens.textEmphasis,
@@ -2178,7 +2226,7 @@ class _MusicTopHeader extends StatelessWidget {
             ),
           ],
           SizedBox(width: isMobile ? ZplaySpacing.s2 : ZplaySpacing.s4),
-          IconButton(
+          KiruIconButton(
             tooltip: l10nOf(context).auxMusicPageAppSettings,
             icon: const Icon(Icons.settings_rounded, shadows: [_iconShadow]),
             color: tokens.textEmphasis,
@@ -2339,8 +2387,8 @@ class _AudioSourceSelectorButton extends StatelessWidget {
           builder: (context, _) {
             final isFlac = player.audioSource == MusicAudioSource.flac;
 
-            return PerformanceLiquidLens(
-              style: PerformanceGlassStyles.sheet,
+            return FrostedSurface(
+              kind: FrostedSurfaceKind.sheet,
               child: Container(
                 padding: const EdgeInsets.all(ZplaySpacing.s24),
                 decoration: BoxDecoration(
@@ -2378,7 +2426,9 @@ class _AudioSourceSelectorButton extends StatelessWidget {
                             ),
                             const SizedBox(height: ZplaySpacing.s2),
                             Text(
-                              l10nOf(context).auxMusicPageChooseYourPreferredMusicExtractionEngine,
+                              l10nOf(
+                                context,
+                              ).auxMusicPageChooseYourPreferredMusicExtractionEngine,
                               style: ZplayType.bodySmall.toStyle(
                                 color: tokens.textSecondary,
                               ),
@@ -2391,8 +2441,9 @@ class _AudioSourceSelectorButton extends StatelessWidget {
                     _sourceOptionCard(
                       context: context,
                       title: l10nOf(context).auxMusicPageFlacLosslessQobuzHiRes,
-                      subtitle:
-                          l10nOf(context).auxMusicPageStudioMasterQualityUpTo24Bit,
+                      subtitle: l10nOf(
+                        context,
+                      ).auxMusicPageStudioMasterQualityUpTo24Bit,
                       icon: Icons.diamond_rounded,
                       isSelected: isFlac,
                       badge: 'LOSSLESS',
@@ -2405,8 +2456,9 @@ class _AudioSourceSelectorButton extends StatelessWidget {
                     _sourceOptionCard(
                       context: context,
                       title: l10nOf(context).auxMusicPageYoutubeAudio,
-                      subtitle:
-                          l10nOf(context).auxMusicPageHighSpeedAudioExtractionWithIntelligentTrack,
+                      subtitle: l10nOf(
+                        context,
+                      ).auxMusicPageHighSpeedAudioExtractionWithIntelligentTrack,
                       icon: Icons.play_circle_fill_rounded,
                       isSelected: !isFlac,
                       badge: 'FAST',
@@ -2630,7 +2682,7 @@ class _MusicHeroBillboard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: ZplaySpacing.s8),
-                    IconButton(
+                    KiruIconButton(
                       style: IconButton.styleFrom(
                         backgroundColor: tokens.surfaceRaised,
                         // The pill's own height, so the row is one line of
@@ -2650,7 +2702,7 @@ class _MusicHeroBillboard extends StatelessWidget {
                       onPressed: onSaveTap,
                     ),
                     const SizedBox(width: ZplaySpacing.s8),
-                    IconButton(
+                    KiruIconButton(
                       style: IconButton.styleFrom(
                         backgroundColor: tokens.surfaceRaised,
                         minimumSize: Size.square(PillButton.heightFor(context)),
@@ -2807,7 +2859,9 @@ class _MusicPlaylistsRow extends StatelessWidget {
         return _MusicCoverCard(
           imageUrl: pl.coverUrl,
           title: pl.title,
-          subtitle: l10nOf(context).dynamicMusicPageTracks((pl.trackCount).toString()),
+          subtitle: l10nOf(
+            context,
+          ).dynamicMusicPageTracks((pl.trackCount).toString()),
           onTap: () => onPlaylistTap(pl),
         );
       },
@@ -3091,10 +3145,12 @@ class _MusicTrackRow extends StatelessWidget {
               const SizedBox(width: ZplaySpacing.s4),
               Text(
                 track.formattedDuration,
-                style: ZplayType.labelNumeric.toStyle(color: tokens.textMuted),
+                style: ZplayType.labelNumeric.toTimingStyle(
+                  color: tokens.textMuted,
+                ),
               ),
               const SizedBox(width: ZplaySpacing.s4),
-              IconButton(
+              KiruIconButton(
                 icon: Icon(
                   Icons.more_vert_rounded,
                   color: tokens.textSecondary,
@@ -3125,7 +3181,7 @@ class _MusicTrackRow extends StatelessWidget {
     final isQueued = task != null && task.status == MusicDownloadStatus.queued;
 
     if (isDownloaded) {
-      return Tooltip(
+      return KiruTooltip(
         message: l10nOf(context).auxMusicPageDownloadedOffline,
         child: Container(
           padding: const EdgeInsets.all(ZplaySpacing.s4),
@@ -3139,13 +3195,15 @@ class _MusicTrackRow extends StatelessWidget {
     }
 
     if (isDownloading) {
-      return Tooltip(
-        message: l10nOf(context).dynamicMusicPageDownloading(((task.progress * 100).toInt()).toString()),
+      return KiruTooltip(
+        message: l10nOf(context).dynamicMusicPageDownloading(
+          ((task.progress * 100).toInt()).toString(),
+        ),
         child: Container(
           width: 28,
           height: 28,
           padding: const EdgeInsets.all(ZplaySpacing.s4),
-          child: CircularProgressIndicator(
+          child: KiruCircularProgress(
             value: task.progress > 0.05 ? task.progress : null,
             strokeWidth: 2.2,
             color: tokens.info,
@@ -3155,7 +3213,7 @@ class _MusicTrackRow extends StatelessWidget {
     }
 
     if (isQueued) {
-      return Tooltip(
+      return KiruTooltip(
         message: l10nOf(context).auxMusicPageQueuedForDownload,
         child: Container(
           padding: const EdgeInsets.all(ZplaySpacing.s4),
@@ -3168,14 +3226,18 @@ class _MusicTrackRow extends StatelessWidget {
       );
     }
 
-    return IconButton(
+    return KiruIconButton(
       icon: Icon(Icons.download_rounded, color: tokens.textMuted, size: 18),
       tooltip: l10nOf(context).auxMusicPageDownloadTrack,
       onPressed: () {
         MusicDownloadService.instance.queueTrack(track);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10nOf(context).dynamicMusicPageAddedToDownloadQueue((track.title).toString())),
+        KiruToastMessenger.of(context).showSnackBar(
+          KiruToast(
+            content: Text(
+              l10nOf(
+                context,
+              ).dynamicMusicPageAddedToDownloadQueue((track.title).toString()),
+            ),
             duration: const Duration(seconds: 2),
           ),
         );
@@ -3206,8 +3268,8 @@ class _MusicLyricsDrawer extends StatelessWidget {
     final isMobile = MediaQuery.sizeOf(context).width < 600;
     final tokens = context.tokens;
 
-    return PerformanceLiquidLens(
-      style: PerformanceGlassStyles.sheet,
+    return FrostedSurface(
+      kind: FrostedSurfaceKind.sheet,
       child: Container(
         width: isMobile ? MediaQuery.sizeOf(context).width : 360,
         decoration: BoxDecoration(
@@ -3243,7 +3305,7 @@ class _MusicLyricsDrawer extends StatelessWidget {
                   style: ZplayType.title.toStyle(color: tokens.textPrimary),
                 ),
                 const Spacer(),
-                IconButton(
+                KiruIconButton(
                   icon: Icon(
                     Icons.close_rounded,
                     color: tokens.textEmphasis,
@@ -3256,9 +3318,7 @@ class _MusicLyricsDrawer extends StatelessWidget {
             const SizedBox(height: ZplaySpacing.s12),
             if (playerController.isLoadingLyrics)
               Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(color: tokens.accent),
-                ),
+                child: Center(child: KiruLoader(color: tokens.accent)),
               )
             else if (!lyrics.isSynced && lyrics.plainLyrics.isEmpty)
               Expanded(
@@ -3328,8 +3388,8 @@ class _MusicQueueDrawer extends StatelessWidget {
     final isMobile = MediaQuery.sizeOf(context).width < 600;
     final tokens = context.tokens;
 
-    return PerformanceLiquidLens(
-      style: PerformanceGlassStyles.sheet,
+    return FrostedSurface(
+      kind: FrostedSurfaceKind.sheet,
       child: Container(
         width: isMobile ? MediaQuery.sizeOf(context).width : 360,
         decoration: BoxDecoration(
@@ -3352,7 +3412,9 @@ class _MusicQueueDrawer extends StatelessWidget {
                 Icon(Icons.queue_music_rounded, color: tokens.accent, size: 22),
                 const SizedBox(width: ZplaySpacing.s8),
                 Text(
-                  l10nOf(context).dynamicMusicPageQueue((queue.length).toString()),
+                  l10nOf(
+                    context,
+                  ).dynamicMusicPageQueue((queue.length).toString()),
                   style: ZplayType.title.toStyle(color: tokens.textPrimary),
                 ),
                 const Spacer(),
@@ -3363,7 +3425,7 @@ class _MusicQueueDrawer extends StatelessWidget {
                     onPressed: controller.clearQueue,
                   ),
                 const SizedBox(width: ZplaySpacing.s4),
-                IconButton(
+                KiruIconButton(
                   icon: Icon(
                     Icons.close_rounded,
                     color: tokens.textEmphasis,
@@ -3448,7 +3510,7 @@ class _MusicQueueDrawer extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            IconButton(
+                            KiruIconButton(
                               icon: Icon(
                                 Icons.close_rounded,
                                 color: tokens.textMuted,
@@ -3496,8 +3558,8 @@ class _MusicArtistDetailModal extends StatelessWidget {
     return Container(
       color: Colors.black.withValues(alpha: 0.85),
       child: Center(
-        child: PerformanceLiquidLens(
-          style: PerformanceGlassStyles.sheet,
+        child: FrostedSurface(
+          kind: FrostedSurfaceKind.sheet,
           child: Container(
             width: isMobile ? size.width - 24 : 720,
             height: isMobile ? size.height * 0.85 : 640,
@@ -3532,7 +3594,7 @@ class _MusicArtistDetailModal extends StatelessWidget {
                     Positioned(
                       top: 12,
                       right: 12,
-                      child: IconButton(
+                      child: KiruIconButton(
                         icon: Icon(
                           Icons.close_rounded,
                           color: tokens.textPrimary,
@@ -3678,8 +3740,8 @@ class _MusicAlbumDetailModal extends StatelessWidget {
     return Container(
       color: Colors.black.withValues(alpha: 0.85),
       child: Center(
-        child: PerformanceLiquidLens(
-          style: PerformanceGlassStyles.sheet,
+        child: FrostedSurface(
+          kind: FrostedSurfaceKind.sheet,
           child: Container(
             width: isMobile ? size.width - 24 : 720,
             height: isMobile ? size.height * 0.85 : 640,
@@ -3760,13 +3822,17 @@ class _MusicAlbumDetailModal extends StatelessWidget {
                                 runSpacing: ZplaySpacing.s8,
                                 children: [
                                   PillButton(
-                                    label: l10nOf(context).auxMusicPagePlayAlbum,
+                                    label: l10nOf(
+                                      context,
+                                    ).auxMusicPagePlayAlbum,
                                     icon: Icons.play_arrow_rounded,
                                     onPressed: () =>
                                         onPlayTrack(tracks.first, tracks),
                                   ),
                                   PillButton(
-                                    label: l10nOf(context).auxMusicPageDownloadAlbum,
+                                    label: l10nOf(
+                                      context,
+                                    ).auxMusicPageDownloadAlbum,
                                     variant: PillVariant.secondary,
                                     icon: Icons.download_rounded,
                                     onPressed: () {
@@ -3774,12 +3840,17 @@ class _MusicAlbumDetailModal extends StatelessWidget {
                                         tracks,
                                         collectionName: album.title,
                                       );
-                                      ScaffoldMessenger.of(
+                                      KiruToastMessenger.of(
                                         context,
                                       ).showSnackBar(
-                                        SnackBar(
+                                        KiruToast(
                                           content: Text(
-                                            l10nOf(context).dynamicMusicPageAddedTracksFromToDownloadQueue((tracks.length).toString(), (album.title).toString()),
+                                            l10nOf(
+                                              context,
+                                            ).dynamicMusicPageAddedTracksFromToDownloadQueue(
+                                              (tracks.length).toString(),
+                                              (album.title).toString(),
+                                            ),
                                           ),
                                           duration: const Duration(seconds: 2),
                                         ),
@@ -3791,7 +3862,7 @@ class _MusicAlbumDetailModal extends StatelessWidget {
                           ],
                         ),
                       ),
-                      IconButton(
+                      KiruIconButton(
                         icon: Icon(
                           Icons.close_rounded,
                           color: tokens.textEmphasis,
@@ -3853,8 +3924,8 @@ class _MusicCuratedPlaylistDetailModal extends StatelessWidget {
     return Container(
       color: Colors.black.withValues(alpha: 0.85),
       child: Center(
-        child: PerformanceLiquidLens(
-          style: PerformanceGlassStyles.sheet,
+        child: FrostedSurface(
+          kind: FrostedSurfaceKind.sheet,
           child: Container(
             width: isMobile ? size.width - 24 : 720,
             height: isMobile ? size.height * 0.85 : 640,
@@ -3896,7 +3967,10 @@ class _MusicCuratedPlaylistDetailModal extends StatelessWidget {
                           ),
                           const SizedBox(height: ZplaySpacing.s4),
                           Text(
-                            l10nOf(context).dynamicMusicPageCuratedByTracks((playlist.creatorName).toString(), (tracks.length).toString()),
+                            l10nOf(context).dynamicMusicPageCuratedByTracks(
+                              (playlist.creatorName).toString(),
+                              (tracks.length).toString(),
+                            ),
                             style: ZplayType.label.toStyle(
                               color: tokens.textSecondary,
                             ),
@@ -3908,13 +3982,17 @@ class _MusicCuratedPlaylistDetailModal extends StatelessWidget {
                               runSpacing: ZplaySpacing.s8,
                               children: [
                                 PillButton(
-                                  label: l10nOf(context).auxMusicPagePlayPlaylist,
+                                  label: l10nOf(
+                                    context,
+                                  ).auxMusicPagePlayPlaylist,
                                   icon: Icons.play_arrow_rounded,
                                   onPressed: () =>
                                       onPlayTrack(tracks.first, tracks),
                                 ),
                                 PillButton(
-                                  label: l10nOf(context).auxMusicPageDownloadPlaylist,
+                                  label: l10nOf(
+                                    context,
+                                  ).auxMusicPageDownloadPlaylist,
                                   variant: PillVariant.secondary,
                                   icon: Icons.download_rounded,
                                   onPressed: () {
@@ -3922,10 +4000,15 @@ class _MusicCuratedPlaylistDetailModal extends StatelessWidget {
                                       tracks,
                                       collectionName: playlist.title,
                                     );
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
+                                    KiruToastMessenger.of(context).showSnackBar(
+                                      KiruToast(
                                         content: Text(
-                                          l10nOf(context).dynamicMusicPageAddedTracksFromToDownloadQueue2((tracks.length).toString(), (playlist.title).toString()),
+                                          l10nOf(
+                                            context,
+                                          ).dynamicMusicPageAddedTracksFromToDownloadQueue2(
+                                            (tracks.length).toString(),
+                                            (playlist.title).toString(),
+                                          ),
                                         ),
                                         duration: const Duration(seconds: 2),
                                       ),
@@ -3937,7 +4020,7 @@ class _MusicCuratedPlaylistDetailModal extends StatelessWidget {
                         ],
                       ),
                     ),
-                    IconButton(
+                    KiruIconButton(
                       icon: Icon(
                         Icons.close_rounded,
                         color: tokens.textEmphasis,
@@ -3997,8 +4080,8 @@ class _MusicUserPlaylistDetailModal extends StatelessWidget {
     return Container(
       color: Colors.black.withValues(alpha: 0.85),
       child: Center(
-        child: PerformanceLiquidLens(
-          style: PerformanceGlassStyles.sheet,
+        child: FrostedSurface(
+          kind: FrostedSurfaceKind.sheet,
           child: Container(
             width: isMobile ? size.width - 24 : 720,
             height: isMobile ? size.height * 0.85 : 640,
@@ -4041,7 +4124,11 @@ class _MusicUserPlaylistDetailModal extends StatelessWidget {
                           ),
                           const SizedBox(height: ZplaySpacing.s4),
                           Text(
-                            l10nOf(context).dynamicMusicPageCustomPlaylistTracks((tracks.length).toString()),
+                            l10nOf(
+                              context,
+                            ).dynamicMusicPageCustomPlaylistTracks(
+                              (tracks.length).toString(),
+                            ),
                             style: ZplayType.label.toStyle(
                               color: tokens.textSecondary,
                             ),
@@ -4053,13 +4140,17 @@ class _MusicUserPlaylistDetailModal extends StatelessWidget {
                               runSpacing: ZplaySpacing.s8,
                               children: [
                                 PillButton(
-                                  label: l10nOf(context).auxMusicPagePlayPlaylist,
+                                  label: l10nOf(
+                                    context,
+                                  ).auxMusicPagePlayPlaylist,
                                   icon: Icons.play_arrow_rounded,
                                   onPressed: () =>
                                       onPlayTrack(tracks.first, tracks),
                                 ),
                                 PillButton(
-                                  label: l10nOf(context).auxMusicPageDownloadAll,
+                                  label: l10nOf(
+                                    context,
+                                  ).auxMusicPageDownloadAll,
                                   variant: PillVariant.secondary,
                                   icon: Icons.download_rounded,
                                   onPressed: () {
@@ -4067,10 +4158,15 @@ class _MusicUserPlaylistDetailModal extends StatelessWidget {
                                       tracks,
                                       collectionName: playlist.title,
                                     );
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
+                                    KiruToastMessenger.of(context).showSnackBar(
+                                      KiruToast(
                                         content: Text(
-                                          l10nOf(context).dynamicMusicPageAddedTracksFromToDownloadQueue2((tracks.length).toString(), (playlist.title).toString()),
+                                          l10nOf(
+                                            context,
+                                          ).dynamicMusicPageAddedTracksFromToDownloadQueue2(
+                                            (tracks.length).toString(),
+                                            (playlist.title).toString(),
+                                          ),
                                         ),
                                         duration: const Duration(seconds: 2),
                                       ),
@@ -4082,7 +4178,7 @@ class _MusicUserPlaylistDetailModal extends StatelessWidget {
                         ],
                       ),
                     ),
-                    IconButton(
+                    KiruIconButton(
                       icon: Icon(
                         Icons.close_rounded,
                         color: tokens.textEmphasis,
@@ -4096,7 +4192,9 @@ class _MusicUserPlaylistDetailModal extends StatelessWidget {
                   child: tracks.isEmpty
                       ? Center(
                           child: Text(
-                            l10nOf(context).auxMusicPageNoTracksInThisPlaylistYet,
+                            l10nOf(
+                              context,
+                            ).auxMusicPageNoTracksInThisPlaylistYet,
                             style: ZplayType.body.toStyle(
                               color: tokens.textMuted,
                             ),
@@ -4158,7 +4256,7 @@ class _MusicUserPlaylistDetailModal extends StatelessWidget {
                                         ],
                                       ),
                                     ),
-                                    IconButton(
+                                    KiruIconButton(
                                       icon: Icon(
                                         Icons.delete_outline_rounded,
                                         color: tokens.textMuted,
@@ -4260,7 +4358,7 @@ class _MusicExpandedPlayerState extends State<_MusicExpandedPlayer>
         // surface behind it *is* the artwork.
         Row(
           children: [
-            IconButton(
+            KiruIconButton(
               icon: Icon(
                 isDesktop
                     ? Icons.close_rounded
@@ -4278,7 +4376,7 @@ class _MusicExpandedPlayerState extends State<_MusicExpandedPlayer>
                   _AudioSourceSelectorButton._showAudioSourceDialog(context),
             ),
             const Spacer(),
-            IconButton(
+            KiruIconButton(
               icon: Icon(Icons.more_horiz_rounded, color: tokens.textPrimary),
               onPressed: widget.onAddToPlaylist,
             ),
@@ -4511,7 +4609,9 @@ class _MusicExpandedPlayerState extends State<_MusicExpandedPlayer>
               border: Border.all(color: tokens.info.withValues(alpha: 0.4)),
             ),
             child: Text(
-              l10nOf(context).musicLosslessQuality(widget.playerController.currentQualityLabel.toUpperCase()),
+              l10nOf(context).musicLosslessQuality(
+                widget.playerController.currentQualityLabel.toUpperCase(),
+              ),
               style: ZplayType.overline.toStyle(color: tokens.info),
             ),
           ),
@@ -4538,7 +4638,7 @@ class _MusicExpandedPlayerState extends State<_MusicExpandedPlayer>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              IconButton(
+              KiruIconButton(
                 icon: Icon(
                   Icons.format_quote_rounded,
                   color: tokens.textEmphasis,
@@ -4546,7 +4646,7 @@ class _MusicExpandedPlayerState extends State<_MusicExpandedPlayer>
                 ),
                 onPressed: widget.onCollapse,
               ),
-              IconButton(
+              KiruIconButton(
                 icon: Icon(
                   Icons.queue_music_rounded,
                   color: tokens.textEmphasis,
@@ -4669,10 +4769,7 @@ class _MusicExpandedPlayerState extends State<_MusicExpandedPlayer>
               ? SizedBox(
                   width: 44,
                   height: 44,
-                  child: CircularProgressIndicator(
-                    color: tokens.accent,
-                    strokeWidth: 3,
-                  ),
+                  child: KiruLoader(color: tokens.accent, strokeWidth: 3),
                 )
               : _buildExpandedPlayButtonIcon(playBtnStyle, palette),
         ),
@@ -4721,21 +4818,9 @@ class _MusicExpandedPlayerState extends State<_MusicExpandedPlayer>
     final tokens = context.tokens;
 
     if (style == MusicPlayButtonStyle.liquidGlassNeo) {
-      return Container(
-        width: 64,
-        height: 64,
-        decoration: BoxDecoration(
-          color: tokens.accent.withValues(alpha: 0.3),
-          shape: BoxShape.circle,
-          border: Border.all(color: tokens.textSecondary, width: 1.5),
-          boxShadow: [
-            BoxShadow(
-              color: tokens.accent.withValues(alpha: 0.5),
-              blurRadius: 20,
-            ),
-          ],
-        ),
-        child: Icon(icon, color: tokens.onAccent, size: 38),
+      return SizedBox.square(
+        dimension: 64,
+        child: Center(child: Icon(icon, color: tokens.textPrimary, size: 38)),
       );
     }
 
@@ -4848,8 +4933,8 @@ class _MusicExpandedPlayerState extends State<_MusicExpandedPlayer>
   Widget _buildLiquidGlassArtwork(MusicTrack track, double size) {
     final tokens = context.tokens;
 
-    return PerformanceLiquidLens(
-      style: PerformanceGlassStyles.sheet,
+    return FrostedSurface(
+      kind: FrostedSurfaceKind.sheet,
       child: Container(
         width: size,
         height: size,
@@ -4952,8 +5037,8 @@ class _MusicShortcutsModal extends StatelessWidget {
     return Container(
       color: Colors.black.withValues(alpha: 0.8),
       child: Center(
-        child: PerformanceLiquidLens(
-          style: PerformanceGlassStyles.sheet,
+        child: FrostedSurface(
+          kind: FrostedSurfaceKind.sheet,
           child: Container(
             width: 420,
             padding: const EdgeInsets.all(ZplaySpacing.s24),
@@ -4978,7 +5063,7 @@ class _MusicShortcutsModal extends StatelessWidget {
                       style: ZplayType.title.toStyle(color: tokens.textPrimary),
                     ),
                     const Spacer(),
-                    IconButton(
+                    KiruIconButton(
                       icon: Icon(
                         Icons.close_rounded,
                         color: tokens.textEmphasis,
@@ -5088,8 +5173,8 @@ class _MusicDownloadedTracksModalState
     return Container(
       color: Colors.black.withValues(alpha: 0.85),
       child: Center(
-        child: PerformanceLiquidLens(
-          style: PerformanceGlassStyles.sheet,
+        child: FrostedSurface(
+          kind: FrostedSurfaceKind.sheet,
           child: Container(
             width: isMobile ? size.width - 24 : 760,
             height: isMobile ? size.height * 0.88 : 660,
@@ -5137,7 +5222,12 @@ class _MusicDownloadedTracksModalState
                           ),
                           const SizedBox(height: ZplaySpacing.s2),
                           Text(
-                            l10nOf(context).dynamicMusicPageOfflineTracksMbStorage((allDownloaded.length).toString(), (sizeMb).toString()),
+                            l10nOf(
+                              context,
+                            ).dynamicMusicPageOfflineTracksMbStorage(
+                              (allDownloaded.length).toString(),
+                              (sizeMb).toString(),
+                            ),
                             style: ZplayType.bodySmall.toStyle(
                               color: tokens.textSecondary,
                             ),
@@ -5145,7 +5235,7 @@ class _MusicDownloadedTracksModalState
                         ],
                       ),
                     ),
-                    IconButton(
+                    KiruIconButton(
                       icon: Icon(
                         Icons.close_rounded,
                         color: tokens.textEmphasis,
@@ -5194,7 +5284,7 @@ class _MusicDownloadedTracksModalState
                     SizedBox(
                       width: isMobile ? 140 : 200,
                       height: 38,
-                      child: TextField(
+                      child: KiruFormField(
                         controller: _searchController,
                         onChanged: (v) => setState(() => _searchQuery = v),
                         style: ZplayType.bodySmall.toStyle(
@@ -5231,7 +5321,7 @@ class _MusicDownloadedTracksModalState
                 ),
 
                 const SizedBox(height: ZplaySpacing.s12),
-                Divider(color: tokens.borderDefault),
+                KiruDivider(height: 16, color: tokens.borderDefault),
                 const SizedBox(height: ZplaySpacing.s4),
 
                 // Downloaded Tracks List
@@ -5273,7 +5363,7 @@ class _MusicDownloadedTracksModalState
                                     .toStringAsFixed(1);
                             final isFlac = item.format.toLowerCase() == 'flac';
 
-                            return ListTile(
+                            return KiruListTile(
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: ZplaySpacing.s8,
                                 vertical: ZplaySpacing.s2,
@@ -5352,40 +5442,52 @@ class _MusicDownloadedTracksModalState
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  IconButton(
+                                  KiruIconButton(
                                     icon: Icon(
                                       Icons.delete_outline_rounded,
                                       color: tokens.textMuted,
                                       size: 20,
                                     ),
-                                    tooltip: l10nOf(context).auxMusicPageDeleteFromDownloads,
+                                    tooltip: l10nOf(
+                                      context,
+                                    ).auxMusicPageDeleteFromDownloads,
                                     onPressed: () async {
                                       final confirm = await showDialog<bool>(
                                         context: context,
-                                        builder: (c) => AlertDialog(
+                                        builder: (c) => KiruAlertDialog(
                                           backgroundColor:
                                               tokens.surfaceOverlay,
                                           title: Text(
-                                            l10nOf(context).auxMusicPageDeleteDownloadedSong,
+                                            l10nOf(
+                                              context,
+                                            ).auxMusicPageDeleteDownloadedSong,
                                             style: ZplayType.title.toStyle(
                                               color: tokens.textPrimary,
                                             ),
                                           ),
                                           content: Text(
-                                            l10nOf(context).dynamicMusicPageDeleteFromOfflineStorage((item.title).toString()),
+                                            l10nOf(
+                                              context,
+                                            ).dynamicMusicPageDeleteFromOfflineStorage(
+                                              (item.title).toString(),
+                                            ),
                                             style: ZplayType.body.toStyle(
                                               color: tokens.textEmphasis,
                                             ),
                                           ),
                                           actions: [
                                             PillButton(
-                                              label: l10nOf(context).actionCancel,
+                                              label: l10nOf(
+                                                context,
+                                              ).actionCancel,
                                               variant: PillVariant.secondary,
                                               onPressed: () =>
                                                   Navigator.pop(c, false),
                                             ),
                                             PillButton(
-                                              label: l10nOf(context).uiDownloadsPageDelete,
+                                              label: l10nOf(
+                                                context,
+                                              ).uiDownloadsPageDelete,
                                               onPressed: () =>
                                                   Navigator.pop(c, true),
                                             ),
@@ -5484,7 +5586,7 @@ class _MusicDownloadedTracksModalState
               SizedBox(
                 width: 14,
                 height: 14,
-                child: CircularProgressIndicator(
+                child: KiruCircularProgress(
                   strokeWidth: 2,
                   value: isExtracting ? null : progress,
                   color: tokens.info,
@@ -5494,8 +5596,13 @@ class _MusicDownloadedTracksModalState
               Expanded(
                 child: Text(
                   isExtracting
-                      ? l10nOf(context).musicExtractingTrack(activeTask.track.title)
-                      : l10nOf(context).musicDownloadingTrack(activeTask.track.title, (progress * 100).toInt()),
+                      ? l10nOf(
+                          context,
+                        ).musicExtractingTrack(activeTask.track.title)
+                      : l10nOf(context).musicDownloadingTrack(
+                          activeTask.track.title,
+                          (progress * 100).toInt(),
+                        ),
                   style: ZplayType.caption.toStyle(color: tokens.textPrimary),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -5503,11 +5610,13 @@ class _MusicDownloadedTracksModalState
               ),
               const SizedBox(width: ZplaySpacing.s8),
               Text(
-                l10nOf(context).dynamicMusicPageInQueue((queue.length).toString()),
+                l10nOf(
+                  context,
+                ).dynamicMusicPageInQueue((queue.length).toString()),
                 style: ZplayType.caption.toStyle(color: tokens.info),
               ),
               const SizedBox(width: ZplaySpacing.s4),
-              InkWell(
+              KiruTappable(
                 onTap: () => service.cancelTask(activeTask.track.id),
                 child: Padding(
                   padding: const EdgeInsets.all(ZplaySpacing.s4),
@@ -5523,7 +5632,7 @@ class _MusicDownloadedTracksModalState
           const SizedBox(height: ZplaySpacing.s4),
           ClipRRect(
             borderRadius: ZplayRadius.xsAll,
-            child: LinearProgressIndicator(
+            child: KiruProgress(
               value: isExtracting ? null : progress,
               backgroundColor: tokens.borderDefault,
               valueColor: AlwaysStoppedAnimation<Color>(tokens.info),

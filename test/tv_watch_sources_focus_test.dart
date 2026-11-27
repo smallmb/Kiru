@@ -45,6 +45,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:zplay/widgets/player/player_forui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -86,14 +87,14 @@ final List<StreamSource> _sources = <StreamSource>[
 /// Twelve rows, so the list is taller than the panel and focus has to follow the
 /// scroll to stay on screen.
 List<StreamSource> _twelveSources() => List<StreamSource>.generate(
-      12,
-      (i) => StreamSource(
-        name: 'Row ${i + 1}',
-        title: 'A Show 1080p row ${i + 1} 4.2 Mb/s',
-        url: 'https://cdn.example.test/row$i.m3u8',
-        addonName: 'Torrentio',
-      ),
-    );
+  12,
+  (i) => StreamSource(
+    name: 'Row ${i + 1}',
+    title: 'A Show 1080p row ${i + 1} 4.2 Mb/s',
+    url: 'https://cdn.example.test/row$i.m3u8',
+    addonName: 'Torrentio',
+  ),
+);
 
 /// Whether the row showing [label] is the one the ring is painted on.
 ///
@@ -154,10 +155,14 @@ FocusNode _rowNode(WidgetTester tester, String label) {
     of: _row(label),
     matching: find.byType(FocusableActionDetector),
   );
-  expect(detector, findsWidgets,
-      reason: 'precondition: the row "$label" is on screen');
-  final FocusNode? node =
-      tester.widget<FocusableActionDetector>(detector.first).focusNode;
+  expect(
+    detector,
+    findsWidgets,
+    reason: 'precondition: the row "$label" is on screen',
+  );
+  final FocusNode? node = tester
+      .widget<FocusableActionDetector>(detector.first)
+      .focusNode;
   expect(node, isNotNull, reason: 'a row has to be reachable by a remote');
   return node!;
 }
@@ -170,8 +175,11 @@ FocusNode _rowNode(WidgetTester tester, String label) {
 /// node and not the panel's.
 FocusNode _directChipNode(WidgetTester tester) {
   final Finder label = find.textContaining('Direct (');
-  expect(label, findsOneWidget,
-      reason: 'precondition: the panel offers the Direct filter');
+  expect(
+    label,
+    findsOneWidget,
+    reason: 'precondition: the panel offers the Direct filter',
+  );
   return Focus.of(label.evaluate().single, scopeOk: true);
 }
 
@@ -206,7 +214,9 @@ Finder _row(String label) =>
 ///
 /// Found by the tooltip it draws, because the widget itself is private to the
 /// screen - and the tooltip is what the pointer user has been reading all along.
-Finder get _magnetAction => find.byTooltip('Copy Magnet Link');
+Finder get _magnetAction => find.byWidgetPredicate(
+  (w) => w is PlayerTooltip && w.message == 'Copy Magnet Link',
+);
 
 /// Whether two rects are the same box, to the sub-pixel.
 bool _sameBox(Rect a, Rect b) =>
@@ -225,10 +235,16 @@ void _expectRemoteOn(WidgetTester tester, Finder control, String what) {
   final Rect box = tester.getRect(control);
   final lit = find.byWidgetPredicate((w) => w is CardFocusRing && w.focused);
   expect(lit, findsOneWidget, reason: 'exactly one control may be lit: $what');
-  expect(_sameBox(tester.getRect(lit), box), isTrue,
-      reason: 'the lit ring must be painted over $what, not beside it');
-  expect(_sameBox(FocusManager.instance.primaryFocus!.rect, box), isTrue,
-      reason: 'the remote itself must be on $what, not merely near it');
+  expect(
+    _sameBox(tester.getRect(lit), box),
+    isTrue,
+    reason: 'the lit ring must be painted over $what, not beside it',
+  );
+  expect(
+    _sameBox(FocusManager.instance.primaryFocus!.rect, box),
+    isTrue,
+    reason: 'the remote itself must be on $what, not merely near it',
+  );
 }
 
 void main() {
@@ -284,62 +300,67 @@ void main() {
     expect(
       _rowRingIsLit(tester, 'Torrentio'),
       isTrue,
-      reason: 'the remote has to start somewhere on this screen; it started on '
+      reason:
+          'the remote has to start somewhere on this screen; it started on '
           'the route scope, from which no arrow could move',
     );
   });
 
-  testWidgets('Down walks the rows and the centre button starts the one it is on', (
-    tester,
-  ) async {
-    await pumpWatchSources(tester);
+  testWidgets(
+    'Down walks the rows and the centre button starts the one it is on',
+    (tester) async {
+      await pumpWatchSources(tester);
 
-    final Rect firstBefore = cardLayoutRect(tester, 'Torrentio');
-    final Rect secondBefore = cardLayoutRect(tester, 'Second Source');
-    await pressDpad(tester, LogicalKeyboardKey.arrowDown);
+      final Rect firstBefore = cardLayoutRect(tester, 'Torrentio');
+      final Rect secondBefore = cardLayoutRect(tester, 'Second Source');
+      await pressDpad(tester, LogicalKeyboardKey.arrowDown);
 
-    expect(
-      _rowRingIsLit(tester, 'Second Source'),
-      isTrue,
-      reason: 'Down has to move the ring onto the next row',
-    );
-    expect(
-      _rowRingIsLit(tester, 'Torrentio'),
-      isFalse,
-      reason: 'the first row must not stay lit beside it',
-    );
+      expect(
+        _rowRingIsLit(tester, 'Second Source'),
+        isTrue,
+        reason: 'Down has to move the ring onto the next row',
+      );
+      expect(
+        _rowRingIsLit(tester, 'Torrentio'),
+        isFalse,
+        reason: 'the first row must not stay lit beside it',
+      );
 
-    // The two rows travel together: the framework's own
-    // `defaultTraversalRequestFocusCallback` scrolls a focused node into view, so
-    // the absolute rects are expected to move, and what must not move is the
-    // layout — the ring is painted over the row, and one row's arrival cannot
-    // re-flow the list around it.
-    final Rect firstAfter = cardLayoutRect(tester, 'Torrentio');
-    final Rect secondAfter = cardLayoutRect(tester, 'Second Source');
-    expect(
-      secondAfter.size.width,
-      closeTo(secondBefore.size.width, 0.01),
-      reason: 'the focused row keeps the width it had before the ring arrived',
-    );
-    expect(
-      secondAfter.size.height,
-      closeTo(secondBefore.size.height, 0.01),
-      reason: 'the focused row keeps the height it had before the ring arrived',
-    );
-    expect(
-      secondAfter.top - firstAfter.top,
-      closeTo(secondBefore.top - firstBefore.top, 0.01),
-      reason: 'the rows keep their spacing when focus moves between them',
-    );
+      // The two rows travel together: the framework's own
+      // `defaultTraversalRequestFocusCallback` scrolls a focused node into view, so
+      // the absolute rects are expected to move, and what must not move is the
+      // layout — the ring is painted over the row, and one row's arrival cannot
+      // re-flow the list around it.
+      final Rect firstAfter = cardLayoutRect(tester, 'Torrentio');
+      final Rect secondAfter = cardLayoutRect(tester, 'Second Source');
+      expect(
+        secondAfter.size.width,
+        closeTo(secondBefore.size.width, 0.01),
+        reason:
+            'the focused row keeps the width it had before the ring arrived',
+      );
+      expect(
+        secondAfter.size.height,
+        closeTo(secondBefore.size.height, 0.01),
+        reason:
+            'the focused row keeps the height it had before the ring arrived',
+      );
+      expect(
+        secondAfter.top - firstAfter.top,
+        closeTo(secondBefore.top - firstBefore.top, 0.01),
+        reason: 'the rows keep their spacing when focus moves between them',
+      );
 
-    await pressDpad(tester, LogicalKeyboardKey.select);
-    expect(
-      find.text('player:A Show 1080p 4.2 Mb/s'),
-      findsOneWidget,
-      reason: 'the centre button has to start the row the ring is on, which is '
-          'the whole point of the list',
-    );
-  });
+      await pressDpad(tester, LogicalKeyboardKey.select);
+      expect(
+        find.text('player:A Show 1080p 4.2 Mb/s'),
+        findsOneWidget,
+        reason:
+            'the centre button has to start the row the ring is on, which is '
+            'the whole point of the list',
+      );
+    },
+  );
 
   testWidgets('the centre button starts the row the screen handed focus to', (
     tester,
@@ -380,7 +401,8 @@ void main() {
     expect(
       focused.bottom,
       lessThanOrEqualTo(tvLogicalCanvas.height),
-      reason: 'a row scrolled past the bottom edge is a row the user cannot see',
+      reason:
+          'a row scrolled past the bottom edge is a row the user cannot see',
     );
   });
 
@@ -438,7 +460,8 @@ void main() {
     expect(
       find.text('player:A Show 2160p 8.5 Mb/s'),
       findsOneWidget,
-      reason: "the row's own activation still starts that row, so the centre "
+      reason:
+          "the row's own activation still starts that row, so the centre "
           'button has not become ambiguous',
     );
   });
@@ -528,13 +551,15 @@ void main() {
         expect(
           lit,
           findsOneWidget,
-          reason: 'a row holding the remote has to be the one control wearing the '
+          reason:
+              'a row holding the remote has to be the one control wearing the '
               'app\'s ring, and the sweep found it painting nothing at all',
         );
         expect(
           _sameBox(tester.getRect(lit), node!.rect),
           isTrue,
-          reason: 'and the lit ring has to be painted over the row the remote is '
+          reason:
+              'and the lit ring has to be painted over the row the remote is '
               'on, not beside it',
         );
       }
@@ -544,7 +569,8 @@ void main() {
     expect(
       await walkRows(6),
       greaterThanOrEqualTo(2),
-      reason: 'precondition: the walk has to reach the rows, or the assertions '
+      reason:
+          'precondition: the walk has to reach the rows, or the assertions '
           'inside it prove nothing',
     );
 
@@ -554,7 +580,8 @@ void main() {
     expect(
       _rowRingIsLit(tester, 'A Show 1080p 4.2 Mb/s'),
       isTrue,
-      reason: 'UP from the last row of the filtered list has to move the remote '
+      reason:
+          'UP from the last row of the filtered list has to move the remote '
           'back up the list',
     );
 
@@ -565,7 +592,8 @@ void main() {
     expect(
       find.text('player:A Show 720p 2.1 Mb/s'),
       findsOneWidget,
-      reason: 'the row the filtered list put the remote on has to be the one the '
+      reason:
+          'the row the filtered list put the remote on has to be the one the '
           'centre button starts',
     );
   });
@@ -592,14 +620,16 @@ void main() {
       expect(
         left.debugLabel,
         isNot('WatchSourceRowAction'),
-        reason: 'Left from a row must not land on a row\'s copy-magnet action: '
+        reason:
+            'Left from a row must not land on a row\'s copy-magnet action: '
             'that control is out of the traversal order, so the arrows cannot '
             'reach it at all',
       );
       expect(
         left.rect.right,
         lessThanOrEqualTo(from.rect.left),
-        reason: 'Left has to leave the list for the column beside it, which is '
+        reason:
+            'Left has to leave the list for the column beside it, which is '
             'what the row\'s comment claims. It ended at ${left.rect}',
       );
     }

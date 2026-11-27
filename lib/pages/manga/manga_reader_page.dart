@@ -1,8 +1,8 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:async';
-import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,7 +15,6 @@ import '../../services/theme/design_tokens.dart';
 import '../../services/manga/manga_service.dart';
 import '../../services/manga/manga_settings.dart';
 import '../../services/discord/discord_rpc_service.dart';
-import '../../widgets/common/custom_scroll_track.dart';
 import '../../widgets/common/focusable_card.dart';
 import '../../widgets/common/segmented_tabs.dart';
 import '../../services/storage/app_image_cache.dart';
@@ -456,7 +455,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  Divider(color: tokens.borderDefault),
+                  KiruDivider(height: 16, color: tokens.borderDefault),
                   const SizedBox(height: 12),
 
                   Text(
@@ -467,7 +466,9 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                   ),
                   const SizedBox(height: 8),
                   SegmentedTabs<MangaReadingMode>(
-                    semanticsLabel: l10nOf(context).auxMangaReaderPageReadingOrientationMode2,
+                    semanticsLabel: l10nOf(
+                      context,
+                    ).auxMangaReaderPageReadingOrientationMode2,
                     selected: _readingMode,
                     onSelected: (mode) {
                       setState(() => _readingMode = mode);
@@ -476,14 +477,19 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                     },
                     options: [
                       for (final mode in MangaReadingMode.values)
-                        SegmentedTabOption(value: mode, label: configLabel(context, mode.label)),
+                        SegmentedTabOption(
+                          value: mode,
+                          label: configLabel(context, mode.label),
+                        ),
                     ],
                   ),
 
                   const SizedBox(height: 14),
 
                   Text(
-                    l10nOf(context).auxMangaReaderPagePageReadingWidthConstraint,
+                    l10nOf(
+                      context,
+                    ).auxMangaReaderPagePageReadingWidthConstraint,
                     style: ZplayType.label
                         .copyWith(weight: FontWeight.w700)
                         .toStyle(color: tokens.textPrimary),
@@ -493,7 +499,9 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                     valueListenable: MangaSettings.readerMaxWidth,
                     builder: (context, width, _) {
                       return SegmentedTabs<MangaReaderMaxWidth>(
-                        semanticsLabel: l10nOf(context).auxMangaReaderPagePageReadingWidthConstraint2,
+                        semanticsLabel: l10nOf(
+                          context,
+                        ).auxMangaReaderPagePageReadingWidthConstraint2,
                         selected: width,
                         onSelected: MangaSettings.setReaderMaxWidth,
                         options: [
@@ -510,7 +518,9 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                   const SizedBox(height: 14),
 
                   Text(
-                    l10nOf(context).auxMangaReaderPageReaderBackgroundAtmosphere,
+                    l10nOf(
+                      context,
+                    ).auxMangaReaderPageReaderBackgroundAtmosphere,
                     style: ZplayType.label
                         .copyWith(weight: FontWeight.w700)
                         .toStyle(color: tokens.textPrimary),
@@ -523,10 +533,12 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                   ValueListenableBuilder<bool>(
                     valueListenable: MangaSettings.showPageDeck,
                     builder: (context, showDeck, _) {
-                      return SwitchListTile.adaptive(
+                      return KiruSwitchRow(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          l10nOf(context).auxMangaReaderPageShowPageDeckPreviewsDrawer,
+                          l10nOf(
+                            context,
+                          ).auxMangaReaderPageShowPageDeckPreviewsDrawer,
                           style: ZplayType.label.toStyle(
                             color: tokens.textPrimary,
                           ),
@@ -541,10 +553,12 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                   ValueListenableBuilder<bool>(
                     valueListenable: MangaSettings.enableNextChapterDeck,
                     builder: (context, showNext, _) {
-                      return SwitchListTile.adaptive(
+                      return KiruSwitchRow(
                         contentPadding: EdgeInsets.zero,
                         title: Text(
-                          l10nOf(context).auxMangaReaderPageShowNextChapterDeckCard,
+                          l10nOf(
+                            context,
+                          ).auxMangaReaderPageShowNextChapterDeckCard,
                           style: ZplayType.label.toStyle(
                             color: tokens.textPrimary,
                           ),
@@ -586,15 +600,13 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
             GestureDetector(
               onTap: _toggleOverlay,
               child: _isLoading
-                  ? Center(
-                      child: CircularProgressIndicator(
-                        color: palette.primaryColor,
-                      ),
-                    )
+                  ? Center(child: KiruLoader(color: palette.primaryColor))
                   : _pageUrls.isEmpty
                   ? Center(
                       child: Text(
-                        l10nOf(context).auxMangaReaderPageNoPagesFoundForThisChapter,
+                        l10nOf(
+                          context,
+                        ).auxMangaReaderPageNoPagesFoundForThisChapter,
                         style: ZplayType.subtitle.toStyle(
                           color: tokens.textEmphasis,
                         ),
@@ -619,26 +631,6 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                           : _buildHorizontalPageView(),
                     ),
             ),
-
-            // Custom Vertical Scroller for Webtoon Mode (Desktop only, removed for mobile)
-            if (_readingMode == MangaReadingMode.webtoon &&
-                !_isLoading &&
-                _pageUrls.isNotEmpty &&
-                MangaSettings.showScrollTrack.value &&
-                !(Platform.isAndroid || Platform.isIOS) &&
-                MediaQuery.sizeOf(context).width >= 700)
-              Positioned(
-                right: 20,
-                top: 100,
-                bottom: 100,
-                child: Center(
-                  child: CustomScrollTrack(
-                    controller: _verticalScrollController,
-                    axis: Axis.vertical,
-                    length: 320.0,
-                  ),
-                ),
-              ),
 
             // Top Header Overlay
             if (_showOverlay)
@@ -691,9 +683,8 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                   .clamp(96, 2048)
                   .toInt(),
               fit: BoxFit.contain,
-              placeholder: (context, url) => Center(
-                child: CircularProgressIndicator(color: tokens.textDisabled),
-              ),
+              placeholder: (context, url) =>
+                  Center(child: KiruLoader(color: tokens.textDisabled)),
               errorWidget: (context, url, error) => Center(
                 child: Icon(
                   Icons.broken_image_rounded,
@@ -747,11 +738,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                 fit: BoxFit.fitWidth,
                 placeholder: (context, url) => SizedBox(
                   height: 350,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: tokens.textDisabled,
-                    ),
-                  ),
+                  child: Center(child: KiruLoader(color: tokens.textDisabled)),
                 ),
                 errorWidget: (context, url, error) => SizedBox(
                   height: 200,
@@ -810,7 +797,9 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
               borderRadius: ZplayRadius.smAll,
             ),
             child: Text(
-              hasNext ? l10nOf(context).finalMangaReaderPageUpNext : 'CHAPTER FINISHED',
+              hasNext
+                  ? l10nOf(context).finalMangaReaderPageUpNext
+                  : 'CHAPTER FINISHED',
               style: ZplayType.caption
                   .copyWith(weight: FontWeight.w700)
                   .toStyle(color: palette.primaryColor),
@@ -833,14 +822,14 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
           ),
           const SizedBox(height: 20),
           if (hasNext)
-            ElevatedButton.icon(
+            KiruButton(
               onPressed: _nextChapter,
               icon: Icon(
                 Icons.skip_next_rounded,
                 color: tokens.textPrimary,
                 size: 20,
               ),
-              label: Text(
+              child: Text(
                 l10nOf(context).auxMangaReaderPageReadNextChapter,
                 style: ZplayType.subtitle
                     .copyWith(weight: FontWeight.w700)
@@ -858,13 +847,14 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
               ),
             )
           else
-            OutlinedButton.icon(
+            KiruButton(
+              kind: KiruButtonKind.outline,
               onPressed: () => Navigator.of(context).pop(),
               icon: Icon(
                 Icons.check_circle_outline_rounded,
                 color: tokens.success,
               ),
-              label: Text(
+              child: Text(
                 l10nOf(context).auxMangaReaderPageBackToMangaDetails,
                 style: ZplayType.label.toStyle(color: tokens.textPrimary),
               ),
@@ -943,7 +933,10 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                     // "Page N / M" badge never had one.
                   ),
                   child: Text(
-                    l10nOf(context).dynamicMangaReaderPagePageOf((_currentPageIndex + 1).toString(), (_pageUrls.length).toString()),
+                    l10nOf(context).dynamicMangaReaderPagePageOf(
+                      (_currentPageIndex + 1).toString(),
+                      (_pageUrls.length).toString(),
+                    ),
                     style: ZplayType.caption
                         .copyWith(weight: FontWeight.w700)
                         .toStyle(color: palette.primaryColor),
@@ -1207,7 +1200,7 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                     enabledThumbRadius: 6.5,
                   ),
                 ),
-                child: Slider(
+                child: KiruSlider(
                   value: _currentPageIndex.toDouble().clamp(
                     0.0,
                     (_pageUrls.length - 1).toDouble(),
@@ -1309,7 +1302,11 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
                         borderRadius: ZplayRadius.smAll,
                       ),
                       child: Text(
-                        l10nOf(context).dynamicMangaReaderPagePage((_currentPageIndex + 1).toString(), (_pageUrls.isNotEmpty ? _pageUrls.length : "?").toString()),
+                        l10nOf(context).dynamicMangaReaderPagePage(
+                          (_currentPageIndex + 1).toString(),
+                          (_pageUrls.isNotEmpty ? _pageUrls.length : "?")
+                              .toString(),
+                        ),
                         style: ZplayType.caption
                             .copyWith(
                               size: isVerySmall ? 11 : 12.5,

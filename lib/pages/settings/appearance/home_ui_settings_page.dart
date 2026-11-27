@@ -1,8 +1,10 @@
+import '../../../widgets/ui/kiru_tappable.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../../../widgets/ui/kiru_controls.dart';
 import '../palette_picker.dart';
 import '../../../services/theme/app_theme_service.dart';
 import '../../../services/theme/custom_background_service.dart';
@@ -47,7 +49,9 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
 
           // ── 2. Ambient Background Lighting & Moving Glows ──
           Text(
-            l10nOf(context).auxHomeUiSettingsPageAmbientBackgroundLightingMovingGlows,
+            l10nOf(
+              context,
+            ).auxHomeUiSettingsPageAmbientBackgroundLightingMovingGlows,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -67,12 +71,13 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
               final hasWallpaper = customBg.hasCustomBackground;
               final palette = AppThemeService.currentPalette.value;
 
-              return InkWell(
+              return KiruTappable(
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const CustomBackgroundSettingsPage(),
+                      builder: (context) =>
+                          const CustomBackgroundSettingsPage(),
                     ),
                   );
                 },
@@ -93,7 +98,9 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                         width: 44,
                         height: 44,
                         decoration: BoxDecoration(
-                          color: palette.primaryColor.withValues(alpha: ZplayOpacity.overlayHover),
+                          color: palette.primaryColor.withValues(
+                            alpha: ZplayOpacity.overlayHover,
+                          ),
                           borderRadius: ZplayRadius.smAll,
                         ),
                         child: Icon(
@@ -108,20 +115,34 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              l10nOf(context).auxHomeUiSettingsPageCustomWallpaperLightingBlend,
-                              style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                              l10nOf(
+                                context,
+                              ).auxHomeUiSettingsPageCustomWallpaperLightingBlend,
+                              style: ZplayType.subtitle.toStyle(
+                                color: tokens.textPrimary,
+                              ),
                             ),
                             const SizedBox(height: 3),
                             Text(
                               hasWallpaper
-                                  ? l10nOf(context).uiFinalHomeUiSettingsPageCustomBackgroundActiveWithAmbientLight
-                                  : l10nOf(context).uiFinalHomeUiSettingsPageUploadPhotosOrChooseCuratedDark,
-                              style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
+                                  ? l10nOf(
+                                      context,
+                                    ).uiFinalHomeUiSettingsPageCustomBackgroundActiveWithAmbientLight
+                                  : l10nOf(
+                                      context,
+                                    ).uiFinalHomeUiSettingsPageUploadPhotosOrChooseCuratedDark,
+                              style: ZplayType.bodySmall.toStyle(
+                                color: tokens.textSecondary,
+                              ),
                             ),
                           ],
                         ),
                       ),
-                      Icon(Icons.arrow_forward_ios_rounded, color: tokens.textMuted, size: 16),
+                      Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        color: tokens.textMuted,
+                        size: 16,
+                      ),
                     ],
                   ),
                 ),
@@ -133,7 +154,9 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
 
           // ── 3. "Because you have on your list" Section ──
           Text(
-            l10nOf(context).auxHomeUiSettingsPageSmartRecommendationsBecauseYouHaveOnYour,
+            l10nOf(
+              context,
+            ).auxHomeUiSettingsPageSmartRecommendationsBecauseYouHaveOnYour,
             style: ZplayType.overline.toStyle(color: tokens.textMuted),
           ),
           const SizedBox(height: 12),
@@ -213,14 +236,15 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                   width: double.infinity,
                   child: Stack(
                     children: [
-                      const Positioned.fill(
-                        child: AnimatedAmbientBackground(),
-                      ),
+                      const Positioned.fill(child: AnimatedAmbientBackground()),
                       Positioned(
                         left: 14,
                         bottom: 12,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
                             color: tokens.bg.withValues(alpha: 0.55),
                             borderRadius: ZplayRadius.smAll,
@@ -229,11 +253,19 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.auto_awesome_motion_rounded, size: 14, color: palette.primaryColor),
+                              Icon(
+                                Icons.auto_awesome_motion_rounded,
+                                size: 14,
+                                color: palette.primaryColor,
+                              ),
                               const SizedBox(width: 6),
                               Text(
-                                l10nOf(context).auxHomeUiSettingsPageLiveLightingEnginePreview,
-                                style: ZplayType.overline.toStyle(color: tokens.textEmphasis),
+                                l10nOf(
+                                  context,
+                                ).auxHomeUiSettingsPageLiveLightingEnginePreview,
+                                style: ZplayType.overline.toStyle(
+                                  color: tokens.textEmphasis,
+                                ),
                               ),
                             ],
                           ),
@@ -253,7 +285,9 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                     width: 42,
                     height: 42,
                     decoration: BoxDecoration(
-                      color: palette.primaryColor.withValues(alpha: ZplayOpacity.overlayHover),
+                      color: palette.primaryColor.withValues(
+                        alpha: ZplayOpacity.overlayHover,
+                      ),
                       borderRadius: ZplayRadius.smAll,
                     ),
                     child: Icon(
@@ -268,18 +302,26 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10nOf(context).auxHomeUiSettingsPageMovingAmbientLightsGlows,
-                          style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).auxHomeUiSettingsPageMovingAmbientLightsGlows,
+                          style: ZplayType.subtitle.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          l10nOf(context).auxHomeUiSettingsPageDriftingFadedLightWavesFloatingColorOrbs,
-                          style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                          l10nOf(
+                            context,
+                          ).auxHomeUiSettingsPageDriftingFadedLightWavesFloatingColorOrbs,
+                          style: ZplayType.caption.toStyle(
+                            color: tokens.textSecondary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Switch.adaptive(
+                  KiruSwitch(
                     value: enabled,
                     activeColor: palette.primaryColor,
                     onChanged: (val) {
@@ -292,7 +334,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
 
               if (enabled) ...[
                 const SizedBox(height: 16),
-                Divider(color: tokens.borderSubtle),
+                KiruDivider(height: 16, color: tokens.borderSubtle),
                 const SizedBox(height: 12),
 
                 // Lighting Pattern / Position
@@ -312,14 +354,17 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                       },
                       options: [
                         for (final pat in AmbientLightPattern.values)
-                          SegmentedTabOption(value: pat, label: configLabel(context, pat.label)),
+                          SegmentedTabOption(
+                            value: pat,
+                            label: configLabel(context, pat.label),
+                          ),
                       ],
                     );
                   },
                 ),
 
                 const SizedBox(height: 16),
-                Divider(color: tokens.borderSubtle),
+                KiruDivider(height: 16, color: tokens.borderSubtle),
                 const SizedBox(height: 12),
 
                 // Strength / Intensity Slider
@@ -334,12 +379,18 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              l10nOf(context).auxHomeUiSettingsPageGlowStrengthIntensity,
-                              style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
+                              l10nOf(
+                                context,
+                              ).auxHomeUiSettingsPageGlowStrengthIntensity,
+                              style: ZplayType.subtitle.toStyle(
+                                color: tokens.textEmphasis,
+                              ),
                             ),
                             Text(
                               '$percent%',
-                              style: ZplayType.labelNumeric.toStyle(color: palette.primaryColor),
+                              style: ZplayType.labelNumeric.toStyle(
+                                color: palette.primaryColor,
+                              ),
                             ),
                           ],
                         ),
@@ -347,16 +398,19 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                         SliderTheme(
                           data: SliderTheme.of(context).copyWith(
                             activeTrackColor: palette.primaryColor,
-                            inactiveTrackColor: Colors.white.withValues(alpha: ZplayOpacity.borderMedium),
+                            inactiveTrackColor: Colors.white.withValues(
+                              alpha: ZplayOpacity.borderMedium,
+                            ),
                             thumbColor: palette.primaryColor,
                             trackHeight: 3,
                           ),
-                          child: Slider(
+                          child: KiruSlider(
                             value: intensity,
                             min: 0.05,
                             max: 0.50,
                             divisions: 18,
-                            onChanged: (val) => HomePageSettings.setAmbientLightIntensity(val),
+                            onChanged: (val) =>
+                                HomePageSettings.setAmbientLightIntensity(val),
                           ),
                         ),
                       ],
@@ -377,12 +431,18 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              l10nOf(context).auxHomeUiSettingsPageMotionFlowSpeed,
-                              style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
+                              l10nOf(
+                                context,
+                              ).auxHomeUiSettingsPageMotionFlowSpeed,
+                              style: ZplayType.subtitle.toStyle(
+                                color: tokens.textEmphasis,
+                              ),
                             ),
                             Text(
                               '${speed.toStringAsFixed(1)}x',
-                              style: ZplayType.labelNumeric.toStyle(color: palette.primaryColor),
+                              style: ZplayType.labelNumeric.toStyle(
+                                color: palette.primaryColor,
+                              ),
                             ),
                           ],
                         ),
@@ -390,16 +450,19 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                         SliderTheme(
                           data: SliderTheme.of(context).copyWith(
                             activeTrackColor: palette.primaryColor,
-                            inactiveTrackColor: Colors.white.withValues(alpha: ZplayOpacity.borderMedium),
+                            inactiveTrackColor: Colors.white.withValues(
+                              alpha: ZplayOpacity.borderMedium,
+                            ),
                             thumbColor: palette.primaryColor,
                             trackHeight: 3,
                           ),
-                          child: Slider(
+                          child: KiruSlider(
                             value: speed,
                             min: 0.4,
                             max: 2.5,
                             divisions: 21,
-                            onChanged: (val) => HomePageSettings.setAmbientLightSpeed(val),
+                            onChanged: (val) =>
+                                HomePageSettings.setAmbientLightSpeed(val),
                           ),
                         ),
                       ],
@@ -427,7 +490,8 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                 width: 42,
                 height: 42,
                 decoration: BoxDecoration(
-                  color: AppThemeService.currentPalette.value.primaryColor.withValues(alpha: ZplayOpacity.overlayHover),
+                  color: AppThemeService.currentPalette.value.primaryColor
+                      .withValues(alpha: ZplayOpacity.overlayHover),
                   borderRadius: ZplayRadius.smAll,
                 ),
                 child: Icon(
@@ -443,12 +507,18 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                   children: [
                     Text(
                       l10nOf(context).auxHomeUiSettingsPageSmartRecommendations,
-                      style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                      style: ZplayType.subtitle.toStyle(
+                        color: tokens.textPrimary,
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      l10nOf(context).auxHomeUiSettingsPageConfigurePersonalizedAlgorithmicRecommendationSliders,
-                      style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
+                      l10nOf(
+                        context,
+                      ).auxHomeUiSettingsPageConfigurePersonalizedAlgorithmicRecommendationSliders,
+                      style: ZplayType.bodySmall.toStyle(
+                        color: tokens.textSecondary,
+                      ),
                     ),
                   ],
                 ),
@@ -457,13 +527,15 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
           ),
 
           const SizedBox(height: 16),
-          Divider(color: tokens.borderSubtle),
+          KiruDivider(height: 16, color: tokens.borderSubtle),
           const SizedBox(height: 8),
 
           // 1. Because You Have... (My List)
           _buildRecommendationToggleRow(
             title: l10nOf(context).auxHomeUiSettingsPageBecauseYouHaveMyList,
-            subtitle: l10nOf(context).auxHomeUiSettingsPageBestsimilarRecommendationsBasedOnTitlesSavedIn,
+            subtitle: l10nOf(
+              context,
+            ).auxHomeUiSettingsPageBestsimilarRecommendationsBasedOnTitlesSavedIn,
             listenable: HomePageSettings.enableSimilar,
             onChanged: (val) {
               HomePageSettings.setEnableSimilar(val);
@@ -474,7 +546,9 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
           // 2. Because You're Watching... (Continue Watching)
           _buildRecommendationToggleRow(
             title: l10nOf(context).homeBecauseWatching,
-            subtitle: l10nOf(context).auxHomeUiSettingsPageBestsimilarRecommendationsBasedOnActiveContinueWatching,
+            subtitle: l10nOf(
+              context,
+            ).auxHomeUiSettingsPageBestsimilarRecommendationsBasedOnActiveContinueWatching,
             listenable: HomePageSettings.enableWatchingSimilar,
             onChanged: (val) {
               HomePageSettings.setEnableWatchingSimilar(val);
@@ -486,8 +560,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
           // them: it decides which of the addon rails reach the shelf at all.
           _buildRecommendationToggleRow(
             title: l10nOf(context).auxHomeUiSettingsPageHideRailsWithNoArtwork,
-            subtitle:
-                l10nOf(context).homeHideArtlessRailsHelp,
+            subtitle: l10nOf(context).homeHideArtlessRailsHelp,
             listenable: HomePageSettings.hideArtlessRails,
             onChanged: (val) {
               HomePageSettings.setHideArtlessRails(val);
@@ -501,28 +574,45 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
             builder: (context, snapshot) {
               final isAuthed = snapshot.data ?? false;
               return _buildRecommendationToggleRow(
-                title: l10nOf(context).auxHomeUiSettingsPageTraktRecommendations,
+                title: l10nOf(
+                  context,
+                ).auxHomeUiSettingsPageTraktRecommendations,
                 subtitle: isAuthed
-                    ? l10nOf(context).finalHomeUiSettingsPagePersonalizedRecommendationsComputedByTrakt
-                    : l10nOf(context).appearanceDetailRequiresTraktLoginInSettingsTrakt,
+                    ? l10nOf(
+                        context,
+                      ).finalHomeUiSettingsPagePersonalizedRecommendationsComputedByTrakt
+                    : l10nOf(
+                        context,
+                      ).appearanceDetailRequiresTraktLoginInSettingsTrakt,
                 listenable: HomePageSettings.enableTraktRecommendations,
                 trailingExtra: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: isAuthed
                         ? const Color(0xFFED1C24).withValues(alpha: 0.2)
-                        : Colors.white.withValues(alpha: ZplayOpacity.borderStrong),
+                        : Colors.white.withValues(
+                            alpha: ZplayOpacity.borderStrong,
+                          ),
                     borderRadius: ZplayRadius.xsAll,
                     border: Border.all(
                       color: isAuthed
-                            ? const Color(0xFFED1C24).withValues(alpha: 0.4)
-                            : tokens.borderStrong,
+                          ? const Color(0xFFED1C24).withValues(alpha: 0.4)
+                          : tokens.borderStrong,
                       width: 0.8,
                     ),
                   ),
                   child: Text(
-                    isAuthed ? l10nOf(context).finalSimklSettingsPageConnected : l10nOf(context).appearanceDetailDisconnected,
-                    style: ZplayType.overline.toStyle(color: isAuthed ? const Color(0xFFFF5252) : tokens.textMuted),
+                    isAuthed
+                        ? l10nOf(context).finalSimklSettingsPageConnected
+                        : l10nOf(context).appearanceDetailDisconnected,
+                    style: ZplayType.overline.toStyle(
+                      color: isAuthed
+                          ? const Color(0xFFFF5252)
+                          : tokens.textMuted,
+                    ),
                   ),
                 ),
                 onChanged: (val) {
@@ -539,28 +629,45 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
             builder: (context, snapshot) {
               final isAuthed = snapshot.data ?? false;
               return _buildRecommendationToggleRow(
-                title: l10nOf(context).auxHomeUiSettingsPageSimklRecommendations,
+                title: l10nOf(
+                  context,
+                ).auxHomeUiSettingsPageSimklRecommendations,
                 subtitle: isAuthed
-                    ? l10nOf(context).finalHomeUiSettingsPageTopRatedPersonalizedSuggestionsFromSimkl
-                    : l10nOf(context).appearanceDetailRequiresSimklLoginInSettingsSimkl,
+                    ? l10nOf(
+                        context,
+                      ).finalHomeUiSettingsPageTopRatedPersonalizedSuggestionsFromSimkl
+                    : l10nOf(
+                        context,
+                      ).appearanceDetailRequiresSimklLoginInSettingsSimkl,
                 listenable: HomePageSettings.enableSimklRecommendations,
                 trailingExtra: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: isAuthed
                         ? const Color(0xFF00B2FF).withValues(alpha: 0.2)
-                        : Colors.white.withValues(alpha: ZplayOpacity.borderStrong),
+                        : Colors.white.withValues(
+                            alpha: ZplayOpacity.borderStrong,
+                          ),
                     borderRadius: ZplayRadius.xsAll,
                     border: Border.all(
                       color: isAuthed
-                            ? const Color(0xFF00B2FF).withValues(alpha: 0.4)
-                            : tokens.borderStrong,
+                          ? const Color(0xFF00B2FF).withValues(alpha: 0.4)
+                          : tokens.borderStrong,
                       width: 0.8,
                     ),
                   ),
                   child: Text(
-                    isAuthed ? l10nOf(context).finalSimklSettingsPageConnected : l10nOf(context).appearanceDetailDisconnected,
-                    style: ZplayType.overline.toStyle(color: isAuthed ? const Color(0xFF40C4FF) : tokens.textMuted),
+                    isAuthed
+                        ? l10nOf(context).finalSimklSettingsPageConnected
+                        : l10nOf(context).appearanceDetailDisconnected,
+                    style: ZplayType.overline.toStyle(
+                      color: isAuthed
+                          ? const Color(0xFF40C4FF)
+                          : tokens.textMuted,
+                    ),
                   ),
                 ),
                 onChanged: (val) {
@@ -572,41 +679,26 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
           ),
 
           const SizedBox(height: 12),
-          Divider(color: tokens.borderSubtle),
+          KiruDivider(height: 16, color: tokens.borderSubtle),
           const SizedBox(height: 12),
 
           // Position Dropdown
           Text(
-            l10nOf(context).auxHomeUiSettingsPageRecommendationSlidersPositionOnHomePage,
+            l10nOf(
+              context,
+            ).auxHomeUiSettingsPageRecommendationSlidersPositionOnHomePage,
             style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
           ),
           const SizedBox(height: 6),
           ValueListenableBuilder<SimilarSectionPosition>(
             valueListenable: HomePageSettings.similarPosition,
             builder: (context, pos, _) {
-              return DropdownButtonFormField<SimilarSectionPosition>(
+              return KiruSelect<SimilarSectionPosition>(
                 value: pos,
-                dropdownColor: tokens.surfaceOverlay,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: tokens.surface,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                  border: OutlineInputBorder(
-                    borderRadius: ZplayRadius.smAll,
-                    borderSide: BorderSide(color: tokens.borderDefault),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: ZplayRadius.smAll,
-                    borderSide: BorderSide(color: tokens.borderDefault),
-                  ),
-                ),
-                style: ZplayType.label.toStyle(color: tokens.textPrimary),
-                items: SimilarSectionPosition.values.map((p) {
-                  return DropdownMenuItem(
-                    value: p,
-                    child: Text(configLabel(context, p.label)),
-                  );
-                }).toList(),
+                items: {
+                  for (final p in SimilarSectionPosition.values)
+                    configLabel(context, p.label): p,
+                },
                 onChanged: (newPos) {
                   if (newPos != null) {
                     HomePageSettings.setSimilarPosition(newPos);
@@ -645,7 +737,9 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                         Flexible(
                           child: Text(
                             title,
-                            style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                            style: ZplayType.subtitle.toStyle(
+                              color: tokens.textPrimary,
+                            ),
                           ),
                         ),
                         if (trailingExtra != null) ...[
@@ -657,13 +751,15 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                     const SizedBox(height: 2),
                     Text(
                       subtitle,
-                      style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                      style: ZplayType.caption.toStyle(
+                        color: tokens.textSecondary,
+                      ),
                     ),
                   ],
                 ),
               ),
               const SizedBox(width: 12),
-              Switch.adaptive(
+              KiruSwitch(
                 value: enabled,
                 activeColor: AppThemeService.currentPalette.value.primaryColor,
                 onChanged: onChanged,
@@ -680,7 +776,9 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
       padding: const EdgeInsets.all(18),
       child: _buildRecommendationToggleRow(
         title: l10nOf(context).browseVerticalCollections,
-        subtitle: l10nOf(context).auxHomeUiSettingsPageShowCuratedCollectionRailsOnTheHome,
+        subtitle: l10nOf(
+          context,
+        ).auxHomeUiSettingsPageShowCuratedCollectionRailsOnTheHome,
         listenable: CollectionsService.showOnHome,
         onChanged: (val) {
           CollectionsService.showOnHome.value = val;
@@ -707,7 +805,8 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: AppThemeService.currentPalette.value.primaryColor.withValues(alpha: ZplayOpacity.overlayHover),
+                      color: AppThemeService.currentPalette.value.primaryColor
+                          .withValues(alpha: ZplayOpacity.overlayHover),
                       borderRadius: ZplayRadius.smAll,
                     ),
                     child: Icon(
@@ -722,20 +821,29 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10nOf(context).auxHomeUiSettingsPageShowHeroSpotlightBanner,
-                          style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).auxHomeUiSettingsPageShowHeroSpotlightBanner,
+                          style: ZplayType.subtitle.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          l10nOf(context).auxHomeUiSettingsPageFeaturedRotationBannerAtTheTopOf,
-                          style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                          l10nOf(
+                            context,
+                          ).auxHomeUiSettingsPageFeaturedRotationBannerAtTheTopOf,
+                          style: ZplayType.caption.toStyle(
+                            color: tokens.textSecondary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Switch.adaptive(
+                  KiruSwitch(
                     value: enabled,
-                    activeColor: AppThemeService.currentPalette.value.primaryColor,
+                    activeColor:
+                        AppThemeService.currentPalette.value.primaryColor,
                     onChanged: (val) {
                       HomePageSettings.setEnableSpotlight(val);
                       setState(() {});
@@ -756,13 +864,15 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 16),
-                  Divider(color: tokens.borderSubtle),
+                  KiruDivider(height: 16, color: tokens.borderSubtle),
                   const SizedBox(height: 12),
 
                   // Hero Style Selector
                   Text(
                     l10nOf(context).auxHomeUiSettingsPageSpotlightStyle,
-                    style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
+                    style: ZplayType.subtitle.toStyle(
+                      color: tokens.textEmphasis,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   ValueListenableBuilder<HeroStyle>(
@@ -776,123 +886,167 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                         },
                         options: [
                           for (final style in HeroStyle.values)
-                            SegmentedTabOption(value: style, label: configLabel(context, style.label)),
+                            SegmentedTabOption(
+                              value: style,
+                              label: configLabel(context, style.label),
+                            ),
                         ],
                       );
                     },
                   ),
 
-          // Auto-Rotate Switch & Interval
-          ValueListenableBuilder<bool>(
-            valueListenable: HomePageSettings.heroAutoRotate,
-            builder: (context, autoRotate, _) {
-              return Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              l10nOf(context).auxHomeUiSettingsPageAutoRotateSpotlight,
-                              style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              l10nOf(context).auxHomeUiSettingsPageCyclesThroughFeaturedTitlesAutomatically,
-                              style: ZplayType.caption.toStyle(color: tokens.textSecondary),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Switch.adaptive(
-                        value: autoRotate,
-                        activeColor: AppThemeService.currentPalette.value.primaryColor,
-                        onChanged: (val) {
-                          HomePageSettings.setHeroAutoRotate(val);
-                          setState(() {});
-                        },
-                      ),
-                    ],
-                  ),
-                  if (autoRotate) ...[
-                    const SizedBox(height: 10),
-                    ValueListenableBuilder<int>(
-                      valueListenable: HomePageSettings.heroRotateSeconds,
-                      builder: (context, seconds, _) {
-                        return Row(
-                          children: [
-                            Text(
-                              l10nOf(context).dynamicHomeUiSettingsPageIntervalS((seconds).toString()),
-                              style: ZplayType.labelNumeric.toStyle(color: tokens.textEmphasis),
-                            ),
-                            Expanded(
-                              child: SliderTheme(
-                                data: SliderTheme.of(context).copyWith(
-                                  activeTrackColor: AppThemeService.currentPalette.value.primaryColor,
-                                  inactiveTrackColor: Colors.white.withValues(alpha: ZplayOpacity.borderMedium),
-                                  thumbColor: AppThemeService.currentPalette.value.primaryColor,
-                                  trackHeight: 3,
-                                ),
-                                child: Slider(
-                                  value: seconds.toDouble(),
-                                  min: 3,
-                                  max: 15,
-                                  divisions: 12,
-                                  onChanged: (val) =>
-                                      HomePageSettings.setHeroRotateSeconds(val.round()),
+                  // Auto-Rotate Switch & Interval
+                  ValueListenableBuilder<bool>(
+                    valueListenable: HomePageSettings.heroAutoRotate,
+                    builder: (context, autoRotate, _) {
+                      return Column(
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      l10nOf(
+                                        context,
+                                      ).auxHomeUiSettingsPageAutoRotateSpotlight,
+                                      style: ZplayType.subtitle.toStyle(
+                                        color: tokens.textPrimary,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      l10nOf(
+                                        context,
+                                      ).auxHomeUiSettingsPageCyclesThroughFeaturedTitlesAutomatically,
+                                      style: ZplayType.caption.toStyle(
+                                        color: tokens.textSecondary,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
+                              KiruSwitch(
+                                value: autoRotate,
+                                activeColor: AppThemeService
+                                    .currentPalette
+                                    .value
+                                    .primaryColor,
+                                onChanged: (val) {
+                                  HomePageSettings.setHeroAutoRotate(val);
+                                  setState(() {});
+                                },
+                              ),
+                            ],
+                          ),
+                          if (autoRotate) ...[
+                            const SizedBox(height: 10),
+                            ValueListenableBuilder<int>(
+                              valueListenable:
+                                  HomePageSettings.heroRotateSeconds,
+                              builder: (context, seconds, _) {
+                                return Row(
+                                  children: [
+                                    Text(
+                                      l10nOf(
+                                        context,
+                                      ).dynamicHomeUiSettingsPageIntervalS(
+                                        (seconds).toString(),
+                                      ),
+                                      style: ZplayType.labelNumeric.toStyle(
+                                        color: tokens.textEmphasis,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: SliderTheme(
+                                        data: SliderTheme.of(context).copyWith(
+                                          activeTrackColor: AppThemeService
+                                              .currentPalette
+                                              .value
+                                              .primaryColor,
+                                          inactiveTrackColor: Colors.white
+                                              .withValues(
+                                                alpha:
+                                                    ZplayOpacity.borderMedium,
+                                              ),
+                                          thumbColor: AppThemeService
+                                              .currentPalette
+                                              .value
+                                              .primaryColor,
+                                          trackHeight: 3,
+                                        ),
+                                        child: KiruSlider(
+                                          value: seconds.toDouble(),
+                                          min: 3,
+                                          max: 15,
+                                          divisions: 12,
+                                          onChanged: (val) =>
+                                              HomePageSettings.setHeroRotateSeconds(
+                                                val.round(),
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
                             ),
                           ],
-                        );
-                      },
-                    ),
-                  ],
-                ],
-              );
-            },
-          ),
-
-          const SizedBox(height: 12),
-          Divider(color: tokens.borderSubtle),
-          const SizedBox(height: 12),
-
-          // Ambient Glow Switch
-          ValueListenableBuilder<bool>(
-            valueListenable: HomePageSettings.ambientGlow,
-            builder: (context, glow, _) {
-              return Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          l10nOf(context).auxHomeUiSettingsPageAmbientBackdropLighting,
-                          style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          l10nOf(context).auxHomeUiSettingsPageSoftDiffusedColorGlowBehindActiveHero,
-                          style: ZplayType.caption.toStyle(color: tokens.textSecondary),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Switch.adaptive(
-                    value: glow,
-                    activeColor: AppThemeService.currentPalette.value.primaryColor,
-                    onChanged: (val) {
-                      HomePageSettings.setAmbientGlow(val);
-                      setState(() {});
+                        ],
+                      );
                     },
                   ),
-                ],
-              );
-            },
-          ),
+
+                  const SizedBox(height: 12),
+                  KiruDivider(height: 16, color: tokens.borderSubtle),
+                  const SizedBox(height: 12),
+
+                  // Ambient Glow Switch
+                  ValueListenableBuilder<bool>(
+                    valueListenable: HomePageSettings.ambientGlow,
+                    builder: (context, glow, _) {
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  l10nOf(
+                                    context,
+                                  ).auxHomeUiSettingsPageAmbientBackdropLighting,
+                                  style: ZplayType.subtitle.toStyle(
+                                    color: tokens.textPrimary,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  l10nOf(
+                                    context,
+                                  ).auxHomeUiSettingsPageSoftDiffusedColorGlowBehindActiveHero,
+                                  style: ZplayType.caption.toStyle(
+                                    color: tokens.textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          KiruSwitch(
+                            value: glow,
+                            activeColor: AppThemeService
+                                .currentPalette
+                                .value
+                                .primaryColor,
+                            onChanged: (val) {
+                              HomePageSettings.setAmbientGlow(val);
+                              setState(() {});
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  ),
                 ],
               );
             },
@@ -925,14 +1079,17 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                 },
                 options: [
                   for (final density in CardDensity.values)
-                    SegmentedTabOption(value: density, label: configLabel(context, density.label)),
+                    SegmentedTabOption(
+                      value: density,
+                      label: configLabel(context, density.label),
+                    ),
                 ],
               );
             },
           ),
 
           const SizedBox(height: 16),
-          Divider(color: tokens.borderSubtle),
+          KiruDivider(height: 16, color: tokens.borderSubtle),
           const SizedBox(height: 12),
 
           // Rating Badges Switch
@@ -946,20 +1103,29 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10nOf(context).auxHomeUiSettingsPageShowImdbRatingBadges,
-                          style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).auxHomeUiSettingsPageShowImdbRatingBadges,
+                          style: ZplayType.subtitle.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          l10nOf(context).auxHomeUiSettingsPageDisplayRatingStarPillOnPosterCorners,
-                          style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                          l10nOf(
+                            context,
+                          ).auxHomeUiSettingsPageDisplayRatingStarPillOnPosterCorners,
+                          style: ZplayType.caption.toStyle(
+                            color: tokens.textSecondary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Switch.adaptive(
+                  KiruSwitch(
                     value: showRating,
-                    activeColor: AppThemeService.currentPalette.value.primaryColor,
+                    activeColor:
+                        AppThemeService.currentPalette.value.primaryColor,
                     onChanged: (val) {
                       HomePageSettings.setShowRating(val);
                       setState(() {});
@@ -971,7 +1137,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
           ),
 
           const SizedBox(height: 12),
-          Divider(color: tokens.borderSubtle),
+          KiruDivider(height: 16, color: tokens.borderSubtle),
           const SizedBox(height: 12),
 
           // Card Hover Zoom Strength
@@ -985,30 +1151,42 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                     children: [
                       Expanded(
                         child: Text(
-                          l10nOf(context).auxHomeUiSettingsPagePosterHoverZoomScale,
-                          style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).auxHomeUiSettingsPagePosterHoverZoomScale,
+                          style: ZplayType.subtitle.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                       ),
                       Text(
                         '${zoom.toStringAsFixed(2)}x',
-                        style: ZplayType.labelNumeric.toStyle(color: AppThemeService.currentPalette.value.primaryColor),
+                        style: ZplayType.labelNumeric.toStyle(
+                          color:
+                              AppThemeService.currentPalette.value.primaryColor,
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 4),
                   SliderTheme(
                     data: SliderTheme.of(context).copyWith(
-                      activeTrackColor: AppThemeService.currentPalette.value.primaryColor,
-                      inactiveTrackColor: Colors.white.withValues(alpha: ZplayOpacity.borderMedium),
-                      thumbColor: AppThemeService.currentPalette.value.primaryColor,
+                      activeTrackColor:
+                          AppThemeService.currentPalette.value.primaryColor,
+                      inactiveTrackColor: Colors.white.withValues(
+                        alpha: ZplayOpacity.borderMedium,
+                      ),
+                      thumbColor:
+                          AppThemeService.currentPalette.value.primaryColor,
                       trackHeight: 3,
                     ),
-                    child: Slider(
+                    child: KiruSlider(
                       value: zoom,
                       min: 1.00,
                       max: 1.15,
                       divisions: 15,
-                      onChanged: (val) => HomePageSettings.setCardHoverZoom(val),
+                      onChanged: (val) =>
+                          HomePageSettings.setCardHoverZoom(val),
                     ),
                   ),
                 ],
@@ -1037,7 +1215,9 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                     width: 36,
                     height: 36,
                     decoration: BoxDecoration(
-                      color: tokens.info.withValues(alpha: ZplayOpacity.overlayHover),
+                      color: tokens.info.withValues(
+                        alpha: ZplayOpacity.overlayHover,
+                      ),
                       borderRadius: ZplayRadius.smAll,
                     ),
                     child: Icon(
@@ -1053,17 +1233,23 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                       children: [
                         Text(
                           l10nOf(context).homeAiringCalendar,
-                          style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                          style: ZplayType.subtitle.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          l10nOf(context).auxHomeUiSettingsPageShowTvCalendarButtonsOnHomeBar,
-                          style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
+                          l10nOf(
+                            context,
+                          ).auxHomeUiSettingsPageShowTvCalendarButtonsOnHomeBar,
+                          style: ZplayType.bodySmall.toStyle(
+                            color: tokens.textSecondary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Switch.adaptive(
+                  KiruSwitch(
                     value: enabled,
                     onChanged: (val) => HomePageSettings.setEnableCalendar(val),
                     activeColor: tokens.info,
@@ -1074,7 +1260,7 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
           ),
 
           const SizedBox(height: 12),
-          Divider(color: tokens.borderSubtle, height: 1),
+          KiruDivider(color: tokens.borderSubtle, height: 1),
           const SizedBox(height: 12),
 
           // AI Recommendation Quiz
@@ -1087,7 +1273,9 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                     width: 36,
                     height: 36,
                     decoration: BoxDecoration(
-                      color: tokens.accent.withValues(alpha: ZplayOpacity.overlayHover),
+                      color: tokens.accent.withValues(
+                        alpha: ZplayOpacity.overlayHover,
+                      ),
                       borderRadius: ZplayRadius.smAll,
                     ),
                     child: Icon(
@@ -1102,18 +1290,26 @@ class _HomeUiSettingsPageState extends State<HomeUiSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10nOf(context).auxHomeUiSettingsPageAiRecommendationQuiz,
-                          style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).auxHomeUiSettingsPageAiRecommendationQuiz,
+                          style: ZplayType.subtitle.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          l10nOf(context).auxHomeUiSettingsPageShowAiQuizButtonOnHomeSearch,
-                          style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
+                          l10nOf(
+                            context,
+                          ).auxHomeUiSettingsPageShowAiQuizButtonOnHomeSearch,
+                          style: ZplayType.bodySmall.toStyle(
+                            color: tokens.textSecondary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Switch.adaptive(
+                  KiruSwitch(
                     value: enabled,
                     onChanged: (val) => HomePageSettings.setEnableAiQuiz(val),
                     activeColor: tokens.accent,

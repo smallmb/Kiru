@@ -11,6 +11,8 @@
 /// transcript does to the field is a pure step worth proving on its own.
 library;
 
+import 'package:zplay/widgets/ui/kiru_controls.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -59,94 +61,120 @@ void main() {
     answerAvailability(false);
     await openSearchPage(tester);
 
-    expect(find.byIcon(Icons.mic_rounded), findsNothing,
-        reason: 'a control that exists and fails is worse than no control');
-  });
-
-  testWidgets('a recognizer puts a focusable, ringed microphone beside the field',
-      (tester) async {
-    answerAvailability(true);
-    await openSearchPage(tester);
-
-    final mic = find.byIcon(Icons.mic_rounded);
-    expect(mic, findsOneWidget);
-
-    // The house treatment for anything a remote can land on, so it is neither
-    // pointer-only nor the one focusable in the app without a ring.
-    final card = find.ancestor(of: mic, matching: find.byType(FocusableCard));
-    expect(card, findsOneWidget,
-        reason: 'the microphone must be a control a remote can land on');
-    expect(tester.widget<FocusableCard>(card).onTap, isNotNull);
-    expect(find.descendant(of: card, matching: find.byType(CardFocusRing)),
-        findsOneWidget);
     expect(
-        find.descendant(of: card, matching: find.byType(FocusableActionDetector)),
-        findsOneWidget);
-
-    // **And here it stays inside the field's suffix.** That is where a pointer
-    // device looks for it, and the television's version of this control - a
-    // sibling in the band, so a D-pad can land on it at all - must not move the
-    // one a mouse can already reach. See the television test below.
-    expect(
-      find.descendant(of: find.byType(TextField), matching: mic),
-      findsOneWidget,
-      reason: 'a pointer device keeps the microphone in the field it belongs to',
+      find.byIcon(Icons.mic_rounded),
+      findsNothing,
+      reason: 'a control that exists and fails is worse than no control',
     );
   });
 
   testWidgets(
-      'a television puts the microphone in the band, where the field cannot hide it',
-      (tester) async {
-    DeviceProfile.debugSetTelevision(value: true);
-    final calls = <String>[];
-    messenger.setMockMethodCallHandler(VoiceSearch.channel, (call) async {
-      calls.add(call.method);
-      if (call.method == 'isAvailable') return true;
-      return null;
-    });
-    await openSearchPage(tester);
+    'a recognizer puts a focusable, ringed microphone beside the field',
+    (tester) async {
+      answerAvailability(true);
+      await openSearchPage(tester);
 
-    final mic = find.byIcon(Icons.mic_rounded);
-    expect(mic, findsOneWidget);
+      final mic = find.byIcon(Icons.mic_rounded);
+      expect(mic, findsOneWidget);
 
-    // **Outside the field's subtree.** A suffix is inside it, and a focused
-    // `EditableText` answers every arrow key itself, so a microphone in there is
-    // one only a user who is already stuck in the field could press - which is
-    // the defect this change exists for.
-    expect(
-      find.descendant(of: find.byType(TextField), matching: mic),
-      findsNothing,
-      reason: 'inside the field the microphone is unreachable with a remote',
-    );
+      // The house treatment for anything a remote can land on, so it is neither
+      // pointer-only nor the one focusable in the app without a ring.
+      final card = find.ancestor(of: mic, matching: find.byType(FocusableCard));
+      expect(
+        card,
+        findsOneWidget,
+        reason: 'the microphone must be a control a remote can land on',
+      );
+      expect(tester.widget<FocusableCard>(card).onTap, isNotNull);
+      expect(
+        find.descendant(of: card, matching: find.byType(CardFocusRing)),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: card,
+          matching: find.byType(FocusableActionDetector),
+        ),
+        findsOneWidget,
+      );
 
-    // A control of the page's own row, on the house treatment, so the ring a
-    // remote looks for is drawn for it like for every other card.
-    final card = find.ancestor(of: mic, matching: find.byType(FocusableCard));
-    expect(card, findsOneWidget);
-    expect(find.descendant(of: card, matching: find.byType(CardFocusRing)),
-        findsOneWidget);
+      // **And here it stays inside the field's suffix.** That is where a pointer
+      // device looks for it, and the television's version of this control - a
+      // sibling in the band, so a D-pad can land on it at all - must not move the
+      // one a mouse can already reach. See the television test below.
+      expect(
+        find.descendant(of: find.byType(KiruFormField), matching: mic),
+        findsOneWidget,
+        reason:
+            'a pointer device keeps the microphone in the field it belongs to',
+      );
+    },
+  );
 
-    // The remote's traverse-then-press, done on the microphone's own node
-    // because a page pumped on its own has no shell bar to walk DOWN out of
-    // (`test/tv_dpad_focus_regression_test.dart` drives the real bar): the field
-    // is never focused, and the press is voice search.
-    final field = tester.widget<EditableText>(find.byType(EditableText));
-    final micNode = Focus.maybeOf(tester.element(mic), scopeOk: true)!;
-    micNode.requestFocus();
-    await tester.pump();
-    expect(field.focusNode.hasFocus, isFalse,
-        reason: 'the microphone is a destination of its own, not a stop on the '
-            'way through the field');
+  testWidgets(
+    'a television puts the microphone in the band, where the field cannot hide it',
+    (tester) async {
+      DeviceProfile.debugSetTelevision(value: true);
+      final calls = <String>[];
+      messenger.setMockMethodCallHandler(VoiceSearch.channel, (call) async {
+        calls.add(call.method);
+        if (call.method == 'isAvailable') return true;
+        return null;
+      });
+      await openSearchPage(tester);
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.select);
-    await tester.pump();
+      final mic = find.byIcon(Icons.mic_rounded);
+      expect(mic, findsOneWidget);
 
-    expect(calls, contains('listen'),
-        reason: 'the centre button on the microphone starts voice search');
-  });
+      // **Outside the field's subtree.** A suffix is inside it, and a focused
+      // `EditableText` answers every arrow key itself, so a microphone in there is
+      // one only a user who is already stuck in the field could press - which is
+      // the defect this change exists for.
+      expect(
+        find.descendant(of: find.byType(KiruFormField), matching: mic),
+        findsNothing,
+        reason: 'inside the field the microphone is unreachable with a remote',
+      );
 
-  testWidgets('a refused microphone reports without touching the query',
-      (tester) async {
+      // A control of the page's own row, on the house treatment, so the ring a
+      // remote looks for is drawn for it like for every other card.
+      final card = find.ancestor(of: mic, matching: find.byType(FocusableCard));
+      expect(card, findsOneWidget);
+      expect(
+        find.descendant(of: card, matching: find.byType(CardFocusRing)),
+        findsOneWidget,
+      );
+
+      // The remote's traverse-then-press, done on the microphone's own node
+      // because a page pumped on its own has no shell bar to walk DOWN out of
+      // (`test/tv_dpad_focus_regression_test.dart` drives the real bar): the field
+      // is never focused, and the press is voice search.
+      final field = tester.widget<EditableText>(find.byType(EditableText));
+      final micNode = Focus.maybeOf(tester.element(mic), scopeOk: true)!;
+      micNode.requestFocus();
+      await tester.pump();
+      expect(
+        field.focusNode.hasFocus,
+        isFalse,
+        reason:
+            'the microphone is a destination of its own, not a stop on the '
+            'way through the field',
+      );
+
+      await tester.sendKeyEvent(LogicalKeyboardKey.select);
+      await tester.pump();
+
+      expect(
+        calls,
+        contains('listen'),
+        reason: 'the centre button on the microphone starts voice search',
+      );
+    },
+  );
+
+  testWidgets('a refused microphone reports without touching the query', (
+    tester,
+  ) async {
     messenger.setMockMethodCallHandler(VoiceSearch.channel, (call) async {
       if (call.method == 'isAvailable') return true;
       throw PlatformException(code: 'denied');
@@ -160,7 +188,7 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.textContaining('Microphone access'), findsOneWidget);
     expect(
-      tester.widget<TextField>(find.byType(TextField)).controller!.text,
+      tester.widget<KiruFormField>(find.byType(KiruFormField)).controller!.text,
       isEmpty,
       reason: 'a refusal must not fill or clear the field',
     );
@@ -179,11 +207,17 @@ void main() {
         onSearch: (text) => searchedFor = text,
       );
 
-      expect(controller.text, 'The Matrix',
-          reason: 'the field shows the trimmed transcript');
+      expect(
+        controller.text,
+        'The Matrix',
+        reason: 'the field shows the trimmed transcript',
+      );
       expect(changedTo, 'The Matrix');
-      expect(searchedFor, 'The Matrix',
-          reason: 'the search runs on exactly the transcript, just like a chip');
+      expect(
+        searchedFor,
+        'The Matrix',
+        reason: 'the search runs on exactly the transcript, just like a chip',
+      );
       controller.dispose();
     });
 

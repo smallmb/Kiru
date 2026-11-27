@@ -1,8 +1,10 @@
+import '../ui/kiru_controls.dart';
 import 'package:zplay/l10n/media_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
 import '../../services/theme/design_tokens.dart';
+import '../../services/window/window_service.dart';
 import 'player_glass.dart';
 
 /// Top header bar for the video player.
@@ -58,14 +60,34 @@ class PlayerTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final window = WindowService.instance;
+    if (!window.usesCustomCaptionBar) return _buildBar(context, false);
+    return ValueListenableBuilder<bool>(
+      valueListenable: window.isFullscreenNotifier,
+      builder: (context, fullscreen, _) => _buildBar(context, !fullscreen),
+    );
+  }
+
+  Widget _captionDrag({required Key key, Widget? child}) => GestureDetector(
+    key: key,
+    behavior: HitTestBehavior.opaque,
+    excludeFromSemantics: true,
+    onPanStart: (_) {
+      final window = WindowService.instance;
+      if (!window.isFullscreen) window.startDragging();
+    },
+    child: child,
+  );
+
+  Widget _buildBar(BuildContext context, bool canDrag) {
     final tokens = context.tokens;
+    final padding = EdgeInsets.only(
+      top: MediaQuery.paddingOf(context).top + ZplaySpacing.s12,
+      left: ZplaySpacing.s24,
+      right: ZplaySpacing.s24,
+      bottom: ZplaySpacing.s24,
+    );
     return Container(
-      padding: EdgeInsets.only(
-        top: MediaQuery.paddingOf(context).top + ZplaySpacing.s12,
-        left: ZplaySpacing.s24,
-        right: ZplaySpacing.s24,
-        bottom: ZplaySpacing.s24,
-      ),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -77,185 +99,212 @@ class PlayerTopBar extends StatelessWidget {
           ],
         ),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          // Frosted Glass Circular Back Button
-          PlayerIconButton(
-            size: 44,
-            iconSize: 26,
-            icon: const Icon(Icons.chevron_left_rounded),
-            tooltip: l10nOf(context).uiPlayerTopBarBack,
-            backgroundColor: tokens.bg.withValues(alpha: 0.20),
-            borderRadius: ZplayRadius.full,
-            onPressed: onBack,
-          ),
-
-          const SizedBox(width: ZplaySpacing.s16),
-
-          // Title & Details Column
-          Expanded(
-            child: Column(
+          if (canDrag)
+            Positioned.fill(
+              child: _captionDrag(
+                key: const ValueKey('kiru-player-caption-drag'),
+              ),
+            ),
+          Padding(
+            padding: padding,
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
               children: [
+                // Frosted Glass Circular Back Button
+                PlayerIconButton(
+                  size: 44,
+                  iconSize: 26,
+                  icon: const Icon(Icons.chevron_left_rounded),
+                  tooltip: l10nOf(context).uiPlayerTopBarBack,
+                  backgroundColor: tokens.bg.withValues(alpha: 0.20),
+                  borderRadius: ZplayRadius.full,
+                  onPressed: onBack,
+                ),
+
+                const SizedBox(width: ZplaySpacing.s16),
+
+                // Title & Details Column
+                Expanded(
+                  child: Builder(
+                    builder: (context) {
+                      final titleContent = Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  title,
+                                  style: ZplayType.title
+                                      .toStyle(color: tokens.textPrimary)
+                                      .copyWith(
+                                        fontWeight: FontWeight.w700,
+                                        shadows: const [
+                                          Shadow(
+                                            color: Color(0x99000000),
+                                            offset: Offset(0, 2),
+                                            blurRadius: 8,
+                                          ),
+                                        ],
+                                      ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              if (sourceLabel != null &&
+                                  sourceLabel!.isNotEmpty) ...[
+                                const SizedBox(width: ZplaySpacing.s8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: ZplaySpacing.s2,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: tokens.textPrimary.withValues(
+                                      alpha: ZplayOpacity.overlayHover,
+                                    ),
+                                    borderRadius: ZplayRadius.xsAll,
+                                  ),
+                                  child: Text(
+                                    sourceLabel!.toUpperCase(),
+                                    style: ZplayType.overline
+                                        .toStyle(color: tokens.textPrimary)
+                                        .copyWith(
+                                          fontWeight: FontWeight.w800,
+                                          letterSpacing: 0.6,
+                                        ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                          if (subtitle != null && subtitle!.isNotEmpty) ...[
+                            const SizedBox(height: ZplaySpacing.s2),
+                            Text(
+                              subtitle!,
+                              style: ZplayType.label
+                                  .toStyle(color: tokens.textEmphasis)
+                                  .copyWith(
+                                    fontWeight: FontWeight.w400,
+                                    shadows: const [
+                                      Shadow(
+                                        color: Color(0x99000000),
+                                        offset: Offset(0, 1),
+                                        blurRadius: 4,
+                                      ),
+                                    ],
+                                  ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ],
+                      );
+                      return canDrag
+                          ? _captionDrag(
+                              key: const ValueKey('kiru-player-title-drag'),
+                              child: titleContent,
+                            )
+                          : titleContent;
+                    },
+                  ),
+                ),
+
+                // Top-Right Action Badges
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Flexible(
-                      child: Text(
-                        title,
-                        style: ZplayType.title
-                            .toStyle(color: tokens.textPrimary)
-                            .copyWith(
-                              fontWeight: FontWeight.w700,
-                              shadows: const [
-                                Shadow(
-                                  color: Color(0x99000000),
-                                  offset: Offset(0, 2),
-                                  blurRadius: 8,
-                                ),
-                              ],
-                            ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                    if (onToggleEpisodes != null)
+                      _TopBarBadge(
+                        icon: Icons.video_library_rounded,
+                        label: l10nOf(context).uiPlayerTopBarEpisodes,
+                        active: isEpisodesActive,
+                        onTap: onToggleEpisodes!,
                       ),
-                    ),
-                    if (sourceLabel != null && sourceLabel!.isNotEmpty) ...[
-                      const SizedBox(width: ZplaySpacing.s8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: ZplaySpacing.s2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: tokens.textPrimary.withValues(
-                            alpha: ZplayOpacity.overlayHover,
-                          ),
-                          borderRadius: ZplayRadius.xsAll,
-                        ),
-                        child: Text(
-                          sourceLabel!.toUpperCase(),
-                          style: ZplayType.overline
-                              .toStyle(color: tokens.textPrimary)
-                              .copyWith(
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: 0.6,
-                              ),
-                        ),
+                    if (onShowSources != null) ...[
+                      const SizedBox(width: 10),
+                      _TopBarBadge(
+                        icon: Icons.playlist_play_rounded,
+                        label: l10nOf(context).uiPlayerTopBarSources,
+                        active: isSourcesActive,
+                        onTap: onShowSources!,
                       ),
                     ],
+                    if (onCopyStreamUrl != null) ...[
+                      PlayerIconButton(
+                        size: 40,
+                        iconSize: 20,
+                        icon: const Icon(Icons.link_rounded),
+                        tooltip: l10nOf(context).uiPlayerTopBarCopyStreamUrl,
+                        backgroundColor: tokens.bg.withValues(alpha: 0.13),
+                        onPressed: onCopyStreamUrl,
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                    if (onScreenshot != null) ...[
+                      PlayerIconButton(
+                        size: 40,
+                        iconSize: 20,
+                        icon: const Icon(Icons.camera_alt_outlined),
+                        tooltip: l10nOf(context).uiPlayerTopBarScreenshot,
+                        backgroundColor: tokens.bg.withValues(alpha: 0.13),
+                        onPressed: onScreenshot,
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                    if (onDownload != null) ...[
+                      PlayerIconButton(
+                        size: 40,
+                        iconSize: 20,
+                        icon: isDownloading
+                            ? SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: KiruLoader(
+                                  strokeWidth: 2,
+                                  color: tokens.success,
+                                ),
+                              )
+                            : const Icon(Icons.file_download_outlined),
+                        tooltip: mediaLabel(
+                          context,
+                          isDownloading ? 'Downloading...' : 'Download Media',
+                        ),
+                        backgroundColor: isDownloading
+                            ? tokens.success.withValues(alpha: 0.2)
+                            : tokens.bg.withValues(alpha: 0.13),
+                        onPressed: onDownload,
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                    if (onLock != null) ...[
+                      PlayerIconButton(
+                        size: 40,
+                        iconSize: 20,
+                        icon: const Icon(Icons.lock_outline_rounded),
+                        tooltip: l10nOf(context).uiPlayerTopBarLockScreen,
+                        backgroundColor: tokens.bg.withValues(alpha: 0.13),
+                        onPressed: onLock,
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                    if (onCast != null)
+                      PlayerIconButton(
+                        size: 40,
+                        iconSize: 20,
+                        icon: const Icon(Icons.cast_rounded),
+                        tooltip: l10nOf(context).uiPlayerTopBarCast,
+                        backgroundColor: tokens.bg.withValues(alpha: 0.13),
+                        onPressed: onCast,
+                      ),
                   ],
                 ),
-                if (subtitle != null && subtitle!.isNotEmpty) ...[
-                  const SizedBox(height: ZplaySpacing.s2),
-                  Text(
-                    subtitle!,
-                    style: ZplayType.label
-                        .toStyle(color: tokens.textEmphasis)
-                        .copyWith(
-                          fontWeight: FontWeight.w400,
-                          shadows: const [
-                            Shadow(
-                              color: Color(0x99000000),
-                              offset: Offset(0, 1),
-                              blurRadius: 4,
-                            ),
-                          ],
-                        ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
               ],
             ),
-          ),
-
-          // Top-Right Action Badges
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (onToggleEpisodes != null)
-                _TopBarBadge(
-                  icon: Icons.video_library_rounded,
-                  label: l10nOf(context).uiPlayerTopBarEpisodes,
-                  active: isEpisodesActive,
-                  onTap: onToggleEpisodes!,
-                ),
-              if (onShowSources != null) ...[
-                const SizedBox(width: 10),
-                _TopBarBadge(
-                  icon: Icons.playlist_play_rounded,
-                  label: l10nOf(context).uiPlayerTopBarSources,
-                  active: isSourcesActive,
-                  onTap: onShowSources!,
-                ),
-              ],
-              if (onCopyStreamUrl != null) ...[
-                PlayerIconButton(
-                  size: 40,
-                  iconSize: 20,
-                  icon: const Icon(Icons.link_rounded),
-                  tooltip: l10nOf(context).uiPlayerTopBarCopyStreamUrl,
-                  backgroundColor: tokens.bg.withValues(alpha: 0.13),
-                  onPressed: onCopyStreamUrl,
-                ),
-                const SizedBox(width: 8),
-              ],
-              if (onScreenshot != null) ...[
-                PlayerIconButton(
-                  size: 40,
-                  iconSize: 20,
-                  icon: const Icon(Icons.camera_alt_outlined),
-                  tooltip: l10nOf(context).uiPlayerTopBarScreenshot,
-                  backgroundColor: tokens.bg.withValues(alpha: 0.13),
-                  onPressed: onScreenshot,
-                ),
-                const SizedBox(width: 8),
-              ],
-              if (onDownload != null) ...[
-                PlayerIconButton(
-                  size: 40,
-                  iconSize: 20,
-                  icon: isDownloading
-                      ? SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: tokens.success,
-                          ),
-                        )
-                      : const Icon(Icons.file_download_outlined),
-                  tooltip: mediaLabel(context, isDownloading ? 'Downloading...' : 'Download Media'),
-                  backgroundColor: isDownloading
-                      ? tokens.success.withValues(alpha: 0.2)
-                      : tokens.bg.withValues(alpha: 0.13),
-                  onPressed: onDownload,
-                ),
-                const SizedBox(width: 8),
-              ],
-              if (onLock != null) ...[
-                PlayerIconButton(
-                  size: 40,
-                  iconSize: 20,
-                  icon: const Icon(Icons.lock_outline_rounded),
-                  tooltip: l10nOf(context).uiPlayerTopBarLockScreen,
-                  backgroundColor: tokens.bg.withValues(alpha: 0.13),
-                  onPressed: onLock,
-                ),
-                const SizedBox(width: 8),
-              ],
-              if (onCast != null)
-                PlayerIconButton(
-                  size: 40,
-                  iconSize: 20,
-                  icon: const Icon(Icons.cast_rounded),
-                  tooltip: l10nOf(context).uiPlayerTopBarCast,
-                  backgroundColor: tokens.bg.withValues(alpha: 0.13),
-                  onPressed: onCast,
-                ),
-            ],
           ),
         ],
       ),

@@ -1,3 +1,5 @@
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:io';
@@ -60,8 +62,10 @@ class _DownloadsPageState extends State<DownloadsPage> {
   void _playDownloadedMedia(DownloadTask task) {
     final file = File(task.targetFilePath);
     if (!file.existsSync()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10nOf(context).uiDownloadsPageFileNotFoundOnDisk)),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(l10nOf(context).uiDownloadsPageFileNotFoundOnDisk),
+        ),
       );
       return;
     }
@@ -103,7 +107,7 @@ class _DownloadsPageState extends State<DownloadsPage> {
     final tokens = context.tokens;
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => KiruAlertDialog(
         backgroundColor: tokens.surfaceOverlay,
         shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.mdAll),
         title: Text(
@@ -115,18 +119,21 @@ class _DownloadsPageState extends State<DownloadsPage> {
           style: ZplayType.body.toStyle(color: tokens.textEmphasis),
         ),
         actions: [
-          TextButton(
+          KiruButton(
+            kind: KiruButtonKind.ghost,
             onPressed: () => Navigator.pop(ctx),
             child: Text(
               l10nOf(context).uiDownloadsPageCancel,
               style: ZplayType.label.toStyle(color: tokens.textSecondary),
             ),
           ),
-          ElevatedButton(
+          KiruButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: tokens.danger,
               foregroundColor: tokens.textPrimary,
-              shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
+              shape: const RoundedRectangleBorder(
+                borderRadius: ZplayRadius.smAll,
+              ),
             ),
             onPressed: () {
               Navigator.pop(ctx);
@@ -151,10 +158,14 @@ class _DownloadsPageState extends State<DownloadsPage> {
             child: ValueListenableBuilder<List<DownloadTask>>(
               valueListenable: DownloadService.instance.tasksNotifier,
               builder: (context, tasks, _) {
-                final activeCount = tasks.where((t) => !t.isCompleted && !t.isFailed).length;
+                final activeCount = tasks
+                    .where((t) => !t.isCompleted && !t.isFailed)
+                    .length;
                 final completedCount = tasks.where((t) => t.isCompleted).length;
                 final activeTasks = tasks.where((t) => !t.isCompleted).toList();
-                final completedTasks = tasks.where((t) => t.isCompleted).toList();
+                final completedTasks = tasks
+                    .where((t) => t.isCompleted)
+                    .toList();
 
                 return CustomScrollView(
                   physics: const BouncingScrollPhysics(
@@ -165,7 +176,9 @@ class _DownloadsPageState extends State<DownloadsPage> {
                       child: _buildHeader(tokens, activeCount, completedCount),
                     ),
                     if (_storageInfo != null)
-                      SliverToBoxAdapter(child: _StorageBreakdownBar(info: _storageInfo!)),
+                      SliverToBoxAdapter(
+                        child: _StorageBreakdownBar(info: _storageInfo!),
+                      ),
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(
@@ -177,7 +190,9 @@ class _DownloadsPageState extends State<DownloadsPage> {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: SegmentedTabs<DownloadTab>(
-                            semanticsLabel: l10nOf(context).uiDownloadsPageDownloadList,
+                            semanticsLabel: l10nOf(
+                              context,
+                            ).uiDownloadsPageDownloadList,
                             selected: _tab,
                             onSelected: (tab) => setState(() => _tab = tab),
                             options: [
@@ -188,7 +203,9 @@ class _DownloadsPageState extends State<DownloadsPage> {
                               ),
                               SegmentedTabOption(
                                 value: DownloadTab.downloaded,
-                                label: l10nOf(context).uiDownloadsPageDownloaded,
+                                label: l10nOf(
+                                  context,
+                                ).uiDownloadsPageDownloaded,
                                 count: completedCount,
                               ),
                             ],
@@ -229,7 +246,9 @@ class _DownloadsPageState extends State<DownloadsPage> {
               children: [
                 Text(
                   l10nOf(context).uiDownloadsPageDownloads,
-                  style: ZplayType.titleLarge.toStyle(color: tokens.textPrimary),
+                  style: ZplayType.titleLarge.toStyle(
+                    color: tokens.textPrimary,
+                  ),
                 ),
                 const SizedBox(height: ZplaySpacing.s2),
                 Text(
@@ -239,7 +258,7 @@ class _DownloadsPageState extends State<DownloadsPage> {
               ],
             ),
           ),
-          IconButton(
+          KiruIconButton(
             icon: Icon(
               Icons.folder_open_rounded,
               color: tokens.textSecondary,
@@ -250,8 +269,10 @@ class _DownloadsPageState extends State<DownloadsPage> {
               final dir = await DownloadPathHelper.getDownloadsDirectoryPath();
               final opened = await OpenFileLocationHelper.openLocation(dir);
               if (!opened && mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l10nOf(context).downloadsFolderPath(dir))),
+                KiruToastMessenger.of(context).showSnackBar(
+                  KiruToast(
+                    content: Text(l10nOf(context).downloadsFolderPath(dir)),
+                  ),
                 );
               }
             },
@@ -321,8 +342,8 @@ class _DownloadsPageState extends State<DownloadsPage> {
     final VoidCallback? primaryAction = isDownloading
         ? () => DownloadService.instance.pauseDownload(task.id)
         : (isPaused || isFailed
-            ? () => DownloadService.instance.resumeDownload(task.id)
-            : null);
+              ? () => DownloadService.instance.resumeDownload(task.id)
+              : null);
 
     // No fill and no border: the row is spacing over the page surface, and the
     // only edge it ever draws is the focus ring.
@@ -338,7 +359,9 @@ class _DownloadsPageState extends State<DownloadsPage> {
           padding: const EdgeInsets.all(ZplaySpacing.s12),
           decoration: BoxDecoration(
             color: state.highlighted
-                ? tokens.surfaceRaised.withValues(alpha: ZplayOpacity.overlayHover)
+                ? tokens.surfaceRaised.withValues(
+                    alpha: ZplayOpacity.overlayHover,
+                  )
                 : Colors.transparent,
             borderRadius: ZplayRadius.mdAll,
           ),
@@ -355,7 +378,8 @@ class _DownloadsPageState extends State<DownloadsPage> {
                       width: 50,
                       height: 70,
                       color: tokens.surface,
-                      child: task.posterUrl != null && task.posterUrl!.isNotEmpty
+                      child:
+                          task.posterUrl != null && task.posterUrl!.isNotEmpty
                           ? CachedNetworkImage(
                               imageUrl: task.posterUrl!,
                               cacheManager: AppImageCache.manager,
@@ -363,7 +387,8 @@ class _DownloadsPageState extends State<DownloadsPage> {
                               errorWidget: (_, __, ___) => Icon(
                                 Icons.movie_rounded,
                                 color: tokens.textDisabled,
-                              ))
+                              ),
+                            )
                           : Icon(
                               Icons.movie_rounded,
                               color: tokens.textDisabled,
@@ -395,13 +420,18 @@ class _DownloadsPageState extends State<DownloadsPage> {
                                 vertical: ZplaySpacing.s2,
                               ),
                               decoration: BoxDecoration(
-                                color: palette.primaryColor.withValues(alpha: 0.15),
+                                color: palette.primaryColor.withValues(
+                                  alpha: 0.15,
+                                ),
                                 borderRadius: ZplayRadius.xsAll,
                               ),
                               child: Text(
                                 task.sourceType == DownloadSourceType.p2p
                                     ? 'P2P Torrent'
-                                    : (task.sourceType == DownloadSourceType.debrid ? 'Cloud Debrid' : 'Direct HTTP'),
+                                    : (task.sourceType ==
+                                              DownloadSourceType.debrid
+                                          ? 'Cloud Debrid'
+                                          : 'Direct HTTP'),
                                 style: ZplayType.caption.toStyle(
                                   color: palette.primaryColor,
                                 ),
@@ -410,7 +440,9 @@ class _DownloadsPageState extends State<DownloadsPage> {
                             if (task.peers > 0) ...[
                               const SizedBox(width: ZplaySpacing.s8),
                               Text(
-                                l10nOf(context).dynamicDownloadsPagePeers((task.peers).toString()),
+                                l10nOf(context).dynamicDownloadsPagePeers(
+                                  (task.peers).toString(),
+                                ),
                                 style: ZplayType.caption.toStyle(
                                   color: tokens.textSecondary,
                                 ),
@@ -421,14 +453,21 @@ class _DownloadsPageState extends State<DownloadsPage> {
                         const SizedBox(height: ZplaySpacing.s4),
                         Text(
                           isFailed
-                              ? l10nOf(context).downloadFailedDetail(task.error ?? l10nOf(context).downloadUnknownError)
+                              ? l10nOf(context).downloadFailedDetail(
+                                  task.error ??
+                                      l10nOf(context).downloadUnknownError,
+                                )
                               : isPaused
-                                  ? l10nOf(context).downloadPausedProgress((progress * 100).toStringAsFixed(1))
-                                  : '${(progress * 100).toStringAsFixed(1)}% • ${task.speedLabel} • ETA: ${task.etaLabel}',
+                              ? l10nOf(context).downloadPausedProgress(
+                                  (progress * 100).toStringAsFixed(1),
+                                )
+                              : '${(progress * 100).toStringAsFixed(1)}% • ${task.speedLabel} • ETA: ${task.etaLabel}',
                           style: ZplayType.bodySmall.toStyle(
                             color: isFailed
                                 ? tokens.danger
-                                : (isPaused ? tokens.warning : tokens.textEmphasis),
+                                : (isPaused
+                                      ? tokens.warning
+                                      : tokens.textEmphasis),
                           ),
                         ),
                       ],
@@ -440,48 +479,70 @@ class _DownloadsPageState extends State<DownloadsPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (isDownloading)
-                        IconButton(
+                        KiruIconButton(
                           icon: Icon(
                             Icons.pause_circle_rounded,
                             color: tokens.warning,
                             size: 26,
                           ),
                           tooltip: l10nOf(context).uiDownloadsPagePause,
-                          onPressed: () => DownloadService.instance.pauseDownload(task.id),
+                          onPressed: () =>
+                              DownloadService.instance.pauseDownload(task.id),
                         )
                       else if (isPaused)
-                        IconButton(
-                          icon: Icon(Icons.play_circle_fill_rounded, color: palette.primaryColor, size: 26),
+                        KiruIconButton(
+                          icon: Icon(
+                            Icons.play_circle_fill_rounded,
+                            color: palette.primaryColor,
+                            size: 26,
+                          ),
                           tooltip: l10nOf(context).uiDownloadsPageResume,
-                          onPressed: () => DownloadService.instance.resumeDownload(task.id),
+                          onPressed: () =>
+                              DownloadService.instance.resumeDownload(task.id),
                         )
                       else if (isFailed)
-                        IconButton(
+                        KiruIconButton(
                           icon: Icon(
                             Icons.replay_rounded,
                             color: tokens.warning,
                             size: 26,
                           ),
-                          tooltip: l10nOf(context).uiDownloadsPageRetryReconnect,
-                          onPressed: () => DownloadService.instance.resumeDownload(task.id),
+                          tooltip: l10nOf(
+                            context,
+                          ).uiDownloadsPageRetryReconnect,
+                          onPressed: () =>
+                              DownloadService.instance.resumeDownload(task.id),
                         ),
-                      IconButton(
+                      KiruIconButton(
                         icon: Icon(
                           Icons.folder_open_rounded,
                           color: tokens.textSecondary,
                           size: 22,
                         ),
-                        tooltip: l10nOf(context).uiDownloadsPageOpenFolderLocation,
+                        tooltip: l10nOf(
+                          context,
+                        ).uiDownloadsPageOpenFolderLocation,
                         onPressed: () async {
-                          final opened = await OpenFileLocationHelper.openLocation(task.targetFilePath);
+                          final opened =
+                              await OpenFileLocationHelper.openLocation(
+                                task.targetFilePath,
+                              );
                           if (!opened && context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(l10nOf(context).dynamicDownloadsPageFolder((File(task.targetFilePath).parent.path).toString()))),
+                            KiruToastMessenger.of(context).showSnackBar(
+                              KiruToast(
+                                content: Text(
+                                  l10nOf(context).dynamicDownloadsPageFolder(
+                                    (File(
+                                      task.targetFilePath,
+                                    ).parent.path).toString(),
+                                  ),
+                                ),
+                              ),
                             );
                           }
                         },
                       ),
-                      IconButton(
+                      KiruIconButton(
                         icon: Icon(
                           Icons.close_rounded,
                           color: tokens.textMuted,
@@ -500,7 +561,7 @@ class _DownloadsPageState extends State<DownloadsPage> {
               // Progress Bar
               ClipRRect(
                 borderRadius: ZplayRadius.xsAll,
-                child: LinearProgressIndicator(
+                child: KiruProgress(
                   value: progress > 0 ? progress : null,
                   minHeight: 5,
                   backgroundColor: tokens.borderDefault,
@@ -536,7 +597,10 @@ class _DownloadsPageState extends State<DownloadsPage> {
     );
   }
 
-  Widget _buildCompletedList(List<DownloadTask> tasks, AppThemePalette palette) {
+  Widget _buildCompletedList(
+    List<DownloadTask> tasks,
+    AppThemePalette palette,
+  ) {
     final tokens = context.tokens;
     if (tasks.isEmpty) {
       return SliverFillRemaining(
@@ -600,7 +664,9 @@ class _DownloadsPageState extends State<DownloadsPage> {
           curve: ZplayMotion.standard,
           decoration: BoxDecoration(
             color: state.highlighted
-                ? tokens.surfaceRaised.withValues(alpha: ZplayOpacity.overlayHover)
+                ? tokens.surfaceRaised.withValues(
+                    alpha: ZplayOpacity.overlayHover,
+                  )
                 : Colors.transparent,
             borderRadius: ZplayRadius.mdAll,
           ),
@@ -616,7 +682,8 @@ class _DownloadsPageState extends State<DownloadsPage> {
                     children: [
                       Container(
                         color: tokens.surface,
-                        child: task.posterUrl != null && task.posterUrl!.isNotEmpty
+                        child:
+                            task.posterUrl != null && task.posterUrl!.isNotEmpty
                             ? CachedNetworkImage(
                                 imageUrl: task.posterUrl!,
                                 cacheManager: AppImageCache.manager,
@@ -627,7 +694,8 @@ class _DownloadsPageState extends State<DownloadsPage> {
                                     color: tokens.textDisabled,
                                     size: 36,
                                   ),
-                                ))
+                                ),
+                              )
                             : Center(
                                 child: Icon(
                                   Icons.movie_rounded,
@@ -677,10 +745,19 @@ class _DownloadsPageState extends State<DownloadsPage> {
                         left: ZplaySpacing.s4,
                         child: FocusableCard(
                           onTap: () async {
-                            final opened = await OpenFileLocationHelper.openLocation(task.targetFilePath);
+                            final opened =
+                                await OpenFileLocationHelper.openLocation(
+                                  task.targetFilePath,
+                                );
                             if (!opened && context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(l10nOf(context).dynamicDownloadsPagePath((task.targetFilePath).toString()))),
+                              KiruToastMessenger.of(context).showSnackBar(
+                                KiruToast(
+                                  content: Text(
+                                    l10nOf(context).dynamicDownloadsPagePath(
+                                      (task.targetFilePath).toString(),
+                                    ),
+                                  ),
+                                ),
                               );
                             }
                           },
@@ -776,7 +853,9 @@ class _DownloadsPageState extends State<DownloadsPage> {
                       Text(
                         task.season != null && task.episode != null
                             ? 'S${task.season}:E${task.episode} • Offline'
-                            : (task.year != null ? '${task.year} • Offline' : 'Offline Media'),
+                            : (task.year != null
+                                  ? '${task.year} • Offline'
+                                  : 'Offline Media'),
                         style: ZplayType.caption.toStyle(
                           color: tokens.textSecondary,
                         ),
@@ -840,7 +919,10 @@ class _StorageBreakdownBar extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    l10nOf(context).dynamicDownloadsPageDeviceStorageUsedOf((DownloadTask.formatBytes(usedBytes)).toString(), (info.totalFormatted).toString()),
+                    l10nOf(context).dynamicDownloadsPageDeviceStorageUsedOf(
+                      (DownloadTask.formatBytes(usedBytes)).toString(),
+                      (info.totalFormatted).toString(),
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: ZplayType.label.toStyle(color: tokens.textPrimary),
@@ -848,7 +930,9 @@ class _StorageBreakdownBar extends StatelessWidget {
                 ),
                 const SizedBox(width: ZplaySpacing.s12),
                 Text(
-                  l10nOf(context).dynamicDownloadsPageFree((info.freeFormatted).toString()),
+                  l10nOf(
+                    context,
+                  ).dynamicDownloadsPageFree((info.freeFormatted).toString()),
                   style: ZplayType.caption.toStyle(color: tokens.textMuted),
                 ),
               ],
@@ -856,7 +940,7 @@ class _StorageBreakdownBar extends StatelessWidget {
             const SizedBox(height: ZplaySpacing.s8),
             ClipRRect(
               borderRadius: ZplayRadius.xsAll,
-              child: LinearProgressIndicator(
+              child: KiruProgress(
                 value: usedFraction,
                 minHeight: 8,
                 backgroundColor: tokens.surfaceRaised,

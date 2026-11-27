@@ -21,6 +21,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'fonts/font_registry.dart';
 
 // ══════════════════════════════════════════════════════════════════════════════
 // 1. OPACITY SCALE
@@ -194,6 +195,12 @@ class ZplayTextToken {
   /// than merging with it, so a style handed to one loses the theme's family
   /// unless it names it. Leave it null for widget code and the family resolves
   /// from the theme as usual.
+  TextStyle toTimingStyle({Color? color}) =>
+      toStyle(color: color, tabular: true).copyWith(
+        fontFamily: FontRegistry.timerFamily,
+        fontFamilyFallback: FontRegistry.timerFallback,
+      );
+
   TextStyle toStyle({
     Color? color,
     double? opacity,
@@ -204,6 +211,9 @@ class ZplayTextToken {
     String? fontFamily,
   }) => TextStyle(
     fontFamily: fontFamily,
+    fontFamilyFallback: fontFamily == FontRegistry.primary
+        ? FontRegistry.fallback
+        : null,
     fontSize: size,
     fontWeight: weight,
     height: height,

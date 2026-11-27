@@ -1,8 +1,8 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
-import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../models/manga/manga.dart';
@@ -70,7 +70,9 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
     final historyList = results[2] as List<Map<String, dynamic>>;
     Map<String, dynamic>? matchingHistory;
     try {
-      matchingHistory = historyList.firstWhere((h) => h['manga']['id'] == widget.manga.id);
+      matchingHistory = historyList.firstWhere(
+        (h) => h['manga']['id'] == widget.manga.id,
+      );
     } catch (_) {
       // No history found
     }
@@ -88,21 +90,25 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
   void _startReading(int chapterIndex, {int pageIndex = 0}) {
     if (_chapters == null || _chapters!.isEmpty) return;
 
-    Navigator.of(context).push(
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => MangaReaderPage(
-          manga: _fullDetails ?? widget.manga,
-          chapters: _chapters!,
-          currentChapterIndex: chapterIndex,
-          resumePageIndex: pageIndex,
-        ),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-      ),
-    ).then((_) {
-      _loadDetails();
-    });
+    Navigator.of(context)
+        .push(
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                MangaReaderPage(
+                  manga: _fullDetails ?? widget.manga,
+                  chapters: _chapters!,
+                  currentChapterIndex: chapterIndex,
+                  resumePageIndex: pageIndex,
+                ),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(opacity: animation, child: child);
+                },
+          ),
+        )
+        .then((_) {
+          _loadDetails();
+        });
   }
 
   List<MangaChapter> get _filteredChapters {
@@ -110,9 +116,13 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
     if (_chapterSearchQuery.isEmpty) return _chapters!;
 
     final query = _chapterSearchQuery.toLowerCase();
-    return _chapters!.where((c) =>
-        c.name.toLowerCase().contains(query) ||
-        c.number.toString().contains(query)).toList();
+    return _chapters!
+        .where(
+          (c) =>
+              c.name.toLowerCase().contains(query) ||
+              c.number.toString().contains(query),
+        )
+        .toList();
   }
 
   List<MangaChapter> get _paginatedChapters {
@@ -145,7 +155,8 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
                 cacheManager: AppImageCache.manager,
                 fit: BoxFit.cover,
                 alignment: Alignment.topCenter,
-                errorWidget: (_, __, ___) => ColoredBox(color: tokens.bg)),
+                errorWidget: (_, __, ___) => ColoredBox(color: tokens.bg),
+              ),
             ),
           ),
 
@@ -168,15 +179,9 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
           ),
 
           // Main Scrollable Content
-          LiquidGlassView(
-            pixelRatio: 0.25,
-            refreshRate: LiquidGlassRefreshRate.low,
-            backgroundWidget: _buildScrollableContent(displayManga),
-            child: Stack(
-              children: [
-                _buildAppBar(),
-              ],
-            ),
+          Stack(
+            fit: StackFit.expand,
+            children: [_buildScrollableContent(displayManga), _buildAppBar()],
           ),
         ],
       ),
@@ -224,7 +229,9 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
                 // Full-bleed: [SectionHeader] carries its own 8 dp top / 16 dp
                 // side padding, so the heading lands on the page gutter without
                 // this sliver wrapping it twice.
-                SectionHeader(title: l10nOf(context).auxMangaDetailsPageSynopsis),
+                SectionHeader(
+                  title: l10nOf(context).auxMangaDetailsPageSynopsis,
+                ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(
                     ZplaySpacing.s16,
@@ -269,7 +276,10 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SectionHeader(title: l10nOf(context).auxMangaDetailsPageChapters, count: _chapters?.length),
+                    SectionHeader(
+                      title: l10nOf(context).auxMangaDetailsPageChapters,
+                      count: _chapters?.length,
+                    ),
                     const SizedBox(height: ZplaySpacing.s12),
                     // Full-width on mobile, so it stays under the heading
                     // rather than beside it.
@@ -292,9 +302,7 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(40.0),
-              child: Center(
-                child: CircularProgressIndicator(color: tokens.accent),
-              ),
+              child: Center(child: KiruLoader(color: tokens.accent)),
             ),
           )
         else if (paginatedList.isEmpty)
@@ -313,114 +321,115 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
           )
         else ...[
           SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final chapter = paginatedList[index];
-                final originalIndex = _chapters!.indexOf(chapter);
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final chapter = paginatedList[index];
+              final originalIndex = _chapters!.indexOf(chapter);
 
-                final isRead = _historyEntry != null &&
-                    _historyEntry!['chapterIndex'] < originalIndex;
-                final isCurrent = _historyEntry != null &&
-                    _historyEntry!['chapterIndex'] == originalIndex;
+              final isRead =
+                  _historyEntry != null &&
+                  _historyEntry!['chapterIndex'] < originalIndex;
+              final isCurrent =
+                  _historyEntry != null &&
+                  _historyEntry!['chapterIndex'] == originalIndex;
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: ZplaySpacing.s16,
-                    vertical: 3.5,
-                  ),
-                  // It was a `ListTile` with an accent-or-hairline outline, a
-                  // `tileColor` fill and Material's own focus wash on top:
-                  // three indicators for one state. There is no resting border
-                  // now, the ring is the only focus marker, and the fill answers
-                  // the pointer only - a D-pad move must not repaint the row the
-                  // user is aiming at.
-                  child: FocusableCard(
-                    onTap: () => _startReading(originalIndex),
-                    builder: (_, state) => CardFocusRing(
-                      focused: state.focused,
-                      radius: ZplayRadius.smAll,
-                      child: Container(
-                        height: 56,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: ZplaySpacing.s12,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: ZplayRadius.smAll,
-                          color: isCurrent
-                              ? tokens.accentSubtle
-                              : (state.hovered
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: ZplaySpacing.s16,
+                  vertical: 3.5,
+                ),
+                // It was a `ListTile` with an accent-or-hairline outline, a
+                // `tileColor` fill and Material's own focus wash on top:
+                // three indicators for one state. There is no resting border
+                // now, the ring is the only focus marker, and the fill answers
+                // the pointer only - a D-pad move must not repaint the row the
+                // user is aiming at.
+                child: FocusableCard(
+                  onTap: () => _startReading(originalIndex),
+                  builder: (_, state) => CardFocusRing(
+                    focused: state.focused,
+                    radius: ZplayRadius.smAll,
+                    child: Container(
+                      height: 56,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: ZplaySpacing.s12,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: ZplayRadius.smAll,
+                        color: isCurrent
+                            ? tokens.accentSubtle
+                            : (state.hovered
                                   ? tokens.textPrimary.withValues(
-                                      alpha: ZplayOpacity.overlayHover)
+                                      alpha: ZplayOpacity.overlayHover,
+                                    )
                                   : null),
-                        ),
-                        child: Row(
-                          children: [
-                            // The number keeps its circle: that fill is the
-                            // chapter's own content, not chrome around it.
-                            Container(
-                              width: 38,
-                              height: 38,
-                              decoration: BoxDecoration(
-                                color: isCurrent
-                                    ? tokens.accentSubtle
-                                    : tokens.borderSubtle,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  chapter.number > 0
-                                      ? chapter.number.toStringAsFixed(
-                                          chapter.number.truncateToDouble() ==
-                                                  chapter.number
-                                              ? 0
-                                              : 1)
-                                      : '#',
-                                  style: ZplayType.caption
-                                      .copyWith(weight: FontWeight.w700)
-                                      .toStyle(color: tokens.textPrimary),
-                                ),
+                      ),
+                      child: Row(
+                        children: [
+                          // The number keeps its circle: that fill is the
+                          // chapter's own content, not chrome around it.
+                          Container(
+                            width: 38,
+                            height: 38,
+                            decoration: BoxDecoration(
+                              color: isCurrent
+                                  ? tokens.accentSubtle
+                                  : tokens.borderSubtle,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: Text(
+                                chapter.number > 0
+                                    ? chapter.number.toStringAsFixed(
+                                        chapter.number.truncateToDouble() ==
+                                                chapter.number
+                                            ? 0
+                                            : 1,
+                                      )
+                                    : '#',
+                                style: ZplayType.caption
+                                    .copyWith(weight: FontWeight.w700)
+                                    .toStyle(color: tokens.textPrimary),
                               ),
                             ),
-                            const SizedBox(width: ZplaySpacing.s12),
-                            Expanded(
-                              child: Text(
-                                (chapter.name.isNotEmpty &&
-                                        chapter.name.toLowerCase() != 'last read')
-                                    ? chapter.name
-                                    : (chapter.number > 0
+                          ),
+                          const SizedBox(width: ZplaySpacing.s12),
+                          Expanded(
+                            child: Text(
+                              (chapter.name.isNotEmpty &&
+                                      chapter.name.toLowerCase() != 'last read')
+                                  ? chapter.name
+                                  : (chapter.number > 0
                                         ? 'Chapter ${chapter.number.toStringAsFixed(chapter.number.truncateToDouble() == chapter.number ? 0 : 1)}'
                                         : 'Chapter'),
-                                style: ZplayType.label
-                                    .copyWith(
-                                      size: isDesktop ? 14.5 : 13.5,
-                                      weight: isCurrent
-                                          ? FontWeight.w700
-                                          : FontWeight.w500,
-                                    )
-                                    .toStyle(
-                                      color: isRead
-                                          ? tokens.textSecondary
-                                          : tokens.textPrimary,
-                                    ),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                              style: ZplayType.label
+                                  .copyWith(
+                                    size: isDesktop ? 14.5 : 13.5,
+                                    weight: isCurrent
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
+                                  )
+                                  .toStyle(
+                                    color: isRead
+                                        ? tokens.textSecondary
+                                        : tokens.textPrimary,
+                                  ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            const SizedBox(width: ZplaySpacing.s8),
-                            Icon(
-                              Icons.chevron_right_rounded,
-                              color: tokens.textMuted,
-                              size: 20,
-                            ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(width: ZplaySpacing.s8),
+                          Icon(
+                            Icons.chevron_right_rounded,
+                            color: tokens.textMuted,
+                            size: 20,
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                );
-              },
-              childCount: paginatedList.length,
-            ),
+                ),
+              );
+            }, childCount: paginatedList.length),
           ),
 
           // Pagination Controls
@@ -436,14 +445,20 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
                   children: [
                     _ChromeGlyphAction(
                       icon: Icons.chevron_left_rounded,
-                      semanticLabel: configLabel(context, 'Previous chapter page'),
+                      semanticLabel: configLabel(
+                        context,
+                        'Previous chapter page',
+                      ),
                       onTap: _currentChapterPage > 0
                           ? () => setState(() => _currentChapterPage--)
                           : null,
                     ),
                     const SizedBox(width: 14),
                     Text(
-                      l10nOf(context).dynamicMangaDetailsPagePageOf((_currentChapterPage + 1).toString(), (totalPages).toString()),
+                      l10nOf(context).dynamicMangaDetailsPagePageOf(
+                        (_currentChapterPage + 1).toString(),
+                        (totalPages).toString(),
+                      ),
                       style: ZplayType.body
                           .copyWith(size: 14.5)
                           .toStyle(color: tokens.textEmphasis),
@@ -470,7 +485,7 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
   Widget _buildSearchTextField() {
     final tokens = context.tokens;
 
-    return TextField(
+    return KiruFormField(
       controller: _searchController,
       onChanged: (val) {
         setState(() {
@@ -478,10 +493,14 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
           _currentChapterPage = 0;
         });
       },
-      style: ZplayType.label.copyWith(size: 13.5).toStyle(color: tokens.textPrimary),
+      style: ZplayType.label
+          .copyWith(size: 13.5)
+          .toStyle(color: tokens.textPrimary),
       decoration: InputDecoration(
         hintText: l10nOf(context).auxMangaDetailsPageSearchChapters,
-        hintStyle: ZplayType.label.copyWith(size: 13.5).toStyle(color: tokens.textMuted),
+        hintStyle: ZplayType.label
+            .copyWith(size: 13.5)
+            .toStyle(color: tokens.textMuted),
         prefixIcon: Icon(Icons.search_rounded, color: tokens.accent, size: 18),
         // A `FocusableCard`, not an `IconButton`: the latter draws Material's
         // grey focus wash, which would be a second focus indicator in a page
@@ -530,7 +549,9 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
 
   Widget _buildDesktopHeader(Manga manga) {
     final tokens = context.tokens;
-    final coverUrl = manga.coverNormal.isNotEmpty ? manga.coverNormal : manga.coverSmall;
+    final coverUrl = manga.coverNormal.isNotEmpty
+        ? manga.coverNormal
+        : manga.coverSmall;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -552,8 +573,13 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
               width: 200,
               height: 290,
               color: tokens.surfaceRaised,
-              child: Icon(Icons.book_rounded, color: tokens.textMuted, size: 48),
-            )),
+              child: Icon(
+                Icons.book_rounded,
+                color: tokens.textMuted,
+                size: 48,
+              ),
+            ),
+          ),
         ),
         const SizedBox(width: 32),
 
@@ -606,7 +632,9 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
 
   Widget _buildMobileHeader(Manga manga) {
     final tokens = context.tokens;
-    final coverUrl = manga.coverNormal.isNotEmpty ? manga.coverNormal : manga.coverSmall;
+    final coverUrl = manga.coverNormal.isNotEmpty
+        ? manga.coverNormal
+        : manga.coverSmall;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -629,8 +657,13 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
                 width: 165,
                 height: 240,
                 color: tokens.surfaceRaised,
-                child: Icon(Icons.book_rounded, color: tokens.textMuted, size: 40),
-              )),
+                child: Icon(
+                  Icons.book_rounded,
+                  color: tokens.textMuted,
+                  size: 40,
+                ),
+              ),
+            ),
           ),
         ),
         const SizedBox(height: 18),
@@ -676,10 +709,13 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
 
   Widget _buildHeaderActionButtons({required bool isFullWidth}) {
     if (_historyEntry != null) {
-      final chNum = (_chapters != null && _historyEntry!['chapterIndex'] < _chapters!.length)
+      final chNum =
+          (_chapters != null &&
+              _historyEntry!['chapterIndex'] < _chapters!.length)
           ? _chapters![_historyEntry!['chapterIndex']].number
           : '';
-      final label = 'Resume Chapter ${chNum.toString().isNotEmpty ? chNum : ''}';
+      final label =
+          'Resume Chapter ${chNum.toString().isNotEmpty ? chNum : ''}';
 
       return _buildActionButton(
         icon: Icons.play_arrow_rounded,
@@ -737,7 +773,9 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
     final spaced = <Widget>[];
 
     for (var i = 0; i < list.length; i++) {
-      spaced.add(Text(list[i], style: style.toStyle(color: tokens.textSecondary)));
+      spaced.add(
+        Text(list[i], style: style.toStyle(color: tokens.textSecondary)),
+      );
       if (i < list.length - 1) {
         spaced.add(
           Padding(
@@ -836,7 +874,8 @@ class _ChromeGlyphAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
-    final resting = color ?? (onTap == null ? tokens.textDisabled : tokens.textPrimary);
+    final resting =
+        color ?? (onTap == null ? tokens.textDisabled : tokens.textPrimary);
 
     return FocusableCard(
       enabled: onTap != null,
@@ -851,7 +890,9 @@ class _ChromeGlyphAction extends StatelessWidget {
             icon,
             size: iconSize,
             semanticLabel: semanticLabel,
-            color: state.highlighted && onTap != null ? tokens.textPrimary : resting,
+            color: state.highlighted && onTap != null
+                ? tokens.textPrimary
+                : resting,
             shadows: overArt ? const [_shadow] : null,
           ),
         ),

@@ -1,3 +1,5 @@
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:async';
@@ -31,7 +33,8 @@ class GenerateAudiobookScreen extends StatefulWidget {
   const GenerateAudiobookScreen({super.key});
 
   @override
-  State<GenerateAudiobookScreen> createState() => _GenerateAudiobookScreenState();
+  State<GenerateAudiobookScreen> createState() =>
+      _GenerateAudiobookScreenState();
 }
 
 class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
@@ -86,7 +89,9 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
     () async {
       await _paperService.refreshAll();
       if (!mounted) return;
-      final hasPending = _paperService.jobs.value.any((j) => !j.isDone && !j.isFailed);
+      final hasPending = _paperService.jobs.value.any(
+        (j) => !j.isDone && !j.isFailed,
+      );
       if (hasPending) {
         _pollingTimer = Timer(const Duration(seconds: 8), _schedulePolling);
       }
@@ -137,15 +142,23 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
         final totalWords = parts.fold<int>(0, (a, p) => a + p.wordCount);
         final confirm = await showDialog<bool>(
           context: context,
-          builder: (ctx) => AlertDialog(
+          builder: (ctx) => KiruAlertDialog(
             backgroundColor: tokens.surfaceOverlay,
-            shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.mdAll),
+            shape: const RoundedRectangleBorder(
+              borderRadius: ZplayRadius.mdAll,
+            ),
             title: Row(
               children: [
                 Icon(Icons.call_split_rounded, color: tokens.accent),
                 const SizedBox(width: 10),
-                Text(l10nOf(context).auxGenerateAudiobookScreenEpubExceeds250kWords,
-                    style: ZplayType.title.copyWith(size: 16).toStyle(color: tokens.textPrimary)),
+                Text(
+                  l10nOf(
+                    context,
+                  ).auxGenerateAudiobookScreenEpubExceeds250kWords,
+                  style: ZplayType.title
+                      .copyWith(size: 16)
+                      .toStyle(color: tokens.textPrimary),
+                ),
               ],
             ),
             content: Text(
@@ -183,11 +196,13 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
       }
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(parts.length == 1
-              ? 'Upload complete — AI Audiobook generation started!'
-              : 'Uploaded ${parts.length} parts — generation started in background!'),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            parts.length == 1
+                ? 'Upload complete — AI Audiobook generation started!'
+                : 'Uploaded ${parts.length} parts — generation started in background!',
+          ),
           backgroundColor: tokens.success,
           behavior: SnackBarBehavior.floating,
         ),
@@ -195,8 +210,15 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
       _schedulePolling();
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10nOf(context).dynamicGenerateAudiobookScreenGenerationFailed((e).toString())), backgroundColor: tokens.danger),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(
+              context,
+            ).dynamicGenerateAudiobookScreenGenerationFailed((e).toString()),
+          ),
+          backgroundColor: tokens.danger,
+        ),
       );
     } finally {
       if (mounted) setState(() => _isUploading = false);
@@ -212,7 +234,10 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
 
   void _playGeneratedAudiobook(GeneratedAudiobookJob job) {
     if (!job.isDone) return;
-    final title = job.fileName.replaceAll(RegExp(r'\.epub$', caseSensitive: false), '');
+    final title = job.fileName.replaceAll(
+      RegExp(r'\.epub$', caseSensitive: false),
+      '',
+    );
     final streamOrLocalPath = job.localAudioPath ?? job.downloadUrl!;
 
     final book = Audiobook(
@@ -226,17 +251,13 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
       pageUrl: streamOrLocalPath,
     );
 
-    final chapters = [
-      AudiobookChapter(title: title, url: streamOrLocalPath),
-    ];
+    final chapters = [AudiobookChapter(title: title, url: streamOrLocalPath)];
 
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => AudiobookPlayerScreen(
-          audiobook: book,
-          chapters: chapters,
-        ),
+        builder: (_) =>
+            AudiobookPlayerScreen(audiobook: book, chapters: chapters),
       ),
     );
   }
@@ -244,9 +265,11 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
   Future<void> _copyStreamUrl(String url) async {
     await Clipboard.setData(ClipboardData(text: url));
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10nOf(context).auxGenerateAudiobookScreenStreamUrlCopiedToClipboard),
+    KiruToastMessenger.of(context).showSnackBar(
+      KiruToast(
+        content: Text(
+          l10nOf(context).auxGenerateAudiobookScreenStreamUrlCopiedToClipboard,
+        ),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -257,11 +280,19 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
 
     final ok = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => KiruAlertDialog(
         backgroundColor: tokens.surfaceOverlay,
         shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.mdAll),
-        title: Text(l10nOf(context).auxGenerateAudiobookScreenRemoveGenerationJob),
-        content: Text(l10nOf(context).dynamicGenerateAudiobookScreenRemoveFromTheGenerationList((job.fileName).toString())),
+        title: Text(
+          l10nOf(context).auxGenerateAudiobookScreenRemoveGenerationJob,
+        ),
+        content: Text(
+          l10nOf(
+            context,
+          ).dynamicGenerateAudiobookScreenRemoveFromTheGenerationList(
+            (job.fileName).toString(),
+          ),
+        ),
         actions: [
           PillButton(
             label: l10nOf(context).actionCancel,
@@ -280,7 +311,10 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                 horizontal: ZplaySpacing.s12,
                 vertical: ZplaySpacing.s8,
               ),
-              child: Text(l10nOf(context).uiMyListPageRemove, style: ZplayType.label.toStyle(color: tokens.danger)),
+              child: Text(
+                l10nOf(context).uiMyListPageRemove,
+                style: ZplayType.label.toStyle(color: tokens.danger),
+              ),
             ),
           ),
         ],
@@ -301,7 +335,16 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
 
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['mp3', 'm4b', 'm4a', 'aac', 'flac', 'opus', 'wav', 'ogg'],
+      allowedExtensions: [
+        'mp3',
+        'm4b',
+        'm4a',
+        'aac',
+        'flac',
+        'opus',
+        'wav',
+        'ogg',
+      ],
       allowMultiple: true,
       withData: false,
     );
@@ -316,24 +359,37 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
     if (pickedFiles.isEmpty || !mounted) return;
 
     final titleController = TextEditingController(
-      text: p.basenameWithoutExtension(pickedFiles.first.path).replaceAll(RegExp(r'[._]'), ' ').trim(),
+      text: p
+          .basenameWithoutExtension(pickedFiles.first.path)
+          .replaceAll(RegExp(r'[._]'), ' ')
+          .trim(),
     );
-    final authorController = TextEditingController(text: l10nOf(context).finalGenerateAudiobookScreenUnknownAuthor);
+    final authorController = TextEditingController(
+      text: l10nOf(context).finalGenerateAudiobookScreenUnknownAuthor,
+    );
     File? pickedCoverFile;
 
     await showDialog(
       context: context,
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setDlgState) {
-          return AlertDialog(
+          return KiruAlertDialog(
             backgroundColor: tokens.surfaceOverlay,
-            shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.lgAll),
+            shape: const RoundedRectangleBorder(
+              borderRadius: ZplayRadius.lgAll,
+            ),
             title: Row(
               children: [
                 Icon(Icons.upload_file_rounded, color: tokens.accent),
                 const SizedBox(width: 10),
-                Text(l10nOf(context).auxGenerateAudiobookScreenAddPersonalAudiobook,
-                    style: ZplayType.title.copyWith(size: 16.5).toStyle(color: tokens.textPrimary)),
+                Text(
+                  l10nOf(
+                    context,
+                  ).auxGenerateAudiobookScreenAddPersonalAudiobook,
+                  style: ZplayType.title
+                      .copyWith(size: 16.5)
+                      .toStyle(color: tokens.textPrimary),
+                ),
               ],
             ),
             content: SizedBox(
@@ -344,7 +400,11 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      l10nOf(context).dynamicGenerateAudiobookScreenSelectedAudioFileS((pickedFiles.length).toString()),
+                      l10nOf(
+                        context,
+                      ).dynamicGenerateAudiobookScreenSelectedAudioFileS(
+                        (pickedFiles.length).toString(),
+                      ),
                       style: ZplayType.bodySmall
                           .copyWith(size: 12.5, weight: FontWeight.w600)
                           .toStyle(color: tokens.textEmphasis),
@@ -359,34 +419,52 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                       ),
                       child: ListView(
                         shrinkWrap: true,
-                        children: pickedFiles.map((f) => Text(
-                          '• ${p.basename(f.path)}',
-                          style: ZplayType.caption.copyWith(size: 11.5).toStyle(color: tokens.textSecondary),
-                        )).toList(),
+                        children: pickedFiles
+                            .map(
+                              (f) => Text(
+                                '• ${p.basename(f.path)}',
+                                style: ZplayType.caption
+                                    .copyWith(size: 11.5)
+                                    .toStyle(color: tokens.textSecondary),
+                              ),
+                            )
+                            .toList(),
                       ),
                     ),
                     const SizedBox(height: 16),
-                    TextField(
+                    KiruFormField(
                       controller: titleController,
                       style: ZplayType.body.toStyle(color: tokens.textPrimary),
                       decoration: InputDecoration(
                         labelText: 'Audiobook Title',
-                        labelStyle: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
+                        labelStyle: ZplayType.bodySmall.toStyle(
+                          color: tokens.textSecondary,
+                        ),
                         filled: true,
-                        fillColor: tokens.textPrimary.withValues(alpha: ZplayOpacity.borderFaint),
-                        border: const OutlineInputBorder(borderRadius: ZplayRadius.smAll),
+                        fillColor: tokens.textPrimary.withValues(
+                          alpha: ZplayOpacity.borderFaint,
+                        ),
+                        border: const OutlineInputBorder(
+                          borderRadius: ZplayRadius.smAll,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 12),
-                    TextField(
+                    KiruFormField(
                       controller: authorController,
                       style: ZplayType.body.toStyle(color: tokens.textPrimary),
                       decoration: InputDecoration(
                         labelText: 'Author / Narrator',
-                        labelStyle: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
+                        labelStyle: ZplayType.bodySmall.toStyle(
+                          color: tokens.textSecondary,
+                        ),
                         filled: true,
-                        fillColor: tokens.textPrimary.withValues(alpha: ZplayOpacity.borderFaint),
-                        border: const OutlineInputBorder(borderRadius: ZplayRadius.smAll),
+                        fillColor: tokens.textPrimary.withValues(
+                          alpha: ZplayOpacity.borderFaint,
+                        ),
+                        border: const OutlineInputBorder(
+                          borderRadius: ZplayRadius.smAll,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 14),
@@ -396,7 +474,12 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                         if (pickedCoverFile != null)
                           ClipRRect(
                             borderRadius: ZplayRadius.smAll,
-                            child: Image.file(pickedCoverFile!, width: 44, height: 44, fit: BoxFit.cover),
+                            child: Image.file(
+                              pickedCoverFile!,
+                              width: 44,
+                              height: 44,
+                              fit: BoxFit.cover,
+                            ),
                           )
                         else
                           Container(
@@ -406,23 +489,32 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                               color: tokens.borderStrong,
                               borderRadius: ZplayRadius.smAll,
                             ),
-                            child: Icon(Icons.image_rounded, color: tokens.textMuted),
+                            child: Icon(
+                              Icons.image_rounded,
+                              color: tokens.textMuted,
+                            ),
                           ),
                         const SizedBox(width: 12),
                         FocusableInkWell(
                           onTap: () async {
-                            final imgResult = await FilePicker.platform.pickFiles(
-                              type: FileType.image,
-                              withData: false,
-                            );
-                            if (imgResult != null && imgResult.files.single.path != null) {
+                            final imgResult = await FilePicker.platform
+                                .pickFiles(
+                                  type: FileType.image,
+                                  withData: false,
+                                );
+                            if (imgResult != null &&
+                                imgResult.files.single.path != null) {
                               setDlgState(() {
-                                pickedCoverFile = File(imgResult.files.single.path!);
+                                pickedCoverFile = File(
+                                  imgResult.files.single.path!,
+                                );
                               });
                             }
                           },
                           borderRadius: ZplayRadius.smAll,
-                          hoverColor: tokens.textPrimary.withValues(alpha: 0.08),
+                          hoverColor: tokens.textPrimary.withValues(
+                            alpha: 0.08,
+                          ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: ZplaySpacing.s8,
@@ -431,11 +523,19 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.photo_library_rounded, size: 16, color: tokens.accent),
+                                Icon(
+                                  Icons.photo_library_rounded,
+                                  size: 16,
+                                  color: tokens.accent,
+                                ),
                                 const SizedBox(width: ZplaySpacing.s8),
                                 Text(
-                                  pickedCoverFile == null ? 'Select Cover Art' : 'Change Cover',
-                                  style: ZplayType.label.toStyle(color: tokens.accent),
+                                  pickedCoverFile == null
+                                      ? 'Select Cover Art'
+                                      : 'Change Cover',
+                                  style: ZplayType.label.toStyle(
+                                    color: tokens.accent,
+                                  ),
                                 ),
                               ],
                             ),
@@ -454,7 +554,9 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                 onPressed: () => Navigator.pop(ctx),
               ),
               PillButton(
-                label: l10nOf(context).auxGenerateAudiobookScreenImportToLibrary,
+                label: l10nOf(
+                  context,
+                ).auxGenerateAudiobookScreenImportToLibrary,
                 onPressed: () async {
                   Navigator.pop(ctx);
                   await _customService.importAudiobook(
@@ -480,10 +582,8 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => AudiobookPlayerScreen(
-          audiobook: audiobook,
-          chapters: chapters,
-        ),
+        builder: (_) =>
+            AudiobookPlayerScreen(audiobook: audiobook, chapters: chapters),
       ),
     );
   }
@@ -505,10 +605,7 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
             child: AnimatedAmbientBackground(
               child: TabBarView(
                 controller: _tabController,
-                children: [
-                  _buildGeneratorTab(),
-                  _buildUploadedTab(),
-                ],
+                children: [_buildGeneratorTab(), _buildUploadedTab()],
               ),
             ),
           ),
@@ -550,7 +647,11 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                     color: tokens.textEmphasis,
                     size: 20,
                     shadows: const [
-                      Shadow(color: Color(0x99000000), blurRadius: 6, offset: Offset(0, 1)),
+                      Shadow(
+                        color: Color(0x99000000),
+                        blurRadius: 6,
+                        offset: Offset(0, 1),
+                      ),
                     ],
                   ),
                 ),
@@ -560,7 +661,9 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  l10nOf(context).auxGenerateAudiobookScreenAudiobookStudioGenerator,
+                  l10nOf(
+                    context,
+                  ).auxGenerateAudiobookScreenAudiobookStudioGenerator,
                   style: ZplayType.title.toStyle(color: tokens.textPrimary),
                 ),
               ),
@@ -570,13 +673,25 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
           Align(
             alignment: Alignment.centerLeft,
             child: SegmentedTabs<int>(
-              semanticsLabel: l10nOf(context).auxGenerateAudiobookScreenAudiobookStudioTabs,
+              semanticsLabel: l10nOf(
+                context,
+              ).auxGenerateAudiobookScreenAudiobookStudioTabs,
               height: 44,
               selected: _tabController.index,
               onSelected: (i) => _tabController.animateTo(i),
               options: [
-                SegmentedTabOption(value: 0, label: l10nOf(context).auxGenerateAudiobookScreenAiEpubGeneratorTts),
-                SegmentedTabOption(value: 1, label: l10nOf(context).auxGenerateAudiobookScreenMyUploadedAudiobooks),
+                SegmentedTabOption(
+                  value: 0,
+                  label: l10nOf(
+                    context,
+                  ).auxGenerateAudiobookScreenAiEpubGeneratorTts,
+                ),
+                SegmentedTabOption(
+                  value: 1,
+                  label: l10nOf(
+                    context,
+                  ).auxGenerateAudiobookScreenMyUploadedAudiobooks,
+                ),
               ],
             ),
           ),
@@ -622,13 +737,23 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      l10nOf(context).dynamicGenerateAudiobookScreenGenerationQueueCompleted((jobs.length).toString()),
+                      l10nOf(
+                        context,
+                      ).dynamicGenerateAudiobookScreenGenerationQueueCompleted(
+                        (jobs.length).toString(),
+                      ),
                       style: ZplayType.overline
-                          .copyWith(size: 12, weight: FontWeight.w700, letterSpacing: 1.1)
+                          .copyWith(
+                            size: 12,
+                            weight: FontWeight.w700,
+                            letterSpacing: 1.1,
+                          )
                           .toStyle(color: tokens.textMuted),
                     ),
-                    Tooltip(
-                      message: l10nOf(context).auxGenerateAudiobookScreenRefreshStatus,
+                    KiruTooltip(
+                      message: l10nOf(
+                        context,
+                      ).auxGenerateAudiobookScreenRefreshStatus,
                       child: FocusableInkWell(
                         onTap: () => _paperService.refreshAll(),
                         borderRadius: ZplayRadius.fullAll,
@@ -636,7 +761,11 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                         child: SizedBox(
                           width: 48,
                           height: 48,
-                          child: Icon(Icons.refresh_rounded, size: 18, color: tokens.textSecondary),
+                          child: Icon(
+                            Icons.refresh_rounded,
+                            size: 18,
+                            color: tokens.textSecondary,
+                          ),
                         ),
                       ),
                     ),
@@ -654,18 +783,28 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                     ),
                     child: Column(
                       children: [
-                        Icon(Icons.headphones_rounded, size: 40, color: tokens.textDisabled),
+                        Icon(
+                          Icons.headphones_rounded,
+                          size: 40,
+                          color: tokens.textDisabled,
+                        ),
                         const SizedBox(height: 12),
                         Text(
-                          l10nOf(context).auxGenerateAudiobookScreenNoGeneratedAudiobooksYet,
+                          l10nOf(
+                            context,
+                          ).auxGenerateAudiobookScreenNoGeneratedAudiobooksYet,
                           style: ZplayType.body
                               .copyWith(weight: FontWeight.w600)
                               .toStyle(color: tokens.textEmphasis),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          l10nOf(context).auxGenerateAudiobookScreenPickAnEpubAboveToSynthesizeHigh,
-                          style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
+                          l10nOf(
+                            context,
+                          ).auxGenerateAudiobookScreenPickAnEpubAboveToSynthesizeHigh,
+                          style: ZplayType.bodySmall.toStyle(
+                            color: tokens.textMuted,
+                          ),
                         ),
                       ],
                     ),
@@ -705,7 +844,11 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                   color: tokens.accent.withValues(alpha: 0.2),
                   borderRadius: ZplayRadius.smAll,
                 ),
-                child: Icon(Icons.record_voice_over_rounded, color: tokens.accent, size: 20),
+                child: Icon(
+                  Icons.record_voice_over_rounded,
+                  color: tokens.accent,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -713,14 +856,18 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      l10nOf(context).auxGenerateAudiobookScreenAiNarratorVoiceKokoroEngine,
+                      l10nOf(
+                        context,
+                      ).auxGenerateAudiobookScreenAiNarratorVoiceKokoroEngine,
                       style: ZplayType.body
                           .copyWith(size: 14.5, weight: FontWeight.w700)
                           .toStyle(color: tokens.textPrimary),
                     ),
                     Text(
                       selectedVoice.description,
-                      style: ZplayType.caption.copyWith(size: 11.5).toStyle(color: tokens.textSecondary),
+                      style: ZplayType.caption
+                          .copyWith(size: 11.5)
+                          .toStyle(color: tokens.textSecondary),
                     ),
                   ],
                 ),
@@ -733,15 +880,20 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
             decoration: BoxDecoration(
               // A form field keeps a fill even without its hairline — the same
               // faint wash the dialogs' text fields use.
-              color: tokens.textPrimary.withValues(alpha: ZplayOpacity.borderFaint),
+              color: tokens.textPrimary.withValues(
+                alpha: ZplayOpacity.borderFaint,
+              ),
               borderRadius: ZplayRadius.smAll,
             ),
             child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
+              child: KiruDropdown<String>(
                 value: _selectedVoiceId,
                 isExpanded: true,
                 dropdownColor: tokens.surfaceOverlay,
-                icon: Icon(Icons.arrow_drop_down_rounded, color: tokens.textEmphasis),
+                icon: Icon(
+                  Icons.arrow_drop_down_rounded,
+                  color: tokens.textEmphasis,
+                ),
                 items: kPaper2AudioVoices.map((voice) {
                   return DropdownMenuItem<String>(
                     value: voice.id,
@@ -750,10 +902,15 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                       children: [
                         Text(
                           voice.label,
-                          style: ZplayType.label.copyWith(weight: FontWeight.w600).toStyle(color: tokens.textPrimary),
+                          style: ZplayType.label
+                              .copyWith(weight: FontWeight.w600)
+                              .toStyle(color: tokens.textPrimary),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: tokens.borderDefault,
                             borderRadius: ZplayRadius.xsAll,
@@ -784,7 +941,9 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
     final tokens = context.tokens;
 
     if (_isLoadingEpubs) {
-      return const Center(child: Padding(padding: EdgeInsets.all(16), child: CircularProgressIndicator()));
+      return const Center(
+        child: Padding(padding: EdgeInsets.all(16), child: KiruLoader()),
+      );
     }
 
     if (_detectedEpubs.isEmpty) {
@@ -798,9 +957,17 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              l10nOf(context).dynamicGenerateAudiobookScreenDownloadedBooksFromLibrary((_detectedEpubs.length).toString()),
+              l10nOf(
+                context,
+              ).dynamicGenerateAudiobookScreenDownloadedBooksFromLibrary(
+                (_detectedEpubs.length).toString(),
+              ),
               style: ZplayType.overline
-                  .copyWith(size: 12, weight: FontWeight.w700, letterSpacing: 1.1)
+                  .copyWith(
+                    size: 12,
+                    weight: FontWeight.w700,
+                    letterSpacing: 1.1,
+                  )
                   .toStyle(color: tokens.textMuted),
             ),
             FocusableInkWell(
@@ -817,7 +984,10 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                   children: [
                     Icon(Icons.refresh_rounded, size: 14, color: tokens.accent),
                     const SizedBox(width: ZplaySpacing.s4),
-                    Text(l10nOf(context).auxGenerateAudiobookScreenRescanBooks, style: ZplayType.caption.toStyle(color: tokens.accent)),
+                    Text(
+                      l10nOf(context).auxGenerateAudiobookScreenRescanBooks,
+                      style: ZplayType.caption.toStyle(color: tokens.accent),
+                    ),
                   ],
                 ),
               ),
@@ -854,7 +1024,11 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                       clipBehavior: Clip.antiAlias,
                       child: epub.coverPath != null
                           ? Image.file(File(epub.coverPath!), fit: BoxFit.cover)
-                          : Icon(Icons.book_rounded, color: tokens.textDisabled, size: 30),
+                          : Icon(
+                              Icons.book_rounded,
+                              color: tokens.textDisabled,
+                              size: 30,
+                            ),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -866,12 +1040,22 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                             epub.title,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: ZplayType.label.copyWith(weight: FontWeight.w700).toStyle(color: tokens.textPrimary),
+                            style: ZplayType.label
+                                .copyWith(weight: FontWeight.w700)
+                                .toStyle(color: tokens.textPrimary),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            l10nOf(context).dynamicGenerateAudiobookScreenSizeMb(((epub.fileSizeBytes / (1024 * 1024)).toStringAsFixed(1)).toString()),
-                            style: ZplayType.caption.toStyle(color: tokens.textMuted),
+                            l10nOf(
+                              context,
+                            ).dynamicGenerateAudiobookScreenSizeMb(
+                              ((epub.fileSizeBytes / (1024 * 1024))
+                                      .toStringAsFixed(1))
+                                  .toString(),
+                            ),
+                            style: ZplayType.caption.toStyle(
+                              color: tokens.textMuted,
+                            ),
                           ),
                           const Spacer(),
                           // Keeps the file's compact accent chip rather than a
@@ -883,7 +1067,9 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                           FocusableCard(
                             onTap: _isUploading
                                 ? null
-                                : () => _processAndGenerateFromEpub(File(epub.filePath)),
+                                : () => _processAndGenerateFromEpub(
+                                    File(epub.filePath),
+                                  ),
                             enabled: !_isUploading,
                             cursor: _isUploading
                                 ? SystemMouseCursors.basic
@@ -892,7 +1078,10 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                               focused: state.focused,
                               radius: ZplayRadius.smAll,
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 8,
+                                ),
                                 decoration: BoxDecoration(
                                   color: tokens.accent,
                                   borderRadius: ZplayRadius.smAll,
@@ -900,10 +1089,16 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Icon(Icons.record_voice_over_rounded, size: 14, color: tokens.onAccent),
+                                    Icon(
+                                      Icons.record_voice_over_rounded,
+                                      size: 14,
+                                      color: tokens.onAccent,
+                                    ),
                                     const SizedBox(width: ZplaySpacing.s8),
                                     Text(
-                                      l10nOf(context).auxGenerateAudiobookScreenGenerate,
+                                      l10nOf(
+                                        context,
+                                      ).auxGenerateAudiobookScreenGenerate,
                                       style: ZplayType.bodySmall
                                           .copyWith(weight: FontWeight.w700)
                                           .toStyle(color: tokens.onAccent),
@@ -959,8 +1154,16 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
               child: _isUploading
                   ? Padding(
                       padding: const EdgeInsets.all(12),
-                      child: CircularProgressIndicator(color: tokens.onAccent, strokeWidth: 2.5))
-                  : Icon(Icons.upload_file_rounded, color: tokens.onAccent, size: 26),
+                      child: KiruLoader(
+                        color: tokens.onAccent,
+                        strokeWidth: 2.5,
+                      ),
+                    )
+                  : Icon(
+                      Icons.upload_file_rounded,
+                      color: tokens.onAccent,
+                      size: 26,
+                    ),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -968,18 +1171,32 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _isUploading ? l10nOf(context).finalGenerateAudiobookScreenAnalyzingUploadingBook : 'Select External EPUB File',
-                    style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                    _isUploading
+                        ? l10nOf(
+                            context,
+                          ).finalGenerateAudiobookScreenAnalyzingUploadingBook
+                        : 'Select External EPUB File',
+                    style: ZplayType.subtitle.toStyle(
+                      color: tokens.textPrimary,
+                    ),
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    l10nOf(context).auxGenerateAudiobookScreenPickAnyEpubFileFromYourDevice,
-                    style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
+                    l10nOf(
+                      context,
+                    ).auxGenerateAudiobookScreenPickAnyEpubFileFromYourDevice,
+                    style: ZplayType.bodySmall.toStyle(
+                      color: tokens.textSecondary,
+                    ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right_rounded, color: tokens.textSecondary, size: 24),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: tokens.textSecondary,
+              size: 24,
+            ),
           ],
         ),
       ),
@@ -990,7 +1207,10 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
     final tokens = context.tokens;
     final isDone = job.isDone;
     final isFailed = job.isFailed;
-    final cleanTitle = job.fileName.replaceAll(RegExp(r'\.epub$', caseSensitive: false), '');
+    final cleanTitle = job.fileName.replaceAll(
+      RegExp(r'\.epub$', caseSensitive: false),
+      '',
+    );
 
     Color statusColor;
     String statusLabel;
@@ -1026,9 +1246,14 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                   borderRadius: ZplayRadius.smAll,
                 ),
                 clipBehavior: Clip.antiAlias,
-                child: job.coverPath != null && File(job.coverPath!).existsSync()
+                child:
+                    job.coverPath != null && File(job.coverPath!).existsSync()
                     ? Image.file(File(job.coverPath!), fit: BoxFit.cover)
-                    : Icon(Icons.headphones_rounded, color: tokens.textDisabled, size: 24),
+                    : Icon(
+                        Icons.headphones_rounded,
+                        color: tokens.textDisabled,
+                        size: 24,
+                      ),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -1037,7 +1262,9 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                   children: [
                     Text(
                       cleanTitle,
-                      style: ZplayType.body.copyWith(weight: FontWeight.w700).toStyle(color: tokens.textPrimary),
+                      style: ZplayType.body
+                          .copyWith(weight: FontWeight.w700)
+                          .toStyle(color: tokens.textPrimary),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -1045,7 +1272,10 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
                             color: statusColor.withValues(alpha: 0.15),
                             borderRadius: ZplayRadius.xsAll,
@@ -1059,8 +1289,12 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          l10nOf(context).dynamicGenerateAudiobookScreenVoice((job.voiceId).toString()),
-                          style: ZplayType.caption.toStyle(color: tokens.textMuted),
+                          l10nOf(context).dynamicGenerateAudiobookScreenVoice(
+                            (job.voiceId).toString(),
+                          ),
+                          style: ZplayType.caption.toStyle(
+                            color: tokens.textMuted,
+                          ),
                         ),
                       ],
                     ),
@@ -1075,7 +1309,11 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                 child: SizedBox(
                   width: 48,
                   height: 48,
-                  child: Icon(Icons.delete_outline_rounded, size: 18, color: tokens.textMuted),
+                  child: Icon(
+                    Icons.delete_outline_rounded,
+                    size: 18,
+                    color: tokens.textMuted,
+                  ),
                 ),
               ),
             ],
@@ -1085,7 +1323,7 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
             const SizedBox(height: 12),
             ClipRRect(
               borderRadius: ZplayRadius.xsAll,
-              child: LinearProgressIndicator(
+              child: KiruProgress(
                 value: job.progress > 0 ? job.progress : null,
                 backgroundColor: tokens.borderStrong,
                 color: tokens.accent,
@@ -1166,7 +1404,11 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                             color: tokens.success.withValues(alpha: 0.2),
                             borderRadius: ZplayRadius.mdAll,
                           ),
-                          child: Icon(Icons.library_add_rounded, color: tokens.success, size: 26),
+                          child: Icon(
+                            Icons.library_add_rounded,
+                            color: tokens.success,
+                            size: 26,
+                          ),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -1174,18 +1416,30 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                l10nOf(context).auxGenerateAudiobookScreenUploadPersonalAudiobookFiles,
-                                style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                                l10nOf(
+                                  context,
+                                ).auxGenerateAudiobookScreenUploadPersonalAudiobookFiles,
+                                style: ZplayType.subtitle.toStyle(
+                                  color: tokens.textPrimary,
+                                ),
                               ),
                               const SizedBox(height: 3),
                               Text(
-                                l10nOf(context).auxGenerateAudiobookScreenImportYourOwnMp3M4bM4aOr,
-                                style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
+                                l10nOf(
+                                  context,
+                                ).auxGenerateAudiobookScreenImportYourOwnMp3M4bM4aOr,
+                                style: ZplayType.bodySmall.toStyle(
+                                  color: tokens.textSecondary,
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        Icon(Icons.chevron_right_rounded, color: tokens.textSecondary, size: 24),
+                        Icon(
+                          Icons.chevron_right_rounded,
+                          color: tokens.textSecondary,
+                          size: 24,
+                        ),
                       ],
                     ),
                   ),
@@ -1194,9 +1448,17 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                 const SizedBox(height: 24),
 
                 Text(
-                  l10nOf(context).dynamicGenerateAudiobookScreenImportedAudiobooks((books.length).toString()),
+                  l10nOf(
+                    context,
+                  ).dynamicGenerateAudiobookScreenImportedAudiobooks(
+                    (books.length).toString(),
+                  ),
                   style: ZplayType.overline
-                      .copyWith(size: 12, weight: FontWeight.w700, letterSpacing: 1.1)
+                      .copyWith(
+                        size: 12,
+                        weight: FontWeight.w700,
+                        letterSpacing: 1.1,
+                      )
                       .toStyle(color: tokens.textMuted),
                 ),
                 const SizedBox(height: 10),
@@ -1211,18 +1473,28 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                     ),
                     child: Column(
                       children: [
-                        Icon(Icons.library_music_rounded, size: 40, color: tokens.textDisabled),
+                        Icon(
+                          Icons.library_music_rounded,
+                          size: 40,
+                          color: tokens.textDisabled,
+                        ),
                         const SizedBox(height: 12),
                         Text(
-                          l10nOf(context).auxGenerateAudiobookScreenNoPersonalAudiobooksAddedYet,
+                          l10nOf(
+                            context,
+                          ).auxGenerateAudiobookScreenNoPersonalAudiobooksAddedYet,
                           style: ZplayType.body
                               .copyWith(weight: FontWeight.w600)
                               .toStyle(color: tokens.textEmphasis),
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          l10nOf(context).auxGenerateAudiobookScreenTapTheBannerAboveToImportAudio,
-                          style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
+                          l10nOf(
+                            context,
+                          ).auxGenerateAudiobookScreenTapTheBannerAboveToImportAudio,
+                          style: ZplayType.bodySmall.toStyle(
+                            color: tokens.textMuted,
+                          ),
                         ),
                       ],
                     ),
@@ -1261,7 +1533,11 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
             clipBehavior: Clip.antiAlias,
             child: book.coverPath != null && File(book.coverPath!).existsSync()
                 ? Image.file(File(book.coverPath!), fit: BoxFit.cover)
-                : Icon(Icons.music_note_rounded, color: tokens.textDisabled, size: 24),
+                : Icon(
+                    Icons.music_note_rounded,
+                    color: tokens.textDisabled,
+                    size: 24,
+                  ),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -1270,14 +1546,22 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
               children: [
                 Text(
                   book.title,
-                  style: ZplayType.body.copyWith(weight: FontWeight.w700).toStyle(color: tokens.textPrimary),
+                  style: ZplayType.body
+                      .copyWith(weight: FontWeight.w700)
+                      .toStyle(color: tokens.textPrimary),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 3),
                 Text(
-                  l10nOf(context).dynamicGenerateAudiobookScreenPartSMb((book.author).toString(), (book.audioFilePaths.length).toString(), (sizeMb).toString()),
-                  style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
+                  l10nOf(context).dynamicGenerateAudiobookScreenPartSMb(
+                    (book.author).toString(),
+                    (book.audioFilePaths.length).toString(),
+                    (sizeMb).toString(),
+                  ),
+                  style: ZplayType.bodySmall.toStyle(
+                    color: tokens.textSecondary,
+                  ),
                 ),
               ],
             ),
@@ -1292,11 +1576,21 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
             onTap: () async {
               final ok = await showDialog<bool>(
                 context: context,
-                builder: (ctx) => AlertDialog(
+                builder: (ctx) => KiruAlertDialog(
                   backgroundColor: tokens.surfaceOverlay,
-                  shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.mdAll),
-                  title: Text(l10nOf(context).auxGenerateAudiobookScreenDeleteAudiobook),
-                  content: Text(l10nOf(context).dynamicGenerateAudiobookScreenDeleteFromYourLibrary((book.title).toString())),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: ZplayRadius.mdAll,
+                  ),
+                  title: Text(
+                    l10nOf(context).auxGenerateAudiobookScreenDeleteAudiobook,
+                  ),
+                  content: Text(
+                    l10nOf(
+                      context,
+                    ).dynamicGenerateAudiobookScreenDeleteFromYourLibrary(
+                      (book.title).toString(),
+                    ),
+                  ),
                   actions: [
                     PillButton(
                       label: l10nOf(context).actionCancel,
@@ -1312,7 +1606,10 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
                           horizontal: ZplaySpacing.s12,
                           vertical: ZplaySpacing.s8,
                         ),
-                        child: Text(l10nOf(context).uiDownloadsPageDelete, style: ZplayType.label.toStyle(color: tokens.danger)),
+                        child: Text(
+                          l10nOf(context).uiDownloadsPageDelete,
+                          style: ZplayType.label.toStyle(color: tokens.danger),
+                        ),
                       ),
                     ),
                   ],
@@ -1328,7 +1625,11 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
             child: SizedBox(
               width: 48,
               height: 48,
-              child: Icon(Icons.delete_outline_rounded, size: 18, color: tokens.textMuted),
+              child: Icon(
+                Icons.delete_outline_rounded,
+                size: 18,
+                color: tokens.textMuted,
+              ),
             ),
           ),
         ],

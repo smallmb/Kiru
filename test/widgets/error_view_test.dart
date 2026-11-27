@@ -30,7 +30,7 @@ void main() {
 
     expect(find.text('Copy diagnostic'), findsOneWidget);
     await tester.tap(find.text('Copy diagnostic'));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(secondary, 1);
     expect(retried, 0);

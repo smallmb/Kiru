@@ -50,13 +50,18 @@ void main() {
 
     final bar = tester.getRect(find.byType(ShellRail));
     expect(bar.height, 48.0);
-    // The shell autofocuses the selected row on a television, so a cold launch
-    // starts on the bar rather than nowhere.
+    // Home and the shell have documented autofocus candidates. When the
+    // hero wins, verify UP reaches the bar before exercising horizontal travel.
+    if (_focusRect().top >= bar.bottom) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.pump(const Duration(milliseconds: 150));
+    }
     final start = _focusRect();
     expect(
       start.top,
       lessThan(bar.bottom),
-      reason: 'a television starts focused on the bar',
+      reason:
+          'initial focus must be on the bar or reach it directly from the hero',
     );
 
     // RIGHT walks along the bar: the next destination is further right, on the

@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/media_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -17,10 +18,7 @@ import '../../widgets/movie/movie_card.dart';
 class CatalogPage extends StatefulWidget {
   final MovieSection section;
 
-  const CatalogPage({
-    super.key,
-    required this.section,
-  });
+  const CatalogPage({super.key, required this.section});
 
   @override
   State<CatalogPage> createState() => _CatalogPageState();
@@ -77,14 +75,17 @@ class _CatalogPageState extends State<CatalogPage> {
     setState(() {
       _canScrollGenresLeft = _genreScrollController.position.pixels > 0;
       _canScrollGenresRight =
-          _genreScrollController.position.pixels < _genreScrollController.position.maxScrollExtent;
+          _genreScrollController.position.pixels <
+          _genreScrollController.position.maxScrollExtent;
     });
   }
 
   void _scrollGenres(double directionMultiplier) {
     if (!_genreScrollController.hasClients) return;
     final viewportWidth = _genreScrollController.position.viewportDimension;
-    final target = _genreScrollController.offset + (viewportWidth * 0.7 * directionMultiplier);
+    final target =
+        _genreScrollController.offset +
+        (viewportWidth * 0.7 * directionMultiplier);
     _genreScrollController.animateTo(
       target.clamp(0.0, _genreScrollController.position.maxScrollExtent),
       duration: const Duration(milliseconds: 400),
@@ -221,7 +222,7 @@ class _CatalogPageState extends State<CatalogPage> {
     final tokens = context.tokens;
     final sizing = MovieCardSizing.fromWidth(MediaQuery.sizeOf(context).width);
     final isDesktop = MediaQuery.sizeOf(context).width >= 800;
-    
+
     // Calculate safe top padding for grid based on if filters are available
     final selectableExtras = widget.section.catalog.selectableExtras;
     final hasFilters = selectableExtras.isNotEmpty && !_isSearching;
@@ -238,13 +239,12 @@ class _CatalogPageState extends State<CatalogPage> {
           // ── Main Content Grid ──
           if (_items.isEmpty && _isLoading)
             Center(
-              child: CircularProgressIndicator(color: AppThemeService.currentPalette.value.primaryColor),
+              child: KiruLoader(
+                color: AppThemeService.currentPalette.value.primaryColor,
+              ),
             )
           else if (_items.isEmpty && _error != null)
-            ErrorView(
-              error: _error,
-              onRetry: () => _loadItems(refresh: true),
-            )
+            ErrorView(error: _error, onRetry: () => _loadItems(refresh: true))
           else if (_items.isEmpty)
             Center(
               child: Text(
@@ -271,7 +271,13 @@ class _CatalogPageState extends State<CatalogPage> {
                 ),
                 physics: const BouncingScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: ((MediaQuery.sizeOf(context).width - sizing.sidePadding * 2 + sizing.spacing) / (sizing.cardWidth + sizing.spacing)).floor().clamp(2, 10),
+                  crossAxisCount:
+                      ((MediaQuery.sizeOf(context).width -
+                                  sizing.sidePadding * 2 +
+                                  sizing.spacing) /
+                              (sizing.cardWidth + sizing.spacing))
+                          .floor()
+                          .clamp(2, 10),
                   // `mainAxisExtent`, not `childAspectRatio` - the cell width here
                   // is `columns`-driven and wider than `sizing.cardWidth`, so a
                   // proportion would inflate every card's height. See
@@ -284,7 +290,10 @@ class _CatalogPageState extends State<CatalogPage> {
                 itemBuilder: (context, index) {
                   if (index == _items.length) {
                     return Center(
-                      child: CircularProgressIndicator(color: AppThemeService.currentPalette.value.primaryColor),
+                      child: KiruLoader(
+                        color:
+                            AppThemeService.currentPalette.value.primaryColor,
+                      ),
                     );
                   }
                   return MovieCard(movie: _items[index]);
@@ -315,8 +324,11 @@ class _CatalogPageState extends State<CatalogPage> {
                       child: Row(
                         children: [
                           const SizedBox(width: ZplaySpacing.s8),
-                          IconButton(
-                            icon: const Icon(Icons.arrow_back_ios_rounded, size: 20),
+                          KiruIconButton(
+                            icon: const Icon(
+                              Icons.arrow_back_ios_rounded,
+                              size: 20,
+                            ),
                             color: tokens.textPrimary,
                             onPressed: () => Navigator.pop(context),
                           ),
@@ -337,7 +349,7 @@ class _CatalogPageState extends State<CatalogPage> {
                                 padding: const EdgeInsets.only(
                                   right: ZplaySpacing.s16,
                                 ),
-                                child: TextField(
+                                child: KiruFormField(
                                   controller: _searchController,
                                   autofocus: true,
                                   style: ZplayType.subtitle.toStyle(
@@ -346,13 +358,18 @@ class _CatalogPageState extends State<CatalogPage> {
                                   textInputAction: TextInputAction.search,
                                   onSubmitted: _onSearchSubmitted,
                                   decoration: InputDecoration(
-                                    hintText: l10nOf(context).auxCatalogPageSearch,
+                                    hintText: l10nOf(
+                                      context,
+                                    ).auxCatalogPageSearch,
                                     hintStyle: ZplayType.subtitle.toStyle(
                                       color: tokens.textMuted,
                                     ),
                                     border: InputBorder.none,
-                                    suffixIcon: IconButton(
-                                      icon: const Icon(Icons.close_rounded, size: 20),
+                                    suffixIcon: KiruIconButton(
+                                      icon: const Icon(
+                                        Icons.close_rounded,
+                                        size: 20,
+                                      ),
                                       color: tokens.textEmphasis,
                                       onPressed: _clearSearch,
                                     ),
@@ -363,8 +380,9 @@ class _CatalogPageState extends State<CatalogPage> {
                           if (!_isSearching &&
                               widget.section.catalog.supportsSearch &&
                               MetadataService.catalogSearchIsTrustworthy(
-                                  widget.section.addonBaseUrl))
-                            IconButton(
+                                widget.section.addonBaseUrl,
+                              ))
+                            KiruIconButton(
                               icon: const Icon(Icons.search_rounded),
                               color: tokens.textEmphasis,
                               onPressed: () {
@@ -378,7 +396,7 @@ class _CatalogPageState extends State<CatalogPage> {
                         ],
                       ),
                     ),
-                    
+
                     // Selectable Extras Row (Genre, Tag, Sort, etc.)
                     if (hasFilters)
                       _buildFilterRow(selectableExtras, isDesktop),
@@ -425,7 +443,8 @@ class _CatalogPageState extends State<CatalogPage> {
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
                   itemCount: options.length + (singleExtra.isRequired ? 0 : 1),
-                  separatorBuilder: (context, index) => const SizedBox(width: ZplaySpacing.s8),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(width: ZplaySpacing.s8),
                   itemBuilder: (context, index) {
                     if (!singleExtra.isRequired) {
                       if (index == 0) {
@@ -495,12 +514,17 @@ class _CatalogPageState extends State<CatalogPage> {
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
           itemCount: selectableExtras.length,
-          separatorBuilder: (context, index) => const SizedBox(width: ZplaySpacing.s8),
+          separatorBuilder: (context, index) =>
+              const SizedBox(width: ZplaySpacing.s8),
           itemBuilder: (context, index) {
             final extra = selectableExtras[index];
             final currentVal = _selectedExtras[extra.name];
-            final label = currentVal ?? (extra.isRequired ? 'Select ${extra.name}' : 'All ${extra.name}');
-            return PopupMenuButton<String?>(
+            final label =
+                currentVal ??
+                (extra.isRequired
+                    ? 'Select ${extra.name}'
+                    : 'All ${extra.name}');
+            return KiruPopupMenu<String?>(
               tooltip: extra.name,
               color: tokens.surfaceOverlay,
               shape: RoundedRectangleBorder(
@@ -537,10 +561,14 @@ class _CatalogPageState extends State<CatalogPage> {
                   vertical: ZplaySpacing.s8,
                 ),
                 decoration: BoxDecoration(
-                  color: currentVal != null ? AppThemeService.currentPalette.value.primaryColor : tokens.surface,
+                  color: currentVal != null
+                      ? AppThemeService.currentPalette.value.primaryColor
+                      : tokens.surface,
                   borderRadius: ZplayRadius.lgAll,
                   border: Border.all(
-                    color: currentVal != null ? AppThemeService.currentPalette.value.primaryColor : tokens.borderStrong,
+                    color: currentVal != null
+                        ? AppThemeService.currentPalette.value.primaryColor
+                        : tokens.borderStrong,
                   ),
                 ),
                 child: Row(

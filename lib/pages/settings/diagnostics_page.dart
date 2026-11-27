@@ -1,3 +1,5 @@
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -81,9 +83,9 @@ class _DiagnosticsPageState extends State<DiagnosticsPage> {
 
   void _notify(String Function(AppLocalizations l10n) message) {
     if (!mounted) return;
-    ScaffoldMessenger.maybeOf(
+    KiruToastMessenger.maybeOf(
       context,
-    )?.showSnackBar(SnackBar(content: Text(message(l10nOf(context)))));
+    )?.showSnackBar(KiruToast(content: Text(message(l10nOf(context)))));
   }
 
   @override
@@ -108,7 +110,7 @@ class _DiagnosticsPageState extends State<DiagnosticsPage> {
             Center(
               child: Padding(
                 padding: const EdgeInsets.all(ZplaySpacing.s32),
-                child: CircularProgressIndicator(color: tokens.accent),
+                child: KiruLoader(color: tokens.accent),
               ),
             )
           else ...[
@@ -146,9 +148,7 @@ class _DiagnosticsPageState extends State<DiagnosticsPage> {
               const SizedBox(height: ZplaySpacing.s12),
               SelectableText(
                 l10n.diagnosticsSaved(_savedPath!),
-                style: ZplayType.bodySmall.toStyle(
-                  color: tokens.textSecondary,
-                ),
+                style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
               ),
             ],
             const SizedBox(height: ZplaySpacing.s24),

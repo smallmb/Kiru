@@ -22,6 +22,8 @@
 /// user's hand when the strip appears.
 library;
 
+import 'package:zplay/widgets/ui/kiru_controls.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zplay/pages/search/search_page.dart';
@@ -38,7 +40,7 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: SearchPage()));
     await tester.pump();
 
-    final field = tester.widget<TextField>(find.byType(TextField));
+    final field = tester.widget<KiruFormField>(find.byType(KiruFormField));
 
     // `TextField.enableSuggestions` defaults to true, so this assertion is the
     // whole difference the television branch makes: before it, the platform was
@@ -46,13 +48,15 @@ void main() {
     expect(
       field.enableSuggestions,
       isFalse,
-      reason: 'the platform keyboard re-flows its keys under the D-pad when '
+      reason:
+          'the platform keyboard re-flows its keys under the D-pad when '
           'this field lets it offer the suggestion strip',
     );
     expect(
       field.autocorrect,
       isFalse,
-      reason: 'the field takes a film title; a keyboard that silently rewrites '
+      reason:
+          'the field takes a film title; a keyboard that silently rewrites '
           'it is guessing at the one thing the user is sure of',
     );
   });
@@ -62,7 +66,7 @@ void main() {
     await tester.pumpWidget(const MaterialApp(home: SearchPage()));
     await tester.pump();
 
-    final field = tester.widget<TextField>(find.byType(TextField));
+    final field = tester.widget<KiruFormField>(find.byType(KiruFormField));
 
     expect(field.enableSuggestions, isTrue);
     expect(field.autocorrect, isTrue);

@@ -11,6 +11,8 @@
 /// searches for.
 library;
 
+import 'package:zplay/widgets/ui/kiru_controls.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -82,19 +84,28 @@ void main() {
       reason: 'an Arabic MaterialApp has to lay the shell out right-to-left',
     );
 
+    final labels = l10nOf(context);
     for (final label in <String>[
-      'الرئيسية',
-      'تصفح',
-      'بحث',
-      'المكتبة',
-      'الإعدادات',
-      'البث المباشر',
+      labels.navHome,
+      BrowseVertical.moviesAndTv.localizedLabel(context),
+      BrowseVertical.anime.localizedLabel(context),
+      BrowseVertical.music.localizedLabel(context),
+      labels.navLibrary,
+      labels.navSearch,
+      labels.navSettings,
     ]) {
       // Search and Settings are icons in the desktop capsule, so their
       // name is the tooltip (and the semantics label) rather than a Text.
       expect(
         find.text(label).evaluate().length +
-            find.byTooltip(label).evaluate().length,
+            find
+                .byWidgetPredicate(
+                  (w) =>
+                      (w is KiruTooltip && w.message == label) ||
+                      (w is Tooltip && w.message == label),
+                )
+                .evaluate()
+                .length,
         greaterThanOrEqualTo(1),
         reason: 'the shell must name "$label" in Arabic',
       );
@@ -144,8 +155,21 @@ void main() {
     expect(Directionality.of(context), TextDirection.ltr);
     expect(find.text('Home'), findsOneWidget);
     // An icon in the desktop capsule: named by its tooltip.
-    expect(find.byTooltip('Settings'), findsOneWidget);
-    expect(find.text('Live TV'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            (w is KiruTooltip && w.message == 'Settings') ||
+            (w is Tooltip && w.message == 'Settings'),
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.text(BrowseVertical.moviesAndTv.localizedLabel(context)),
+      findsOneWidget,
+    );
+    expect(find.text('Anime'), findsOneWidget);
+    expect(find.text('Music'), findsOneWidget);
+    expect(find.text('Live TV'), findsNothing);
   });
 
   testWidgets('a plain MaterialApp still sees English through l10nOf', (

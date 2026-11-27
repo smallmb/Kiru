@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
@@ -37,7 +38,10 @@ class _MyListPageState extends State<MyListPage> {
     var filtered = allItems.where((item) {
       // 1. Filter by media type
       if (_filterType == 'movie' && item.type != 'movie') return false;
-      if (_filterType == 'series' && item.type != 'series' && item.type != 'anime') return false;
+      if (_filterType == 'series' &&
+          item.type != 'series' &&
+          item.type != 'anime')
+        return false;
 
       // 2. Filter by search query
       if (_searchQuery.trim().isNotEmpty) {
@@ -54,7 +58,9 @@ class _MyListPageState extends State<MyListPage> {
         filtered.sort((a, b) => b.addedAt.compareTo(a.addedAt));
         break;
       case 'title':
-        filtered.sort((a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
+        filtered.sort(
+          (a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()),
+        );
         break;
       case 'year':
         filtered.sort((a, b) => (b.year ?? 0).compareTo(a.year ?? 0));
@@ -85,12 +91,14 @@ class _MyListPageState extends State<MyListPage> {
     final crossAxisCount = _getCrossAxisCount(context);
     const spacing = ZplaySpacing.s12;
     const gutter = ZplaySpacing.s16;
-    final available = MediaQuery.sizeOf(context).width -
+    final available =
+        MediaQuery.sizeOf(context).width -
         gutter * 2 -
         spacing * (crossAxisCount - 1);
     final cellWidth = available / crossAxisCount;
     final cellHeight =
-        cellWidth * MovieCardSizing.posterRatio + MovieCardSizing.textBlockHeight;
+        cellWidth * MovieCardSizing.posterRatio +
+        MovieCardSizing.textBlockHeight;
     return cellWidth / cellHeight;
   }
 
@@ -100,7 +108,8 @@ class _MyListPageState extends State<MyListPage> {
   /// and the id, or tapping a card opens a different record than the one the
   /// user just read - so both read this.
   Movie _movieFor(MyListItem item) {
-    final effectiveId = item.imdbId ??
+    final effectiveId =
+        item.imdbId ??
         (item.tmdbId != null ? 'tmdb:${item.tmdbId}' : null) ??
         item.traktId?.toString() ??
         '';
@@ -118,9 +127,7 @@ class _MyListPageState extends State<MyListPage> {
   void _navigateToDetail(MyListItem item) {
     Navigator.push(
       context,
-      FadeThroughRoute(
-        page: DetailsPage(movie: _movieFor(item)),
-      ),
+      FadeThroughRoute(page: DetailsPage(movie: _movieFor(item))),
     );
   }
 
@@ -128,7 +135,7 @@ class _MyListPageState extends State<MyListPage> {
     final tokens = context.tokens;
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => KiruAlertDialog(
         backgroundColor: tokens.surfaceOverlay,
         shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.mdAll),
         title: Text(
@@ -140,21 +147,27 @@ class _MyListPageState extends State<MyListPage> {
           style: ZplayType.body.toStyle(color: tokens.textSecondary),
         ),
         actions: [
-          TextButton(
+          KiruButton(
+            kind: KiruButtonKind.ghost,
             onPressed: () => Navigator.pop(ctx, false),
             child: Text(
               l10nOf(context).uiMyListPageCancel,
               style: ZplayType.label.toStyle(color: tokens.textSecondary),
             ),
           ),
-          ElevatedButton(
+          KiruButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: ElevatedButton.styleFrom(
               backgroundColor: tokens.danger,
               foregroundColor: tokens.textPrimary,
-              shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
+              shape: const RoundedRectangleBorder(
+                borderRadius: ZplayRadius.smAll,
+              ),
             ),
-            child: Text(l10nOf(context).uiMyListPageRemove, style: ZplayType.label.toStyle()),
+            child: Text(
+              l10nOf(context).uiMyListPageRemove,
+              style: ZplayType.label.toStyle(),
+            ),
           ),
         ],
       ),
@@ -236,8 +249,9 @@ class _MyListPageState extends State<MyListPage> {
               ]),
               builder: (context, _) {
                 final allItems = MyListService.visibleItems;
-                final movieCount =
-                    allItems.where((i) => i.type == 'movie').length;
+                final movieCount = allItems
+                    .where((i) => i.type == 'movie')
+                    .length;
                 final seriesCount = allItems
                     .where((i) => i.type == 'series' || i.type == 'anime')
                     .length;
@@ -272,16 +286,18 @@ class _MyListPageState extends State<MyListPage> {
                                 ZplaySpacing.s24 +
                                     MediaQuery.paddingOf(context).bottom,
                               ),
-                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                // The column count is this page's own
-                                // responsive rule and is unchanged; only the
-                                // cell's height now follows the card.
-                                crossAxisCount: _getCrossAxisCount(context),
-                                childAspectRatio:
-                                    _gridChildAspectRatio(context),
-                                crossAxisSpacing: ZplaySpacing.s12,
-                                mainAxisSpacing: ZplaySpacing.s16,
-                              ),
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    // The column count is this page's own
+                                    // responsive rule and is unchanged; only the
+                                    // cell's height now follows the card.
+                                    crossAxisCount: _getCrossAxisCount(context),
+                                    childAspectRatio: _gridChildAspectRatio(
+                                      context,
+                                    ),
+                                    crossAxisSpacing: ZplaySpacing.s12,
+                                    mainAxisSpacing: ZplaySpacing.s16,
+                                  ),
                               itemCount: displayedItems.length,
                               itemBuilder: (context, index) {
                                 final item = displayedItems[index];
@@ -351,7 +367,7 @@ class _MyListPageState extends State<MyListPage> {
           // My List is a tab of the library shell slot, not a pushed overlay, so the
           // back button only belongs here when there is genuinely a route underneath.
           if (Navigator.of(context).canPop())
-            IconButton(
+            KiruIconButton(
               onPressed: () => Navigator.pop(context),
               icon: Icon(
                 Icons.arrow_back_ios_rounded,
@@ -400,7 +416,7 @@ class _MyListPageState extends State<MyListPage> {
                     SizedBox(
                       width: 14,
                       height: 14,
-                      child: CircularProgressIndicator(
+                      child: KiruLoader(
                         strokeWidth: 2,
                         valueColor: AlwaysStoppedAnimation<Color>(
                           tokens.accent,
@@ -415,13 +431,15 @@ class _MyListPageState extends State<MyListPage> {
                     ),
                   const SizedBox(width: ZplaySpacing.s4),
                   Text(
-                    isSyncing ? l10nOf(context).finalMyListPageSyncing : 'Cloud Synced',
+                    isSyncing
+                        ? l10nOf(context).finalMyListPageSyncing
+                        : 'Cloud Synced',
                     style: ZplayType.caption.toStyle(
                       color: tokens.textSecondary,
                     ),
                   ),
                   const SizedBox(width: ZplaySpacing.s4),
-                  IconButton(
+                  KiruIconButton(
                     constraints: const BoxConstraints(),
                     padding: EdgeInsets.zero,
                     icon: Icon(
@@ -472,9 +490,18 @@ class _MyListPageState extends State<MyListPage> {
               Expanded(
                 child: TabStrip<String>(
                   options: [
-                    TabStripOption(value: 'all', label: l10nOf(context).uiMyListPageAll),
-                    TabStripOption(value: 'movie', label: l10nOf(context).uiMyListPageMovies),
-                    TabStripOption(value: 'series', label: l10nOf(context).uiMyListPageTvShows),
+                    TabStripOption(
+                      value: 'all',
+                      label: l10nOf(context).uiMyListPageAll,
+                    ),
+                    TabStripOption(
+                      value: 'movie',
+                      label: l10nOf(context).uiMyListPageMovies,
+                    ),
+                    TabStripOption(
+                      value: 'series',
+                      label: l10nOf(context).uiMyListPageTvShows,
+                    ),
                   ],
                   selected: _filterType,
                   onSelected: (type) => setState(() => _filterType = type),
@@ -491,10 +518,7 @@ class _MyListPageState extends State<MyListPage> {
               // field, in the same row, after the sort control.
               if (television) ...[
                 const SizedBox(width: ZplaySpacing.s16),
-                SizedBox(
-                  width: 220,
-                  child: _buildSearchField(tokens),
-                ),
+                SizedBox(width: 220, child: _buildSearchField(tokens)),
               ],
 
               const SizedBox(width: ZplaySpacing.s16),
@@ -511,17 +535,30 @@ class _MyListPageState extends State<MyListPage> {
                   border: Border.fromBorderSide(tokens.hairlineStrong),
                 ),
                 child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
+                  child: KiruDropdown<String>(
                     value: _sortBy,
                     dropdownColor: tokens.surfaceOverlay,
                     style: ZplayType.bodySmall.toStyle(
                       color: tokens.textPrimary,
                     ),
-                    icon: Icon(Icons.sort_rounded, color: tokens.accent, size: 16),
+                    icon: Icon(
+                      Icons.sort_rounded,
+                      color: tokens.accent,
+                      size: 16,
+                    ),
                     items: [
-                      DropdownMenuItem(value: 'recent', child: Text(l10nOf(context).uiMyListPageRecentlyAdded)),
-                      DropdownMenuItem(value: 'title', child: Text(l10nOf(context).uiMyListPageAlphabetical)),
-                      DropdownMenuItem(value: 'year', child: Text(l10nOf(context).uiMyListPageReleaseYear)),
+                      DropdownMenuItem(
+                        value: 'recent',
+                        child: Text(l10nOf(context).uiMyListPageRecentlyAdded),
+                      ),
+                      DropdownMenuItem(
+                        value: 'title',
+                        child: Text(l10nOf(context).uiMyListPageAlphabetical),
+                      ),
+                      DropdownMenuItem(
+                        value: 'year',
+                        child: Text(l10nOf(context).uiMyListPageReleaseYear),
+                      ),
                     ],
                     onChanged: (v) => setState(() => _sortBy = v!),
                   ),
@@ -546,36 +583,38 @@ class _MyListPageState extends State<MyListPage> {
   /// a pointer, and a fixed-width control in the pill row on a television.
   Widget _buildSearchField(ZplayTokens tokens) {
     return Container(
-            height: 40,
-            decoration: BoxDecoration(
-              color: tokens.surface,
-              borderRadius: ZplayRadius.smAll,
-              border: Border.fromBorderSide(tokens.hairline),
-            ),
-            child: TextField(
-              controller: _searchController,
-              onChanged: (v) => setState(() => _searchQuery = v),
-              style: ZplayType.label.toStyle(color: tokens.textPrimary),
-              decoration: InputDecoration(
-                hintText: l10nOf(context).uiMyListPageSearchSavedTitles,
-                hintStyle: ZplayType.label.toStyle(color: tokens.textDisabled),
-                prefixIcon: Icon(Icons.search_rounded, color: tokens.textMuted, size: 18),
-                suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.close_rounded, size: 16),
-                        color: tokens.textSecondary,
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() => _searchQuery = '');
-                        },
-                      )
-                    : null,
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: ZplaySpacing.s8,
-                ),
-              ),
-            ),
+      height: 40,
+      decoration: BoxDecoration(
+        color: tokens.surface,
+        borderRadius: ZplayRadius.smAll,
+        border: Border.fromBorderSide(tokens.hairline),
+      ),
+      child: KiruFormField(
+        controller: _searchController,
+        onChanged: (v) => setState(() => _searchQuery = v),
+        style: ZplayType.label.toStyle(color: tokens.textPrimary),
+        decoration: InputDecoration(
+          hintText: l10nOf(context).uiMyListPageSearchSavedTitles,
+          hintStyle: ZplayType.label.toStyle(color: tokens.textDisabled),
+          prefixIcon: Icon(
+            Icons.search_rounded,
+            color: tokens.textMuted,
+            size: 18,
+          ),
+          suffixIcon: _searchQuery.isNotEmpty
+              ? KiruIconButton(
+                  icon: const Icon(Icons.close_rounded, size: 16),
+                  color: tokens.textSecondary,
+                  onPressed: () {
+                    _searchController.clear();
+                    setState(() => _searchQuery = '');
+                  },
+                )
+              : null,
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(vertical: ZplaySpacing.s8),
+        ),
+      ),
     );
   }
 
@@ -599,14 +638,18 @@ class _MyListPageState extends State<MyListPage> {
           ),
           const SizedBox(height: ZplaySpacing.s16),
           Text(
-            isListEmpty ? l10nOf(context).finalMyListPageYourListIsEmpty : 'No titles found',
+            isListEmpty
+                ? l10nOf(context).finalMyListPageYourListIsEmpty
+                : 'No titles found',
             style: ZplayType.titleLarge.toStyle(color: tokens.textPrimary),
           ),
           const SizedBox(height: ZplaySpacing.s8),
           Text(
             isListEmpty
                 ? l10nOf(context).uiFinalMyListPageSaveYourFavoriteMoviesAndTv
-                : l10nOf(context).uiFinalMyListPageTryAdjustingYourSearchQueryOr,
+                : l10nOf(
+                    context,
+                  ).uiFinalMyListPageTryAdjustingYourSearchQueryOr,
             textAlign: TextAlign.center,
             style: ZplayType.body.toStyle(color: tokens.textSecondary),
           ),

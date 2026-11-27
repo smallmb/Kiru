@@ -1,8 +1,11 @@
+import '../widgets/ui/kiru_controls.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:window_manager/window_manager.dart';
 import '../widgets/common/zplay_logo.dart';
 import '../services/content/content_settings.dart';
-import 'dart:ui' show PointerDeviceKind;
+import '../services/content/navigation_settings.dart';
+import 'dart:ui' show ImageFilter, PointerDeviceKind;
 
 import '../l10n/l10n.dart';
 import '../pages/browse/browse_page.dart';
@@ -49,6 +52,7 @@ class ShellRail extends StatelessWidget {
     this.pageActions,
     this.browseVertical,
     this.onBrowseVertical,
+    this.onSearchSubmitted,
   });
 
   /// Icons the current page lends to the capsule - see
@@ -56,6 +60,7 @@ class ShellRail extends StatelessWidget {
   final ValueListenable<List<ShellPageAction>>? pageActions;
   final ValueListenable<BrowseVertical>? browseVertical;
   final ValueChanged<BrowseVertical>? onBrowseVertical;
+  final ValueChanged<String>? onSearchSubmitted;
 
   final ShellSlot current;
   final ValueChanged<ShellSlot> onSelect;
@@ -92,14 +97,8 @@ class ShellRail extends StatelessWidget {
 
   /// How far the bar has dissolved into the page behind it, 0 to 1.
   ///
-  /// 0 is the ordinary bar: the surface fill, the hairline under it, nothing
-  /// else. 1 is the bar resting on the page's own canvas - Home's hero artwork,
-  /// Browse's header, a Settings background - with no fill and no hairline at
-  /// all, just a soft top scrim and the shadow its glyphs and names carry; the
-  /// values between are the fill and the hairline fading back in as the page
-  /// scrolls away from its top. Home's own control row makes exactly the same
-  /// move over the smaller band it owns (`_GlassAppBar`), on the same distance,
-  /// so the two settle together rather than one lagging the other.
+  /// 页面滚动联动值：顶部为 1，导航使用近透明的模糊玻璃；滚动后逐渐降至 0，
+  /// 遮罩与模糊增强，同时在导航底部淡出，避免形成硬切分割线。
   ///
   /// The shell computes it, not the bar, and it does so for every slot: the
   /// shell wraps the slot pages in a `NotificationListener` and derives this from
@@ -114,11 +113,14 @@ class ShellRail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final inset = MediaQuery.viewPaddingOf(context);
-    return switch (FormFactorService.of(context)) {
-      FormFactor.compact => _bottomBar(context, inset),
-      FormFactor.television => _topBar(context, inset, FormFactor.television),
-      _ => _desktopBar(context, inset),
-    };
+    return ListenableBuilder(
+      listenable: NavigationSettings.enabled,
+      builder: (context, _) => switch (FormFactorService.of(context)) {
+        FormFactor.compact => _bottomBar(context, inset),
+        FormFactor.television => _topBar(context, inset, FormFactor.television),
+        _ => _desktopBar(context, inset),
+      },
+    );
   }
 
   /// The top bar's own row, before the status bar strip it owns.
@@ -155,6 +157,8 @@ class ShellRail extends StatelessWidget {
     final tokens = context.tokens;
     final l10n = l10nOf(context);
     final window = WindowService.instance;
+    final double scrollProgress = (1 - blend).clamp(0.0, 1.0).toDouble();
+    final blurSigma = 8 + 10 * scrollProgress;
 
     Widget slotItem(ShellSlot slot, {bool iconOnly = false}) {
       final chrome = _slotChrome(context, slot);
@@ -164,33 +168,41 @@ class ShellRail extends StatelessWidget {
         selected: slot == current,
         iconOnly: iconOnly,
         textOnly: !iconOnly,
+        glass: iconOnly,
         onTap: () => onSelect(slot),
       );
     }
 
     Widget destinations(BrowseVertical active, bool adultEnabled) {
       return Row(
+        key: const ValueKey('kiru-desktop-menu'),
         mainAxisSize: MainAxisSize.min,
+        spacing: 5,
         children: [
           slotItem(ShellSlot.home),
-          for (final vertical in BrowseVertical.values)
-            if (vertical != BrowseVertical.adult || adultEnabled)
-              _DesktopNavItem(
-                label: vertical.localizedLabel(context),
-                icon: vertical.icon,
-                selected: current == ShellSlot.browse && active == vertical,
-                textOnly: true,
-                onTap: () {
-                  final callback = onBrowseVertical;
-                  if (callback != null) {
-                    callback(vertical);
-                  } else if (vertical == BrowseVertical.liveTv) {
-                    onLiveTv();
-                  } else {
-                    onSelect(ShellSlot.browse);
-                  }
-                },
-              ),
+          for (final vertical in visibleBrowseVerticals(
+            adultEnabled: adultEnabled,
+          ))
+            _DesktopNavItem(
+              label:
+                  vertical == BrowseVertical.moviesAndTv &&
+                      Localizations.localeOf(context).languageCode == 'zh'
+                  ? '\u7535\u5f71'
+                  : vertical.localizedLabel(context),
+              icon: vertical.icon,
+              selected: current == ShellSlot.browse && active == vertical,
+              textOnly: true,
+              onTap: () {
+                final callback = onBrowseVertical;
+                if (callback != null) {
+                  callback(vertical);
+                } else if (vertical == BrowseVertical.liveTv) {
+                  onLiveTv();
+                } else {
+                  onSelect(ShellSlot.browse);
+                }
+              },
+            ),
           slotItem(ShellSlot.library),
         ],
       );
@@ -202,98 +214,231 @@ class ShellRail extends StatelessWidget {
         final selected = browseVertical;
         if (selected == null) {
           return destinations(
-            liveTvSelected ? BrowseVertical.liveTv : BrowseVertical.moviesAndTv,
+            resolveBrowseVertical(
+              liveTvSelected
+                  ? BrowseVertical.liveTv
+                  : BrowseVertical.moviesAndTv,
+            ),
             adultEnabled,
           );
         }
         return ValueListenableBuilder<BrowseVertical>(
           valueListenable: selected,
-          builder: (context, active, _) => destinations(
-            !adultEnabled && active == BrowseVertical.adult
-                ? BrowseVertical.moviesAndTv
-                : active,
-            adultEnabled,
-          ),
+          builder: (context, active, _) =>
+              destinations(resolveBrowseVertical(active), adultEnabled),
         );
       },
     );
 
     return SizedBox(
       height: topBarHeightFor(context),
-      child: ColoredBox(
-        color: tokens.bg.withValues(alpha: 0.96),
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            20 + inset.left,
-            inset.top,
-            16 + inset.right,
-            0,
-          ),
-          child: Row(
-            children: [
-              const ZplayLogo(size: 30),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ScrollConfiguration(
-                  behavior: ScrollConfiguration.of(context).copyWith(
-                    dragDevices: {
-                      PointerDeviceKind.mouse,
-                      PointerDeviceKind.touch,
-                      PointerDeviceKind.trackpad,
-                    },
-                  ),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) => SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minWidth: constraints.maxWidth,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Positioned.fill(
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(
+                        alpha: 0.04 + 0.06 * scrollProgress,
+                      ),
+                      blurRadius: 22,
+                      offset: const Offset(0, 7),
+                    ),
+                  ],
+                ),
+                child: ClipRect(
+                  child: ShaderMask(
+                    blendMode: BlendMode.dstIn,
+                    shaderCallback: (bounds) => const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.white,
+                        Colors.white,
+                        Color(0xA6FFFFFF),
+                        Colors.transparent,
+                      ],
+                      stops: [0, 0.55, 0.82, 1],
+                    ).createShader(bounds),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(
+                        sigmaX: blurSigma,
+                        sigmaY: blurSigma,
+                      ),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              tokens.bg.withValues(
+                                alpha: 0.08 + 0.60 * scrollProgress,
+                              ),
+                              tokens.bg.withValues(
+                                alpha: 0.035 + 0.51 * scrollProgress,
+                              ),
+                              tokens.bg.withValues(
+                                alpha: 0.16 * scrollProgress,
+                              ),
+                            ],
+                            stops: const [0, 0.58, 1],
+                          ),
                         ),
-                        child: Center(child: navigation),
                       ),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
-              slotItem(ShellSlot.search, iconOnly: true),
-              if (pageActions != null)
-                ValueListenableBuilder<List<ShellPageAction>>(
-                  valueListenable: pageActions!,
-                  builder: (context, actions, _) => Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      for (final action in actions)
-                        _DesktopNavItem(
-                          label: action.tooltip,
-                          icon: action.icon,
-                          selected: false,
-                          iconOnly: true,
-                          accent: action.accent,
-                          onTap: action.onTap,
-                        ),
-                    ],
-                  ),
-                ),
-              if (window.isDesktop)
-                ValueListenableBuilder<bool>(
-                  valueListenable: window.isFullscreenNotifier,
-                  builder: (context, isFullscreen, _) => _DesktopNavItem(
-                    label: isFullscreen
-                        ? l10n.shellExitFullscreenTooltip
-                        : l10n.shellFullscreenTooltip,
-                    icon: isFullscreen
-                        ? Icons.fullscreen_exit_rounded
-                        : Icons.fullscreen_rounded,
-                    selected: isFullscreen,
-                    iconOnly: true,
-                    onTap: window.toggleFullscreen,
-                  ),
-                ),
-              slotItem(ShellSlot.settings, iconOnly: true),
-            ],
+            ),
           ),
-        ),
+          // Native window dragging belongs to the empty caption surface only.
+          // Interactive controls above it win hit testing; the navigation viewport
+          // below shrink-wraps so the unused space remains a caption target.
+          if (window.usesCustomCaptionBar)
+            Positioned.fill(
+              child: GestureDetector(
+                key: const ValueKey('kiru-caption-drag'),
+                behavior: HitTestBehavior.opaque,
+                excludeFromSemantics: true,
+                onPanStart: (_) => window.startDragging(),
+              ),
+            ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              32 + inset.left,
+              inset.top,
+              (window.usesCustomCaptionBar ? 12 : 24) + inset.right,
+              0,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context).copyWith(
+                      dragDevices: {
+                        PointerDeviceKind.mouse,
+                        PointerDeviceKind.touch,
+                        PointerDeviceKind.trackpad,
+                      },
+                    ),
+                    child: CustomSingleChildLayout(
+                      key: const ValueKey('kiru-desktop-menu-viewport'),
+                      delegate: _DesktopNavigationAlignment(
+                        targetCenter:
+                            MediaQuery.sizeOf(context).width / 2 -
+                            (32 + inset.left),
+                      ),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: navigation,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 18),
+                if (MediaQuery.sizeOf(context).width >= 1100)
+                  _HeaderSearchField(
+                    width: (MediaQuery.sizeOf(context).width * 0.265).clamp(
+                      184.0,
+                      400.0,
+                    ),
+                    label: l10n.navSearch,
+                    onSubmit:
+                        onSearchSubmitted ?? (_) => onSelect(ShellSlot.search),
+                  )
+                else
+                  slotItem(ShellSlot.search, iconOnly: true),
+                const SizedBox(width: 12),
+                if (pageActions != null)
+                  ValueListenableBuilder<List<ShellPageAction>>(
+                    valueListenable: pageActions!,
+                    builder: (context, actions, _) => Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        for (final action in actions)
+                          _DesktopNavItem(
+                            label: action.tooltip,
+                            icon: action.icon,
+                            selected: false,
+                            iconOnly: true,
+                            glass: true,
+                            accent: action.accent,
+                            onTap: action.onTap,
+                          ),
+                      ],
+                    ),
+                  ),
+                slotItem(ShellSlot.settings, iconOnly: true),
+                if (window.usesCustomCaptionBar) ...[
+                  const SizedBox(width: 14),
+                  Container(
+                    width: 1,
+                    height: 23,
+                    color: tokens.textPrimary.withValues(alpha: 0.28),
+                  ),
+                  const SizedBox(width: 10),
+                  KiruTooltip(
+                    message: l10n.shellMinimizeWindowTooltip,
+                    child: Semantics(
+                      button: true,
+                      label: l10n.shellMinimizeWindowTooltip,
+                      child: WindowCaptionButton.minimize(
+                        brightness: Theme.of(context).brightness,
+                        onPressed: () {
+                          window.minimize();
+                        },
+                      ),
+                    ),
+                  ),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: window.isMaximizedNotifier,
+                    builder: (context, isMaximized, _) {
+                      final label = isMaximized
+                          ? l10n.shellRestoreWindowTooltip
+                          : l10n.shellMaximizeWindowTooltip;
+                      return KiruTooltip(
+                        message: label,
+                        child: Semantics(
+                          button: true,
+                          label: label,
+                          child: isMaximized
+                              ? WindowCaptionButton.unmaximize(
+                                  brightness: Theme.of(context).brightness,
+                                  onPressed: () {
+                                    window.toggleMaximize();
+                                  },
+                                )
+                              : WindowCaptionButton.maximize(
+                                  brightness: Theme.of(context).brightness,
+                                  onPressed: () {
+                                    window.toggleMaximize();
+                                  },
+                                ),
+                        ),
+                      );
+                    },
+                  ),
+                  KiruTooltip(
+                    message: l10n.shellCloseWindowTooltip,
+                    child: Semantics(
+                      button: true,
+                      label: l10n.shellCloseWindowTooltip,
+                      child: WindowCaptionButton.close(
+                        brightness: Theme.of(context).brightness,
+                        onPressed: () {
+                          window.close();
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -496,7 +641,8 @@ class ShellRail extends StatelessWidget {
                             ),
                             // Live TV rides beside Browse, which is the slot
                             // it opens.
-                            if (slot == ShellSlot.browse)
+                            if (slot == ShellSlot.browse &&
+                                NavigationSettings.isEnabled('liveTv'))
                               Flexible(
                                 child: _liveTvRow(
                                   context,
@@ -622,7 +768,10 @@ class ShellRail extends StatelessWidget {
   /// pick", and underlining Browse after a press on Live TV answers it wrong.
   bool _marksSlot(ShellSlot slot, {required bool liveTvRowDrawn}) =>
       slot == current &&
-      !(liveTvRowDrawn && liveTvSelected && slot == ShellSlot.browse);
+      !(liveTvRowDrawn &&
+          NavigationSettings.isEnabled('liveTv') &&
+          liveTvSelected &&
+          slot == ShellSlot.browse);
 
   /// The Live TV shortcut, drawn beside Browse.
   ///
@@ -847,7 +996,7 @@ class _RailRow extends StatelessWidget {
             //
             // Either way the name survives for a screen reader (the `Semantics`
             // above) and for a pointer (the tooltip).
-            child: Tooltip(
+            child: KiruTooltip(
               message: tooltipMessage,
               // The accent bar is anchored to the *name's* box rather than to
               // the row's, so it needs a parent with a box of its own: a `Stack`
@@ -1004,6 +1153,30 @@ class _RailRow extends StatelessWidget {
   };
 }
 
+/// Center on the window when space permits, otherwise stay within the
+/// available navigation viewport so search and window controls never overlap.
+class _DesktopNavigationAlignment extends SingleChildLayoutDelegate {
+  const _DesktopNavigationAlignment({required this.targetCenter});
+
+  final double targetCenter;
+
+  @override
+  BoxConstraints getConstraintsForChild(BoxConstraints constraints) =>
+      constraints.loosen();
+
+  @override
+  Offset getPositionForChild(Size size, Size childSize) => Offset(
+    (targetCenter - childSize.width / 2)
+        .clamp(0.0, (size.width - childSize.width).clamp(0.0, double.infinity))
+        .toDouble(),
+    (size.height - childSize.height) / 2,
+  );
+
+  @override
+  bool shouldRelayout(_DesktopNavigationAlignment oldDelegate) =>
+      targetCenter != oldDelegate.targetCenter;
+}
+
 /// Desktop text destination or utility icon with hover, focus and press feedback.
 class _DesktopNavItem extends StatelessWidget {
   const _DesktopNavItem({
@@ -1014,6 +1187,7 @@ class _DesktopNavItem extends StatelessWidget {
     this.iconOnly = false,
     this.textOnly = false,
     this.accent = false,
+    this.glass = false,
   });
 
   final String label;
@@ -1023,6 +1197,7 @@ class _DesktopNavItem extends StatelessWidget {
   final bool iconOnly;
   final bool textOnly;
   final bool accent;
+  final bool glass;
 
   static const BorderRadius _radius = BorderRadius.all(
     Radius.circular(ZplaySpacing.s8),
@@ -1031,68 +1206,205 @@ class _DesktopNavItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final content = FocusableCard(
+      onTap: onTap,
+      builder: (context, state) {
+        final active = selected || state.hovered || state.focused;
+        final Color fg = textOnly
+            ? tokens.textPrimary.withValues(
+                alpha: selected
+                    ? 1.0
+                    : state.focused || state.hovered
+                    ? 0.85
+                    : 0.72,
+              )
+            : accent
+            ? tokens.accent
+            : active
+            ? tokens.textPrimary
+            : tokens.textPrimary.withValues(alpha: 0.72);
+        final Color fill = textOnly || glass
+            ? Colors.transparent
+            : state.hovered
+            ? tokens.textPrimary.withValues(alpha: 0.08)
+            : Colors.transparent;
+        final radius = glass ? BorderRadius.circular(24) : _radius;
+        final Widget item = AnimatedScale(
+          scale: state.pressed ? 0.92 : 1,
+          duration: MediaQuery.disableAnimationsOf(context)
+              ? Duration.zero
+              : ZplayMotion.fast,
+          child: AnimatedContainer(
+            duration: MediaQuery.disableAnimationsOf(context)
+                ? Duration.zero
+                : ZplayMotion.fast,
+            curve: ZplayMotion.standard,
+            height: 38,
+            width: glass && iconOnly ? 38 : null,
+            constraints: textOnly ? const BoxConstraints(minWidth: 66) : null,
+            padding: EdgeInsets.symmetric(horizontal: iconOnly ? 0 : 14),
+            decoration: BoxDecoration(color: fill, borderRadius: radius),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                if (!textOnly) Icon(icon, size: 18, color: fg),
+                if (!iconOnly) ...[
+                  if (!textOnly) const SizedBox(width: 6),
+                  Text(
+                    label,
+                    maxLines: 1,
+                    style: ZplayType.label
+                        .toStyle(color: fg)
+                        .copyWith(
+                          fontSize: textOnly ? 17 : 15,
+                          fontWeight: selected
+                              ? FontWeight.w600
+                              : FontWeight.w400,
+                        ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+        if (textOnly) return item;
+        if (glass) {
+          return Padding(
+            padding: const EdgeInsets.only(left: 5),
+            child: _HeaderGlassSurface(child: item),
+          );
+        }
+        return CardFocusRing(
+          focused: state.focused,
+          radius: radius,
+          child: item,
+        );
+      },
+    );
     return Semantics(
       button: true,
       selected: selected,
       label: label,
       excludeSemantics: true,
       onTap: onTap,
-      child: Tooltip(
-        message: label,
-        waitDuration: const Duration(milliseconds: 500),
-        child: FocusableCard(
-          onTap: onTap,
-          builder: (context, state) {
-            final active = selected || state.hovered || state.focused;
-            final Color fg = accent || selected
-                ? tokens.accent
-                : (active || textOnly
-                      ? tokens.textPrimary
-                      : tokens.textSecondary);
-            final Color fill = state.hovered
-                ? tokens.textPrimary.withValues(alpha: 0.08)
-                : Colors.transparent;
-            return CardFocusRing(
-              focused: state.focused,
-              radius: _radius,
-              child: AnimatedScale(
-                scale: state.pressed ? 0.92 : 1,
-                duration: MediaQuery.disableAnimationsOf(context)
-                    ? Duration.zero
-                    : ZplayMotion.fast,
-                child: AnimatedContainer(
-                  duration: MediaQuery.disableAnimationsOf(context)
-                      ? Duration.zero
-                      : ZplayMotion.fast,
-                  curve: ZplayMotion.standard,
-                  height: 40,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: iconOnly ? ZplaySpacing.s8 : 10,
+      child: textOnly
+          ? content
+          : KiruTooltip(
+              message: label,
+              waitDuration: const Duration(milliseconds: 500),
+              child: content,
+            ),
+    );
+  }
+}
+
+/// Shared, borderless frosted material for the desktop header controls.
+class _HeaderGlassSurface extends StatelessWidget {
+  const _HeaderGlassSurface({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(999),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        child: ColoredBox(
+          color: tokens.bg.withValues(alpha: dark ? 0.30 : 0.24),
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
+/// A compact, real search field, visually independent from the navigation.
+class _HeaderSearchField extends StatefulWidget {
+  const _HeaderSearchField({
+    required this.width,
+    required this.label,
+    required this.onSubmit,
+  });
+  final double width;
+  final String label;
+  final ValueChanged<String> onSubmit;
+  @override
+  State<_HeaderSearchField> createState() => _HeaderSearchFieldState();
+}
+
+class _HeaderSearchFieldState extends State<_HeaderSearchField> {
+  final _controller = TextEditingController();
+  final _focus = FocusNode();
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focus.dispose();
+    super.dispose();
+  }
+
+  void _submit([String? value]) {
+    final query = (value ?? _controller.text).trim();
+    _focus.unfocus();
+    widget.onSubmit(query);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = context.tokens;
+    return SizedBox(
+      width: widget.width,
+      height: 38,
+      child: _HeaderGlassSurface(
+        child: Row(
+          children: [
+            Expanded(
+              child: KiruFormField(
+                key: const ValueKey('kiru-header-search'),
+                controller: _controller,
+                focusNode: _focus,
+                textInputAction: TextInputAction.search,
+                onSubmitted: _submit,
+                style: TextStyle(color: tokens.textPrimary, fontSize: 13),
+                decoration: InputDecoration(
+                  hintText: widget.label,
+                  hintStyle: TextStyle(
+                    color: tokens.textPrimary.withValues(alpha: 0.65),
+                    fontSize: 13,
                   ),
-                  decoration: BoxDecoration(color: fill, borderRadius: _radius),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      if (!textOnly) Icon(icon, size: 20, color: fg),
-                      if (!iconOnly) ...[
-                        if (!textOnly) const SizedBox(width: 6),
-                        Text(
-                          label,
-                          maxLines: 1,
-                          style: ZplayType.label
-                              .toStyle(color: fg)
-                              .copyWith(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                              ),
-                        ),
-                      ],
-                    ],
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  filled: false,
+                  isDense: true,
+                  contentPadding: const EdgeInsetsDirectional.fromSTEB(
+                    14,
+                    10,
+                    4,
+                    10,
                   ),
                 ),
               ),
-            );
-          },
+            ),
+            KiruIconButton(
+              tooltip: widget.label,
+              onPressed: () => _submit(),
+              icon: Icon(
+                Icons.search_rounded,
+                size: 19,
+                color: tokens.textPrimary,
+              ),
+              style: const ButtonStyle(
+                overlayColor: WidgetStatePropertyAll(Colors.transparent),
+                backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+              ),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints.tightFor(width: 40, height: 36),
+            ),
+          ],
         ),
       ),
     );

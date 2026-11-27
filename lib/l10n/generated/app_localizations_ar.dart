@@ -69,6 +69,18 @@ class AppLocalizationsAr extends AppLocalizations {
   String get shellExitFullscreenTooltip => 'الخروج من ملء الشاشة (F11)';
 
   @override
+  String get shellMinimizeWindowTooltip => 'تصغير النافذة';
+
+  @override
+  String get shellMaximizeWindowTooltip => 'تكبير النافذة';
+
+  @override
+  String get shellRestoreWindowTooltip => 'استعادة النافذة';
+
+  @override
+  String get shellCloseWindowTooltip => 'إغلاق النافذة';
+
+  @override
   String get errorLoadFailed => 'تعذّر تحميل الأفلام';
 
   @override
@@ -6847,7 +6859,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get configCopyDeepOpticalRefractionGlassSheetsPoweredBy =>
-      'Deep optical refraction glass sheets powered by liquid_glass_easy';
+      'Frosted panels with Gaussian backdrop blur';
 
   @override
   String get configCopyCinematicPosterFocus => 'Cinematic Poster Focus';

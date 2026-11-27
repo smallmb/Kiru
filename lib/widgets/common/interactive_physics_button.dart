@@ -7,6 +7,7 @@ import '../../services/audiobook/audiobook_settings.dart';
 import '../../services/music/music_settings.dart';
 import '../../services/theme/app_theme_service.dart';
 import 'focusable_card.dart';
+import '../player/player_forui.dart';
 
 /// The one implementation of the player's pointer "physics" button.
 ///
@@ -180,7 +181,7 @@ class _InteractivePhysicsButtonState extends State<InteractivePhysicsButton>
     final interactive =
         widget.enabled && (hasAction || !widget._look.nullTapDisables);
 
-    return FocusableCard(
+    return PlayerTappable(
       onTap: widget.enabled ? widget.onTap : null,
       enabled: interactive,
       cursor: widget.enabled && hasAction

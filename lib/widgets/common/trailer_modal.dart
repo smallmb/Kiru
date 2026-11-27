@@ -30,6 +30,8 @@
 /// is always one press away.
 library;
 
+import '../ui/kiru_controls.dart';
+
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:io';
@@ -362,12 +364,7 @@ class _TrailerModalState extends State<TrailerModal> {
     if (_failed) return _unavailable(tokens);
     final embed = _embed;
     if (embed == null) {
-      return Center(
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          color: tokens.textMuted,
-        ),
-      );
+      return Center(child: KiruLoader(strokeWidth: 2, color: tokens.textMuted));
     }
     return embed;
   }

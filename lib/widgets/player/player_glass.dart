@@ -1,11 +1,14 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:liquid_glass_easy/liquid_glass_easy.dart';
-import '../../services/theme/glass_settings.dart';
+import 'package:forui/forui.dart' as f;
+import 'package:flutter/services.dart';
+import '../../services/theme/forui_theme.dart';
 import '../../services/theme/app_theme_service.dart';
 import '../../services/theme/design_tokens.dart';
 import '../../utils/a11y.dart';
 import '../common/focusable_card.dart';
+import 'player_forui.dart';
+export 'player_forui.dart';
 
 /// The player family's colour vocabulary, bridged onto the contract token layer.
 ///
@@ -123,7 +126,7 @@ class PlayerGlassCard extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
-        boxShadow: shadows ?? PlayerTheme.menuShadow,
+        // No glossy shadow or rim on player surfaces.
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(borderRadius),
@@ -134,7 +137,7 @@ class PlayerGlassCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: backgroundColor ?? PlayerTheme.elevated,
               borderRadius: BorderRadius.circular(borderRadius),
-              border: border ?? Border.all(color: PlayerTheme.edge, width: 1),
+              // A soft frosted surface, without a highlighted edge.
             ),
             child: child,
           ),
@@ -186,16 +189,8 @@ class PlayerIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // A toggle is a button whose `active` state is meaningful. The two call
-    // sites that pass `active` also pass `activeColor` (the Episodes and
-    // Subtitle Sync triggers), which is what distinguishes them from the
-    // stateless buttons that leave both at their defaults.
     final isToggle = active || activeColor != null;
-
-    // The button is one node: its tooltip names it, and a control that has no
-    // tooltip is named by its icon rather than being announced as "button". The
-    // subtree is excluded because the Tooltip would otherwise repeat the same
-    // name, and the tap action is mirrored here for the same reason.
+    final radius = BorderRadius.circular(borderRadius.clamp(0.0, 10.0));
     return Semantics(
       container: true,
       button: true,
@@ -204,163 +199,123 @@ class PlayerIconButton extends StatelessWidget {
       label: tooltip ?? A11y.iconLabel(icon),
       excludeSemantics: true,
       onTap: onPressed,
-      child: FocusableCard(
-        onTap: onPressed,
-        focusNode: focusNode,
-        enabled: onPressed != null,
-        cursor: onPressed != null
-            ? SystemMouseCursors.click
-            : SystemMouseCursors.basic,
-        builder: (context, state) {
-          // Focus is given the same treatment as hover. On a TV there is no hover
-          // and no pointer, so this highlight is the only thing telling a remote
-          // user which control is live.
-          final highlighted = state.highlighted;
-
-          return ValueListenableBuilder<bool>(
-            valueListenable: GlassSettings.enabled,
-            builder: (context, glassEnabled, _) {
-              return ValueListenableBuilder<int>(
-                valueListenable: GlassSettings.styleRevision,
-                builder: (context, _, __) {
-                  final tokens = context.tokens;
-                  final hoverScaleVal = glassEnabled
-                      ? GlassSettings.hoverScale.value
-                      : 1.0;
-                  final effectiveScale = highlighted ? hoverScaleVal : 1.0;
-
-                  // Two washes, both off the text token: the active fill is
-                  // deliberately stronger than the focus/hover one, because on a TV
-                  // this highlight is the only signal of which control is live.
-                  final bg = active
-                      ? (activeColor ??
-                            tokens.textPrimary.withValues(alpha: 0.22))
-                      : (highlighted
-                            ? (backgroundColor ??
-                                  tokens.textPrimary.withValues(alpha: 0.12))
-                            : (backgroundColor ?? Colors.transparent));
-
-                  final iconContent = Stack(
+      child: KiruForuiTheme.ensure(context, (context) {
+        final tokens = context.tokens;
+        final theme = f.FTheme.of(context);
+        final style = f.FButtonStyle.inherit(
+          style: theme.style,
+          decoration: f.FVariants.from(
+            ShapeDecoration(
+              color: Colors.transparent,
+              shape: RoundedRectangleBorder(borderRadius: radius),
+            ),
+            variants: {
+              [f.FTappableVariant.hovered]: f.DecorationDelta.shapeDelta(
+                color: tokens.textPrimary.withValues(alpha: 0.08),
+              ),
+              [f.FTappableVariant.pressed]: f.DecorationDelta.shapeDelta(
+                color: tokens.textPrimary.withValues(alpha: 0.14),
+              ),
+            },
+          ),
+          foregroundColor: active
+              ? (activeColor ?? tokens.accent)
+              : PlayerTheme.inkMuted,
+          disabledForegroundColor: tokens.textDisabled,
+          textStyle: theme.typography.body.sm,
+          contentConstraints: BoxConstraints.tightFor(
+            width: size,
+            height: size,
+          ),
+          contentPadding: EdgeInsets.zero,
+          contentSpacing: 0,
+          iconConstraints: BoxConstraints.tightFor(width: size, height: size),
+          iconSize: iconSize,
+          iconPadding: EdgeInsets.zero,
+        );
+        final button = f.FButton.raw(
+          variant: f.FButtonVariant.ghost,
+          focusNode: focusNode,
+          onPress: onPressed,
+          shortcuts: const {
+            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+            SingleActivator(LogicalKeyboardKey.select): ActivateIntent(),
+            SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+            SingleActivator(LogicalKeyboardKey.gameButtonA): ActivateIntent(),
+          },
+          style: f.FButtonStyle(
+            decoration: style.decoration,
+            contentStyle: style.contentStyle,
+            iconContentStyle: style.iconContentStyle,
+            tappableStyle: f.FTappableStyle(
+              cursor: f.FVariants.all(
+                onPressed == null
+                    ? SystemMouseCursors.basic
+                    : SystemMouseCursors.click,
+              ),
+              pressedEnterDuration: Duration.zero,
+              pressedExitDuration: Duration.zero,
+              motion: f.FTappableMotion.none,
+            ),
+            // The existing app-wide focus ring is drawn inside the button.
+            focusedOutlineStyle: f.FFocusedOutlineStyle(
+              color: Colors.transparent,
+              borderRadius: radius,
+              spacing: 0,
+            ),
+          ),
+          child: Builder(
+            builder: (context) {
+              final variants = f.FButtonData.of(context).variants;
+              final focused = variants.contains(f.FTappableVariant.focused);
+              final highlighted =
+                  focused || variants.contains(f.FTappableVariant.hovered);
+              final ringed = CardFocusRing(
+                focused: focused,
+                radius: radius,
+                child: SizedBox(
+                  width: size,
+                  height: size,
+                  child: Stack(
                     alignment: Alignment.center,
                     children: [
                       IconTheme(
                         data: IconThemeData(
-                          color: active
+                          color: onPressed == null
+                              ? tokens.textDisabled
+                              : active
+                              ? (activeColor ?? tokens.accent)
+                              : highlighted
                               ? tokens.textPrimary
-                              : (highlighted
-                                    ? tokens.textPrimary
-                                    : PlayerTheme.inkMuted),
+                              : PlayerTheme.inkMuted,
                           size: iconSize,
                         ),
                         child: icon,
                       ),
                       if (showActiveBadge)
                         Positioned(
-                          top: size * 0.2,
-                          right: size * 0.2,
-                          child: Container(
-                            width: 6,
-                            height: 6,
+                          top: size * 0.17,
+                          right: size * 0.17,
+                          child: DecoratedBox(
                             decoration: BoxDecoration(
-                              color: badgeColor ?? PlayerTheme.accent,
+                              color: badgeColor ?? tokens.accent,
                               shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: (badgeColor ?? PlayerTheme.accent)
-                                      .withValues(alpha: 0.8),
-                                  blurRadius: 4,
-                                  spreadRadius: 1,
-                                ),
-                              ],
                             ),
+                            child: const SizedBox.square(dimension: 5),
                           ),
                         ),
                     ],
-                  );
-
-                  Widget buttonBody;
-                  if (glassEnabled) {
-                    final buttonStyle = GlassSettings.createButtonGlassStyle(
-                      cornerRadius: borderRadius.clamp(0, size / 2),
-                      customColor: active
-                          ? (activeColor?.withValues(alpha: 0.35) ??
-                                PlayerTheme.accent.withValues(alpha: 0.35))
-                          : (highlighted
-                                ? tokens.textPrimary.withValues(alpha: 0.22)
-                                : tokens.textPrimary.withValues(alpha: 0.094)),
-                    );
-
-                    buttonBody = RepaintBoundary(
-                      child: LiquidGlassLens(
-                        style: buttonStyle,
-                        useImpellerBackdrop: true,
-                        child: SizedBox(
-                          width: size,
-                          height: size,
-                          child: iconContent,
-                        ),
-                      ),
-                    );
-                  } else {
-                    buttonBody = AnimatedContainer(
-                      duration: const Duration(milliseconds: 150),
-                      width: size,
-                      height: size,
-                      decoration: BoxDecoration(
-                        color: bg,
-                        borderRadius: BorderRadius.circular(borderRadius),
-                      ),
-                      child: iconContent,
-                    );
-                  }
-
-                  final Widget button = AnimatedScale(
-                    scale: effectiveScale,
-                    duration: const Duration(milliseconds: 140),
-                    curve: Curves.easeOutCubic,
-                    child: buttonBody,
-                  );
-
-                  // The app's one focus indicator, painted over the disc rather
-                  // than around it, so arriving focus moves nothing and the disc's
-                  // own brighten-and-scale is untouched. The wash stays: on a
-                  // television it is what reads as "this control is live", and the
-                  // ring is what every other card in the app answers with. A
-                  // device pass found these buttons were the last controls in the
-                  // app answering focus with the wash alone.
-                  final Widget ringed = CardFocusRing(
-                    focused: state.focused,
-                    // The ring has to hug the shape underneath, which is this
-                    // button's own radius - a pill at the default
-                    // `ZplayRadius.full`, a rounded square where a call site asks
-                    // for one.
-                    radius: BorderRadius.circular(borderRadius),
-                    child: button,
-                  );
-
-                  if (tooltip != null) {
-                    return Tooltip(
-                      message: tooltip!,
-                      waitDuration: const Duration(milliseconds: 400),
-                      decoration: BoxDecoration(
-                        color: PlayerTheme.elevated,
-                        borderRadius: BorderRadius.circular(ZplayRadius.sm),
-                        border: Border.all(color: PlayerTheme.edgeSoft),
-                      ),
-                      textStyle: ZplayType.bodySmall.toStyle(
-                        color: tokens.textPrimary,
-                      ),
-                      child: ringed,
-                    );
-                  }
-
-                  return ringed;
-                },
+                  ),
+                ),
               );
+              return tooltip == null
+                  ? ringed
+                  : PlayerTooltip(message: tooltip!, child: ringed);
             },
-          );
-        },
-      ),
+          ),
+        );
+        return button;
+      }),
     );
   }
 }
@@ -384,7 +339,7 @@ class PlayerToggleChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FocusableCard(
+    return PlayerTappable(
       onTap: onClick,
       enabled: !disabled,
       builder: (context, _) => AnimatedOpacity(
@@ -476,8 +431,7 @@ class FocusableInkWell extends StatefulWidget {
 }
 
 class _FocusableInkWellState extends State<FocusableInkWell> {
-  late final FocusNode _node = FocusNode(debugLabel: 'PlayerFocusableInkWell');
-  bool _focused = false;
+  final FocusNode _node = FocusNode(debugLabel: 'PlayerFocusableInkWell');
 
   @override
   void dispose() {
@@ -485,40 +439,27 @@ class _FocusableInkWellState extends State<FocusableInkWell> {
     super.dispose();
   }
 
-  void _set(void Function() change) {
-    if (mounted) setState(change);
-  }
-
   @override
   Widget build(BuildContext context) {
     final radius = widget.borderRadius ?? ZplayRadius.fullAll;
-    return FocusableActionDetector(
+    return PlayerTappable(
       focusNode: _node,
       enabled: widget.enabled,
-      onShowFocusHighlight: (value) {
-        if (_focused != value) _set(() => _focused = value);
-      },
-      actions: <Type, Action<Intent>>{
-        ActivateIntent: CallbackAction<ActivateIntent>(
-          onInvoke: (_) {
-            if (widget.enabled) widget.onTap?.call();
-            return null;
-          },
-        ),
-      },
-      child: CardFocusRing(
-        focused: _focused && widget.enabled,
+      onTap: widget.onTap,
+      builder: (context, state) => CardFocusRing(
+        focused: state.focused && widget.enabled,
         radius: radius,
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: widget.borderRadius,
-            hoverColor: widget.hoverColor,
-            splashColor: widget.splashColor,
-            canRequestFocus: false,
-            onTap: widget.enabled ? widget.onTap : null,
-            child: widget.child,
+        child: DecoratedBox(
+          position: DecorationPosition.foreground,
+          decoration: BoxDecoration(
+            color: state.pressed
+                ? (widget.splashColor ?? PlayerTheme.surfaceHover)
+                : state.hovered
+                ? (widget.hoverColor ?? PlayerTheme.surfaceHover)
+                : Colors.transparent,
+            borderRadius: radius,
           ),
+          child: widget.child,
         ),
       ),
     );

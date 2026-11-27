@@ -26,6 +26,8 @@
 /// would fail this test for a reason that has nothing to do with focus.
 library;
 
+import 'package:zplay/widgets/ui/kiru_controls.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -61,7 +63,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 400));
 
-    final field = find.byType(TextField).hitTestable();
+    final field = find.byType(KiruFormField).hitTestable();
     expect(field, findsOneWidget, reason: 'the search slot shows one field');
 
     final node = tester

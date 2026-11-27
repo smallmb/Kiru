@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.6.26+3063
+version: 1.6.27+3064
 
 environment:
   sdk: ^3.11.5
@@ -28,6 +28,8 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  forui: 0.28.0
+  material_ui: 1.2.0
   win32_registry: ^2.1.0
   flutter:
     sdk: flutter
@@ -76,7 +78,6 @@ dependencies:
       path: ./libs/universal/media_kit_libs_video
   archive: ^4.0.9
   path_provider: ^2.1.6
-  liquid_glass_easy: ^4.1.1
   photo_view: ^0.15.0
   ota_update: ^7.1.0
   package_info_plus: ^8.3.1
@@ -115,38 +116,47 @@ dependency_overrides:
   media_kit:
     git:
       url: https://github.com/Predidit/media-kit.git
+      ref: 994465d9bfca3f39d0b41199d16e7fd93fe97881
       path: ./media_kit
   media_kit_video:
     git:
       url: https://github.com/Predidit/media-kit.git
+      ref: 994465d9bfca3f39d0b41199d16e7fd93fe97881
       path: ./media_kit_video
   media_kit_libs_video:
     git:
       url: https://github.com/Predidit/media-kit.git
+      ref: 994465d9bfca3f39d0b41199d16e7fd93fe97881
       path: ./libs/universal/media_kit_libs_video
   media_kit_libs_linux:
     git:
       url: https://github.com/Predidit/media-kit.git
+      ref: 994465d9bfca3f39d0b41199d16e7fd93fe97881
       path: ./libs/linux/media_kit_libs_linux
   media_kit_libs_ios_video:
     git:
       url: https://github.com/Predidit/media-kit.git
+      ref: 994465d9bfca3f39d0b41199d16e7fd93fe97881
       path: ./libs/ios/media_kit_libs_ios_video
   media_kit_libs_android_video:
     git:
       url: https://github.com/Predidit/media-kit.git
+      ref: 994465d9bfca3f39d0b41199d16e7fd93fe97881
       path: ./libs/android/media_kit_libs_android_video
   media_kit_libs_windows_video:
     git:
       url: https://github.com/Predidit/media-kit.git
+      ref: 994465d9bfca3f39d0b41199d16e7fd93fe97881
       path: ./libs/windows/media_kit_libs_windows_video
   media_kit_libs_macos_video:
     git:
       url: https://github.com/Predidit/media-kit.git
+      ref: 994465d9bfca3f39d0b41199d16e7fd93fe97881
       path: ./libs/macos/media_kit_libs_macos_video
   media_kit_libs_ohos:
     git:
       url: https://github.com/Predidit/media-kit.git
+      ref: 994465d9bfca3f39d0b41199d16e7fd93fe97881
       path: ./libs/ohos/media_kit_libs_ohos
 
 flutter_launcher_icons:
@@ -186,6 +196,7 @@ flutter:
     - assets/metadata/anime_titles_zh.json
     - assets/metadata/BANGUMI_DATA_NOTICE.txt
     - assets/fonts/
+    - assets/fonts/kiru/
     # Anime4K ships as a 39-file upstream set, but the presets in
     # PlayerSettings reference only these; the other 30 files were extracted on
     # every install without ever reaching libmpv's glsl-shaders chain.

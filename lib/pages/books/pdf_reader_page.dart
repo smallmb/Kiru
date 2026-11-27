@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:async';
@@ -172,7 +173,9 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
                   right: 0,
                   child: Container(
                     height: 64,
-                    padding: const EdgeInsets.symmetric(horizontal: ZplaySpacing.s16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: ZplaySpacing.s16,
+                    ),
                     // The shared tinted chrome: the canvas at 0.82 with no
                     // hairline and no drop shadow. The old bar was opaque with a
                     // 1 dp bottom border and an elevation, which is the band the
@@ -184,9 +187,15 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
                     ),
                     child: Row(
                       children: [
-                        IconButton(
-                          icon: Icon(Icons.arrow_back_ios_new_rounded, color: tokens.textPrimary, size: 20),
-                          tooltip: l10nOf(context).auxEpubReaderPageBackToLibrary,
+                        KiruIconButton(
+                          icon: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            color: tokens.textPrimary,
+                            size: 20,
+                          ),
+                          tooltip: l10nOf(
+                            context,
+                          ).auxEpubReaderPageBackToLibrary,
                           onPressed: () => Navigator.of(context).pop(),
                         ),
                         const SizedBox(width: 12),
@@ -214,20 +223,33 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
                             ],
                           ),
                         ),
-                        IconButton(
-                          icon: Icon(Icons.zoom_in_rounded, color: tokens.textPrimary, size: 22),
+                        KiruIconButton(
+                          icon: Icon(
+                            Icons.zoom_in_rounded,
+                            color: tokens.textPrimary,
+                            size: 22,
+                          ),
                           tooltip: l10nOf(context).auxPdfReaderPageZoomIn,
                           onPressed: () => _pdfController.zoomUp(),
                         ),
-                        IconButton(
-                          icon: Icon(Icons.zoom_out_rounded, color: tokens.textPrimary, size: 22),
+                        KiruIconButton(
+                          icon: Icon(
+                            Icons.zoom_out_rounded,
+                            color: tokens.textPrimary,
+                            size: 22,
+                          ),
                           tooltip: l10nOf(context).auxPdfReaderPageZoomOut,
                           onPressed: () => _pdfController.zoomDown(),
                         ),
-                        IconButton(
-                          icon: Icon(Icons.fullscreen_rounded, color: tokens.textPrimary, size: 24),
+                        KiruIconButton(
+                          icon: Icon(
+                            Icons.fullscreen_rounded,
+                            color: tokens.textPrimary,
+                            size: 24,
+                          ),
                           tooltip: l10nOf(context).playerFullscreen,
-                          onPressed: () => WindowService.instance.toggleFullscreen(),
+                          onPressed: () =>
+                              WindowService.instance.toggleFullscreen(),
                         ),
                       ],
                     ),
@@ -243,7 +265,9 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
                   right: 0,
                   child: Container(
                     height: 72,
-                    padding: const EdgeInsets.symmetric(horizontal: ZplaySpacing.s20),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: ZplaySpacing.s20,
+                    ),
                     // Tinted like the top bar, and no hairline: see it for why
                     // 0.82 rather than fully transparent.
                     decoration: BoxDecoration(
@@ -251,11 +275,17 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
                     ),
                     child: Row(
                       children: [
-                        IconButton(
-                          icon: Icon(Icons.chevron_left_rounded, color: tokens.textPrimary, size: 28),
+                        KiruIconButton(
+                          icon: Icon(
+                            Icons.chevron_left_rounded,
+                            color: tokens.textPrimary,
+                            size: 28,
+                          ),
                           tooltip: l10nOf(context).auxPdfReaderPagePreviousPage,
                           onPressed: _currentPage > 1
-                              ? () => _pdfController.goToPage(pageNumber: _currentPage - 1)
+                              ? () => _pdfController.goToPage(
+                                  pageNumber: _currentPage - 1,
+                                )
                               : null,
                         ),
                         Expanded(
@@ -263,10 +293,14 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    l10nOf(context).dynamicPdfReaderPagePageOf((_currentPage).toString(), (_pageCount).toString()),
+                                    l10nOf(context).dynamicPdfReaderPagePageOf(
+                                      (_currentPage).toString(),
+                                      (_pageCount).toString(),
+                                    ),
                                     style: ZplayType.bodySmall
                                         .copyWith(weight: FontWeight.w600)
                                         .toStyle(color: tokens.textEmphasis),
@@ -282,17 +316,25 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
                               SliderTheme(
                                 data: SliderTheme.of(context).copyWith(
                                   trackHeight: 3,
-                                  thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-                                  overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
+                                  thumbShape: const RoundSliderThumbShape(
+                                    enabledThumbRadius: 6,
+                                  ),
+                                  overlayShape: const RoundSliderOverlayShape(
+                                    overlayRadius: 14,
+                                  ),
                                   activeTrackColor: tokens.accent,
                                   inactiveTrackColor: tokens.borderStrong,
                                   thumbColor: tokens.accent,
                                 ),
-                                child: Slider(
+                                child: KiruSlider(
                                   value: _currentPage.toDouble(),
                                   min: 1,
-                                  max: _pageCount > 1 ? _pageCount.toDouble() : 1.0,
-                                  divisions: _pageCount > 1 ? _pageCount - 1 : 1,
+                                  max: _pageCount > 1
+                                      ? _pageCount.toDouble()
+                                      : 1.0,
+                                  divisions: _pageCount > 1
+                                      ? _pageCount - 1
+                                      : 1,
                                   onChanged: (val) {
                                     final target = val.round();
                                     _pdfController.goToPage(pageNumber: target);
@@ -302,11 +344,17 @@ class _PdfReaderPageState extends State<PdfReaderPage> {
                             ],
                           ),
                         ),
-                        IconButton(
-                          icon: Icon(Icons.chevron_right_rounded, color: tokens.textPrimary, size: 28),
+                        KiruIconButton(
+                          icon: Icon(
+                            Icons.chevron_right_rounded,
+                            color: tokens.textPrimary,
+                            size: 28,
+                          ),
                           tooltip: l10nOf(context).auxPdfReaderPageNextPage,
                           onPressed: _currentPage < _pageCount
-                              ? () => _pdfController.goToPage(pageNumber: _currentPage + 1)
+                              ? () => _pdfController.goToPage(
+                                  pageNumber: _currentPage + 1,
+                                )
                               : null,
                         ),
                       ],

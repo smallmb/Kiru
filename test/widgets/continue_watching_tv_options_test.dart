@@ -1,3 +1,4 @@
+import 'package:zplay/widgets/ui/kiru_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -64,7 +65,15 @@ void main() {
     await focusCard(tester);
     expect(find.text('Hold OK for options'), findsOneWidget);
     // The unreachable corner icons are not drawn on a television.
-    expect(find.byTooltip('Remove from Continue Watching'), findsNothing);
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            (w is KiruTooltip &&
+                w.message == 'Remove from Continue Watching') ||
+            (w is Tooltip && w.message == 'Remove from Continue Watching'),
+      ),
+      findsNothing,
+    );
   });
 
   testWidgets('holding OK opens the options instead of resuming', (

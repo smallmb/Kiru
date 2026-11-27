@@ -47,8 +47,14 @@ void main() {
     expect(PlayerTheme.inkDisabled, tokens.textDisabled);
     expect(PlayerTheme.edge, tokens.borderStrong);
     expect(PlayerTheme.edgeSoft, tokens.borderDefault);
-    expect(PlayerTheme.raised, tokens.textPrimary.withValues(alpha: ZplayOpacity.borderMedium));
-    expect(PlayerTheme.surfaceHover, tokens.textPrimary.withValues(alpha: ZplayOpacity.overlayHover));
+    expect(
+      PlayerTheme.raised,
+      tokens.textPrimary.withValues(alpha: ZplayOpacity.borderMedium),
+    );
+    expect(
+      PlayerTheme.surfaceHover,
+      tokens.textPrimary.withValues(alpha: ZplayOpacity.overlayHover),
+    );
     expect(PlayerTheme.canvas, tokens.bg);
   });
 
@@ -116,7 +122,7 @@ void main() {
     expect(find.text('4'), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.play_arrow_rounded));
-    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 120));
     expect(tapped, 1);
   });
 }

@@ -1,3 +1,5 @@
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -149,12 +151,12 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
   void _showSnack(String msg, {bool isError = false}) {
     if (!mounted) return;
     final tokens = context.tokens;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+    KiruToastMessenger.of(context).showSnackBar(
+      KiruToast(
         content: Text(msg, style: ZplayType.subtitle.toStyle()),
         behavior: SnackBarBehavior.floating,
         backgroundColor: isError ? tokens.danger : tokens.accent,
-        action: SnackBarAction(
+        action: KiruToastAction(
           label: l10nOf(context).uiServiceKeysSettingsPageDismiss,
           textColor: tokens.onAccent,
           onPressed: () {},
@@ -286,9 +288,7 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
               const SizedBox(height: 3),
               Text(
                 configLabel(context, _purposeOf(credential)),
-                style: ZplayType.bodySmall.toStyle(
-                  color: tokens.textSecondary,
-                ),
+                style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
               ),
               const SizedBox(height: 2),
               Text(
@@ -299,14 +299,17 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
               Row(
                 children: [
                   Expanded(
-                    child: TextField(
+                    child: KiruFormField(
                       controller: controller,
                       obscureText: obscured,
                       enableSuggestions: false,
                       autocorrect: false,
                       style: ZplayType.label.toStyle(color: tokens.textPrimary),
                       decoration: InputDecoration(
-                        hintText: l10nOf(context).dynamicServiceKeysSettingsPagePasteYourKey((label).toString()),
+                        hintText: l10nOf(context)
+                            .dynamicServiceKeysSettingsPagePasteYourKey(
+                              (label).toString(),
+                            ),
                         hintStyle: ZplayType.bodySmall.toStyle(
                           color: tokens.textDisabled,
                         ),
@@ -332,7 +335,7 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
                         suffixIcon: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            IconButton(
+                            KiruIconButton(
                               icon: Icon(
                                 obscured
                                     ? Icons.visibility_off_rounded
@@ -342,14 +345,20 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
                               ),
                               padding: const EdgeInsets.all(4),
                               constraints: const BoxConstraints(),
-                              tooltip: obscured ? l10nOf(context).finalDebridSettingsPageShowKey : l10nOf(context).finalDebridSettingsPageHideKey,
+                              tooltip: obscured
+                                  ? l10nOf(
+                                      context,
+                                    ).finalDebridSettingsPageShowKey
+                                  : l10nOf(
+                                      context,
+                                    ).finalDebridSettingsPageHideKey,
                               onPressed: () {
                                 setState(() {
                                   _obscured[credential] = !obscured;
                                 });
                               },
                             ),
-                            IconButton(
+                            KiruIconButton(
                               icon: Icon(
                                 Icons.content_paste_rounded,
                                 color: tokens.accent,
@@ -357,7 +366,9 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
                               ),
                               padding: const EdgeInsets.all(4),
                               constraints: const BoxConstraints(),
-                              tooltip: l10nOf(context).uiServiceKeysSettingsPagePasteFromClipboard,
+                              tooltip: l10nOf(
+                                context,
+                              ).uiServiceKeysSettingsPagePasteFromClipboard,
                               onPressed: () => _paste(credential),
                             ),
                             const SizedBox(width: 4),
@@ -367,7 +378,7 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
                     ),
                   ),
                   const SizedBox(width: ZplaySpacing.s8),
-                  ElevatedButton(
+                  KiruButton(
                     onPressed: busy ? null : () => _save(credential),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: tokens.accent,
@@ -385,12 +396,15 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
                         ? SizedBox(
                             width: 16,
                             height: 16,
-                            child: CircularProgressIndicator(
+                            child: KiruLoader(
                               strokeWidth: 2,
                               color: tokens.onAccent,
                             ),
                           )
-                        : Text(l10nOf(context).uiServiceKeysSettingsPageSave, style: ZplayType.label.toStyle()),
+                        : Text(
+                            l10nOf(context).uiServiceKeysSettingsPageSave,
+                            style: ZplayType.label.toStyle(),
+                          ),
                   ),
                 ],
               ),
@@ -416,7 +430,8 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
                     ),
                   ),
                   const SizedBox(width: ZplaySpacing.s8),
-                  TextButton(
+                  KiruButton(
+                    kind: KiruButtonKind.ghost,
                     onPressed: isUserProvided && !busy
                         ? () => _clear(credential)
                         : null,
@@ -430,7 +445,10 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
                         borderRadius: ZplayRadius.smAll,
                       ),
                     ),
-                    child: Text(l10nOf(context).uiServiceKeysSettingsPageClearKey, style: ZplayType.label.toStyle()),
+                    child: Text(
+                      l10nOf(context).uiServiceKeysSettingsPageClearKey,
+                      style: ZplayType.label.toStyle(),
+                    ),
                   ),
                 ],
               ),
@@ -466,7 +484,9 @@ class _ServiceKeysSettingsPageState extends State<ServiceKeysSettingsPage> {
                   ),
                   const SizedBox(height: 3),
                   Text(
-                    l10nOf(context).auxServiceKeysSettingsPageRanksThe1990sRailsAndCoversThe,
+                    l10nOf(
+                      context,
+                    ).auxServiceKeysSettingsPageRanksThe1990sRailsAndCoversThe,
                     style: ZplayType.bodySmall.toStyle(
                       color: tokens.textSecondary,
                     ),

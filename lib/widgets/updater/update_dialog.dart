@@ -1,3 +1,5 @@
+import '../ui/kiru_toast.dart';
+import '../ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:async';
@@ -117,7 +119,9 @@ class _UpdateDialogState extends State<UpdateDialog> {
                           ),
                           const SizedBox(height: ZplaySpacing.s4),
                           Text(
-                            l10nOf(context).dynamicUpdateDialogVersion((widget.updateInfo.latestVersion).toString()),
+                            l10nOf(context).dynamicUpdateDialogVersion(
+                              (widget.updateInfo.latestVersion).toString(),
+                            ),
                             style: ZplayType.titleLarge.toStyle(
                               color: tokens.textPrimary,
                             ),
@@ -289,7 +293,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                           const SizedBox(height: ZplaySpacing.s8),
                           ClipRRect(
                             borderRadius: ZplayRadius.smAll,
-                            child: LinearProgressIndicator(
+                            child: KiruProgress(
                               value: _downloadProgress,
                               backgroundColor: tokens.borderStrong,
                               valueColor: AlwaysStoppedAnimation<Color>(
@@ -317,7 +321,8 @@ class _UpdateDialogState extends State<UpdateDialog> {
                   child: Row(
                     children: [
                       Expanded(
-                        child: TextButton(
+                        child: KiruButton(
+                          kind: KiruButtonKind.ghost,
                           onPressed: () {
                             AppUpdaterService.dismissVersion(
                               widget.updateInfo.latestVersion,
@@ -344,7 +349,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                       const SizedBox(width: ZplaySpacing.s12),
                       Expanded(
                         flex: 2,
-                        child: ElevatedButton(
+                        child: KiruButton(
                           onPressed: _handleUpdate,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: tokens.accent,
@@ -412,7 +417,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
     if (!mounted) return;
     final openRelease = await showDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
+      builder: (dialogContext) => KiruAlertDialog(
         backgroundColor: context.tokens.surfaceOverlay,
         title: Text(
           l10nOf(context).auxUpdateDialogUpdateCouldNotBeVerified,
@@ -423,7 +428,8 @@ class _UpdateDialogState extends State<UpdateDialog> {
           style: ZplayType.body.toStyle(color: context.tokens.textEmphasis),
         ),
         actions: [
-          TextButton(
+          KiruButton(
+            kind: KiruButtonKind.ghost,
             onPressed: () => Navigator.of(dialogContext).pop(false),
             child: Text(
               l10nOf(context).actionCancel,
@@ -432,13 +438,16 @@ class _UpdateDialogState extends State<UpdateDialog> {
               ),
             ),
           ),
-          ElevatedButton(
+          KiruButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
             style: ElevatedButton.styleFrom(
               backgroundColor: context.tokens.accent,
               foregroundColor: context.tokens.onAccent,
             ),
-            child: Text(l10nOf(context).auxUpdateDialogOpenReleasePage, style: ZplayType.label.toStyle()),
+            child: Text(
+              l10nOf(context).auxUpdateDialogOpenReleasePage,
+              style: ZplayType.label.toStyle(),
+            ),
           ),
         ],
       ),
@@ -490,10 +499,12 @@ class _UpdateDialogState extends State<UpdateDialog> {
                     case OtaStatus.PERMISSION_NOT_GRANTED_ERROR:
                       _isDownloading = false;
                       WakelockPlus.disable();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                      KiruToastMessenger.of(context).showSnackBar(
+                        KiruToast(
                           content: Text(
-                            l10nOf(context).auxUpdateDialogPleaseEnableInstallUnknownAppsPermissionFor,
+                            l10nOf(
+                              context,
+                            ).auxUpdateDialogPleaseEnableInstallUnknownAppsPermissionFor,
                           ),
                           duration: const Duration(seconds: 5),
                           backgroundColor: context.tokens.warning,
@@ -546,10 +557,10 @@ class _UpdateDialogState extends State<UpdateDialog> {
   /// that trips both the event stream and the error channel cannot stack the
   /// hint twice.
   void _reportAndroidInstallFailure(String message) {
-    ScaffoldMessenger.of(context)
+    KiruToastMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
-        SnackBar(
+        KiruToast(
           content: Text(
             '$message\n\n'
             'The install can fail with "App not installed as package conflicts '
@@ -643,7 +654,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
 
         await showDialog(
           context: context,
-          builder: (context) => AlertDialog(
+          builder: (context) => KiruAlertDialog(
             backgroundColor: context.tokens.surfaceOverlay,
             title: Row(
               children: [
@@ -702,7 +713,8 @@ class _UpdateDialogState extends State<UpdateDialog> {
             ),
             actions: [
               if (!Platform.isWindows)
-                TextButton(
+                KiruButton(
+                  kind: KiruButtonKind.ghost,
                   onPressed: () async {
                     if (Platform.isLinux) {
                       await Process.run('xdg-open', [dir.path]);
@@ -716,7 +728,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                     ),
                   ),
                 ),
-              ElevatedButton(
+              KiruButton(
                 onPressed: () async {
                   if (Platform.isWindows) {
                     await Process.start(
@@ -749,9 +761,13 @@ class _UpdateDialogState extends State<UpdateDialog> {
       WakelockPlus.disable();
       if (mounted) {
         setState(() => _isDownloading = false);
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(l10nOf(context).dynamicUpdateDialogDownloadFailed((e).toString()))));
+        KiruToastMessenger.of(context).showSnackBar(
+          KiruToast(
+            content: Text(
+              l10nOf(context).dynamicUpdateDialogDownloadFailed((e).toString()),
+            ),
+          ),
+        );
       }
     }
   }

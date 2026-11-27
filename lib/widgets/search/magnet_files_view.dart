@@ -1,3 +1,4 @@
+import '../ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
@@ -298,7 +299,7 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
                     child: SizedBox(
                       width: 38,
                       height: 38,
-                      child: CircularProgressIndicator(
+                      child: KiruLoader(
                         color: palette.primaryColor,
                         strokeWidth: 3,
                       ),
@@ -308,7 +309,9 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
                   Text(
                     _isDebrid
                         ? l10nOf(context).magnetUsingProvider(_providerName)
-                        : l10nOf(context).uiFinalMagnetFilesViewConnectingToSwarmPeers,
+                        : l10nOf(
+                            context,
+                          ).uiFinalMagnetFilesViewConnectingToSwarmPeers,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
@@ -317,7 +320,9 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    l10nOf(context).auxMagnetFilesViewGatheringFileListStreamMetadata,
+                    l10nOf(
+                      context,
+                    ).auxMagnetFilesViewGatheringFileListStreamMetadata,
                     style: TextStyle(
                       fontSize: 13,
                       color: Colors.white.withValues(alpha: 0.5),
@@ -371,7 +376,7 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  ElevatedButton.icon(
+                  KiruButton(
                     onPressed: _loadMagnetFiles,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: palette.primaryColor,
@@ -385,7 +390,7 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
                       ),
                     ),
                     icon: const Icon(Icons.refresh_rounded, size: 18),
-                    label: Text(
+                    child: Text(
                       l10nOf(context).auxMagnetFilesViewTryAgain,
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
@@ -517,7 +522,9 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
               // Provider Badge
               _buildBadge(
                 icon: _isDebrid ? Icons.cloud_done_rounded : Icons.hub_rounded,
-                label: _isDebrid ? l10nOf(context).magnetProviderCloud(_providerName) : l10nOf(context).uiFinalMagnetFilesViewP2pSwarm,
+                label: _isDebrid
+                    ? l10nOf(context).magnetProviderCloud(_providerName)
+                    : l10nOf(context).uiFinalMagnetFilesViewP2pSwarm,
                 color: _isDebrid ? Colors.cyanAccent : palette.primaryColor,
               ),
               // Size Badge
@@ -529,15 +536,20 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
               // Total Files Badge
               _buildBadge(
                 icon: Icons.folder_rounded,
-                label:
-                    l10nOf(context).dynamicMagnetFilesView((_files.length).toString(), (_files.length == 1 ? "file" : "files").toString()),
+                label: l10nOf(context).dynamicMagnetFilesView(
+                  (_files.length).toString(),
+                  (_files.length == 1 ? "file" : "files").toString(),
+                ),
                 color: Colors.white70,
               ),
               // Video Files Badge
               if (videoCount > 0)
                 _buildBadge(
                   icon: Icons.movie_rounded,
-                  label: l10nOf(context).dynamicMagnetFilesView2((videoCount).toString(), (videoCount == 1 ? "video" : "videos").toString()),
+                  label: l10nOf(context).dynamicMagnetFilesView2(
+                    (videoCount).toString(),
+                    (videoCount == 1 ? "video" : "videos").toString(),
+                  ),
                   color: palette.primaryColor,
                 ),
             ],
@@ -588,7 +600,7 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
           ),
-          child: TextField(
+          child: KiruFormField(
             style: const TextStyle(color: Colors.white, fontSize: 13),
             onChanged: (val) => setState(() => _searchFilter = val),
             decoration: InputDecoration(
@@ -765,7 +777,7 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
 
           // Action Button
           if (file.isVideo)
-            ElevatedButton.icon(
+            KiruButton(
               onPressed: () => _playFile(file),
               style: ElevatedButton.styleFrom(
                 backgroundColor: palette.primaryColor,
@@ -782,7 +794,7 @@ class _MagnetFilesViewState extends State<MagnetFilesView> {
                 elevation: 0,
               ),
               icon: const Icon(Icons.play_arrow_rounded, size: 18),
-              label: Text(
+              child: Text(
                 l10nOf(context).playerPlay,
                 style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.bold),
               ),

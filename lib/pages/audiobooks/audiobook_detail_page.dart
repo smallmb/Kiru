@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:ui';
@@ -20,11 +21,7 @@ class AudiobookDetailPage extends StatefulWidget {
   final Audiobook audiobook;
   final String? heroTag;
 
-  const AudiobookDetailPage({
-    super.key,
-    required this.audiobook,
-    this.heroTag,
-  });
+  const AudiobookDetailPage({super.key, required this.audiobook, this.heroTag});
 
   @override
   State<AudiobookDetailPage> createState() => _AudiobookDetailPageState();
@@ -48,7 +45,9 @@ class _AudiobookDetailPageState extends State<AudiobookDetailPage> {
     });
 
     try {
-      final chapters = await AudiobookScraperService.instance.getChapters(widget.audiobook);
+      final chapters = await AudiobookScraperService.instance.getChapters(
+        widget.audiobook,
+      );
       if (mounted) {
         setState(() {
           _chapters = chapters;
@@ -67,7 +66,9 @@ class _AudiobookDetailPageState extends State<AudiobookDetailPage> {
 
   void _playChapter(AudiobookChapter chapter) {
     if (_chapters == null || _chapters!.isEmpty) return;
-    final initialIndex = _chapters!.indexOf(chapter).clamp(0, _chapters!.length - 1);
+    final initialIndex = _chapters!
+        .indexOf(chapter)
+        .clamp(0, _chapters!.length - 1);
 
     Navigator.push(
       context,
@@ -109,7 +110,8 @@ class _AudiobookDetailPageState extends State<AudiobookDetailPage> {
                   },
                   fit: BoxFit.cover,
                   placeholder: (_, __) => const SizedBox.shrink(),
-                  errorWidget: (_, __, ___) => const SizedBox.shrink()),
+                  errorWidget: (_, __, ___) => const SizedBox.shrink(),
+                ),
               ),
             ),
           Positioned.fill(
@@ -168,11 +170,14 @@ class _AudiobookDetailPageState extends State<AudiobookDetailPage> {
                       const SizedBox(width: ZplaySpacing.s12),
                       Expanded(
                         child: Text(
-                          l10nOf(context).auxAudiobookDetailPageAudiobookDetails,
+                          l10nOf(
+                            context,
+                          ).auxAudiobookDetailPageAudiobookDetails,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: ZplayType.titleLarge
-                              .toStyle(color: tokens.textPrimary),
+                          style: ZplayType.titleLarge.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                       ),
                     ],
@@ -224,7 +229,9 @@ class _AudiobookDetailPageState extends State<AudiobookDetailPage> {
                     bottom: ZplaySpacing.s4,
                   ),
                   child: SectionHeader(
-                    title: l10nOf(context).auxAudiobookDetailPageChaptersAudioFiles,
+                    title: l10nOf(
+                      context,
+                    ).auxAudiobookDetailPageChaptersAudioFiles,
                     count: _chapters?.length,
                   ),
                 ),
@@ -234,9 +241,7 @@ class _AudiobookDetailPageState extends State<AudiobookDetailPage> {
               if (_loading)
                 SliverFillRemaining(
                   hasScrollBody: false,
-                  child: Center(
-                    child: CircularProgressIndicator(color: tokens.accent),
-                  ),
+                  child: Center(child: KiruLoader(color: tokens.accent)),
                 )
               else if (_error != null)
                 SliverFillRemaining(
@@ -245,7 +250,9 @@ class _AudiobookDetailPageState extends State<AudiobookDetailPage> {
                   // like every other fetch that fails and offers the retry the
                   // bare red sentence never did.
                   child: ErrorView(
-                    title: l10nOf(context).auxAudiobookDetailPageCouldNotLoadChapters,
+                    title: l10nOf(
+                      context,
+                    ).auxAudiobookDetailPageCouldNotLoadChapters,
                     error: _error,
                     onRetry: _fetchChapters,
                   ),
@@ -255,8 +262,12 @@ class _AudiobookDetailPageState extends State<AudiobookDetailPage> {
                   hasScrollBody: false,
                   child: Center(
                     child: Text(
-                      l10nOf(context).auxAudiobookDetailPageNoPlayableChaptersFound,
-                      style: ZplayType.subtitle.toStyle(color: tokens.textSecondary),
+                      l10nOf(
+                        context,
+                      ).auxAudiobookDetailPageNoPlayableChaptersFound,
+                      style: ZplayType.subtitle.toStyle(
+                        color: tokens.textSecondary,
+                      ),
                     ),
                   ),
                 )
@@ -269,16 +280,13 @@ class _AudiobookDetailPageState extends State<AudiobookDetailPage> {
                     ZplaySpacing.s24 + bottomInset,
                   ),
                   sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final chapter = _chapters![index];
-                        return _ChapterTile(
-                          chapter: chapter,
-                          onTap: () => _playChapter(chapter),
-                        );
-                      },
-                      childCount: _chapters!.length,
-                    ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final chapter = _chapters![index];
+                      return _ChapterTile(
+                        chapter: chapter,
+                        onTap: () => _playChapter(chapter),
+                      );
+                    }, childCount: _chapters!.length),
                   ),
                 ),
             ],
@@ -313,11 +321,20 @@ class _AudiobookDetailPageState extends State<AudiobookDetailPage> {
                 placeholder: (_, __) => Container(color: tokens.surfaceRaised),
                 errorWidget: (_, __, ___) => Container(
                   color: tokens.surfaceRaised,
-                  child: Icon(Icons.headphones_rounded, size: 64, color: tokens.textMuted),
-                ))
+                  child: Icon(
+                    Icons.headphones_rounded,
+                    size: 64,
+                    color: tokens.textMuted,
+                  ),
+                ),
+              )
             : Container(
                 color: tokens.surfaceRaised,
-                child: Icon(Icons.headphones_rounded, size: 64, color: tokens.textMuted),
+                child: Icon(
+                  Icons.headphones_rounded,
+                  size: 64,
+                  color: tokens.textMuted,
+                ),
               ),
       ),
     );
@@ -328,7 +345,9 @@ class _AudiobookDetailPageState extends State<AudiobookDetailPage> {
     final tokens = context.tokens;
 
     return Column(
-      crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      crossAxisAlignment: isMobile
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
       children: [
         Container(
           padding: const EdgeInsets.symmetric(
@@ -383,10 +402,7 @@ class _ChapterTile extends StatelessWidget {
   final AudiobookChapter chapter;
   final VoidCallback onTap;
 
-  const _ChapterTile({
-    required this.chapter,
-    required this.onTap,
-  });
+  const _ChapterTile({required this.chapter, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

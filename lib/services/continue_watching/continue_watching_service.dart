@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 
@@ -671,7 +672,7 @@ class ContinueWatchingService {
                 SizedBox(
                   width: 24,
                   height: 24,
-                  child: CircularProgressIndicator(
+                  child: KiruLoader(
                     strokeWidth: 2.5,
                     color: AppThemeService.currentPalette.value.primaryColor,
                   ),
@@ -823,7 +824,7 @@ class ContinueWatchingService {
                 SizedBox(
                   width: 24,
                   height: 24,
-                  child: CircularProgressIndicator(
+                  child: KiruLoader(
                     strokeWidth: 2.5,
                     color: AppThemeService.currentPalette.value.primaryColor,
                   ),
@@ -973,7 +974,7 @@ class ContinueWatchingService {
               SizedBox(
                 width: 24,
                 height: 24,
-                child: CircularProgressIndicator(
+                child: KiruLoader(
                   strokeWidth: 2.5,
                   color: AppThemeService.currentPalette.value.primaryColor,
                 ),

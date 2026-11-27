@@ -1,3 +1,5 @@
+import '../../../widgets/ui/kiru_tappable.dart';
+import '../../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:async';
@@ -105,7 +107,9 @@ class _FocusModeViewState extends State<FocusModeView> {
     final doc = html_parser.parse(widget.chapter.htmlContent);
     final extracted = <String>[];
 
-    final nodes = doc.querySelectorAll('h1, h2, h3, h4, p, blockquote, div, section, article');
+    final nodes = doc.querySelectorAll(
+      'h1, h2, h3, h4, p, blockquote, div, section, article',
+    );
     if (nodes.isNotEmpty) {
       for (final node in nodes) {
         final text = node.text.trim();
@@ -131,7 +135,8 @@ class _FocusModeViewState extends State<FocusModeView> {
   }
 
   void _computeLines(double maxWidth) {
-    if (_paragraphs.isEmpty || (maxWidth - _lastCalculatedWidth).abs() < 1.0) return;
+    if (_paragraphs.isEmpty || (maxWidth - _lastCalculatedWidth).abs() < 1.0)
+      return;
     _lastCalculatedWidth = maxWidth;
 
     final computed = <FocusLineData>[];
@@ -158,24 +163,31 @@ class _FocusModeViewState extends State<FocusModeView> {
       if (lineMetrics.isEmpty) {
         final lineIndex = computed.length;
         _lineKeys[lineIndex] = GlobalKey();
-        computed.add(FocusLineData(
-          index: lineIndex,
-          paragraphIndex: pIdx,
-          isFirstInParagraph: true,
-          isLastInParagraph: true,
-          text: pText,
-        ));
+        computed.add(
+          FocusLineData(
+            index: lineIndex,
+            paragraphIndex: pIdx,
+            isFirstInParagraph: true,
+            isLastInParagraph: true,
+            text: pText,
+          ),
+        );
       } else {
         int charOffset = 0;
         for (int mIdx = 0; mIdx < lineMetrics.length; mIdx++) {
           final isLast = mIdx == lineMetrics.length - 1;
           final metric = lineMetrics[mIdx];
-          
+
           final lineEndOffset = isLast
               ? pText.length
-              : painter.getPositionForOffset(Offset(maxWidth, metric.baseline)).offset;
+              : painter
+                    .getPositionForOffset(Offset(maxWidth, metric.baseline))
+                    .offset;
 
-          final lineText = (charOffset < pText.length && lineEndOffset <= pText.length && lineEndOffset > charOffset)
+          final lineText =
+              (charOffset < pText.length &&
+                  lineEndOffset <= pText.length &&
+                  lineEndOffset > charOffset)
               ? pText.substring(charOffset, lineEndOffset).trim()
               : pText.substring(charOffset).trim();
           charOffset = lineEndOffset;
@@ -183,13 +195,15 @@ class _FocusModeViewState extends State<FocusModeView> {
           if (lineText.isNotEmpty) {
             final lineIndex = computed.length;
             _lineKeys[lineIndex] = GlobalKey();
-            computed.add(FocusLineData(
-              index: lineIndex,
-              paragraphIndex: pIdx,
-              isFirstInParagraph: mIdx == 0,
-              isLastInParagraph: isLast,
-              text: lineText,
-            ));
+            computed.add(
+              FocusLineData(
+                index: lineIndex,
+                paragraphIndex: pIdx,
+                isFirstInParagraph: mIdx == 0,
+                isLastInParagraph: isLast,
+                text: lineText,
+              ),
+            );
           }
         }
       }
@@ -303,11 +317,7 @@ class _FocusModeViewState extends State<FocusModeView> {
             return Stack(
               children: [
                 // ── Reader Backdrop ──
-                Positioned.fill(
-                  child: Container(
-                    color: ReaderTokens.bg,
-                  ),
-                ),
+                Positioned.fill(child: Container(color: ReaderTokens.bg)),
 
                 // ── Direct Line-by-Line Content ──
                 Positioned.fill(
@@ -315,7 +325,8 @@ class _FocusModeViewState extends State<FocusModeView> {
                     onPointerSignal: _handlePointerSignal,
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
-                      onTapUp: (details) => _handleScreenTap(details, constraints.maxHeight),
+                      onTapUp: (details) =>
+                          _handleScreenTap(details, constraints.maxHeight),
                       child: SingleChildScrollView(
                         controller: _scrollController,
                         physics: const BouncingScrollPhysics(),
@@ -339,13 +350,18 @@ class _FocusModeViewState extends State<FocusModeView> {
                                         ? widget.settings.paragraphSpacing + 4
                                         : 3,
                                   ),
-                                  child: InkWell(
+                                  child: KiruTappable(
                                     onTap: () => _goToLine(line.index),
                                     borderRadius: ReaderTokens.rounded12,
                                     child: AnimatedContainer(
-                                      duration: reduceMotion ? Duration.zero : ReaderTokens.motionFocusLine,
+                                      duration: reduceMotion
+                                          ? Duration.zero
+                                          : ReaderTokens.motionFocusLine,
                                       curve: ReaderTokens.curveFocusLine,
-                                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 14,
+                                        vertical: 7,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: isActive
                                             ? ReaderTokens.surface
@@ -353,14 +369,17 @@ class _FocusModeViewState extends State<FocusModeView> {
                                         borderRadius: ReaderTokens.rounded12,
                                         border: Border.all(
                                           color: isActive
-                                              ? ReaderTokens.accent.withValues(alpha: 0.65)
+                                              ? ReaderTokens.accent.withValues(
+                                                  alpha: 0.65,
+                                                )
                                               : Colors.transparent,
                                           width: 1.4,
                                         ),
                                         boxShadow: isActive
                                             ? [
                                                 BoxShadow(
-                                                  color: ReaderTokens.accent.withValues(alpha: 0.28),
+                                                  color: ReaderTokens.accent
+                                                      .withValues(alpha: 0.28),
                                                   blurRadius: 20,
                                                   spreadRadius: 0,
                                                   offset: Offset.zero,
@@ -369,14 +388,20 @@ class _FocusModeViewState extends State<FocusModeView> {
                                             : null,
                                       ),
                                       child: AnimatedDefaultTextStyle(
-                                        duration: reduceMotion ? Duration.zero : ReaderTokens.motionFocusOpacity,
+                                        duration: reduceMotion
+                                            ? Duration.zero
+                                            : ReaderTokens.motionFocusOpacity,
                                         curve: ReaderTokens.curveFocusOpacity,
                                         style: TextStyle(
-                                          fontFamily: widget.settings.fontFamily,
+                                          fontFamily:
+                                              widget.settings.fontFamily,
                                           fontSize: widget.settings.fontSize,
                                           height: widget.settings.lineSpacing,
-                                          letterSpacing: widget.settings.letterSpacing,
-                                          fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
+                                          letterSpacing:
+                                              widget.settings.letterSpacing,
+                                          fontWeight: isActive
+                                              ? FontWeight.w600
+                                              : FontWeight.normal,
                                           color: isActive
                                               ? ReaderTokens.textPrimary
                                               : ReaderTokens.textDisabled,
@@ -428,10 +453,14 @@ class _FocusModeViewState extends State<FocusModeView> {
                             vertical: ReaderTokens.space4 + 2,
                           ),
                           decoration: BoxDecoration(
-                            color: ReaderTokens.surfaceOverlay.withValues(alpha: 0.90),
+                            color: ReaderTokens.surfaceOverlay.withValues(
+                              alpha: 0.90,
+                            ),
                             borderRadius: ReaderTokens.rounded24,
                             border: Border.all(
-                              color: ReaderTokens.accent.withValues(alpha: 0.40),
+                              color: ReaderTokens.accent.withValues(
+                                alpha: 0.40,
+                              ),
                             ),
                             boxShadow: const [ReaderTokens.shadowSm],
                           ),
@@ -458,7 +487,7 @@ class _FocusModeViewState extends State<FocusModeView> {
                         Semantics(
                           label: l10nOf(context).auxFocusModeViewExitFocusMode,
                           button: true,
-                          child: InkWell(
+                          child: KiruTappable(
                             onTap: widget.onExit,
                             borderRadius: ReaderTokens.rounded24,
                             child: Container(
@@ -467,9 +496,13 @@ class _FocusModeViewState extends State<FocusModeView> {
                                 vertical: ReaderTokens.space8,
                               ),
                               decoration: BoxDecoration(
-                                color: ReaderTokens.surfaceOverlay.withValues(alpha: 0.95),
+                                color: ReaderTokens.surfaceOverlay.withValues(
+                                  alpha: 0.95,
+                                ),
                                 borderRadius: ReaderTokens.rounded24,
-                                border: Border.all(color: ReaderTokens.borderStrong),
+                                border: Border.all(
+                                  color: ReaderTokens.borderStrong,
+                                ),
                                 boxShadow: const [ReaderTokens.shadowSm],
                               ),
                               child: Row(
@@ -513,10 +546,14 @@ class _FocusModeViewState extends State<FocusModeView> {
                             vertical: ReaderTokens.space8,
                           ),
                           decoration: BoxDecoration(
-                            color: ReaderTokens.surfaceOverlay.withValues(alpha: 0.95),
+                            color: ReaderTokens.surfaceOverlay.withValues(
+                              alpha: 0.95,
+                            ),
                             borderRadius: ReaderTokens.rounded24,
                             border: Border.all(
-                              color: ReaderTokens.accent.withValues(alpha: 0.40),
+                              color: ReaderTokens.accent.withValues(
+                                alpha: 0.40,
+                              ),
                             ),
                             boxShadow: const [ReaderTokens.shadowMd],
                           ),
@@ -530,7 +567,9 @@ class _FocusModeViewState extends State<FocusModeView> {
                               ),
                               const SizedBox(width: ReaderTokens.space8),
                               Text(
-                                l10nOf(context).auxFocusModeViewTapAboveBelowToMoveKeysTo,
+                                l10nOf(
+                                  context,
+                                ).auxFocusModeViewTapAboveBelowToMoveKeysTo,
                                 style: ZplayType.label.toStyle(
                                   color: ReaderTokens.textPrimary,
                                 ),
@@ -548,7 +587,9 @@ class _FocusModeViewState extends State<FocusModeView> {
                   top: constraints.maxHeight * 0.44,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: ReaderTokens.surfaceOverlay.withValues(alpha: 0.92),
+                      color: ReaderTokens.surfaceOverlay.withValues(
+                        alpha: 0.92,
+                      ),
                       borderRadius: ReaderTokens.rounded32,
                       border: Border.all(color: ReaderTokens.borderStrong),
                       boxShadow: const [ReaderTokens.shadowMd],
@@ -556,21 +597,29 @@ class _FocusModeViewState extends State<FocusModeView> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        IconButton(
+                        KiruIconButton(
                           icon: Icon(
                             Icons.keyboard_arrow_up_rounded,
                             color: ReaderTokens.textPrimary,
                           ),
-                          tooltip: l10nOf(context).auxFocusModeViewPreviousLineUpArrow,
+                          tooltip: l10nOf(
+                            context,
+                          ).auxFocusModeViewPreviousLineUpArrow,
                           onPressed: () => _goToLine(_activeLineIndex - 1),
                         ),
-                        Container(height: 1, width: 24, color: ReaderTokens.borderStrong),
-                        IconButton(
+                        Container(
+                          height: 1,
+                          width: 24,
+                          color: ReaderTokens.borderStrong,
+                        ),
+                        KiruIconButton(
                           icon: Icon(
                             Icons.keyboard_arrow_down_rounded,
                             color: ReaderTokens.textPrimary,
                           ),
-                          tooltip: l10nOf(context).auxFocusModeViewNextLineDownArrowSpace,
+                          tooltip: l10nOf(
+                            context,
+                          ).auxFocusModeViewNextLineDownArrowSpace,
                           onPressed: () => _goToLine(_activeLineIndex + 1),
                         ),
                       ],
@@ -585,11 +634,15 @@ class _FocusModeViewState extends State<FocusModeView> {
                   right: 0,
                   child: Opacity(
                     opacity: 0.50,
-                    child: LinearProgressIndicator(
-                      value: _lines.isNotEmpty ? (_activeLineIndex + 1) / _lines.length : 0.0,
+                    child: KiruProgress(
+                      value: _lines.isNotEmpty
+                          ? (_activeLineIndex + 1) / _lines.length
+                          : 0.0,
                       minHeight: 2.0,
                       backgroundColor: Colors.transparent,
-                      valueColor: AlwaysStoppedAnimation<Color>(ReaderTokens.accent),
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        ReaderTokens.accent,
+                      ),
                     ),
                   ),
                 ),

@@ -1,3 +1,4 @@
+import '../../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/gestures.dart';
@@ -30,7 +31,8 @@ class ComicReaderView extends StatefulWidget {
   State<ComicReaderView> createState() => _ComicReaderViewState();
 }
 
-class _ComicReaderViewState extends State<ComicReaderView> with SingleTickerProviderStateMixin {
+class _ComicReaderViewState extends State<ComicReaderView>
+    with SingleTickerProviderStateMixin {
   late final TransformationController _transformController;
   late final AnimationController _animController;
   Animation<Matrix4>? _zoomAnimation;
@@ -127,13 +129,10 @@ class _ComicReaderViewState extends State<ComicReaderView> with SingleTickerProv
   }
 
   void _animateToMatrix(Matrix4 target) {
-    _zoomAnimation = Matrix4Tween(
-      begin: _transformController.value,
-      end: target,
-    ).animate(CurvedAnimation(
-      parent: _animController,
-      curve: Curves.easeOutCubic,
-    ));
+    _zoomAnimation =
+        Matrix4Tween(begin: _transformController.value, end: target).animate(
+          CurvedAnimation(parent: _animController, curve: Curves.easeOutCubic),
+        );
 
     _animController.reset();
     _zoomAnimation!.addListener(() {
@@ -148,7 +147,8 @@ class _ComicReaderViewState extends State<ComicReaderView> with SingleTickerProv
       final scrollDelta = event.scrollDelta.dy;
       if (scrollDelta == 0) return;
 
-      final isCtrlPressed = HardwareKeyboard.instance.isControlPressed ||
+      final isCtrlPressed =
+          HardwareKeyboard.instance.isControlPressed ||
           HardwareKeyboard.instance.isMetaPressed;
 
       if (isCtrlPressed || scrollDelta.abs() < 50) {
@@ -177,7 +177,9 @@ class _ComicReaderViewState extends State<ComicReaderView> with SingleTickerProv
                   child: MouseRegion(
                     cursor: _isDragging
                         ? SystemMouseCursors.grabbing
-                        : (_currentScale > 1.05 ? SystemMouseCursors.grab : SystemMouseCursors.basic),
+                        : (_currentScale > 1.05
+                              ? SystemMouseCursors.grab
+                              : SystemMouseCursors.basic),
                     child: InteractiveViewer(
                       transformationController: _transformController,
                       minScale: 0.5,
@@ -185,13 +187,13 @@ class _ComicReaderViewState extends State<ComicReaderView> with SingleTickerProv
                       boundaryMargin: const EdgeInsets.all(300),
                       panEnabled: true,
                       scaleEnabled: true,
-                      onInteractionStart: (_) => setState(() => _isDragging = true),
-                      onInteractionEnd: (_) => setState(() => _isDragging = false),
+                      onInteractionStart: (_) =>
+                          setState(() => _isDragging = true),
+                      onInteractionEnd: (_) =>
+                          setState(() => _isDragging = false),
                       child: Center(
                         child: Container(
-                          constraints: const BoxConstraints(
-                            maxWidth: 1400,
-                          ),
+                          constraints: const BoxConstraints(maxWidth: 1400),
                           child: Image.memory(
                             widget.imageBytes,
                             fit: BoxFit.contain,
@@ -210,10 +212,15 @@ class _ComicReaderViewState extends State<ComicReaderView> with SingleTickerProv
               right: 24,
               bottom: widget.showControls ? 100 : 32,
               child: AnimatedOpacity(
-                opacity: widget.showControls || _currentScale > 1.05 ? 1.0 : 0.0,
+                opacity: widget.showControls || _currentScale > 1.05
+                    ? 1.0
+                    : 0.0,
                 duration: const Duration(milliseconds: 200),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: ReaderTokens.surfaceOverlay.withValues(alpha: 0.88),
                     borderRadius: ReaderTokens.rounded32,
@@ -240,7 +247,10 @@ class _ComicReaderViewState extends State<ComicReaderView> with SingleTickerProv
                       FocusableCard(
                         onTap: () => _resetZoom(),
                         builder: (context, _) => Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 4,
+                          ),
                           child: Text(
                             '${(_currentScale * 100).round()}%',
                             style: ZplayType.labelNumeric.toStyle(
@@ -258,7 +268,11 @@ class _ComicReaderViewState extends State<ComicReaderView> with SingleTickerProv
                       ),
 
                       const SizedBox(width: 4),
-                      Container(height: 18, width: 1, color: ReaderTokens.borderStrong),
+                      Container(
+                        height: 18,
+                        width: 1,
+                        color: ReaderTokens.borderStrong,
+                      ),
                       const SizedBox(width: 4),
 
                       // Reset / Fit
@@ -283,7 +297,7 @@ class _ComicReaderViewState extends State<ComicReaderView> with SingleTickerProv
     required String tooltip,
     required VoidCallback onPressed,
   }) {
-    return IconButton(
+    return KiruIconButton(
       icon: Icon(icon, color: ReaderTokens.textEmphasis, size: 18),
       tooltip: tooltip,
       visualDensity: VisualDensity.compact,

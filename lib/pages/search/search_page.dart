@@ -1,3 +1,5 @@
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -295,8 +297,15 @@ class _SearchPageState extends State<SearchPage> {
     final shell = AppShellScope.of(context);
     if (identical(shell, _shell)) return;
     _shell?.current.removeListener(_onSlotChanged);
+    _shell?.headerSearch.removeListener(_onHeaderSearch);
     _shell = shell;
     shell?.current.addListener(_onSlotChanged);
+    shell?.headerSearch.addListener(_onHeaderSearch);
+    if (shell?.headerSearch.value != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _onHeaderSearch();
+      });
+    }
     _publishChromeEntry();
   }
 
@@ -359,6 +368,16 @@ class _SearchPageState extends State<SearchPage> {
   /// explicitly): at this instant the page is still a hidden slot, its box is
   /// still inside an `ExcludeFocus`, and the answer would be "nothing to
   /// publish" - which is how this first went wrong on a device.
+  void _onHeaderSearch() {
+    final shell = _shell;
+    final query = shell?.headerSearch.value;
+    if (!mounted || shell == null || query == null) return;
+    shell.headerSearch.value = null;
+    _debounce?.cancel();
+    _searchController.text = query;
+    _performSearch(query);
+  }
+
   void _onSlotChanged() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _publishChromeEntry();
@@ -541,6 +560,7 @@ class _SearchPageState extends State<SearchPage> {
     HardwareKeyboard.instance.removeHandler(_onFieldKeyUp);
     FocusManager.instance.removeListener(_onFocusChanged);
     _shell?.current.removeListener(_onSlotChanged);
+    _shell?.headerSearch.removeListener(_onHeaderSearch);
     // Before the box's node goes anywhere: the shell's bar reads this handle at
     // key time, and a node this page is dismantling is not one it may hand the
     // remote to.
@@ -830,8 +850,8 @@ class _SearchPageState extends State<SearchPage> {
       if (!mounted) return;
       switch (e.code) {
         case 'denied':
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+          KiruToastMessenger.of(context).showSnackBar(
+            KiruToast(
               content: Text(l10nOf(context).searchVoiceDenied),
               behavior: SnackBarBehavior.floating,
               backgroundColor: context.tokens.danger,
@@ -1092,10 +1112,15 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top;
     final tokens = context.tokens;
-    // Resolved once: the field itself behaves differently on a television in
-    // two places, and both read better as one name than as the same expression
-    // written out twice.
-    final isTelevision = FormFactorService.of(context) == FormFactor.television;
+    // 统一读取设备形态，避免重复查询并据此决定顶部搜索栏的归属。
+    final formFactor = FormFactorService.of(context);
+    final isTelevision = formFactor == FormFactor.television;
+    // 宽屏桌面壳层已有全局顶部搜索框时，隐藏搜索页内重复的输入框。
+    final hasShellHeaderSearch =
+        _shell != null &&
+        formFactor != FormFactor.compact &&
+        formFactor != FormFactor.television &&
+        MediaQuery.sizeOf(context).width >= 1100;
 
     // The bar's row handle is re-stated after every frame, for the same reason
     // `HomePage` re-states its own: the handle is one field and a page that
@@ -1110,255 +1135,269 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       backgroundColor: tokens.bg,
       extendBodyBehindAppBar: true,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight + 10),
-        // The band is **transparent at rest and tinted once results scroll
-        // under it** - no opaque `tokens.bg` fill and no bottom hairline.
-        //
-        // An opaque band pinned above the content is the "different app" seam:
-        // the shell's nav bar blends into whatever the page paints beneath it,
-        // and a page that draws its own surface across the top re-creates the
-        // boundary the bar just stopped drawing. The field itself is a
-        // `tokens.surface` box, so it stays legible over the canvas; the tint
-        // exists for the gutter beside it, where a scrolling rail would
-        // otherwise slide past the field's edge.
-        //
-        // `Material`'s `AppBar` is deliberately not used here. It is a
-        // `Focus`-hosting widget whose toolbar is excluded from directional
-        // traversal, so a `TextField` placed in `appBar` is never a candidate for
-        // a D-pad press: the field renders, the user can see it, and a remote
-        // cannot reach it. Verified on a Chromecast with Google TV - the focus
-        // tree listed 21 focusables and the field was not one of them, so
-        // neither `right` nor the centre button could put a cursor in it and a
-        // television user could not search at all. `PreferredSize` is a plain
-        // layout contract and imposes nothing on focus.
-        child: ValueListenableBuilder<double>(
-          valueListenable: _bandTint,
-          // Fades the fill in behind the field over the first
-          // [_bandBlendThreshold] of scroll and leaves the field itself alone:
-          // it is the `child`, built once, so no scroll pixel rebuilds it.
-          builder: (context, tint, child) => DecoratedBox(
-            decoration: BoxDecoration(
-              color: tokens.bg.withValues(alpha: 0.82 * tint),
-            ),
-            child: child,
-          ),
-          child: Padding(
-            padding: EdgeInsets.only(top: topPadding, bottom: ZplaySpacing.s8),
-            child: Row(
-              children: [
-                const SizedBox(width: ZplaySpacing.s8),
-                // Search is a shell slot, so it usually has nothing to pop back to
-                // and popping would dismiss the shell itself. Keeping the gate means a
-                // pushed SearchPage still shows the button and neither state shifts
-                // the field, since the inset above is unconditional.
-                if (Navigator.of(context).canPop())
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_rounded, size: 20),
-                    color: tokens.textPrimary,
-                    onPressed: () => Navigator.pop(context),
+      appBar: hasShellHeaderSearch
+          ? null
+          : PreferredSize(
+              preferredSize: const Size.fromHeight(kToolbarHeight + 10),
+              // The band is **transparent at rest and tinted once results scroll
+              // under it** - no opaque `tokens.bg` fill and no bottom hairline.
+              //
+              // An opaque band pinned above the content is the "different app" seam:
+              // the shell's nav bar blends into whatever the page paints beneath it,
+              // and a page that draws its own surface across the top re-creates the
+              // boundary the bar just stopped drawing. The field itself is a
+              // `tokens.surface` box, so it stays legible over the canvas; the tint
+              // exists for the gutter beside it, where a scrolling rail would
+              // otherwise slide past the field's edge.
+              //
+              // `Material`'s `AppBar` is deliberately not used here. It is a
+              // `Focus`-hosting widget whose toolbar is excluded from directional
+              // traversal, so a `TextField` placed in `appBar` is never a candidate for
+              // a D-pad press: the field renders, the user can see it, and a remote
+              // cannot reach it. Verified on a Chromecast with Google TV - the focus
+              // tree listed 21 focusables and the field was not one of them, so
+              // neither `right` nor the centre button could put a cursor in it and a
+              // television user could not search at all. `PreferredSize` is a plain
+              // layout contract and imposes nothing on focus.
+              child: ValueListenableBuilder<double>(
+                valueListenable: _bandTint,
+                // Fades the fill in behind the field over the first
+                // [_bandBlendThreshold] of scroll and leaves the field itself alone:
+                // it is the `child`, built once, so no scroll pixel rebuilds it.
+                builder: (context, tint, child) => DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: tokens.bg.withValues(alpha: 0.82 * tint),
                   ),
-                Expanded(
-                  // The prototype caps the field at 540 dp rather than letting it
-                  // run the full width of the canvas: a search box that wide on a
-                  // 960 dp television reads as a banner, and the caret ends up a
-                  // screen away from the icon it belongs to.
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 540),
-                      child: _fieldBox(
-                        isTelevision: isTelevision,
-                        child: Container(
-                          width: double.infinity,
-                          height: 42,
-                          decoration: BoxDecoration(
-                            color: tokens.surface,
-                            borderRadius: ZplayRadius.smAll,
-                            border: Border.fromBorderSide(tokens.hairline),
+                  child: child,
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: topPadding,
+                    bottom: ZplaySpacing.s8,
+                  ),
+                  child: Row(
+                    children: [
+                      const SizedBox(width: ZplaySpacing.s8),
+                      // Search is a shell slot, so it usually has nothing to pop back to
+                      // and popping would dismiss the shell itself. Keeping the gate means a
+                      // pushed SearchPage still shows the button and neither state shifts
+                      // the field, since the inset above is unconditional.
+                      if (Navigator.of(context).canPop())
+                        KiruIconButton(
+                          icon: const Icon(
+                            Icons.arrow_back_ios_rounded,
+                            size: 20,
                           ),
-                          child: TextField(
-                            controller: _searchController,
-                            focusNode: _focusNode,
-                            // Never on a television.
-                            //
-                            // A focused text field installs
-                            // `DirectionalFocusAction.forTextField()` (editable_text.dart),
-                            // which deliberately ignores arrow intents and keeps them
-                            // for caret movement inside the field. So a field that takes
-                            // focus on arrival is a trap: the remote can type, but every
-                            // arrow press is consumed moving a caret through empty text
-                            // and focus never leaves, so the whole catalogue behind the
-                            // field is unreachable without a pointer. Verified on a
-                            // Chromecast with Google TV - down and up did nothing at all.
-                            //
-                            // On a pointer device autofocus is the expected behaviour,
-                            // and it is kept there. The rail's own autofocus means the
-                            // remote still starts on a visible, ringed row of the bar,
-                            // and on a television the field is typed into through the
-                            // card [_fieldBox] puts around this box, which routes the
-                            // remote's presses to `TvOnScreenKeyboard` rather than to
-                            // the caret here.
-                            autofocus: !isTelevision,
-                            // No IME suggestion strip and no autocorrect, on a
-                            // television.
-                            //
-                            // The keyboard the remote drives is the app's own
-                            // ([TvOnScreenKeyboard]), but the field is still a
-                            // real text field: a voice remote's text path, a
-                            // paired keyboard, or any platform route that raises
-                            // the IME raises it for *this* field. When it does,
-                            // the platform's strip appears above the key grid as
-                            // soon as the field has text and re-flows it under
-                            // the D-pad - measured on a Chromecast with Google
-                            // TV, where one keystroke moved every key down and
-                            // the press after it landed on its neighbour.
-                            //
-                            // Flutter turns `enableSuggestions: false` into
-                            // `TYPE_TEXT_FLAG_NO_SUGGESTIONS` plus the visible
-                            // password variation on Android
-                            // (`TextInputPlugin.inputTypeFromTextInputType`), and
-                            // the engine sets both because some devices ignore the
-                            // first flag alone. It is the app's only lever on an
-                            // IME it does not own, and the strip has nothing to
-                            // offer this field: the field takes a film title, and
-                            // the strip predicts English prose.
-                            //
-                            // A pointer device keeps both, which is what a text
-                            // field on a desktop or a phone is expected to do and
-                            // is not what moves a television's keys.
-                            enableSuggestions: !isTelevision,
-                            autocorrect: !isTelevision,
-                            style: ZplayType.subtitle.toStyle(
-                              color: tokens.textPrimary,
-                            ),
-                            textInputAction: TextInputAction.search,
-                            onChanged: _onSearchChanged,
-                            onSubmitted: _performSearch,
-                            decoration: InputDecoration(
-                              // "or paste links" is advice for a keyboard. A
-                              // television has no clipboard on the remote, so it
-                              // names an action the viewer cannot take.
-                              hintText: DeviceProfile.isTelevision
-                                  ? l10nOf(context).searchHintTv
-                                  : l10nOf(context).searchHint,
-                              hintStyle: ZplayType.body.toStyle(
-                                color: tokens.textDisabled,
-                              ),
-                              border: InputBorder.none,
-                              prefixIcon: Icon(
-                                Icons.search_rounded,
-                                size: 19,
-                                color: tokens.textMuted,
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: ZplaySpacing.s12,
-                                vertical: ZplaySpacing.s12,
-                              ),
-                              suffixIcon: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  // Voice search, and always, not inside the
-                                  // text-present branch below: on a pointer device
-                                  // the field is usually empty when the user
-                                  // arrives, so a microphone that waited for text
-                                  // would be a control nobody could ever press -
-                                  // which is the whole reason it is here.
+                          color: tokens.textPrimary,
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      Expanded(
+                        // The prototype caps the field at 540 dp rather than letting it
+                        // run the full width of the canvas: a search box that wide on a
+                        // 960 dp television reads as a banner, and the caret ends up a
+                        // screen away from the icon it belongs to.
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 540),
+                            child: _fieldBox(
+                              isTelevision: isTelevision,
+                              child: Container(
+                                width: double.infinity,
+                                height: 42,
+                                decoration: BoxDecoration(
+                                  color: tokens.surface,
+                                  borderRadius: ZplayRadius.smAll,
+                                  border: Border.fromBorderSide(
+                                    tokens.hairline,
+                                  ),
+                                ),
+                                child: KiruFormField(
+                                  controller: _searchController,
+                                  focusNode: _focusNode,
+                                  // Never on a television.
                                   //
-                                  // **Pointer devices only.** A suffix lives inside
-                                  // the field's subtree, where a remote can never
-                                  // land; on a television the same control is the
-                                  // band's own, out in the row beside the field.
-                                  // [_buildMicrophone] is the one definition of
-                                  // it, in both homes.
-                                  if (_voiceAvailable && !isTelevision)
-                                    _buildMicrophone(),
-                                  if (_searchController.text.isNotEmpty)
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.close_rounded,
-                                        size: 18,
-                                      ),
-                                      color: tokens.textSecondary,
-                                      splashRadius: 18,
-                                      onPressed: () {
-                                        _searchController.clear();
-                                        _onSearchChanged('');
-                                      },
-                                    )
-                                  else ...[
-                                    ValueListenableBuilder<bool>(
-                                      valueListenable:
-                                          HomePageSettings.enableAiQuiz,
-                                      builder: (context, aiQuizEnabled, _) {
-                                        if (!aiQuizEnabled) {
-                                          return const SizedBox.shrink();
-                                        }
-                                        return IconButton(
-                                          icon: Icon(
-                                            Icons.auto_awesome_rounded,
-                                            size: 17,
-                                            color: AppThemeService
-                                                .currentPalette
-                                                .value
-                                                .primaryColor,
+                                  // A focused text field installs
+                                  // `DirectionalFocusAction.forTextField()` (editable_text.dart),
+                                  // which deliberately ignores arrow intents and keeps them
+                                  // for caret movement inside the field. So a field that takes
+                                  // focus on arrival is a trap: the remote can type, but every
+                                  // arrow press is consumed moving a caret through empty text
+                                  // and focus never leaves, so the whole catalogue behind the
+                                  // field is unreachable without a pointer. Verified on a
+                                  // Chromecast with Google TV - down and up did nothing at all.
+                                  //
+                                  // On a pointer device autofocus is the expected behaviour,
+                                  // and it is kept there. The rail's own autofocus means the
+                                  // remote still starts on a visible, ringed row of the bar,
+                                  // and on a television the field is typed into through the
+                                  // card [_fieldBox] puts around this box, which routes the
+                                  // remote's presses to `TvOnScreenKeyboard` rather than to
+                                  // the caret here.
+                                  autofocus: !isTelevision,
+                                  // No IME suggestion strip and no autocorrect, on a
+                                  // television.
+                                  //
+                                  // The keyboard the remote drives is the app's own
+                                  // ([TvOnScreenKeyboard]), but the field is still a
+                                  // real text field: a voice remote's text path, a
+                                  // paired keyboard, or any platform route that raises
+                                  // the IME raises it for *this* field. When it does,
+                                  // the platform's strip appears above the key grid as
+                                  // soon as the field has text and re-flows it under
+                                  // the D-pad - measured on a Chromecast with Google
+                                  // TV, where one keystroke moved every key down and
+                                  // the press after it landed on its neighbour.
+                                  //
+                                  // Flutter turns `enableSuggestions: false` into
+                                  // `TYPE_TEXT_FLAG_NO_SUGGESTIONS` plus the visible
+                                  // password variation on Android
+                                  // (`TextInputPlugin.inputTypeFromTextInputType`), and
+                                  // the engine sets both because some devices ignore the
+                                  // first flag alone. It is the app's only lever on an
+                                  // IME it does not own, and the strip has nothing to
+                                  // offer this field: the field takes a film title, and
+                                  // the strip predicts English prose.
+                                  //
+                                  // A pointer device keeps both, which is what a text
+                                  // field on a desktop or a phone is expected to do and
+                                  // is not what moves a television's keys.
+                                  enableSuggestions: !isTelevision,
+                                  autocorrect: !isTelevision,
+                                  style: ZplayType.subtitle.toStyle(
+                                    color: tokens.textPrimary,
+                                  ),
+                                  textInputAction: TextInputAction.search,
+                                  onChanged: _onSearchChanged,
+                                  onSubmitted: _performSearch,
+                                  decoration: InputDecoration(
+                                    // "or paste links" is advice for a keyboard. A
+                                    // television has no clipboard on the remote, so it
+                                    // names an action the viewer cannot take.
+                                    hintText: DeviceProfile.isTelevision
+                                        ? l10nOf(context).searchHintTv
+                                        : l10nOf(context).searchHint,
+                                    hintStyle: ZplayType.body.toStyle(
+                                      color: tokens.textDisabled,
+                                    ),
+                                    border: InputBorder.none,
+                                    prefixIcon: Icon(
+                                      Icons.search_rounded,
+                                      size: 19,
+                                      color: tokens.textMuted,
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: ZplaySpacing.s12,
+                                      vertical: ZplaySpacing.s12,
+                                    ),
+                                    suffixIcon: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        // Voice search, and always, not inside the
+                                        // text-present branch below: on a pointer device
+                                        // the field is usually empty when the user
+                                        // arrives, so a microphone that waited for text
+                                        // would be a control nobody could ever press -
+                                        // which is the whole reason it is here.
+                                        //
+                                        // **Pointer devices only.** A suffix lives inside
+                                        // the field's subtree, where a remote can never
+                                        // land; on a television the same control is the
+                                        // band's own, out in the row beside the field.
+                                        // [_buildMicrophone] is the one definition of
+                                        // it, in both homes.
+                                        if (_voiceAvailable && !isTelevision)
+                                          _buildMicrophone(),
+                                        if (_searchController.text.isNotEmpty)
+                                          KiruIconButton(
+                                            icon: const Icon(
+                                              Icons.close_rounded,
+                                              size: 18,
+                                            ),
+                                            color: tokens.textSecondary,
+                                            splashRadius: 18,
+                                            onPressed: () {
+                                              _searchController.clear();
+                                              _onSearchChanged('');
+                                            },
+                                          )
+                                        else ...[
+                                          ValueListenableBuilder<bool>(
+                                            valueListenable:
+                                                HomePageSettings.enableAiQuiz,
+                                            builder: (context, aiQuizEnabled, _) {
+                                              if (!aiQuizEnabled) {
+                                                return const SizedBox.shrink();
+                                              }
+                                              return KiruIconButton(
+                                                icon: Icon(
+                                                  Icons.auto_awesome_rounded,
+                                                  size: 17,
+                                                  color: AppThemeService
+                                                      .currentPalette
+                                                      .value
+                                                      .primaryColor,
+                                                ),
+                                                tooltip: l10nOf(
+                                                  context,
+                                                ).searchAiQuiz,
+                                                splashRadius: 18,
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          const WeWatchQuizPage(),
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            },
                                           ),
-                                          tooltip: l10nOf(context).searchAiQuiz,
-                                          splashRadius: 18,
-                                          onPressed: () {
-                                            Navigator.push(
+                                          KiruIconButton(
+                                            icon: const Icon(
+                                              Icons.content_paste_rounded,
+                                              size: 17,
+                                            ),
+                                            tooltip: l10nOf(
                                               context,
-                                              MaterialPageRoute(
-                                                builder: (_) =>
-                                                    const WeWatchQuizPage(),
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      },
+                                            ).searchPaste,
+                                            color: tokens.textSecondary,
+                                            splashRadius: 18,
+                                            onPressed: _pasteFromClipboard,
+                                          ),
+                                        ],
+                                      ],
                                     ),
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.content_paste_rounded,
-                                        size: 17,
-                                      ),
-                                      tooltip: l10nOf(context).searchPaste,
-                                      color: tokens.textSecondary,
-                                      splashRadius: 18,
-                                      onPressed: _pasteFromClipboard,
-                                    ),
-                                  ],
-                                ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
+                      // **The microphone, on a television, as the band's own control.**
+                      //
+                      // Inside the suffix - where it is on a pointer device, and where
+                      // [_buildMicrophone] still puts it there - a remote can never
+                      // reach it: the suffix is in the field's subtree, and the field
+                      // answers every arrow key itself, so a microphone behind the
+                      // field is a microphone only a user who is already stuck in the
+                      // field could press.
+                      //
+                      // Out here it is an ordinary control of the band, standing beside
+                      // the box that owns it: RIGHT from the field's card reaches it,
+                      // BACK out of the field lands on it ([_leaveField]), and its ring
+                      // is the same [CardFocusRing] as every other control on screen.
+                      if (isTelevision && _voiceAvailable) ...[
+                        _buildMicrophone(standalone: true),
+                        const SizedBox(width: ZplaySpacing.s8),
+                      ],
+                    ],
                   ),
                 ),
-                // **The microphone, on a television, as the band's own control.**
-                //
-                // Inside the suffix - where it is on a pointer device, and where
-                // [_buildMicrophone] still puts it there - a remote can never
-                // reach it: the suffix is in the field's subtree, and the field
-                // answers every arrow key itself, so a microphone behind the
-                // field is a microphone only a user who is already stuck in the
-                // field could press.
-                //
-                // Out here it is an ordinary control of the band, standing beside
-                // the box that owns it: RIGHT from the field's card reaches it,
-                // BACK out of the field lands on it ([_leaveField]), and its ring
-                // is the same [CardFocusRing] as every other control on screen.
-                if (isTelevision && _voiceAvailable) ...[
-                  _buildMicrophone(standalone: true),
-                  const SizedBox(width: ZplaySpacing.s8),
-                ],
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
       // The body sits on Home's canvas - the shared ambient background - instead
       // of a flat `tokens.bg` surface, and it feeds the band's tint from its own
       // scroll. The listener has to be here rather than in the band: the two are
@@ -1376,7 +1415,7 @@ class _SearchPageState extends State<SearchPage> {
                 )
               else if (_isLoading && _results.isEmpty)
                 Center(
-                  child: CircularProgressIndicator(
+                  child: KiruLoader(
                     color: AppThemeService.currentPalette.value.primaryColor,
                   ),
                 )
@@ -1475,7 +1514,7 @@ class _SearchPageState extends State<SearchPage> {
                                   SizedBox(
                                     width: 14,
                                     height: 14,
-                                    child: CircularProgressIndicator(
+                                    child: KiruLoader(
                                       strokeWidth: 2,
                                       color: AppThemeService
                                           .currentPalette
@@ -1509,7 +1548,7 @@ class _SearchPageState extends State<SearchPage> {
                   right: 0,
                   child: SizedBox(
                     height: 2,
-                    child: LinearProgressIndicator(
+                    child: KiruProgress(
                       backgroundColor: Colors.transparent,
                       valueColor: AlwaysStoppedAnimation<Color>(
                         AppThemeService.currentPalette.value.primaryColor,
@@ -1569,8 +1608,8 @@ class _SearchPageState extends State<SearchPage> {
       final text = await DiagnosticsExport.instance.copyText();
       await Clipboard.setData(ClipboardData(text: text));
       if (!mounted) return;
-      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-        SnackBar(content: Text(l10nOf(context).diagnosticsCopiedToClipboard)),
+      KiruToastMessenger.maybeOf(context)?.showSnackBar(
+        KiruToast(content: Text(l10nOf(context).diagnosticsCopiedToClipboard)),
       );
     } catch (error) {
       debugPrint('[SearchPage] could not copy diagnostics: $error');
@@ -1782,7 +1821,7 @@ class _SearchPageState extends State<SearchPage> {
         ] else if (_isLoadingSuggestions) ...[
           const SizedBox(height: ZplaySpacing.s32),
           Center(
-            child: CircularProgressIndicator(
+            child: KiruLoader(
               strokeWidth: 2,
               color: AppThemeService.currentPalette.value.primaryColor,
             ),

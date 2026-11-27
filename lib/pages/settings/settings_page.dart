@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_toast.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
@@ -10,6 +11,8 @@ import '../../l10n/l10n.dart';
 import '../../services/addon/addon_manager.dart';
 import '../../services/theme/app_theme_service.dart';
 import '../../services/theme/design_tokens.dart';
+import '../../services/layout/form_factor.dart';
+import '../../widgets/settings/settings_scaffold.dart';
 import '../../widgets/common/focusable_card.dart';
 import '../../services/debrid/debrid_service.dart';
 import '../../services/theme/glass_settings.dart';
@@ -23,6 +26,7 @@ import '../../services/storage/app_image_cache.dart';
 import '../../services/config/service_credentials.dart';
 
 import 'appearance_settings_page.dart';
+import 'content_navigation_settings_page.dart';
 import 'anime_source_settings_page.dart';
 import '../../services/anime/anime_source_settings.dart';
 import 'video_settings_page.dart';
@@ -49,6 +53,8 @@ import '../../services/content/content_settings.dart';
 import '../../widgets/common/animated_ambient_background.dart';
 import '../../widgets/settings/settings_nav_row.dart';
 import '../../widgets/settings/settings_section.dart';
+import '../../widgets/settings/settings_row_surface.dart';
+import '../../widgets/ui/kiru_controls.dart';
 
 /// Third-party brand hues. These identify an external service, so they stay
 /// outside the palette-derived token layer.
@@ -144,7 +150,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           ],
                         ),
                       ),
-                      IconButton(
+                      KiruIconButton(
                         icon: Icon(
                           Icons.close_rounded,
                           color: tokens.textSecondary,
@@ -160,7 +166,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     style: ZplayType.body.toStyle(color: tokens.textEmphasis),
                   ),
                   const SizedBox(height: 12),
-                  TextField(
+                  KiruFormField(
                     controller: passphraseController,
                     obscureText: true,
                     style: ZplayType.bodySmall.toStyle(
@@ -185,7 +191,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   Row(
                     children: [
                       Expanded(
-                        child: ElevatedButton.icon(
+                        child: KiruButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: tokens.success,
                             foregroundColor: Colors.white,
@@ -198,7 +204,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             Icons.file_upload_outlined,
                             size: 18,
                           ),
-                          label: Text(
+                          child: Text(
                             l10n.settingsExportProfile,
                             style: ZplayType.label.toStyle(),
                           ),
@@ -206,8 +212,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             final passphrase = passphraseController.text;
                             if (passphrase.isNotEmpty &&
                                 passphrase.length < 8) {
-                              ScaffoldMessenger.of(ctx).showSnackBar(
-                                SnackBar(
+                              KiruToastMessenger.of(ctx).showSnackBar(
+                                KiruToast(
                                   content: Text(
                                     l10n.settingsPassphraseTooShort,
                                   ),
@@ -227,8 +233,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             if (!ctx.mounted) return;
                             Navigator.pop(ctx);
                             if (mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                              KiruToastMessenger.of(context).showSnackBar(
+                                KiruToast(
                                   content: Text(
                                     passphrase.isEmpty
                                         ? l10n.settingsRedactedProfileCopied
@@ -244,7 +250,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: OutlinedButton.icon(
+                        child: KiruButton(
+                          kind: KiruButtonKind.outline,
                           style: OutlinedButton.styleFrom(
                             foregroundColor: tokens.textPrimary,
                             side: BorderSide(color: tokens.borderStrong),
@@ -257,7 +264,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             Icons.file_download_outlined,
                             size: 18,
                           ),
-                          label: Text(
+                          child: Text(
                             l10n.settingsImportJson,
                             style: ZplayType.label.toStyle(),
                           ),
@@ -317,7 +324,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                       ),
                       const Spacer(),
-                      IconButton(
+                      KiruIconButton(
                         icon: Icon(
                           Icons.close_rounded,
                           color: tokens.textSecondary,
@@ -328,7 +335,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  TextField(
+                  KiruFormField(
                     controller: textController,
                     maxLines: 8,
                     style: ZplayType.bodySmall
@@ -349,7 +356,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                   const SizedBox(height: 14),
-                  TextField(
+                  KiruFormField(
                     controller: passphraseController,
                     obscureText: true,
                     style: ZplayType.bodySmall.toStyle(
@@ -373,13 +380,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   const SizedBox(height: 14),
                   Row(
                     children: [
-                      TextButton.icon(
+                      KiruButton(
+                        kind: KiruButtonKind.ghost,
                         icon: Icon(
                           Icons.paste_rounded,
                           size: 16,
                           color: tokens.accent,
                         ),
-                        label: Text(
+                        child: Text(
                           l10n.settingsPasteFromClipboard,
                           style: ZplayType.label.toStyle(color: tokens.accent),
                         ),
@@ -398,13 +406,14 @@ class _SettingsPageState extends State<SettingsPage> {
                       // attempt, so a file already on the device is a first
                       // class way in rather than something a user has to work
                       // around.
-                      TextButton.icon(
+                      KiruButton(
+                        kind: KiruButtonKind.ghost,
                         icon: Icon(
                           Icons.folder_open_rounded,
                           size: 16,
                           color: tokens.accent,
                         ),
-                        label: Text(
+                        child: Text(
                           l10n.settingsFromFile,
                           style: ZplayType.label.toStyle(color: tokens.accent),
                         ),
@@ -412,7 +421,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           passphrase: passphraseController.text,
                         ),
                       ),
-                      ElevatedButton(
+                      KiruButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: tokens.accent,
                           foregroundColor: tokens.onAccent,
@@ -443,8 +452,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             Navigator.pop(ctx);
                             if (mounted) {
                               _loadOverviewState();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
+                              KiruToastMessenger.of(context).showSnackBar(
+                                KiruToast(
                                   content: Text(msg),
                                   backgroundColor: tokens.success,
                                   duration: const Duration(seconds: 3),
@@ -453,8 +462,8 @@ class _SettingsPageState extends State<SettingsPage> {
                             }
                           } catch (e) {
                             if (!ctx.mounted) return;
-                            ScaffoldMessenger.of(ctx).showSnackBar(
-                              SnackBar(
+                            KiruToastMessenger.of(ctx).showSnackBar(
+                              KiruToast(
                                 content: Text(l10n.settingsImportFailed('$e')),
                                 backgroundColor: tokens.danger,
                               ),
@@ -581,8 +590,8 @@ class _SettingsPageState extends State<SettingsPage> {
       if (!mounted) return;
       if (hasDialogToClose) navigator.pop();
       _loadOverviewState();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
           content: Text(msg),
           backgroundColor: tokens.success,
           duration: const Duration(seconds: 3),
@@ -592,8 +601,8 @@ class _SettingsPageState extends State<SettingsPage> {
       // The service names the locations it tried and says the app can only
       // read its own directory, which is more use than the exception's type.
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
           content: Text(
             e is FileSystemException && e.message.isNotEmpty
                 ? e.message
@@ -624,7 +633,7 @@ class _SettingsPageState extends State<SettingsPage> {
       builder: (ctx) {
         final tokens = ctx.tokens;
         final l10n = l10nOf(ctx);
-        return AlertDialog(
+        return KiruAlertDialog(
           backgroundColor: tokens.surfaceOverlay,
           shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.lgAll),
           title: Text(
@@ -636,14 +645,15 @@ class _SettingsPageState extends State<SettingsPage> {
             style: ZplayType.body.toStyle(color: tokens.textEmphasis),
           ),
           actions: [
-            TextButton(
+            KiruButton(
+              kind: KiruButtonKind.ghost,
               child: Text(
                 l10n.actionCancel,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
               onPressed: () => Navigator.pop(ctx, false),
             ),
-            ElevatedButton(
+            KiruButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: tokens.accent,
                 foregroundColor: tokens.onAccent,
@@ -659,7 +669,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     final tokens = context.tokens;
     final l10n = l10nOf(context);
-    final messenger = ScaffoldMessenger.of(context);
+    final messenger = KiruToastMessenger.of(context);
 
     // One label per step, so the report names the store that failed instead of
     // a generic "something went wrong".
@@ -699,7 +709,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ? l10n.settingsCacheCleared
         : l10n.settingsCacheClearedExcept(failures.join(l10n.listSeparator));
     messenger.showSnackBar(
-      SnackBar(
+      KiruToast(
         content: Text('$cleared ${l10n.settingsCacheClearedSuffix}'),
         backgroundColor: failures.isEmpty ? tokens.success : tokens.danger,
         duration: const Duration(seconds: 4),
@@ -707,13 +717,26 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  final _detailNavigator = GlobalKey<NavigatorState>();
+  bool _detailOpen = false;
+
+  bool _usesWorkspace(BuildContext context) =>
+      MediaQuery.sizeOf(context).width >= 900 &&
+      !FormFactorService.hasRemoteInput;
+
   Future<void> _navigateTo(Widget page) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => page),
-    );
-    // Refresh badges when returning
-    _loadOverviewState();
+    final nested = _usesWorkspace(context)
+        ? _detailNavigator.currentState
+        : null;
+    if (nested != null) {
+      setState(() => _detailOpen = true);
+      await nested.push(MaterialPageRoute(builder: (_) => page));
+      if (!mounted) return;
+      setState(() => _detailOpen = nested.canPop());
+    } else {
+      await Navigator.push(context, MaterialPageRoute(builder: (_) => page));
+    }
+    if (mounted) _loadOverviewState();
   }
 
   /// The hub's sections, in order. The split pane's sidebar lists these, and
@@ -748,6 +771,15 @@ class _SettingsPageState extends State<SettingsPage> {
   /// (and so every `_navigateTo` destination where it was) while still giving a
   /// television a single press to reach a group instead of a dozen.
   void _jumpToSection(String label) {
+    if (_usesWorkspace(context)) {
+      _detailNavigator.currentState?.popUntil((route) => route.isFirst);
+      setState(() {
+        _detailOpen = false;
+        _activeSection = label;
+      });
+      return;
+    }
+
     if (label == _activeSection) {
       _scrollToSection(label);
       return;
@@ -781,7 +813,8 @@ class _SettingsPageState extends State<SettingsPage> {
       key: _sectionKeys[label],
       title: _sectionLabel(l10nOf(context), label),
       rows: rows,
-      first: first,
+      first: first || _usesWorkspace(context),
+      workspace: _usesWorkspace(context),
     );
   }
 
@@ -824,6 +857,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final workspace = _usesWorkspace(context);
     final addonCount = AddonManager.instance.addons.length;
     final bottomInset = MediaQuery.paddingOf(context).bottom;
     final tokens = context.tokens;
@@ -834,16 +868,17 @@ class _SettingsPageState extends State<SettingsPage> {
     return AnimatedAmbientBackground(
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: _appBar(context, tokens),
+        appBar: workspace ? null : _appBar(context, tokens),
         body: LayoutBuilder(
           builder: (context, constraints) {
             // 240 dp of sidebar beside a readable pane is what the prototype's
             // split pane needs. Below that the two do not both fit, so the hub
             // stacks as the single column it was.
             final split = constraints.maxWidth >= 720;
-            final content = Center(
+            final content = Align(
+              alignment: Alignment.topCenter,
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 800),
+                constraints: BoxConstraints(maxWidth: workspace ? 1080 : 800),
                 // `SingleChildScrollView` + `Column`, not a `ListView`.
                 //
                 // A `ListView` builds only what is near the viewport, so on a
@@ -853,443 +888,553 @@ class _SettingsPageState extends State<SettingsPage> {
                 // A settings hub is a dozen rows, so building them all costs
                 // nothing and makes every anchor real.
                 child: SingleChildScrollView(
+                  key: workspace ? ValueKey(_activeSection) : null,
                   padding: EdgeInsets.fromLTRB(
-                    split ? ZplaySpacing.s24 : ZplaySpacing.s16,
-                    ZplaySpacing.s20,
-                    split ? ZplaySpacing.s24 : ZplaySpacing.s16,
+                    workspace
+                        ? 36
+                        : split
+                        ? ZplaySpacing.s24
+                        : ZplaySpacing.s16,
+                    workspace ? 32 : ZplaySpacing.s20,
+                    workspace
+                        ? 36
+                        : split
+                        ? ZplaySpacing.s24
+                        : ZplaySpacing.s16,
                     ZplaySpacing.s32 + bottomInset,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      _buildSection(
-                        context,
-                        'PLAYBACK',
-                        first: true,
-                        rows: [
-                          // Video & Anime4K Upscaling
-                          ValueListenableBuilder<Anime4KPreset>(
-                            valueListenable: PlayerSettings.anime4kPreset,
-                            builder: (context, anime4kPreset, _) {
-                              return SettingsNavRow(
-                                icon: Icons.auto_awesome_rounded,
-                                iconColor: tokens.accent,
-                                title: l10nOf(context).settingsVideoTitle,
-                                subtitle: l10nOf(context).settingsVideoSubtitle,
-                                valueText: anime4kPreset == Anime4KPreset.off
-                                    ? l10nOf(context).stateOff
-                                    : anime4kPreset.label
-                                          .split('(')
-                                          .first
-                                          .trim(),
-                                onTap: () =>
-                                    _navigateTo(const VideoSettingsPage()),
-                              );
-                            },
-                          ),
-                          // Built-in P2P Torrent Source Toggle (ZPlay)
-                          ValueListenableBuilder<bool>(
-                            valueListenable: P2pSettingsService.isP2pEnabled,
-                            builder: (context, isP2p, _) {
-                              return _SettingsSwitchRow(
-                                icon: Icons.hub_rounded,
-                                iconColor: isP2p
-                                    ? tokens.warning
-                                    : tokens.textSecondary,
-                                title: l10nOf(context).settingsP2pTitle,
-                                subtitle: isP2p
-                                    ? l10nOf(context).settingsP2pActiveSubtitle
-                                    : l10nOf(
-                                        context,
-                                      ).settingsP2pDisabledSubtitle,
-                                valueText: isP2p
-                                    ? l10nOf(context).settingsP2pActiveValue
-                                    : l10nOf(context).settingsP2pHttpValue,
-                                value: isP2p,
-                                onChanged: (val) async {
-                                  await P2pSettingsService.setP2pEnabled(val);
-                                },
-                                onInfoTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) =>
-                                        const P2pWarningDialog(),
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-
-                      _buildSection(
-                        context,
-                        'SOURCES',
-                        rows: [
-                          // Metadata & Catalogs (Addons)
-                          SettingsNavRow(
-                            icon: Icons.extension_rounded,
-                            iconColor: tokens.accent,
-                            title: l10nOf(context).settingsAddonsTitle,
-                            subtitle: l10nOf(context).settingsAddonsSubtitle,
-                            valueText: l10nOf(
-                              context,
-                            ).settingsAddonsInstalled(addonCount),
-                            onTap: () =>
-                                _navigateTo(const AddonsSettingsPage()),
-                          ),
-                          // Built-in Providers (ZPlayHTTP)
-                          ListenableBuilder(
-                            listenable:
-                                BuiltinProvidersSettingsService.instance,
-                            builder: (context, _) {
-                              final isCustom = BuiltinProvidersSettingsService
-                                  .instance
-                                  .isCustom;
-                              return SettingsNavRow(
-                                icon: Icons.dns_rounded,
-                                iconColor: isCustom
-                                    ? tokens.accent
-                                    : tokens.success,
-                                title: l10nOf(context).settingsBuiltinTitle,
-                                subtitle: l10nOf(
-                                  context,
-                                ).settingsBuiltinSubtitle,
-                                valueText: isCustom
-                                    ? l10nOf(context).settingsBuiltinCustom
-                                    : l10nOf(context).settingsBuiltinDefault,
-                                onTap: () => _navigateTo(
-                                  const BuiltinProvidersSettingsPage(),
-                                ),
-                              );
-                            },
-                          ),
-                          // Debrid & Cloud Streaming
-                          SettingsNavRow(
-                            icon: Icons.cloud_download_rounded,
-                            iconColor: tokens.accent,
-                            title: l10nOf(context).settingsDebridTitle,
-                            subtitle: l10nOf(context).settingsDebridSubtitle,
-                            valueText: _useDebrid
-                                ? (_debridProvider != 'None'
-                                      ? _debridProvider
-                                      : l10nOf(context).stateActive)
-                                : l10nOf(context).stateDisabled,
-                            onTap: () =>
-                                _navigateTo(const DebridSettingsPage()),
-                          ),
-                        ],
-                      ),
-
-                      _buildSection(
-                        context,
-                        'INTEGRATIONS',
-                        rows: [
-                          // Trakt Sync
-                          SettingsNavRow(
-                            icon: Icons.movie_filter_rounded,
-                            iconColor: _traktBrand,
-                            title: l10nOf(context).settingsTraktTitle,
-                            subtitle: l10nOf(context).settingsTraktSubtitle,
-                            valueText: _traktConnected
-                                ? l10nOf(context).stateConnected
-                                : l10nOf(context).stateOffline,
-                            onTap: () => _navigateTo(const TraktSettingsPage()),
-                          ),
-                          // Simkl Sync
-                          SettingsNavRow(
-                            icon: Icons.tv_rounded,
-                            iconColor: _simklBrand,
-                            title: l10nOf(context).settingsSimklTitle,
-                            subtitle: l10nOf(context).settingsSimklSubtitle,
-                            valueText: _simklConnected
-                                ? l10nOf(context).stateConnected
-                                : l10nOf(context).stateOffline,
-                            onTap: () => _navigateTo(const SimklSettingsPage()),
-                          ),
-                          // TMDb API Key (bring your own)
-                          ListenableBuilder(
-                            listenable: TmdbService.apiKey,
-                            builder: (context, _) => SettingsNavRow(
-                              icon: Icons.theaters_rounded,
-                              iconColor: tokens.accent,
-                              title: l10nOf(context).settingsTmdbTitle,
-                              subtitle: l10nOf(context).settingsTmdbSubtitle,
-                              valueText: TmdbService.isConfigured
-                                  ? l10nOf(context).settingsTmdbYourKey
-                                  : l10nOf(context).stateNotSet,
-                              onTap: () =>
-                                  _navigateTo(const TmdbSettingsPage()),
+                      if (!workspace || _activeSection == 'PLAYBACK')
+                        _buildSection(
+                          context,
+                          'PLAYBACK',
+                          first: true,
+                          rows: [
+                            // Video & Anime4K Upscaling
+                            ValueListenableBuilder<Anime4KPreset>(
+                              valueListenable: PlayerSettings.anime4kPreset,
+                              builder: (context, anime4kPreset, _) {
+                                return SettingsNavRow(
+                                  icon: Icons.auto_awesome_rounded,
+                                  iconColor: tokens.accent,
+                                  title: l10nOf(context).settingsVideoTitle,
+                                  subtitle: l10nOf(
+                                    context,
+                                  ).settingsVideoSubtitle,
+                                  valueText: anime4kPreset == Anime4KPreset.off
+                                      ? l10nOf(context).stateOff
+                                      : anime4kPreset.label
+                                            .split('(')
+                                            .first
+                                            .trim(),
+                                  onTap: () =>
+                                      _navigateTo(const VideoSettingsPage()),
+                                );
+                              },
                             ),
-                          ),
-                          // Service API Keys (bring your own)
-                          ListenableBuilder(
-                            listenable: _serviceCredentials,
-                            builder: (context, _) {
-                              final provided = ServiceCredential.values
-                                  .where(ServiceCredentials.isUserProvided)
-                                  .length;
-                              return SettingsNavRow(
-                                icon: Icons.key_rounded,
-                                iconColor: tokens.accent,
-                                title: l10nOf(context).settingsServiceKeysTitle,
-                                subtitle: l10nOf(
-                                  context,
-                                ).settingsServiceKeysSubtitle,
-                                valueText: l10nOf(context)
-                                    .settingsServiceKeysCount(
-                                      provided,
-                                      ServiceCredential.values.length,
-                                    ),
-                                onTap: () => _navigateTo(
-                                  const ServiceKeysSettingsPage(),
-                                ),
-                              );
-                            },
-                          ),
-                          // Discord Rich Presence (Desktop Only)
-                          if (Platform.isWindows ||
-                              Platform.isLinux ||
-                              Platform.isMacOS)
+                            // Built-in P2P Torrent Source Toggle (ZPlay)
                             ValueListenableBuilder<bool>(
-                              valueListenable:
-                                  DiscordRpcService.instance.isEnabled,
-                              builder: (context, isDiscordEnabled, _) {
+                              valueListenable: P2pSettingsService.isP2pEnabled,
+                              builder: (context, isP2p, _) {
                                 return _SettingsSwitchRow(
-                                  icon: Icons.sports_esports_rounded,
-                                  iconColor: isDiscordEnabled
-                                      ? _discordBrand
+                                  icon: Icons.hub_rounded,
+                                  iconColor: isP2p
+                                      ? tokens.warning
                                       : tokens.textSecondary,
-                                  title: l10nOf(context).settingsDiscordTitle,
-                                  subtitle: isDiscordEnabled
+                                  title: l10nOf(context).settingsP2pTitle,
+                                  subtitle: isP2p
                                       ? l10nOf(
                                           context,
-                                        ).settingsDiscordEnabledSubtitle
+                                        ).settingsP2pActiveSubtitle
                                       : l10nOf(
                                           context,
-                                        ).settingsDiscordDisabledSubtitle,
-                                  valueText: isDiscordEnabled
-                                      ? l10nOf(context).stateActive
-                                      : l10nOf(context).stateDisabled,
-                                  value: isDiscordEnabled,
+                                        ).settingsP2pDisabledSubtitle,
+                                  valueText: isP2p
+                                      ? l10nOf(context).settingsP2pActiveValue
+                                      : l10nOf(context).settingsP2pHttpValue,
+                                  value: isP2p,
                                   onChanged: (val) async {
-                                    await DiscordRpcService.instance.setEnabled(
+                                    await P2pSettingsService.setP2pEnabled(val);
+                                  },
+                                  onInfoTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) =>
+                                          const P2pWarningDialog(),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+
+                      if (!workspace || _activeSection == 'SOURCES')
+                        _buildSection(
+                          context,
+                          'SOURCES',
+                          rows: [
+                            // Metadata & Catalogs (Addons)
+                            SettingsNavRow(
+                              icon: Icons.extension_rounded,
+                              iconColor: tokens.accent,
+                              title: l10nOf(context).settingsAddonsTitle,
+                              subtitle: l10nOf(context).settingsAddonsSubtitle,
+                              valueText: l10nOf(
+                                context,
+                              ).settingsAddonsInstalled(addonCount),
+                              onTap: () =>
+                                  _navigateTo(const AddonsSettingsPage()),
+                            ),
+                            // Built-in Providers (ZPlayHTTP)
+                            ListenableBuilder(
+                              listenable:
+                                  BuiltinProvidersSettingsService.instance,
+                              builder: (context, _) {
+                                final isCustom = BuiltinProvidersSettingsService
+                                    .instance
+                                    .isCustom;
+                                return SettingsNavRow(
+                                  icon: Icons.dns_rounded,
+                                  iconColor: isCustom
+                                      ? tokens.accent
+                                      : tokens.success,
+                                  title: l10nOf(context).settingsBuiltinTitle,
+                                  subtitle: l10nOf(
+                                    context,
+                                  ).settingsBuiltinSubtitle,
+                                  valueText: isCustom
+                                      ? l10nOf(context).settingsBuiltinCustom
+                                      : l10nOf(context).settingsBuiltinDefault,
+                                  onTap: () => _navigateTo(
+                                    const BuiltinProvidersSettingsPage(),
+                                  ),
+                                );
+                              },
+                            ),
+                            // Debrid & Cloud Streaming
+                            SettingsNavRow(
+                              icon: Icons.cloud_download_rounded,
+                              iconColor: tokens.accent,
+                              title: l10nOf(context).settingsDebridTitle,
+                              subtitle: l10nOf(context).settingsDebridSubtitle,
+                              valueText: _useDebrid
+                                  ? (_debridProvider != 'None'
+                                        ? _debridProvider
+                                        : l10nOf(context).stateActive)
+                                  : l10nOf(context).stateDisabled,
+                              onTap: () =>
+                                  _navigateTo(const DebridSettingsPage()),
+                            ),
+                          ],
+                        ),
+
+                      if (!workspace || _activeSection == 'INTEGRATIONS')
+                        _buildSection(
+                          context,
+                          'INTEGRATIONS',
+                          rows: [
+                            // Trakt Sync
+                            SettingsNavRow(
+                              icon: Icons.movie_filter_rounded,
+                              iconColor: _traktBrand,
+                              title: l10nOf(context).settingsTraktTitle,
+                              subtitle: l10nOf(context).settingsTraktSubtitle,
+                              valueText: _traktConnected
+                                  ? l10nOf(context).stateConnected
+                                  : l10nOf(context).stateOffline,
+                              onTap: () =>
+                                  _navigateTo(const TraktSettingsPage()),
+                            ),
+                            // Simkl Sync
+                            SettingsNavRow(
+                              icon: Icons.tv_rounded,
+                              iconColor: _simklBrand,
+                              title: l10nOf(context).settingsSimklTitle,
+                              subtitle: l10nOf(context).settingsSimklSubtitle,
+                              valueText: _simklConnected
+                                  ? l10nOf(context).stateConnected
+                                  : l10nOf(context).stateOffline,
+                              onTap: () =>
+                                  _navigateTo(const SimklSettingsPage()),
+                            ),
+                            // TMDb API Key (bring your own)
+                            ListenableBuilder(
+                              listenable: TmdbService.apiKey,
+                              builder: (context, _) => SettingsNavRow(
+                                icon: Icons.theaters_rounded,
+                                iconColor: tokens.accent,
+                                title: l10nOf(context).settingsTmdbTitle,
+                                subtitle: l10nOf(context).settingsTmdbSubtitle,
+                                valueText: TmdbService.isConfigured
+                                    ? l10nOf(context).settingsTmdbYourKey
+                                    : l10nOf(context).stateNotSet,
+                                onTap: () =>
+                                    _navigateTo(const TmdbSettingsPage()),
+                              ),
+                            ),
+                            // Service API Keys (bring your own)
+                            ListenableBuilder(
+                              listenable: _serviceCredentials,
+                              builder: (context, _) {
+                                final provided = ServiceCredential.values
+                                    .where(ServiceCredentials.isUserProvided)
+                                    .length;
+                                return SettingsNavRow(
+                                  icon: Icons.key_rounded,
+                                  iconColor: tokens.accent,
+                                  title: l10nOf(
+                                    context,
+                                  ).settingsServiceKeysTitle,
+                                  subtitle: l10nOf(
+                                    context,
+                                  ).settingsServiceKeysSubtitle,
+                                  valueText: l10nOf(context)
+                                      .settingsServiceKeysCount(
+                                        provided,
+                                        ServiceCredential.values.length,
+                                      ),
+                                  onTap: () => _navigateTo(
+                                    const ServiceKeysSettingsPage(),
+                                  ),
+                                );
+                              },
+                            ),
+                            // Discord Rich Presence (Desktop Only)
+                            if (Platform.isWindows ||
+                                Platform.isLinux ||
+                                Platform.isMacOS)
+                              ValueListenableBuilder<bool>(
+                                valueListenable:
+                                    DiscordRpcService.instance.isEnabled,
+                                builder: (context, isDiscordEnabled, _) {
+                                  return _SettingsSwitchRow(
+                                    icon: Icons.sports_esports_rounded,
+                                    iconColor: isDiscordEnabled
+                                        ? _discordBrand
+                                        : tokens.textSecondary,
+                                    title: l10nOf(context).settingsDiscordTitle,
+                                    subtitle: isDiscordEnabled
+                                        ? l10nOf(
+                                            context,
+                                          ).settingsDiscordEnabledSubtitle
+                                        : l10nOf(
+                                            context,
+                                          ).settingsDiscordDisabledSubtitle,
+                                    valueText: isDiscordEnabled
+                                        ? l10nOf(context).stateActive
+                                        : l10nOf(context).stateDisabled,
+                                    value: isDiscordEnabled,
+                                    onChanged: (val) async {
+                                      await DiscordRpcService.instance
+                                          .setEnabled(val);
+                                    },
+                                  );
+                                },
+                              ),
+                          ],
+                        ),
+
+                      if (!workspace || _activeSection == 'APPEARANCE')
+                        _buildSection(
+                          context,
+                          'APPEARANCE',
+                          rows: [
+                            // Appearance & Interface
+                            ValueListenableBuilder<bool>(
+                              valueListenable: GlassSettings.enabled,
+                              builder: (context, glassEnabled, _) {
+                                return ValueListenableBuilder<AppThemePalette>(
+                                  valueListenable:
+                                      AppThemeService.currentPalette,
+                                  builder: (context, currentPalette, _) {
+                                    return SettingsNavRow(
+                                      icon: Icons.palette_rounded,
+                                      iconColor: tokens.accent,
+                                      title: l10nOf(
+                                        context,
+                                      ).settingsAppearanceTitle,
+                                      subtitle: l10nOf(
+                                        context,
+                                      ).settingsAppearanceSubtitle,
+                                      valueText: glassEnabled
+                                          ? '${configLabel(context, currentPalette.name)} · ${l10nOf(context).settingsGlassOn}'
+                                          : configLabel(
+                                              context,
+                                              currentPalette.name,
+                                            ),
+                                      onTap: () => _navigateTo(
+                                        const AppearanceSettingsPage(),
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+
+                      if (!workspace || _activeSection == 'CONTENT')
+                        _buildSection(
+                          context,
+                          'CONTENT',
+                          rows: [
+                            SettingsNavRow(
+                              icon: Icons.dashboard_customize_outlined,
+                              iconColor: tokens.accent,
+                              title:
+                                  Localizations.localeOf(
+                                        context,
+                                      ).languageCode ==
+                                      'zh'
+                                  ? '\u5185\u5bb9\u4e0e\u5bfc\u822a'
+                                  : 'Content & navigation',
+                              subtitle:
+                                  Localizations.localeOf(
+                                        context,
+                                      ).languageCode ==
+                                      'zh'
+                                  ? '\u81ea\u5b9a\u4e49\u9876\u90e8\u83dc\u5355\u4e0e\u5185\u5bb9\u6a21\u5757'
+                                  : 'Choose visible content modules',
+                              onTap: () => _navigateTo(
+                                const ContentNavigationSettingsPage(),
+                              ),
+                            ),
+                            ValueListenableBuilder<AnimeSource>(
+                              valueListenable: AnimeSourceSettings.source,
+                              builder: (context, source, _) => SettingsNavRow(
+                                icon: Icons.storage_rounded,
+                                title: l10nOf(context).animeSourceSettingsTitle,
+                                subtitle: l10nOf(
+                                  context,
+                                ).animeSourceSettingsSubtitle,
+                                valueText: source == AnimeSource.bangumi
+                                    ? 'Bangumi'
+                                    : 'AniList',
+                                onTap: () => _navigateTo(
+                                  const AnimeSourceSettingsPage(),
+                                ),
+                              ),
+                            ),
+                            // TV Airing Calendar Toggle
+                            ValueListenableBuilder<bool>(
+                              valueListenable: HomePageSettings.enableCalendar,
+                              builder: (context, isCalEnabled, _) {
+                                return _SettingsSwitchRow(
+                                  icon: Icons.calendar_month_rounded,
+                                  iconColor: isCalEnabled
+                                      ? tokens.info
+                                      : tokens.textSecondary,
+                                  title: l10nOf(context).settingsCalendarTitle,
+                                  subtitle: isCalEnabled
+                                      ? l10nOf(
+                                          context,
+                                        ).settingsCalendarOnSubtitle
+                                      : l10nOf(
+                                          context,
+                                        ).settingsCalendarOffSubtitle,
+                                  valueText: isCalEnabled
+                                      ? l10nOf(context).stateEnabled
+                                      : l10nOf(context).stateDisabled,
+                                  value: isCalEnabled,
+                                  onChanged: (val) async {
+                                    await HomePageSettings.setEnableCalendar(
                                       val,
                                     );
                                   },
                                 );
                               },
                             ),
-                        ],
-                      ),
+                            // AI Recommendation Quiz Toggle
+                            ValueListenableBuilder<bool>(
+                              valueListenable: HomePageSettings.enableAiQuiz,
+                              builder: (context, isAiEnabled, _) {
+                                return _SettingsSwitchRow(
+                                  icon: Icons.auto_awesome_rounded,
+                                  iconColor: isAiEnabled
+                                      ? tokens.accent
+                                      : tokens.textSecondary,
+                                  title: l10nOf(context).settingsAiQuizTitle,
+                                  subtitle: isAiEnabled
+                                      ? l10nOf(context).settingsAiQuizOnSubtitle
+                                      : l10nOf(
+                                          context,
+                                        ).settingsAiQuizOffSubtitle,
+                                  valueText: isAiEnabled
+                                      ? l10nOf(context).stateEnabled
+                                      : l10nOf(context).stateDisabled,
+                                  value: isAiEnabled,
+                                  onChanged: (val) async {
+                                    await HomePageSettings.setEnableAiQuiz(val);
+                                  },
+                                );
+                              },
+                            ),
+                            // Adult Content (18+) Global Switch
+                            ValueListenableBuilder<bool>(
+                              valueListenable: ContentSettings.adultEnabled,
+                              builder: (context, isAdultOn, _) {
+                                return _SettingsSwitchRow(
+                                  icon: Icons.eighteen_up_rating_rounded,
+                                  iconColor: isAdultOn
+                                      ? tokens.danger
+                                      : tokens.textSecondary,
+                                  title: l10nOf(context).settingsAdultTitle,
+                                  subtitle: isAdultOn
+                                      ? l10nOf(context).settingsAdultOnSubtitle
+                                      : l10nOf(
+                                          context,
+                                        ).settingsAdultOffSubtitle,
+                                  valueText: isAdultOn
+                                      ? l10nOf(context).stateOn
+                                      : l10nOf(context).stateOff,
+                                  value: isAdultOn,
+                                  onChanged: (val) async {
+                                    await ContentSettings.setAdultEnabled(val);
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        ),
 
-                      _buildSection(
-                        context,
-                        'APPEARANCE',
-                        rows: [
-                          // Appearance & Interface
-                          ValueListenableBuilder<bool>(
-                            valueListenable: GlassSettings.enabled,
-                            builder: (context, glassEnabled, _) {
-                              return ValueListenableBuilder<AppThemePalette>(
-                                valueListenable: AppThemeService.currentPalette,
-                                builder: (context, currentPalette, _) {
-                                  return SettingsNavRow(
-                                    icon: Icons.palette_rounded,
-                                    iconColor: tokens.accent,
-                                    title: l10nOf(
-                                      context,
-                                    ).settingsAppearanceTitle,
-                                    subtitle: l10nOf(
-                                      context,
-                                    ).settingsAppearanceSubtitle,
-                                    valueText: glassEnabled
-                                        ? '${configLabel(context, currentPalette.name)} · ${l10nOf(context).settingsGlassOn}'
-                                        : configLabel(context, currentPalette.name),
-                                    onTap: () => _navigateTo(
-                                      const AppearanceSettingsPage(),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-
-                      _buildSection(
-                        context,
-                        'CONTENT',
-                        rows: [
-                          ValueListenableBuilder<AnimeSource>(
-  valueListenable: AnimeSourceSettings.source,
-  builder: (context, source, _) => SettingsNavRow(
-    icon: Icons.storage_rounded,
-    title: l10nOf(context).animeSourceSettingsTitle,
-    subtitle: l10nOf(context).animeSourceSettingsSubtitle,
-    valueText: source == AnimeSource.bangumi ? 'Bangumi' : 'AniList',
-    onTap: () => _navigateTo(const AnimeSourceSettingsPage()),
-  ),
-),
-// TV Airing Calendar Toggle
-                          ValueListenableBuilder<bool>(
-                            valueListenable: HomePageSettings.enableCalendar,
-                            builder: (context, isCalEnabled, _) {
-                              return _SettingsSwitchRow(
-                                icon: Icons.calendar_month_rounded,
-                                iconColor: isCalEnabled
-                                    ? tokens.info
-                                    : tokens.textSecondary,
-                                title: l10nOf(context).settingsCalendarTitle,
-                                subtitle: isCalEnabled
-                                    ? l10nOf(context).settingsCalendarOnSubtitle
-                                    : l10nOf(
-                                        context,
-                                      ).settingsCalendarOffSubtitle,
-                                valueText: isCalEnabled
-                                    ? l10nOf(context).stateEnabled
-                                    : l10nOf(context).stateDisabled,
-                                value: isCalEnabled,
-                                onChanged: (val) async {
-                                  await HomePageSettings.setEnableCalendar(val);
-                                },
-                              );
-                            },
-                          ),
-                          // AI Recommendation Quiz Toggle
-                          ValueListenableBuilder<bool>(
-                            valueListenable: HomePageSettings.enableAiQuiz,
-                            builder: (context, isAiEnabled, _) {
-                              return _SettingsSwitchRow(
-                                icon: Icons.auto_awesome_rounded,
-                                iconColor: isAiEnabled
-                                    ? tokens.accent
-                                    : tokens.textSecondary,
-                                title: l10nOf(context).settingsAiQuizTitle,
-                                subtitle: isAiEnabled
-                                    ? l10nOf(context).settingsAiQuizOnSubtitle
-                                    : l10nOf(context).settingsAiQuizOffSubtitle,
-                                valueText: isAiEnabled
-                                    ? l10nOf(context).stateEnabled
-                                    : l10nOf(context).stateDisabled,
-                                value: isAiEnabled,
-                                onChanged: (val) async {
-                                  await HomePageSettings.setEnableAiQuiz(val);
-                                },
-                              );
-                            },
-                          ),
-                          // Adult Content (18+) Global Switch
-                          ValueListenableBuilder<bool>(
-                            valueListenable: ContentSettings.adultEnabled,
-                            builder: (context, isAdultOn, _) {
-                              return _SettingsSwitchRow(
-                                icon: Icons.eighteen_up_rating_rounded,
-                                iconColor: isAdultOn
-                                    ? tokens.danger
-                                    : tokens.textSecondary,
-                                title: l10nOf(context).settingsAdultTitle,
-                                subtitle: isAdultOn
-                                    ? l10nOf(context).settingsAdultOnSubtitle
-                                    : l10nOf(context).settingsAdultOffSubtitle,
-                                valueText: isAdultOn
-                                    ? l10nOf(context).stateOn
-                                    : l10nOf(context).stateOff,
-                                value: isAdultOn,
-                                onChanged: (val) async {
-                                  await ContentSettings.setAdultEnabled(val);
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-
-                      _buildSection(
-                        context,
-                        'APP',
-                        rows: [
-                          // Backup & Restore (JSON)
-                          SettingsNavRow(
-                            icon: Icons.backup_rounded,
-                            iconColor: tokens.accent,
-                            title: l10nOf(context).settingsBackupTitle,
-                            subtitle: l10nOf(context).settingsBackupSubtitle,
-                            valueText: 'JSON',
-                            onTap: _showBackupRestoreDialog,
-                          ),
-                          // Cache cleanup (artwork + metadata, never user state)
-                          SettingsNavRow(
-                            icon: Icons.cleaning_services_rounded,
-                            iconColor: tokens.accent,
-                            title: l10nOf(context).settingsClearCacheTitle,
-                            subtitle: l10nOf(
-                              context,
-                            ).settingsClearCacheSubtitle,
-                            onTap: _confirmAndClearCache,
-                          ),
-                          // App Updates & System
-                          SettingsNavRow(
-                            icon: Icons.system_update_rounded,
-                            iconColor: tokens.accent,
-                            title: l10nOf(context).settingsUpdatesTitle,
-                            subtitle: l10nOf(context).settingsUpdatesSubtitle,
-                            valueText: _appVersion != null
-                                ? 'v$_appVersion'
-                                : l10nOf(context).settingsUpdatesCheck,
-                            onTap: () =>
-                                _navigateTo(const UpdatesSettingsPage()),
-                          ),
-                          // Diagnostics (local-only report)
-                          SettingsNavRow(
-                            icon: Icons.monitor_heart_outlined,
-                            iconColor: tokens.accent,
-                            title: l10nOf(context).diagnosticsTitle,
-                            subtitle: l10nOf(
-                              context,
-                            ).settingsDiagnosticsSubtitle,
-                            onTap: () => _navigateTo(const DiagnosticsPage()),
-                          ),
-                          // Language (English / Arabic / system)
-                          SettingsNavRow(
-                            icon: Icons.translate_rounded,
-                            iconColor: tokens.accent,
-                            title: l10nOf(context).languageTitle,
-                            subtitle: l10nOf(context).settingsLanguageSubtitle,
-                            onTap: () =>
-                                _navigateTo(const LanguageSettingsPage()),
-                          ),
-                          // About ZPlay
-                          SettingsNavRow(
-                            icon: Icons.info_outline_rounded,
-                            iconColor: tokens.accent,
-                            title: l10nOf(context).settingsAboutTitle,
-                            subtitle: l10nOf(context).settingsAboutSubtitle,
-                            onTap: () => _navigateTo(const AboutSettingsPage()),
-                          ),
-                        ],
-                      ),
+                      if (!workspace || _activeSection == 'APP')
+                        _buildSection(
+                          context,
+                          'APP',
+                          rows: [
+                            // Backup & Restore (JSON)
+                            SettingsNavRow(
+                              icon: Icons.backup_rounded,
+                              iconColor: tokens.accent,
+                              title: l10nOf(context).settingsBackupTitle,
+                              subtitle: l10nOf(context).settingsBackupSubtitle,
+                              valueText: 'JSON',
+                              onTap: _showBackupRestoreDialog,
+                            ),
+                            // Cache cleanup (artwork + metadata, never user state)
+                            SettingsNavRow(
+                              icon: Icons.cleaning_services_rounded,
+                              iconColor: tokens.accent,
+                              title: l10nOf(context).settingsClearCacheTitle,
+                              subtitle: l10nOf(
+                                context,
+                              ).settingsClearCacheSubtitle,
+                              onTap: _confirmAndClearCache,
+                            ),
+                            // App Updates & System
+                            SettingsNavRow(
+                              icon: Icons.system_update_rounded,
+                              iconColor: tokens.accent,
+                              title: l10nOf(context).settingsUpdatesTitle,
+                              subtitle: l10nOf(context).settingsUpdatesSubtitle,
+                              valueText: _appVersion != null
+                                  ? 'v$_appVersion'
+                                  : l10nOf(context).settingsUpdatesCheck,
+                              onTap: () =>
+                                  _navigateTo(const UpdatesSettingsPage()),
+                            ),
+                            // Diagnostics (local-only report)
+                            SettingsNavRow(
+                              icon: Icons.monitor_heart_outlined,
+                              iconColor: tokens.accent,
+                              title: l10nOf(context).diagnosticsTitle,
+                              subtitle: l10nOf(
+                                context,
+                              ).settingsDiagnosticsSubtitle,
+                              onTap: () => _navigateTo(const DiagnosticsPage()),
+                            ),
+                            // Language (English / Arabic / system)
+                            SettingsNavRow(
+                              icon: Icons.translate_rounded,
+                              iconColor: tokens.accent,
+                              title: l10nOf(context).languageTitle,
+                              subtitle: l10nOf(
+                                context,
+                              ).settingsLanguageSubtitle,
+                              onTap: () =>
+                                  _navigateTo(const LanguageSettingsPage()),
+                            ),
+                            // About ZPlay
+                            SettingsNavRow(
+                              icon: Icons.info_outline_rounded,
+                              iconColor: tokens.accent,
+                              title: l10nOf(context).settingsAboutTitle,
+                              subtitle: l10nOf(context).settingsAboutSubtitle,
+                              onTap: () =>
+                                  _navigateTo(const AboutSettingsPage()),
+                            ),
+                          ],
+                        ),
                     ],
                   ),
                 ),
               ),
             );
 
-            if (!split) return content;
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            // Keep the nested navigator mounted when the window is resized.
+            // Only the active section appears in the desktop overview.
+            final detail = Stack(
+              fit: StackFit.expand,
               children: [
-                _SettingsSidebar(
-                  sections: [
-                    for (final id in _sectionLabels)
-                      (id: id, label: _sectionLabel(l10nOf(context), id)),
-                  ],
-                  active: _activeSection,
-                  onSelected: _jumpToSection,
+                Offstage(
+                  offstage: _detailOpen,
+                  child: ExcludeFocus(excluding: _detailOpen, child: content),
                 ),
-                Expanded(child: content),
+                Offstage(
+                  offstage: !_detailOpen,
+                  child: ExcludeFocus(
+                    excluding: !_detailOpen,
+                    child: NavigatorPopHandler<Object?>(
+                      enabled: _detailOpen,
+                      onPopWithResult: (_) =>
+                          _detailNavigator.currentState?.maybePop(),
+                      child: SettingsWorkspaceScope(
+                        child: Navigator(
+                          key: _detailNavigator,
+                          onGenerateRoute: (_) => MaterialPageRoute<void>(
+                            builder: (_) => const SizedBox.shrink(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             );
+            final sidebar = _SettingsSidebar(
+              sections: [
+                for (final id in _sectionLabels)
+                  (id: id, label: _sectionLabel(l10nOf(context), id)),
+              ],
+              active: _activeSection,
+              onSelected: _jumpToSection,
+              workspace: workspace,
+            );
+            final body = !split
+                ? detail
+                : Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      sidebar,
+                      Expanded(child: detail),
+                    ],
+                  );
+            return workspace
+                ? SafeArea(
+                    bottom: false,
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: ConstrainedBox(
+                        key: const ValueKey('settings-centered-workspace'),
+                        constraints: const BoxConstraints(maxWidth: 1360),
+                        child: body,
+                      ),
+                    ),
+                  )
+                : body;
           },
         ),
       ),
@@ -1326,29 +1471,10 @@ class _SettingsSwitchRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // `FocusableCard`, for the same reason [SettingsNavRow] uses it, and for
-    // the defect that conversion left behind on this row.
-    //
-    // The switch used to be the only focus node here, so a remote landed on a
-    // 40 px thumb at the far edge of the surface, `CardFocusRing` never drew,
-    // and this - the row a person reaches specifically to ask "is adult content
-    // on?" - was the one row focus could not mark. Activation is the row's, via
-    // `ActivateIntent`, and runs the same [onChanged] the switch runs, so the
-    // remote's centre key and a pointer change the setting identically. The ring
-    // is the whole row, for the reason [SettingsNavRow] writes down.
-    return FocusableCard(
+    return SettingsRowSurface(
       onTap: () => onChanged(!value),
-      builder: (context, state) => Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => onChanged(!value),
-          child: CardFocusRing(
-            focused: state.focused,
-            radius: ZplayRadius.smAll,
-            child: _row(context, highlighted: state.highlighted),
-          ),
-        ),
-      ),
+      builder: (context, state) =>
+          _row(context, highlighted: state.highlighted),
     );
   }
 
@@ -1392,7 +1518,7 @@ class _SettingsSwitchRow extends StatelessWidget {
                     ),
                     if (onInfoTap != null) ...[
                       const SizedBox(width: ZplaySpacing.s4),
-                      IconButton(
+                      KiruIconButton(
                         icon: Icon(
                           Icons.info_outline_rounded,
                           size: 16,
@@ -1441,20 +1567,10 @@ class _SettingsSwitchRow extends StatelessWidget {
           // and a pointer still lands on the switch itself, which is the whole
           // reason it is drawn there.
           ExcludeFocus(
-            child: Transform.scale(
-              scale: 0.9,
-              child: Switch.adaptive(
-                value: value,
-                activeColor: tokens.accent,
-                activeTrackColor: tokens.accent.withValues(
-                  alpha: ZplayOpacity.textMuted,
-                ),
-                inactiveThumbColor: tokens.textSecondary,
-                inactiveTrackColor: Colors.white.withValues(
-                  alpha: ZplayOpacity.borderMedium,
-                ),
-                onChanged: onChanged,
-              ),
+            child: KiruSwitch(
+              value: value,
+              onChanged: onChanged,
+              semanticsLabel: title,
             ),
           ),
         ],
@@ -1520,6 +1636,7 @@ class _SettingsSidebar extends StatelessWidget {
     required this.sections,
     required this.active,
     required this.onSelected,
+    this.workspace = false,
   });
 
   /// Section id plus the words to draw for it. The id is what selection and
@@ -1527,23 +1644,50 @@ class _SettingsSidebar extends StatelessWidget {
   final List<({String id, String label})> sections;
   final String active;
   final ValueChanged<String> onSelected;
+  final bool workspace;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
 
     return Container(
-      width: 240,
-      decoration: BoxDecoration(
-        color: tokens.surface,
-        border: Border(right: tokens.hairline),
-      ),
+      width: workspace ? 252 : 240,
+      key: const ValueKey('settings-sidebar-surface'),
+      decoration: workspace
+          ? null
+          : BoxDecoration(
+              color: tokens.surface,
+              border: BorderDirectional(end: tokens.hairline),
+            ),
       child: ListView(
-        padding: const EdgeInsets.symmetric(vertical: ZplaySpacing.s16),
+        padding: workspace
+            ? const EdgeInsets.fromLTRB(18, 30, 18, 24)
+            : const EdgeInsets.symmetric(vertical: ZplaySpacing.s16),
         children: [
+          if (workspace) ...[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 26),
+              child: Text(
+                l10nOf(context).settingsTitle,
+                style: ZplayType.titleLarge
+                    .copyWith(size: 26)
+                    .toStyle(color: tokens.textPrimary),
+              ),
+            ),
+          ],
           for (final section in sections)
             _SettingsSidebarItem(
+              key: ValueKey('settings-section-${section.id}'),
               label: section.label,
+              workspace: workspace,
+              icon: switch (section.id) {
+                'PLAYBACK' => Icons.play_circle_outline_rounded,
+                'SOURCES' => Icons.extension_outlined,
+                'INTEGRATIONS' => Icons.link_rounded,
+                'APPEARANCE' => Icons.palette_outlined,
+                'CONTENT' => Icons.dashboard_customize_outlined,
+                _ => Icons.settings_outlined,
+              },
               selected: section.id == active,
               onTap: () => onSelected(section.id),
             ),
@@ -1561,18 +1705,82 @@ class _SettingsSidebar extends StatelessWidget {
 /// The 16 dp vertical padding keeps the target above the 48 dp ten-foot floor.
 class _SettingsSidebarItem extends StatelessWidget {
   const _SettingsSidebarItem({
+    super.key,
     required this.label,
     required this.selected,
     required this.onTap,
+    required this.icon,
+    this.workspace = false,
   });
 
   final String label;
   final bool selected;
   final VoidCallback onTap;
+  final IconData icon;
+  final bool workspace;
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+
+    if (workspace) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 4),
+        child: FocusableCard(
+          onTap: onTap,
+          builder: (context, state) => AnimatedContainer(
+            duration: ZplayMotion.fast,
+            decoration: BoxDecoration(
+              color: selected
+                  ? tokens.accent.withValues(alpha: 0.13)
+                  : state.hovered
+                  ? tokens.textPrimary.withValues(alpha: 0.05)
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: CardFocusRing(
+              focused: state.focused,
+              radius: BorderRadius.circular(10),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 13,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      icon,
+                      size: 20,
+                      color: selected ? tokens.accent : tokens.textSecondary,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: ZplayType.label
+                            .copyWith(
+                              size: 15,
+                              weight: selected
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
+                            )
+                            .toStyle(
+                              color: selected
+                                  ? tokens.textPrimary
+                                  : tokens.textSecondary,
+                            ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
 
     return FocusableCard(
       onTap: onTap,

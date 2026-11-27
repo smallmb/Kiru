@@ -56,11 +56,11 @@ Widget _host(
 /// every hairline. The tokens' own `hairline` is 1 px, so the width separates
 /// the focus indicator from every ordinary border the bar and the rail draw.
 Finder _focusRings() => find.byWidgetPredicate(
-      (w) =>
-          w is DecoratedBox &&
-          w.decoration is BoxDecoration &&
-          ((w.decoration as BoxDecoration).border?.top.width ?? 0.0) > 1.0,
-    );
+  (w) =>
+      w is DecoratedBox &&
+      w.decoration is BoxDecoration &&
+      ((w.decoration as BoxDecoration).border?.top.width ?? 0.0) > 1.0,
+);
 
 class _FakeOwner implements NowPlayingCommands {
   final List<String> calls = <String>[];
@@ -118,45 +118,51 @@ void main() {
       NowPlayingService.unregister(owner);
     });
 
-    testWidgets('a remote traverses onto it and the centre key opens the player',
-        (tester) async {
+    testWidgets('a remote traverses onto it and the centre key opens the player', (
+      tester,
+    ) async {
       // The nav bar is a sibling here on purpose: it is the control a real
       // remote starts on, so traversal from it has to be able to reach the
       // now-playing bar.
-      await tester.pumpWidget(_host(
-        tester,
-        television: true,
-        child: const Stack(
-          children: [
-            // The bar is given its own height rather than stretched, so the
-            // harness measures the bar's real 48 dp and not a viewport-tall
-            // artefact of `Positioned.fill`. The now-playing bar is laid over
-            // the bottom, so both are laid out and both stay in the tree for
-            // traversal to reach.
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: ShellRail(
-                current: ShellSlot.home,
-                onSelect: _ignore,
-                onLiveTv: _ignoreTv,
+      await tester.pumpWidget(
+        _host(
+          tester,
+          television: true,
+          child: const Stack(
+            children: [
+              // The bar is given its own height rather than stretched, so the
+              // harness measures the bar's real 48 dp and not a viewport-tall
+              // artefact of `Positioned.fill`. The now-playing bar is laid over
+              // the bottom, so both are laid out and both stay in the tree for
+              // traversal to reach.
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: ShellRail(
+                  current: ShellSlot.home,
+                  onSelect: _ignore,
+                  onLiveTv: _ignoreTv,
+                ),
               ),
-            ),
-            Positioned(bottom: 0, left: 0, right: 0, child: NowPlayingBar()),
-          ],
+              Positioned(bottom: 0, left: 0, right: 0, child: NowPlayingBar()),
+            ],
+          ),
         ),
-      ));
+      );
       await tester.pump();
-      expect(owner.calls, isEmpty,
-          reason: 'nothing on the nav bar is the now-playing bar');
+      expect(
+        owner.calls,
+        isEmpty,
+        reason: 'nothing on the nav bar is the now-playing bar',
+      );
 
       // Walk the traversal rather than assuming a step count: how many rows the
       // bar contributes, and in what order Flutter visits them, is a framework
       // detail. What is guarded is that the bar is REACHABLE and that it
       // ACTIVATES on the remote's centre key.
       await tester.tap(find.byType(FocusableCard).first, warnIfMissed: false);
-      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 150));
 
       var activated = false;
       for (var i = 0; i < 12 && !activated; i++) {
@@ -167,29 +173,39 @@ void main() {
         activated = owner.calls.contains('openFullPlayer');
       }
 
-      expect(activated, isTrue,
-          reason: 'the bar must be reachable by traversal and activate on the '
-              'remote centre key; recorded calls were ${owner.calls}');
+      expect(
+        activated,
+        isTrue,
+        reason:
+            'the bar must be reachable by traversal and activate on the '
+            'remote centre key; recorded calls were ${owner.calls}',
+      );
     });
 
-    testWidgets('a focused bar draws the ring an InkWell never drew',
-        (tester) async {
+    testWidgets('a focused bar draws the ring an InkWell never drew', (
+      tester,
+    ) async {
       // A focusable sibling to move away from, so the bar gets focus the way a
       // remote gives it rather than by reaching into the card's own node.
-      await tester.pumpWidget(_host(
-        tester,
-        television: true,
-        child: const Column(
-          children: [
-            Focus(child: SizedBox(height: 60)),
-            Expanded(child: NowPlayingBar()),
-          ],
+      await tester.pumpWidget(
+        _host(
+          tester,
+          television: true,
+          child: const Column(
+            children: [
+              Focus(child: SizedBox(height: 60)),
+              Expanded(child: NowPlayingBar()),
+            ],
+          ),
         ),
-      ));
+      );
       await tester.pump();
 
-      expect(_focusRings(), findsNothing,
-          reason: 'an unfocused bar must not paint a focus ring');
+      expect(
+        _focusRings(),
+        findsNothing,
+        reason: 'an unfocused bar must not paint a focus ring',
+      );
 
       // Walk until the ring appears rather than assuming the bar is one step
       // away: it comes after the bar's own transport controls in traversal order.
@@ -200,16 +216,17 @@ void main() {
         rang = _focusRings().evaluate().isNotEmpty;
       }
 
-      expect(rang, isTrue,
-          reason: 'a focused bar with no visible ring is unusable on a TV');
+      expect(
+        rang,
+        isTrue,
+        reason: 'a focused bar with no visible ring is unusable on a TV',
+      );
     });
 
     testWidgets('its transport controls are focusable too', (tester) async {
-      await tester.pumpWidget(_host(
-        tester,
-        television: true,
-        child: const NowPlayingBar(),
-      ));
+      await tester.pumpWidget(
+        _host(tester, television: true, child: const NowPlayingBar()),
+      );
       await tester.pump();
 
       // The bar plus four transports: previous, play or pause, next and close.
@@ -218,58 +235,71 @@ void main() {
       // removes the bar - a strip with no way to be dismissed was reported, so
       // its presence is pinned here.
       expect(find.byType(FocusableCard), findsNWidgets(5));
-      expect(find.byType(InkWell), findsNothing,
-          reason: 'no control in the bar may be a bare InkWell');
+      expect(
+        find.byType(InkWell),
+        findsNothing,
+        reason: 'no control in the bar may be a bare InkWell',
+      );
       expect(
         find.bySemanticsLabel('Close'),
         findsOneWidget,
-        reason: 'Close must be a real focusable control with a label, not a '
+        reason:
+            'Close must be a real focusable control with a label, not a '
             'decoration - and the bar had no way to be dismissed',
       );
     });
 
-    testWidgets('Close reaches the owner and the bar then goes away',
-        (tester) async {
+    testWidgets('Close reaches the owner and the bar then goes away', (
+      tester,
+    ) async {
       // Mounted by the shell on every screen, and while a snapshot exists none
       // of the other controls remove it: the transport moves through a queue
       // that stays non-empty for as long as a track is loaded. So a viewer who
       // played anything had a strip they could not get rid of. This drives the
       // tap through to the owner rather than only asserting the button exists.
-      await tester.pumpWidget(_host(
-        tester,
-        television: true,
-        child: const NowPlayingBar(),
-      ));
+      await tester.pumpWidget(
+        _host(tester, television: true, child: const NowPlayingBar()),
+      );
       await tester.pump();
 
       await tester.tap(find.byIcon(Icons.close_rounded));
       await tester.pump();
 
-      expect(owner.calls, contains('stop'),
-          reason: 'the close control must ask the owner to stop');
+      expect(
+        owner.calls,
+        contains('stop'),
+        reason: 'the close control must ask the owner to stop',
+      );
 
       // And the bar goes when the owner does: null is the service's "nothing
       // loaded", which is the single state the shell renders no strip for.
       NowPlayingService.publish(null);
       await tester.pump();
 
-      expect(find.byIcon(Icons.close_rounded), findsNothing,
-          reason: 'with nothing loaded the bar collapses to zero height');
+      expect(
+        find.byIcon(Icons.close_rounded),
+        findsNothing,
+        reason: 'with nothing loaded the bar collapses to zero height',
+      );
     });
   });
 
   group('the shell nav bar', () {
-    testWidgets('autofocus gives a television a starting focus', (tester) async {
-      await tester.pumpWidget(_host(
-        tester,
-        television: true,
-        child: const ShellRail(
-          current: ShellSlot.home,
-          onSelect: _ignore,
-          onLiveTv: _ignoreTv,
-          autofocus: true,
+    testWidgets('autofocus gives a television a starting focus', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          tester,
+          television: true,
+          child: const ShellRail(
+            current: ShellSlot.home,
+            onSelect: _ignore,
+            onLiveTv: _ignoreTv,
+            autofocus: true,
+          ),
         ),
-      ));
+      );
       await tester.pump();
 
       expect(
@@ -277,29 +307,39 @@ void main() {
         isNot(FocusManager.instance.rootScope),
         reason: 'a cold launch on a TV must not start with nothing focused',
       );
-      expect(_focusRings(), findsWidgets,
-          reason: 'the starting focus has to be visible, or the user cannot '
-              'tell where the remote is');
+      expect(
+        _focusRings(),
+        findsWidgets,
+        reason:
+            'the starting focus has to be visible, or the user cannot '
+            'tell where the remote is',
+      );
     });
 
-    testWidgets('a desktop bar does not claim focus nobody asked for',
-        (tester) async {
-      await tester.pumpWidget(_host(
-        tester,
-        television: false,
-        child: const ShellRail(
-          current: ShellSlot.home,
-          onSelect: _ignore,
-          onLiveTv: _ignoreTv,
+    testWidgets('a desktop bar does not claim focus nobody asked for', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _host(
+          tester,
+          television: false,
+          child: const ShellRail(
+            current: ShellSlot.home,
+            onSelect: _ignore,
+            onLiveTv: _ignoreTv,
+          ),
         ),
-      ));
+      );
       await tester.pump();
 
       // The real guarantee is that nothing is RINGED, not which scope happens to
       // hold focus: MaterialApp places focus on its own ModalScope on desktop, so
       // asserting on the root scope would be testing a framework detail.
-      expect(_focusRings(), findsNothing,
-          reason: 'a mouse-driven desktop must not open on a ringed row');
+      expect(
+        _focusRings(),
+        findsNothing,
+        reason: 'a mouse-driven desktop must not open on a ringed row',
+      );
     });
   });
 }

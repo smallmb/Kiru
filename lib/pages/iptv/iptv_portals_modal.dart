@@ -1,3 +1,5 @@
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
@@ -35,10 +37,8 @@ class IptvPortalsModal extends StatefulWidget {
   State<IptvPortalsModal> createState() => _IptvPortalsModalState();
 }
 
-class _IptvPortalsModalState extends State<IptvPortalsModal>
-    with SingleTickerProviderStateMixin {
+class _IptvPortalsModalState extends State<IptvPortalsModal> {
   final _ctrl = IptvController.instance;
-  late final TabController _tabController;
 
   // Add Portal Controllers
   final _urlCtrl = TextEditingController();
@@ -82,12 +82,6 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(
-      length: 2,
-      vsync: this,
-      initialIndex: (widget.initialTab ?? IptvSettings.defaultPortalTab.value)
-          .clamp(0, 1),
-    );
     IptvSettings.changeNotifier.addListener(_onSettingsChanged);
     AppThemeService.currentPalette.addListener(_onSettingsChanged);
   }
@@ -101,7 +95,6 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
   void dispose() {
     IptvSettings.changeNotifier.removeListener(_onSettingsChanged);
     AppThemeService.currentPalette.removeListener(_onSettingsChanged);
-    _tabController.dispose();
     _urlCtrl.dispose();
     _userCtrl.dispose();
     _passCtrl.dispose();
@@ -142,9 +135,14 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
     });
     await _ctrl.deletePortalsByKeys(toDelete);
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10nOf(context).dynamicIptvPortalsModalRemovedPortal((count).toString(), (count == 1 ? "" : "s").toString())),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(context).dynamicIptvPortalsModalRemovedPortal(
+              (count).toString(),
+              (count == 1 ? "" : "s").toString(),
+            ),
+          ),
           duration: const Duration(seconds: 2),
           backgroundColor: context.tokens.surfaceOverlay,
         ),
@@ -160,9 +158,13 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
     });
     await _ctrl.deleteAllPortals();
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10nOf(context).dynamicIptvPortalsModalRemovedAllPortals((count).toString())),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(
+              context,
+            ).dynamicIptvPortalsModalRemovedAllPortals((count).toString()),
+          ),
           duration: const Duration(seconds: 2),
           backgroundColor: context.tokens.surfaceOverlay,
         ),
@@ -182,9 +184,14 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
       await _ctrl.deleteM3uPlaylist(id);
     }
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10nOf(context).dynamicIptvPortalsModalRemovedPlaylist((count).toString(), (count == 1 ? "" : "s").toString())),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(context).dynamicIptvPortalsModalRemovedPlaylist(
+              (count).toString(),
+              (count == 1 ? "" : "s").toString(),
+            ),
+          ),
           duration: const Duration(seconds: 2),
           backgroundColor: context.tokens.surfaceOverlay,
         ),
@@ -200,9 +207,13 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
     });
     await _ctrl.deleteAllM3uPlaylists();
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10nOf(context).dynamicIptvPortalsModalRemovedAllPlaylists((count).toString())),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(
+              context,
+            ).dynamicIptvPortalsModalRemovedAllPlaylists((count).toString()),
+          ),
           duration: const Duration(seconds: 2),
           backgroundColor: context.tokens.surfaceOverlay,
         ),
@@ -246,7 +257,9 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
           // No `side`: the dialog is a pushed surface, so its own edge is the
           // radius and the scrim behind it, not a hairline drawn round a box.
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(isMobile ? ZplayRadius.md : ZplayRadius.lg),
+            borderRadius: BorderRadius.circular(
+              isMobile ? ZplayRadius.md : ZplayRadius.lg,
+            ),
           ),
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -282,27 +295,37 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                           Expanded(
                             child: Text(
                               isNarrow
-                                  ? l10nOf(context).uiFinalIptvPortalsModalPortalsPlaylists
-                                  : l10nOf(context).uiFinalIptvPortalsModalIptvPortalsPlaylists,
-                              style: (isNarrow ? ZplayType.subtitle : ZplayType.title).toStyle(color: tokens.textPrimary),
+                                  ? l10nOf(
+                                      context,
+                                    ).uiFinalIptvPortalsModalPortalsPlaylists
+                                  : l10nOf(
+                                      context,
+                                    ).uiFinalIptvPortalsModalIptvPortalsPlaylists,
+                              style:
+                                  (isNarrow
+                                          ? ZplayType.subtitle
+                                          : ZplayType.title)
+                                      .toStyle(color: tokens.textPrimary),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          IconButton(
+                          KiruIconButton(
                             icon: Icon(
                               Icons.tune_rounded,
                               color: tokens.textEmphasis,
                               size: 19,
                             ),
-                            tooltip: l10nOf(context).auxIptvPortalsModalPortalDisplaySettings,
+                            tooltip: l10nOf(
+                              context,
+                            ).auxIptvPortalsModalPortalDisplaySettings,
                             visualDensity: VisualDensity.compact,
                             padding: const EdgeInsets.all(6),
                             constraints: const BoxConstraints(),
                             onPressed: _openAppearanceSettings,
                           ),
                           const SizedBox(width: ZplaySpacing.s4),
-                          IconButton(
+                          KiruIconButton(
                             icon: Icon(
                               Icons.close_rounded,
                               color: tokens.textMuted,
@@ -317,37 +340,24 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                       ),
                     ),
 
-                    // A quiet two-label tab strip: the accent underline is the
-                    // only mark, and the labels carry the counts. No filled tab
-                    // boxes, and the hairline that used to sit under it is gone
-                    // — the gap below does the separating.
-                    TabBar(
-                      controller: _tabController,
-                      indicatorColor: tokens.accent,
-                      indicatorWeight: 2,
-                      labelColor: tokens.textPrimary,
-                      unselectedLabelColor: tokens.textMuted,
-                      labelStyle: (isNarrow ? ZplayType.caption : ZplayType.body).toStyle(),
-                      unselectedLabelStyle: (isNarrow ? ZplayType.caption : ZplayType.body).toStyle(),
-                      tabs: [
-                        Tab(
-                          text: isNarrow
-                              ? 'Xtream (${_ctrl.verified.length})'
-                              : 'Xtream Panels (${_ctrl.verified.length})',
-                        ),
-                        Tab(
-                          text: isNarrow
-                              ? 'M3U (${_ctrl.m3uPlaylists.length})'
-                              : 'M3U Playlists (${_ctrl.m3uPlaylists.length})',
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: ZplaySpacing.s8),
-
-                    // Tab Views
                     Expanded(
-                      child: TabBarView(
-                        controller: _tabController,
+                      child: KiruTabs(
+                        initialIndex:
+                            (widget.initialTab ??
+                                    IptvSettings.defaultPortalTab.value)
+                                .clamp(0, 1),
+                        labels: [
+                          Text(
+                            (isNarrow ? 'Xtream (' : 'Xtream Panels (') +
+                                _ctrl.verified.length.toString() +
+                                ')',
+                          ),
+                          Text(
+                            (isNarrow ? 'M3U (' : 'M3U Playlists (') +
+                                _ctrl.m3uPlaylists.length.toString() +
+                                ')',
+                          ),
+                        ],
                         children: [
                           _buildPortalsTab(isNarrow),
                           _buildM3uTab(isNarrow),
@@ -382,7 +392,7 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
             runSpacing: isMobile ? 6 : 8,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              ElevatedButton.icon(
+              KiruButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: tokens.accent,
                 ).merge(_toolbarButtonStyle(isMobile)),
@@ -390,7 +400,7 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                     ? SizedBox(
                         width: 14,
                         height: 14,
-                        child: CircularProgressIndicator(
+                        child: KiruLoader(
                           strokeWidth: 2,
                           color: tokens.textPrimary,
                         ),
@@ -400,24 +410,27 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                         size: 16,
                         color: tokens.textPrimary,
                       ),
-                label: Text(
+                child: Text(
                   _ctrl.isScraping
                       ? 'Finding…'
                       : (isMobile ? 'Generate' : 'Generate Portals'),
-                  style: (isMobile ? ZplayType.caption : ZplayType.label).toStyle(color: tokens.textPrimary),
+                  style: (isMobile ? ZplayType.caption : ZplayType.label)
+                      .toStyle(color: tokens.textPrimary),
                 ),
                 onPressed: _ctrl.isScraping ? null : _ctrl.scrape,
               ),
 
               // Source Selector Popup/Dropdown Menu
-              PopupMenuButton<CatalogSource>(
+              KiruPopupMenu<CatalogSource>(
                 tooltip: l10nOf(context).auxIptvPortalsModalChoosePortalSource,
                 initialValue: _ctrl.scrapeSource,
                 onSelected: (s) {
                   _ctrl.setScrapeSource(s);
                   setState(() {});
                 },
-                shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.mdAll),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: ZplayRadius.mdAll,
+                ),
                 color: tokens.surfaceOverlay,
                 child: Container(
                   padding: EdgeInsets.symmetric(
@@ -447,7 +460,8 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                         _ctrl.scrapeSource == CatalogSource.cloudVault
                             ? 'Cloud Vault'
                             : 'Reddit',
-                        style: (isMobile ? ZplayType.caption : ZplayType.label).toStyle(color: tokens.textPrimary),
+                        style: (isMobile ? ZplayType.caption : ZplayType.label)
+                            .toStyle(color: tokens.textPrimary),
                       ),
                       const SizedBox(width: ZplaySpacing.s2),
                       Icon(
@@ -478,8 +492,12 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                               Row(
                                 children: [
                                   Text(
-                                    l10nOf(context).auxIptvPortalsModalCloudVault,
-                                    style: ZplayType.label.toStyle(color: tokens.textPrimary),
+                                    l10nOf(
+                                      context,
+                                    ).auxIptvPortalsModalCloudVault,
+                                    style: ZplayType.label.toStyle(
+                                      color: tokens.textPrimary,
+                                    ),
                                   ),
                                   const SizedBox(width: 6),
                                   Container(
@@ -493,14 +511,20 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                                     ),
                                     child: Text(
                                       '9.6k+',
-                                      style: ZplayType.overline.toStyle(color: tokens.info),
+                                      style: ZplayType.overline.toStyle(
+                                        color: tokens.info,
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
                               Text(
-                                l10nOf(context).auxIptvPortalsModalHighSpeedCloudDatabaseWithLiveIptv,
-                                style: ZplayType.overline.toStyle(color: tokens.textEmphasis),
+                                l10nOf(
+                                  context,
+                                ).auxIptvPortalsModalHighSpeedCloudDatabaseWithLiveIptv,
+                                style: ZplayType.overline.toStyle(
+                                  color: tokens.textEmphasis,
+                                ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -527,12 +551,20 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                l10nOf(context).auxIptvPortalsModalRedditCommunities,
-                                style: ZplayType.label.toStyle(color: tokens.textPrimary),
+                                l10nOf(
+                                  context,
+                                ).auxIptvPortalsModalRedditCommunities,
+                                style: ZplayType.label.toStyle(
+                                  color: tokens.textPrimary,
+                                ),
                               ),
                               Text(
-                                l10nOf(context).auxIptvPortalsModalScrapesLiveSharedPastesFromSubreddits,
-                                style: ZplayType.overline.toStyle(color: tokens.textEmphasis),
+                                l10nOf(
+                                  context,
+                                ).auxIptvPortalsModalScrapesLiveSharedPastesFromSubreddits,
+                                style: ZplayType.overline.toStyle(
+                                  color: tokens.textEmphasis,
+                                ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -546,14 +578,16 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
               ),
 
               // Borderless: a secondary action is its label, not a box round it.
-              TextButton.icon(
+              KiruButton(
+                kind: KiruButtonKind.ghost,
                 style: TextButton.styleFrom(
                   foregroundColor: tokens.textPrimary,
                 ).merge(_toolbarButtonStyle(isMobile)),
                 icon: const Icon(Icons.add_rounded, size: 16),
-                label: Text(
+                child: Text(
                   isMobile ? l10nOf(context).mediaLabelAdd : 'Add Portal',
-                  style: (isMobile ? ZplayType.caption : ZplayType.label).toStyle(),
+                  style: (isMobile ? ZplayType.caption : ZplayType.label)
+                      .toStyle(),
                 ),
                 onPressed: () => setState(() {
                   _showAddForm = !_showAddForm;
@@ -561,29 +595,34 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
               ),
 
               if (_ctrl.verified.isNotEmpty)
-                TextButton.icon(
-                  style: TextButton.styleFrom(
-                    foregroundColor: _isPortalsEditMode
-                        ? tokens.info
-                        : tokens.textPrimary,
-                  ).merge(
-                    _toolbarButtonStyle(
-                      isMobile,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: isMobile ? 9 : 12,
-                        vertical: isMobile ? 8 : 10,
+                KiruButton(
+                  kind: KiruButtonKind.ghost,
+                  style:
+                      TextButton.styleFrom(
+                        foregroundColor: _isPortalsEditMode
+                            ? tokens.info
+                            : tokens.textPrimary,
+                      ).merge(
+                        _toolbarButtonStyle(
+                          isMobile,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isMobile ? 9 : 12,
+                            vertical: isMobile ? 8 : 10,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
                   icon: Icon(
                     _isPortalsEditMode
                         ? Icons.edit_off_rounded
                         : Icons.edit_rounded,
                     size: 15,
                   ),
-                  label: Text(
-                    _isPortalsEditMode ? l10nOf(context).uiSubSyncBarDone : 'Manage',
-                    style: (isMobile ? ZplayType.caption : ZplayType.label).toStyle(),
+                  child: Text(
+                    _isPortalsEditMode
+                        ? l10nOf(context).uiSubSyncBarDone
+                        : 'Manage',
+                    style: (isMobile ? ZplayType.caption : ZplayType.label)
+                        .toStyle(),
                   ),
                   onPressed: () {
                     setState(() {
@@ -615,19 +654,21 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      TextButton.icon(
-                        style: TextButton.styleFrom(
-                          foregroundColor: tokens.textPrimary,
-                        ).merge(
-                          _toolbarButtonStyle(
-                            isMobile,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
+                      KiruButton(
+                        kind: KiruButtonKind.ghost,
+                        style:
+                            TextButton.styleFrom(
+                              foregroundColor: tokens.textPrimary,
+                            ).merge(
+                              _toolbarButtonStyle(
+                                isMobile,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                shape: const StadiumBorder(),
+                              ),
                             ),
-                            shape: const StadiumBorder(),
-                          ),
-                        ),
                         icon: Icon(
                           allSelected
                               ? Icons.deselect_rounded
@@ -635,8 +676,10 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                           size: 17,
                           color: tokens.info,
                         ),
-                        label: Text(
-                          allSelected ? l10nOf(context).finalIptvChannelSheetDeselectAll : 'Select All',
+                        child: Text(
+                          allSelected
+                              ? l10nOf(context).finalIptvChannelSheetDeselectAll
+                              : 'Select All',
                           style: ZplayType.label.toStyle(),
                         ),
                         onPressed: () {
@@ -655,7 +698,9 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                       const SizedBox(width: ZplaySpacing.s4),
                       Text(
                         '(${_selectedPortalKeys.length}/${currentList.length})',
-                        style: ZplayType.caption.toStyle(color: tokens.textEmphasis),
+                        style: ZplayType.caption.toStyle(
+                          color: tokens.textEmphasis,
+                        ),
                       ),
                     ],
                   ),
@@ -665,23 +710,26 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       // Delete Selected
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: tokens.danger,
-                          foregroundColor: tokens.textPrimary,
-                          elevation: 0,
-                        ).merge(
-                          _toolbarButtonStyle(
-                            isMobile,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 6,
+                      KiruButton(
+                        style:
+                            ElevatedButton.styleFrom(
+                              backgroundColor: tokens.danger,
+                              foregroundColor: tokens.textPrimary,
+                              elevation: 0,
+                            ).merge(
+                              _toolbarButtonStyle(
+                                isMobile,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 6,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
                         icon: const Icon(Icons.delete_rounded, size: 14),
-                        label: Text(
-                          l10nOf(context).dynamicIptvPortalsModalDelete((_selectedPortalKeys.length).toString()),
+                        child: Text(
+                          l10nOf(context).dynamicIptvPortalsModalDelete(
+                            (_selectedPortalKeys.length).toString(),
+                          ),
                           style: ZplayType.caption.toStyle(),
                         ),
                         onPressed: _selectedPortalKeys.isEmpty
@@ -689,19 +737,21 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                             : _deleteSelectedPortals,
                       ),
                       // Delete All
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          foregroundColor: tokens.danger,
-                        ).merge(
-                          _toolbarButtonStyle(
-                            isMobile,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 6,
+                      KiruButton(
+                        kind: KiruButtonKind.ghost,
+                        style:
+                            TextButton.styleFrom(
+                              foregroundColor: tokens.danger,
+                            ).merge(
+                              _toolbarButtonStyle(
+                                isMobile,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 6,
+                                ),
+                                shape: const StadiumBorder(),
+                              ),
                             ),
-                            shape: const StadiumBorder(),
-                          ),
-                        ),
                         onPressed: _deleteAllPortals,
                         child: Text(
                           l10nOf(context).auxIptvPortalsModalDeleteAll,
@@ -735,10 +785,12 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                 children: [
                   Text(
                     l10nOf(context).auxIptvPortalsModalAddXtreamCodesPortal,
-                    style: ZplayType.body.copyWith(weight: FontWeight.w800).toStyle(color: tokens.textPrimary),
+                    style: ZplayType.body
+                        .copyWith(weight: FontWeight.w800)
+                        .toStyle(color: tokens.textPrimary),
                   ),
                   const SizedBox(height: 10),
-                  TextField(
+                  KiruFormField(
                     controller: _urlCtrl,
                     style: ZplayType.label.toStyle(color: tokens.textPrimary),
                     // Legible fill, no decorative box; the underline only
@@ -758,9 +810,11 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                   Row(
                     children: [
                       Expanded(
-                        child: TextField(
+                        child: KiruFormField(
                           controller: _userCtrl,
-                          style: ZplayType.label.toStyle(color: tokens.textPrimary),
+                          style: ZplayType.label.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                           decoration: InputDecoration(
                             labelText: 'Username',
                             isDense: true,
@@ -775,10 +829,12 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                       ),
                       const SizedBox(width: ZplaySpacing.s8),
                       Expanded(
-                        child: TextField(
+                        child: KiruFormField(
                           controller: _passCtrl,
                           obscureText: _obscurePassword,
-                          style: ZplayType.label.toStyle(color: tokens.textPrimary),
+                          style: ZplayType.label.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                           decoration: InputDecoration(
                             labelText: 'Password',
                             isDense: true,
@@ -788,7 +844,7 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                             focusedBorder: UnderlineInputBorder(
                               borderSide: tokens.hairline,
                             ),
-                            suffixIcon: IconButton(
+                            suffixIcon: KiruIconButton(
                               icon: Icon(
                                 _obscurePassword
                                     ? Icons.visibility_off_rounded
@@ -798,7 +854,11 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                               ),
                               padding: const EdgeInsets.all(4),
                               constraints: const BoxConstraints(),
-                              tooltip: _obscurePassword ? l10nOf(context).finalIptvPortalsModalShowPassword : 'Hide Password',
+                              tooltip: _obscurePassword
+                                  ? l10nOf(
+                                      context,
+                                    ).finalIptvPortalsModalShowPassword
+                                  : 'Hide Password',
                               onPressed: () {
                                 setState(() {
                                   _obscurePassword = !_obscurePassword;
@@ -820,7 +880,7 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                   const SizedBox(height: 10),
                   Align(
                     alignment: Alignment.centerRight,
-                    child: ElevatedButton(
+                    child: KiruButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: tokens.accent,
                       ),
@@ -829,7 +889,7 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                           ? SizedBox(
                               width: 14,
                               height: 14,
-                              child: CircularProgressIndicator(
+                              child: KiruLoader(
                                 strokeWidth: 2,
                                 color: tokens.textPrimary,
                               ),
@@ -910,7 +970,8 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
 
               return ListView.separated(
                 itemCount: portals.length,
-                separatorBuilder: (_, _) => const SizedBox(height: ZplaySpacing.s8),
+                separatorBuilder: (_, _) =>
+                    const SizedBox(height: ZplaySpacing.s8),
                 itemBuilder: (context, index) {
                   final p = portals[index];
                   final isFav = _ctrl.isFavoritePortal(p.key);
@@ -967,10 +1028,10 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                                   alpha: ZplayOpacity.overlayHover,
                                 )
                               : (state.highlighted
-                                  ? tokens.surfaceRaised.withValues(
-                                      alpha: ZplayOpacity.overlayHover,
-                                    )
-                                  : Colors.transparent),
+                                    ? tokens.surfaceRaised.withValues(
+                                        alpha: ZplayOpacity.overlayHover,
+                                      )
+                                    : Colors.transparent),
                           borderRadius: ZplayRadius.smAll,
                         ),
                         child: _buildPortalCardContent(
@@ -1009,7 +1070,7 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
     required VoidCallback onPressed,
     double size = 17,
   }) {
-    return IconButton(
+    return KiruIconButton(
       icon: Icon(icon, color: color, size: size),
       tooltip: tooltip,
       visualDensity: VisualDensity.compact,
@@ -1074,9 +1135,13 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
           final text =
               '${p.portal.url}:${p.portal.username}:${p.portal.password}';
           Clipboard.setData(ClipboardData(text: text));
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10nOf(context).dynamicIptvPortalsModalCopied((text).toString())),
+          KiruToastMessenger.of(context).showSnackBar(
+            KiruToast(
+              content: Text(
+                l10nOf(
+                  context,
+                ).dynamicIptvPortalsModalCopied((text).toString()),
+              ),
               duration: const Duration(seconds: 2),
               backgroundColor: context.tokens.surfaceOverlay,
             ),
@@ -1088,7 +1153,9 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
     Widget buildFavBtn() {
       return _cardIconButton(
         icon: isFav ? Icons.star_rounded : Icons.star_outline_rounded,
-        tooltip: isFav ? l10nOf(context).finalMultinutzChannelSheetRemoveFavorite : 'Add to Favorites',
+        tooltip: isFav
+            ? l10nOf(context).finalMultinutzChannelSheetRemoveFavorite
+            : 'Add to Favorites',
         color: isFav ? tokens.warning : tokens.textMuted,
         size: 19,
         onPressed: () => _ctrl.toggleFavoritePortal(p.key),
@@ -1143,7 +1210,9 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                 borderRadius: ZplayRadius.xsAll,
               ),
               child: Text(
-                l10nOf(context).dynamicIptvPortalsModalExpires((p.expiry).toString()),
+                l10nOf(
+                  context,
+                ).dynamicIptvPortalsModalExpires((p.expiry).toString()),
                 style: ZplayType.overline.toStyle(color: tokens.accent),
               ),
             ),
@@ -1155,7 +1224,10 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                 borderRadius: ZplayRadius.xsAll,
               ),
               child: Text(
-                l10nOf(context).dynamicIptvPortalsModalConnections((p.activeConnections).toString(), (p.maxConnections).toString()),
+                l10nOf(context).dynamicIptvPortalsModalConnections(
+                  (p.activeConnections).toString(),
+                  (p.maxConnections).toString(),
+                ),
                 style: ZplayType.overline.toStyle(color: tokens.textEmphasis),
               ),
             ),
@@ -1303,11 +1375,7 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
             buildDeleteBtn(),
           ],
           const SizedBox(width: ZplaySpacing.s2),
-          Icon(
-            Icons.chevron_right_rounded,
-            color: tokens.textMuted,
-            size: 18,
-          ),
+          Icon(Icons.chevron_right_rounded, color: tokens.textMuted, size: 18),
         ],
       );
     }
@@ -1350,10 +1418,10 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
             color: isSelected
                 ? color.withValues(alpha: ZplayOpacity.overlayHover)
                 : (state.highlighted
-                    ? tokens.surfaceRaised.withValues(
-                        alpha: ZplayOpacity.overlayHover,
-                      )
-                    : Colors.transparent),
+                      ? tokens.surfaceRaised.withValues(
+                          alpha: ZplayOpacity.overlayHover,
+                        )
+                      : Colors.transparent),
             borderRadius: ZplayRadius.smAll,
           ),
           child: Row(
@@ -1391,7 +1459,7 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
         children: [
           Row(
             children: [
-              ElevatedButton.icon(
+              KiruButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: tokens.accent,
                 ).merge(_toolbarButtonStyle(isMobile)),
@@ -1400,38 +1468,46 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                   size: 17,
                   color: tokens.textPrimary,
                 ),
-                label: Text(
-                  isMobile ? l10nOf(context).finalIptvPortalsModalAddM3u : 'Add M3U URL',
-                  style: (isMobile ? ZplayType.caption : ZplayType.label).toStyle(color: tokens.textPrimary),
+                child: Text(
+                  isMobile
+                      ? l10nOf(context).finalIptvPortalsModalAddM3u
+                      : 'Add M3U URL',
+                  style: (isMobile ? ZplayType.caption : ZplayType.label)
+                      .toStyle(color: tokens.textPrimary),
                 ),
                 onPressed: () => setState(() => _showM3uForm = !_showM3uForm),
               ),
 
               if (_ctrl.m3uPlaylists.isNotEmpty) ...[
                 const SizedBox(width: ZplaySpacing.s8),
-                TextButton.icon(
-                  style: TextButton.styleFrom(
-                    foregroundColor: _isM3uEditMode
-                        ? tokens.info
-                        : tokens.textPrimary,
-                  ).merge(
-                    _toolbarButtonStyle(
-                      isMobile,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: isMobile ? 10 : 12,
-                        vertical: isMobile ? 8 : 10,
+                KiruButton(
+                  kind: KiruButtonKind.ghost,
+                  style:
+                      TextButton.styleFrom(
+                        foregroundColor: _isM3uEditMode
+                            ? tokens.info
+                            : tokens.textPrimary,
+                      ).merge(
+                        _toolbarButtonStyle(
+                          isMobile,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isMobile ? 10 : 12,
+                            vertical: isMobile ? 8 : 10,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
                   icon: Icon(
                     _isM3uEditMode
                         ? Icons.edit_off_rounded
                         : Icons.edit_rounded,
                     size: 15,
                   ),
-                  label: Text(
-                    _isM3uEditMode ? l10nOf(context).uiSubSyncBarDone : 'Manage',
-                    style: (isMobile ? ZplayType.caption : ZplayType.label).toStyle(),
+                  child: Text(
+                    _isM3uEditMode
+                        ? l10nOf(context).uiSubSyncBarDone
+                        : 'Manage',
+                    style: (isMobile ? ZplayType.caption : ZplayType.label)
+                        .toStyle(),
                   ),
                   onPressed: () {
                     setState(() {
@@ -1462,19 +1538,21 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      TextButton.icon(
-                        style: TextButton.styleFrom(
-                          foregroundColor: tokens.textPrimary,
-                        ).merge(
-                          _toolbarButtonStyle(
-                            isMobile,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
+                      KiruButton(
+                        kind: KiruButtonKind.ghost,
+                        style:
+                            TextButton.styleFrom(
+                              foregroundColor: tokens.textPrimary,
+                            ).merge(
+                              _toolbarButtonStyle(
+                                isMobile,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                shape: const StadiumBorder(),
+                              ),
                             ),
-                            shape: const StadiumBorder(),
-                          ),
-                        ),
                         icon: Icon(
                           allSelected
                               ? Icons.deselect_rounded
@@ -1482,8 +1560,10 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                           size: 17,
                           color: tokens.info,
                         ),
-                        label: Text(
-                          allSelected ? l10nOf(context).finalIptvChannelSheetDeselectAll : 'Select All',
+                        child: Text(
+                          allSelected
+                              ? l10nOf(context).finalIptvChannelSheetDeselectAll
+                              : 'Select All',
                           style: ZplayType.label.toStyle(),
                         ),
                         onPressed: () {
@@ -1502,7 +1582,9 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                       const SizedBox(width: ZplaySpacing.s4),
                       Text(
                         '(${_selectedM3uIds.length}/${_ctrl.m3uPlaylists.length})',
-                        style: ZplayType.caption.toStyle(color: tokens.textEmphasis),
+                        style: ZplayType.caption.toStyle(
+                          color: tokens.textEmphasis,
+                        ),
                       ),
                     ],
                   ),
@@ -1512,23 +1594,26 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       // Delete Selected
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: tokens.danger,
-                          foregroundColor: tokens.textPrimary,
-                          elevation: 0,
-                        ).merge(
-                          _toolbarButtonStyle(
-                            isMobile,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 6,
+                      KiruButton(
+                        style:
+                            ElevatedButton.styleFrom(
+                              backgroundColor: tokens.danger,
+                              foregroundColor: tokens.textPrimary,
+                              elevation: 0,
+                            ).merge(
+                              _toolbarButtonStyle(
+                                isMobile,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 6,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
                         icon: const Icon(Icons.delete_rounded, size: 14),
-                        label: Text(
-                          l10nOf(context).dynamicIptvPortalsModalDelete((_selectedM3uIds.length).toString()),
+                        child: Text(
+                          l10nOf(context).dynamicIptvPortalsModalDelete(
+                            (_selectedM3uIds.length).toString(),
+                          ),
                           style: ZplayType.caption.toStyle(),
                         ),
                         onPressed: _selectedM3uIds.isEmpty
@@ -1536,19 +1621,21 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                             : _deleteSelectedM3u,
                       ),
                       // Delete All
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          foregroundColor: tokens.danger,
-                        ).merge(
-                          _toolbarButtonStyle(
-                            isMobile,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 6,
+                      KiruButton(
+                        kind: KiruButtonKind.ghost,
+                        style:
+                            TextButton.styleFrom(
+                              foregroundColor: tokens.danger,
+                            ).merge(
+                              _toolbarButtonStyle(
+                                isMobile,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 6,
+                                ),
+                                shape: const StadiumBorder(),
+                              ),
                             ),
-                            shape: const StadiumBorder(),
-                          ),
-                        ),
                         onPressed: _deleteAllM3u,
                         child: Text(
                           l10nOf(context).auxIptvPortalsModalDeleteAll,
@@ -1571,11 +1658,15 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    l10nOf(context).auxIptvPortalsModalAddM3uPlaylistSubscription,
-                    style: ZplayType.body.copyWith(weight: FontWeight.w800).toStyle(color: tokens.textPrimary),
+                    l10nOf(
+                      context,
+                    ).auxIptvPortalsModalAddM3uPlaylistSubscription,
+                    style: ZplayType.body
+                        .copyWith(weight: FontWeight.w800)
+                        .toStyle(color: tokens.textPrimary),
                   ),
                   const SizedBox(height: 10),
-                  TextField(
+                  KiruFormField(
                     controller: _m3uNameCtrl,
                     style: ZplayType.label.toStyle(color: tokens.textPrimary),
                     decoration: InputDecoration(
@@ -1590,7 +1681,7 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                     ),
                   ),
                   const SizedBox(height: ZplaySpacing.s8),
-                  TextField(
+                  KiruFormField(
                     controller: _m3uUrlCtrl,
                     style: ZplayType.label.toStyle(color: tokens.textPrimary),
                     decoration: InputDecoration(
@@ -1607,7 +1698,7 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                   const SizedBox(height: 10),
                   Align(
                     alignment: Alignment.centerRight,
-                    child: ElevatedButton(
+                    child: KiruButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: tokens.accent,
                       ),
@@ -1616,7 +1707,7 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                           ? SizedBox(
                               width: 14,
                               height: 14,
-                              child: CircularProgressIndicator(
+                              child: KiruLoader(
                                 strokeWidth: 2,
                                 color: tokens.textPrimary,
                               ),
@@ -1641,7 +1732,8 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                   )
                 : ListView.separated(
                     itemCount: _ctrl.m3uPlaylists.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: ZplaySpacing.s8),
+                    separatorBuilder: (_, _) =>
+                        const SizedBox(height: ZplaySpacing.s8),
                     itemBuilder: (context, index) {
                       final pl = _ctrl.m3uPlaylists[index];
                       final isSelected = _selectedM3uIds.contains(pl.id);
@@ -1685,10 +1777,10 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                                       alpha: ZplayOpacity.overlayHover,
                                     )
                                   : (state.highlighted
-                                      ? tokens.surfaceRaised.withValues(
-                                          alpha: ZplayOpacity.overlayHover,
-                                        )
-                                      : Colors.transparent),
+                                        ? tokens.surfaceRaised.withValues(
+                                            alpha: ZplayOpacity.overlayHover,
+                                          )
+                                        : Colors.transparent),
                               borderRadius: ZplayRadius.smAll,
                             ),
                             child: _buildM3uCardContent(
@@ -1724,9 +1816,13 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
           final text = pl.sourceUrl ?? '';
           if (text.isNotEmpty) {
             Clipboard.setData(ClipboardData(text: text));
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10nOf(context).dynamicIptvPortalsModalCopied((text).toString())),
+            KiruToastMessenger.of(context).showSnackBar(
+              KiruToast(
+                content: Text(
+                  l10nOf(
+                    context,
+                  ).dynamicIptvPortalsModalCopied((text).toString()),
+                ),
                 duration: const Duration(seconds: 2),
                 backgroundColor: context.tokens.surfaceOverlay,
               ),
@@ -1760,11 +1856,7 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
       }
       return Padding(
         padding: const EdgeInsets.only(right: 10),
-        child: Icon(
-          Icons.queue_music_rounded,
-          color: tokens.accent,
-          size: 19,
-        ),
+        child: Icon(Icons.queue_music_rounded, color: tokens.accent, size: 19),
       );
     }
 
@@ -1806,7 +1898,9 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
                   borderRadius: ZplayRadius.xsAll,
                 ),
                 child: Text(
-                  l10nOf(context).dynamicIptvPortalsModalCh((pl.channels.length).toString()),
+                  l10nOf(
+                    context,
+                  ).dynamicIptvPortalsModalCh((pl.channels.length).toString()),
                   style: ZplayType.overline.toStyle(color: tokens.accent),
                 ),
               ),
@@ -1864,11 +1958,7 @@ class _IptvPortalsModalState extends State<IptvPortalsModal>
             buildM3uDeleteBtn(),
           ],
           const SizedBox(width: ZplaySpacing.s2),
-          Icon(
-            Icons.chevron_right_rounded,
-            color: tokens.textMuted,
-            size: 18,
-          ),
+          Icon(Icons.chevron_right_rounded, color: tokens.textMuted, size: 18),
         ],
       );
     }

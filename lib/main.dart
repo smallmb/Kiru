@@ -1,3 +1,4 @@
+import 'widgets/common/desktop_caption_area.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -13,6 +14,8 @@ import './services/settings/locale_settings.dart';
 import './services/addon/addon_manager.dart';
 import './services/cloudstream/cloudstream_manager.dart';
 import './services/theme/app_theme_service.dart';
+import './services/theme/forui_theme.dart';
+import './services/theme/fonts/font_registry.dart';
 import './services/updater/app_updater_service.dart';
 import './services/books/continue_reading_service.dart';
 import './services/books/reader_settings.dart';
@@ -40,6 +43,7 @@ import './services/player/player_settings.dart';
 import './services/playback/music_now_playing_bridge.dart';
 import './services/collections/collections_service.dart';
 import './services/content/content_settings.dart';
+import './services/content/navigation_settings.dart';
 import './services/download/download_service.dart';
 import './services/config/env_service.dart';
 import './services/config/service_credentials.dart';
@@ -94,6 +98,7 @@ void main() async {
   await LocaleSettings.initialize();
   await Future.wait([
     AppThemeService.initialize(),
+    FontRegistry.initialize(),
     AnimeChineseTitles.initialize(),
     AnimeSourceSettings.initialize(),
     // The first frame mounts the shell, which mounts HomePage, and HomePage
@@ -104,6 +109,7 @@ void main() async {
     CustomBackgroundService.initialize(),
     GlassSettings.initialize(),
     ContentSettings.initialize(),
+    NavigationSettings.initialize(),
     // The Home rails' visibility switch is read on the first frame.
     CollectionsService.initialize(),
     RendererBackendSettings.initialize(),
@@ -261,29 +267,35 @@ class _ZPlayAppState extends State<ZPlayApp> with WidgetsBindingObserver {
         return ValueListenableBuilder<AppThemePalette>(
           valueListenable: AppThemeService.currentPalette,
           builder: (context, palette, _) {
-            return MaterialApp(
-              navigatorKey: navigatorKey,
-              navigatorObservers: [BreadcrumbObserver()],
-              title: 'Kiru',
-              debugShowCheckedModeBanner: false,
-              locale: locale,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              theme: AppThemeService.createThemeData(palette),
-              scrollBehavior: const MaterialScrollBehavior().copyWith(
-                overscroll: false,
+            return ValueListenableBuilder<int>(
+              valueListenable: FontRegistry.revision,
+              builder: (context, _, child) => MaterialApp(
+                navigatorKey: navigatorKey,
+                navigatorObservers: [BreadcrumbObserver()],
+                title: 'Kiru',
+                debugShowCheckedModeBanner: false,
+                locale: locale,
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                supportedLocales: AppLocalizations.supportedLocales,
+                theme: AppThemeService.createThemeData(palette),
+                scrollBehavior: const MaterialScrollBehavior().copyWith(
+                  overscroll: false,
+                ),
+                home: const AppShell(),
+                // Android's TV guidance is explicit that a television lays out
+                // against a 960x540 dp canvas at density 320, and the platform
+                // already hands the app exactly that. Nothing is overridden here:
+                // `MediaQuery` and the render viewport agree, so a page sized from
+                // `MediaQuery` fits the screen it is drawn into.
+                builder: (context, child) {
+                  final app = KiruForuiTheme.wrap(
+                    context,
+                    DesktopCaptionArea(child: child ?? const SizedBox.shrink()),
+                  );
+                  if (!kDebugMode) return app;
+                  return Stack(children: [app, const PerfHud()]);
+                },
               ),
-              home: const AppShell(),
-              // Android's TV guidance is explicit that a television lays out
-              // against a 960x540 dp canvas at density 320, and the platform
-              // already hands the app exactly that. Nothing is overridden here:
-              // `MediaQuery` and the render viewport agree, so a page sized from
-              // `MediaQuery` fits the screen it is drawn into.
-              builder: (context, child) {
-                final app = child ?? const SizedBox.shrink();
-                if (!kDebugMode) return app;
-                return Stack(children: [app, const PerfHud()]);
-              },
             );
           },
         );

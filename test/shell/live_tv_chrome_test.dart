@@ -1,6 +1,10 @@
 /// Guards that Live TV keeps the shared shell chrome.
 library;
 
+import 'package:zplay/services/content/navigation_settings.dart';
+
+import 'package:zplay/widgets/ui/kiru_controls.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,6 +28,10 @@ AppShellController _shell(WidgetTester tester) =>
 
 Future<void> _openLiveTv(WidgetTester tester) async {
   SharedPreferences.setMockInitialValues(<String, Object>{});
+  NavigationSettings.enabled.value = {...NavigationSettings.defaults, 'liveTv'};
+  addTearDown(
+    () => NavigationSettings.enabled.value = NavigationSettings.defaults,
+  );
   DeviceProfile.debugSetTelevision(value: true);
   tester.view.devicePixelRatio = 2.0;
   tester.view.physicalSize = const Size(960, 540) * 2.0;
@@ -65,7 +73,11 @@ void main() {
     expect(
       find.descendant(
         of: find.byType(IptvPage),
-        matching: find.byTooltip('Back'),
+        matching: find.byWidgetPredicate(
+          (w) =>
+              (w is KiruTooltip && w.message == 'Back') ||
+              (w is Tooltip && w.message == 'Back'),
+        ),
       ),
       findsNothing,
     );
@@ -86,8 +98,11 @@ void main() {
       LogicalKeyboardKey.arrowDown,
       step: 'intoPage',
     );
-    expect(intoPage.contains('focus=null'), isFalse,
-        reason: 'down must leave the menu ($intoPage)');
+    expect(
+      intoPage.contains('focus=null'),
+      isFalse,
+      reason: 'down must leave the menu ($intoPage)',
+    );
 
     var inMenu = false;
     String last = intoPage;
@@ -110,7 +125,8 @@ void main() {
     expect(
       inMenu,
       isTrue,
-      reason: 'UP from Live TV content must reach the shared menu, landed $last',
+      reason:
+          'UP from Live TV content must reach the shared menu, landed $last',
     );
   });
 }

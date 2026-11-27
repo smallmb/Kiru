@@ -17,7 +17,8 @@ library;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../pages/browse/browse_page.dart' show BrowseVertical;
+import '../pages/browse/browse_page.dart'
+    show BrowseVertical, resolveBrowseVertical;
 import '../services/layout/form_factor.dart';
 import 'app_shell.dart';
 
@@ -75,6 +76,15 @@ class AppShellController {
   }) : _current = current,
        _onSelect = onSelect,
        _readFormFactor = formFactor;
+
+  /// Search submitted by the desktop header; consumed by the search page.
+  final ValueNotifier<String?> headerSearch = ValueNotifier<String?>(null);
+
+  void searchFromHeader(String query) {
+    if (!go(ShellSlot.search)) return;
+    final value = query.trim();
+    if (value.isNotEmpty) headerSearch.value = value;
+  }
 
   final ValueListenable<ShellSlot> _current;
   final bool Function(ShellSlot slot) _onSelect;
@@ -166,13 +176,14 @@ class AppShellController {
   /// the value equal, and a plain set would stay silent while the slot switch
   /// returns early too - so the tap would do nothing at all.
   void goBrowseVertical(BrowseVertical vertical) {
-    _browseVertical.request(vertical);
+    _browseVertical.request(resolveBrowseVertical(vertical));
     _onSelect(ShellSlot.browse);
   }
 
   /// Keeps the shared desktop navigation in sync with a local Browse tab.
   void reportBrowseVertical(BrowseVertical vertical) {
-    if (_browseVertical.value != vertical) _browseVertical.request(vertical);
+    final resolved = resolveBrowseVertical(vertical);
+    if (_browseVertical.value != resolved) _browseVertical.request(resolved);
   }
 
   /// A page that wants the next back press for itself, while it is up.
@@ -241,6 +252,7 @@ class AppShellController {
   /// still be listening by the time this runs.
   void dispose() {
     _browseVertical.dispose();
+    headerSearch.dispose();
   }
 }
 

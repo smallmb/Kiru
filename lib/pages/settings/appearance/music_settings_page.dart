@@ -1,7 +1,9 @@
+import '../../../widgets/ui/kiru_tappable.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
+import '../../../widgets/ui/kiru_controls.dart';
 import '../../../services/theme/app_theme_service.dart';
 import '../../../services/theme/design_tokens.dart';
 import '../../../services/home/home_page_settings.dart';
@@ -41,31 +43,41 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
           const SizedBox(height: 28),
 
           // 2. Visual Theme Palette
-          _buildSectionHeader(l10nOf(context).finalMusicSettingsPageVisualThemePalette),
+          _buildSectionHeader(
+            l10nOf(context).finalMusicSettingsPageVisualThemePalette,
+          ),
           const SizedBox(height: 12),
           _buildThemesGrid(),
           const SizedBox(height: 28),
 
           // 3. Ambient Moving Background Lights
-          _buildSectionHeader(l10nOf(context).finalMusicSettingsPageAmbientAtmosphereGlow),
+          _buildSectionHeader(
+            l10nOf(context).finalMusicSettingsPageAmbientAtmosphereGlow,
+          ),
           const SizedBox(height: 12),
           _buildAmbientLightsCard(palette),
           const SizedBox(height: 28),
 
           // 4. Discovery & Layout Settings
-          _buildSectionHeader(l10nOf(context).finalMusicSettingsPageDiscoveryCatalogConfiguration),
+          _buildSectionHeader(
+            l10nOf(context).finalMusicSettingsPageDiscoveryCatalogConfiguration,
+          ),
           const SizedBox(height: 12),
           _buildDiscoveryConfigCard(palette),
           const SizedBox(height: 28),
 
           // 5. Fullscreen Player Presets
-          _buildSectionHeader(l10nOf(context).finalMusicSettingsPageFullscreenPlayerPresets),
+          _buildSectionHeader(
+            l10nOf(context).finalMusicSettingsPageFullscreenPlayerPresets,
+          ),
           const SizedBox(height: 12),
           _buildFullscreenPlayerPresetSelector(palette),
           const SizedBox(height: 28),
 
           // 6. Custom Player Quick Customizer
-          _buildSectionHeader(l10nOf(context).finalMusicSettingsPageCustomPlayerEngineDesigner),
+          _buildSectionHeader(
+            l10nOf(context).finalMusicSettingsPageCustomPlayerEngineDesigner,
+          ),
           const SizedBox(height: 12),
           _buildCustomPlayerStudioCard(palette),
           const SizedBox(height: 36),
@@ -107,14 +119,17 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                 final theme = AppThemeService.palettes[index];
                 final isSelected = theme.name == currentPalette.name;
 
-                return InkWell(
+                return KiruTappable(
                   onTap: () {
                     AppThemeService.setPalette(theme);
                     setState(() {});
                   },
                   borderRadius: ZplayRadius.mdAll,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
                     decoration: BoxDecoration(
                       borderRadius: ZplayRadius.mdAll,
                       border: Border.all(
@@ -138,7 +153,11 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                             ),
                           ),
                           child: isSelected
-                              ? Icon(Icons.check_rounded, color: tokens.textPrimary, size: 15)
+                              ? Icon(
+                                  Icons.check_rounded,
+                                  color: tokens.textPrimary,
+                                  size: 15,
+                                )
                               : null,
                         ),
                         const SizedBox(width: 10),
@@ -175,24 +194,29 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
           ValueListenableBuilder<bool>(
             valueListenable: MusicSettings.enableAmbientLights,
             builder: (context, enabled, _) {
-              return SwitchListTile.adaptive(
+              return KiruSwitchRow(
                 contentPadding: EdgeInsets.zero,
                 title: Text(
-                  l10nOf(context).auxMusicSettingsPageMovingBackgroundAmbientLighting,
+                  l10nOf(
+                    context,
+                  ).auxMusicSettingsPageMovingBackgroundAmbientLighting,
                   style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                 ),
                 subtitle: Text(
-                  l10nOf(context).auxMusicSettingsPageDynamicMovingGlowingOrbsReactingWithYour,
-                  style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
+                  l10nOf(
+                    context,
+                  ).auxMusicSettingsPageDynamicMovingGlowingOrbsReactingWithYour,
+                  style: ZplayType.bodySmall.toStyle(
+                    color: tokens.textSecondary,
+                  ),
                 ),
                 value: enabled,
-                activeColor: palette.primaryColor,
                 onChanged: (val) => MusicSettings.setEnableAmbientLights(val),
               );
             },
           ),
           const SizedBox(height: 12),
-          Divider(color: tokens.borderDefault),
+          KiruDivider(height: 16, color: tokens.borderDefault),
           const SizedBox(height: 12),
 
           Text(
@@ -210,7 +234,10 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                 },
                 options: [
                   for (final p in AmbientLightPattern.values)
-                    SegmentedTabOption(value: p, label: configLabel(context, p.label)),
+                    SegmentedTabOption(
+                      value: p,
+                      label: configLabel(context, p.label),
+                    ),
                 ],
               );
             },
@@ -226,8 +253,20 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(l10nOf(context).auxAudiobookSettingsPageGlowStrengthOpacity, style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
-                      Text('${(intensity * 100).round()}%', style: ZplayType.labelNumeric.toStyle(color: palette.primaryColor)),
+                      Text(
+                        l10nOf(
+                          context,
+                        ).auxAudiobookSettingsPageGlowStrengthOpacity,
+                        style: ZplayType.label.toStyle(
+                          color: tokens.textEmphasis,
+                        ),
+                      ),
+                      Text(
+                        '${(intensity * 100).round()}%',
+                        style: ZplayType.labelNumeric.toStyle(
+                          color: palette.primaryColor,
+                        ),
+                      ),
                     ],
                   ),
                   SliderTheme(
@@ -238,11 +277,12 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                       ),
                       thumbColor: tokens.textPrimary,
                     ),
-                    child: Slider(
+                    child: KiruSlider(
                       value: intensity,
                       min: 0.05,
                       max: 0.6,
-                      onChanged: (v) => MusicSettings.setAmbientLightIntensity(v),
+                      onChanged: (v) =>
+                          MusicSettings.setAmbientLightIntensity(v),
                     ),
                   ),
                 ],
@@ -264,33 +304,56 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
           ValueListenableBuilder<bool>(
             valueListenable: MusicSettings.enableSpotlight,
             builder: (context, enabled, _) {
-              return SwitchListTile.adaptive(
+              return KiruSwitchRow(
                 contentPadding: EdgeInsets.zero,
-                title: Text(l10nOf(context).auxMusicSettingsPageShowHeroSpotlightShowcase, style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
-                subtitle: Text(l10nOf(context).auxMusicSettingsPageFeaturedBestsellingAlbumTrackShowcaseAtThe, style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
+                title: Text(
+                  l10nOf(context).auxMusicSettingsPageShowHeroSpotlightShowcase,
+                  style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                ),
+                subtitle: Text(
+                  l10nOf(
+                    context,
+                  ).auxMusicSettingsPageFeaturedBestsellingAlbumTrackShowcaseAtThe,
+                  style: ZplayType.bodySmall.toStyle(
+                    color: tokens.textSecondary,
+                  ),
+                ),
                 value: enabled,
-                activeColor: palette.primaryColor,
                 onChanged: (val) => MusicSettings.setEnableSpotlight(val),
               );
             },
           ),
-          Divider(color: tokens.borderDefault),
+          KiruDivider(height: 16, color: tokens.borderDefault),
           ValueListenableBuilder<bool>(
             valueListenable: MusicSettings.showLosslessBadge,
             builder: (context, enabled, _) {
-              return SwitchListTile.adaptive(
+              return KiruSwitchRow(
                 contentPadding: EdgeInsets.zero,
-                title: Text(l10nOf(context).auxMusicSettingsPageShowLosslessHiResAudioBadges, style: ZplayType.subtitle.toStyle(color: tokens.textPrimary)),
-                subtitle: Text(l10nOf(context).auxMusicSettingsPageDisplaysFlacHiResLosslessStreamIndicators, style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
+                title: Text(
+                  l10nOf(
+                    context,
+                  ).auxMusicSettingsPageShowLosslessHiResAudioBadges,
+                  style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                ),
+                subtitle: Text(
+                  l10nOf(
+                    context,
+                  ).auxMusicSettingsPageDisplaysFlacHiResLosslessStreamIndicators,
+                  style: ZplayType.bodySmall.toStyle(
+                    color: tokens.textSecondary,
+                  ),
+                ),
                 value: enabled,
-                activeColor: palette.primaryColor,
                 onChanged: (val) => MusicSettings.setShowLosslessBadge(val),
               );
             },
           ),
-          Divider(color: tokens.borderDefault),
+          KiruDivider(height: 16, color: tokens.borderDefault),
           const SizedBox(height: 8),
-          Text(l10nOf(context).auxMusicSettingsPageMusicCardGridDensity, style: ZplayType.label.toStyle(color: tokens.textEmphasis)),
+          Text(
+            l10nOf(context).auxMusicSettingsPageMusicCardGridDensity,
+            style: ZplayType.label.toStyle(color: tokens.textEmphasis),
+          ),
           const SizedBox(height: 8),
           ValueListenableBuilder<MusicCardDensity>(
             valueListenable: MusicSettings.cardDensity,
@@ -302,7 +365,10 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                 },
                 options: [
                   for (final d in MusicCardDensity.values)
-                    SegmentedTabOption(value: d, label: configLabel(context, d.label)),
+                    SegmentedTabOption(
+                      value: d,
+                      label: configLabel(context, d.label),
+                    ),
                 ],
               );
             },
@@ -326,31 +392,40 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                 color: isSelected ? tokens.accentSubtle : null,
                 borderRadius: ZplayRadius.mdAll,
                 border: Border.all(
-                  color: isSelected ? palette.primaryColor : tokens.borderDefault,
+                  color: isSelected
+                      ? palette.primaryColor
+                      : tokens.borderDefault,
                   width: isSelected ? 1.8 : 1.0,
                 ),
               ),
-              child: ListTile(
+              child: KiruListTile(
                 onTap: () => MusicSettings.setSelectedFullscreenPreset(preset),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 6,
+                ),
                 leading: Container(
                   width: 38,
                   height: 38,
                   decoration: BoxDecoration(
-                    color: isSelected ? palette.primaryColor : tokens.borderSubtle,
+                    color: isSelected
+                        ? palette.primaryColor
+                        : tokens.borderSubtle,
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
                     preset == MusicFullscreenPreset.vinylStudio
                         ? Icons.album_rounded
                         : preset == MusicFullscreenPreset.cyberWaveform
-                            ? Icons.graphic_eq_rounded
-                            : preset == MusicFullscreenPreset.liquidGlassNeo
-                                ? Icons.blur_on_rounded
-                                : preset == MusicFullscreenPreset.cinematicArtwork
-                                    ? Icons.fullscreen_rounded
-                                    : Icons.dashboard_customize_rounded,
-                    color: isSelected ? tokens.textPrimary : tokens.textEmphasis,
+                        ? Icons.graphic_eq_rounded
+                        : preset == MusicFullscreenPreset.liquidGlassNeo
+                        ? Icons.blur_on_rounded
+                        : preset == MusicFullscreenPreset.cinematicArtwork
+                        ? Icons.fullscreen_rounded
+                        : Icons.dashboard_customize_rounded,
+                    color: isSelected
+                        ? tokens.textPrimary
+                        : tokens.textEmphasis,
                     size: 20,
                   ),
                 ),
@@ -363,7 +438,11 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                   style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                 ),
                 trailing: isSelected
-                    ? Icon(Icons.check_circle_rounded, color: palette.primaryColor, size: 22)
+                    ? Icon(
+                        Icons.check_circle_rounded,
+                        color: palette.primaryColor,
+                        size: 22,
+                      )
                     : null,
               ),
             );
@@ -379,10 +458,7 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
       decoration: BoxDecoration(
         borderRadius: ZplayRadius.lgAll,
         gradient: LinearGradient(
-          colors: [
-            palette.primaryColor.withValues(alpha: 0.3),
-            tokens.surface,
-          ],
+          colors: [palette.primaryColor.withValues(alpha: 0.3), tokens.surface],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -405,7 +481,11 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                   end: Alignment.bottomRight,
                 ),
               ),
-              child: Icon(Icons.dashboard_customize_rounded, color: tokens.textPrimary, size: 28),
+              child: Icon(
+                Icons.dashboard_customize_rounded,
+                color: tokens.textPrimary,
+                size: 28,
+              ),
             ),
             const SizedBox(width: 18),
             Expanded(
@@ -415,45 +495,71 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
                   Row(
                     children: [
                       Text(
-                        l10nOf(context).auxMusicPlayerStudioPageCustomMusicPlayerStudio,
-                        style: ZplayType.title.toStyle(color: tokens.textPrimary),
+                        l10nOf(
+                          context,
+                        ).auxMusicPlayerStudioPageCustomMusicPlayerStudio,
+                        style: ZplayType.title.toStyle(
+                          color: tokens.textPrimary,
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 7,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: palette.primaryColor.withValues(alpha: 0.25),
                           borderRadius: ZplayRadius.xsAll,
                         ),
                         child: Text(
                           l10nOf(context).auxMusicSettingsPageFullPlayerEngine,
-                          style: ZplayType.overline.toStyle(color: palette.primaryColor),
+                          style: ZplayType.overline.toStyle(
+                            color: palette.primaryColor,
+                          ),
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    l10nOf(context).auxMusicSettingsPageCustomizeTheFullscreenPlayerDragDropBlocks,
-                    style: ZplayType.bodySmall.toStyle(color: tokens.textEmphasis),
+                    l10nOf(
+                      context,
+                    ).auxMusicSettingsPageCustomizeTheFullscreenPlayerDragDropBlocks,
+                    style: ZplayType.bodySmall.toStyle(
+                      color: tokens.textEmphasis,
+                    ),
                   ),
                   const SizedBox(height: 14),
-                  ElevatedButton.icon(
+                  KiruButton(
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const MusicPlayerStudioPage()),
+                        MaterialPageRoute(
+                          builder: (_) => const MusicPlayerStudioPage(),
+                        ),
                       );
                     },
-                    icon: Icon(Icons.tune_rounded, size: 18, color: tokens.textPrimary),
-                    label: Text(
-                      l10nOf(context).auxAudiobookSettingsPageEnterCustomPlayerStudio,
+                    icon: Icon(
+                      Icons.tune_rounded,
+                      size: 18,
+                      color: tokens.textPrimary,
+                    ),
+                    child: Text(
+                      l10nOf(
+                        context,
+                      ).auxAudiobookSettingsPageEnterCustomPlayerStudio,
                       style: ZplayType.label.toStyle(color: tokens.textPrimary),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: palette.primaryColor,
-                      shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
-                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 11),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: ZplayRadius.smAll,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 11,
+                      ),
                     ),
                   ),
                 ],
@@ -476,15 +582,24 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(l10nOf(context).auxMusicSettingsPageLiveWaveformControlsPreview, style: ZplayType.label.toStyle(color: palette.primaryColor)),
-              TextButton(
+              Text(
+                l10nOf(context).auxMusicSettingsPageLiveWaveformControlsPreview,
+                style: ZplayType.label.toStyle(color: palette.primaryColor),
+              ),
+              KiruButton(
+                kind: KiruButtonKind.ghost,
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const MusicPlayerStudioPage()),
+                    MaterialPageRoute(
+                      builder: (_) => const MusicPlayerStudioPage(),
+                    ),
                   );
                 },
-                child: Text(l10nOf(context).auxMusicSettingsPageOpenFullStudio, style: ZplayType.label.toStyle()),
+                child: Text(
+                  l10nOf(context).auxMusicSettingsPageOpenFullStudio,
+                  style: ZplayType.label.toStyle(),
+                ),
               ),
             ],
           ),
@@ -500,18 +615,31 @@ class _MusicSettingsPageState extends State<MusicSettingsPage> {
           ),
           const SizedBox(height: 16),
 
-          ElevatedButton.icon(
+          KiruButton(
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const MusicPlayerStudioPage()),
+                MaterialPageRoute(
+                  builder: (_) => const MusicPlayerStudioPage(),
+                ),
               );
             },
-            icon: Icon(Icons.dashboard_customize_rounded, size: 18, color: tokens.textPrimary),
-            label: Text(l10nOf(context).auxAudiobookSettingsPageLaunchFullCustomPlayerStudio, style: ZplayType.label.toStyle(color: tokens.textPrimary)),
+            icon: Icon(
+              Icons.dashboard_customize_rounded,
+              size: 18,
+              color: tokens.textPrimary,
+            ),
+            child: Text(
+              l10nOf(
+                context,
+              ).auxAudiobookSettingsPageLaunchFullCustomPlayerStudio,
+              style: ZplayType.label.toStyle(color: tokens.textPrimary),
+            ),
             style: ElevatedButton.styleFrom(
               backgroundColor: palette.primaryColor,
-              shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
+              shape: const RoundedRectangleBorder(
+                borderRadius: ZplayRadius.smAll,
+              ),
               padding: const EdgeInsets.symmetric(vertical: 13),
               minimumSize: const Size.fromHeight(46),
             ),

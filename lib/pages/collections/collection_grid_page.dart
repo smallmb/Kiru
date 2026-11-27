@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -26,10 +27,11 @@ class CollectionGridPage extends StatelessWidget {
     final movies = CollectionsService.moviesFor(collection);
     final screenWidth = MediaQuery.sizeOf(context).width;
     final sizing = MovieCardSizing.fromWidth(screenWidth);
-    final columns = ((screenWidth - sizing.sidePadding * 2 + sizing.spacing) /
-            (sizing.cardWidth + sizing.spacing))
-        .floor()
-        .clamp(2, 10);
+    final columns =
+        ((screenWidth - sizing.sidePadding * 2 + sizing.spacing) /
+                (sizing.cardWidth + sizing.spacing))
+            .floor()
+            .clamp(2, 10);
 
     return Scaffold(
       backgroundColor: tokens.bg,
@@ -68,7 +70,8 @@ class CollectionGridPage extends StatelessWidget {
                     mainAxisSpacing: sizing.spacing,
                   ),
                   itemCount: movies.length,
-                  itemBuilder: (context, index) => MovieCard(movie: movies[index]),
+                  itemBuilder: (context, index) =>
+                      MovieCard(movie: movies[index]),
                 ),
               ),
             ],
@@ -108,7 +111,7 @@ class _Header extends StatelessWidget {
       ),
       child: Row(
         children: [
-          IconButton(
+          KiruIconButton(
             onPressed: () => Navigator.of(context).maybePop(),
             tooltip: l10nOf(context).uiPlayerTopBarBack,
             icon: Icon(Icons.arrow_back_rounded, color: tokens.textPrimary),
@@ -122,7 +125,9 @@ class _Header extends StatelessWidget {
                   configLabel(context, collection.title),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: ZplayType.titleLarge.toStyle(color: tokens.textPrimary),
+                  style: ZplayType.titleLarge.toStyle(
+                    color: tokens.textPrimary,
+                  ),
                 ),
                 if (collection.subtitle.isNotEmpty) ...[
                   const SizedBox(height: ZplaySpacing.s4),

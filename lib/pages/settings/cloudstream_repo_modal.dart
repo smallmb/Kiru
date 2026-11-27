@@ -1,3 +1,5 @@
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -71,8 +73,10 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
 
   bool _isInstalled(CloudStreamSource plugin) {
     return _manager.installedExtensions.any(
-      (e) => e.name.toLowerCase() == plugin.name.toLowerCase() ||
-             (plugin.internalName != null && e.internalName == plugin.internalName),
+      (e) =>
+          e.name.toLowerCase() == plugin.name.toLowerCase() ||
+          (plugin.internalName != null &&
+              e.internalName == plugin.internalName),
     );
   }
 
@@ -84,17 +88,21 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
     try {
       await _manager.installExtension(plugin);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10nOf(context).dynamicCloudstreamRepoModalInstalledSuccessfully((plugin.name).toString())),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(context).dynamicCloudstreamRepoModalInstalledSuccessfully(
+              (plugin.name).toString(),
+            ),
+          ),
           backgroundColor: tokens.success,
           behavior: SnackBarBehavior.floating,
         ),
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
           content: Text(e.toString().replaceFirst('Exception: ', '')),
           backgroundColor: tokens.danger,
           behavior: SnackBarBehavior.floating,
@@ -115,17 +123,21 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
     try {
       await _manager.uninstallExtension(plugin);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10nOf(context).dynamicCloudstreamRepoModalUninstalled((plugin.name).toString())),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(
+              context,
+            ).dynamicCloudstreamRepoModalUninstalled((plugin.name).toString()),
+          ),
           backgroundColor: tokens.warning,
           behavior: SnackBarBehavior.floating,
         ),
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
           content: Text(e.toString().replaceFirst('Exception: ', '')),
           backgroundColor: tokens.danger,
           behavior: SnackBarBehavior.floating,
@@ -140,11 +152,17 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
 
   Future<void> _installAll() async {
     final tokens = context.tokens;
-    final uninstalled = _filteredPlugins.where((p) => !_isInstalled(p)).toList();
+    final uninstalled = _filteredPlugins
+        .where((p) => !_isInstalled(p))
+        .toList();
     if (uninstalled.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10nOf(context).uiCloudstreamRepoModalAllMatchingPluginsAreAlreadyInstalled),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(
+              context,
+            ).uiCloudstreamRepoModalAllMatchingPluginsAreAlreadyInstalled,
+          ),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -154,9 +172,15 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
     try {
       final count = await _manager.installExtensions(uninstalled);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10nOf(context).dynamicCloudstreamRepoModalSuccessfullyInstalledPlugins((count).toString())),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(
+              context,
+            ).dynamicCloudstreamRepoModalSuccessfullyInstalledPlugins(
+              (count).toString(),
+            ),
+          ),
           backgroundColor: tokens.success,
           behavior: SnackBarBehavior.floating,
         ),
@@ -164,9 +188,13 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
       setState(() {});
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10nOf(context).dynamicCloudstreamRepoModalInstallationError((e).toString())),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(
+              context,
+            ).dynamicCloudstreamRepoModalInstallationError((e).toString()),
+          ),
           backgroundColor: tokens.danger,
           behavior: SnackBarBehavior.floating,
         ),
@@ -176,12 +204,14 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
 
   Future<void> _confirmUninstallAllInRepo() async {
     final tokens = context.tokens;
-    final installedList = _filteredPlugins.where((p) => _isInstalled(p)).toList();
+    final installedList = _filteredPlugins
+        .where((p) => _isInstalled(p))
+        .toList();
     if (installedList.isEmpty) return;
 
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => KiruAlertDialog(
         backgroundColor: tokens.surfaceOverlay,
         shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.mdAll),
         title: Row(
@@ -192,25 +222,37 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
           ],
         ),
         content: Text(
-          l10nOf(context).dynamicCloudstreamRepoModalUninstallAllInstalledPluginsFromThis((installedList.length).toString()),
+          l10nOf(
+            context,
+          ).dynamicCloudstreamRepoModalUninstallAllInstalledPluginsFromThis(
+            (installedList.length).toString(),
+          ),
           style: ZplayType.body.toStyle(color: tokens.textEmphasis),
         ),
         actions: [
-          TextButton(
+          KiruButton(
+            kind: KiruButtonKind.ghost,
             onPressed: () => Navigator.pop(ctx, false),
             child: Text(
               l10nOf(context).uiCloudstreamRepoModalCancel,
               style: ZplayType.label.toStyle(color: tokens.textSecondary),
             ),
           ),
-          ElevatedButton(
+          KiruButton(
             onPressed: () => Navigator.pop(ctx, true),
             style: ElevatedButton.styleFrom(
               backgroundColor: tokens.danger,
               foregroundColor: tokens.onAccent,
-              shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
+              shape: const RoundedRectangleBorder(
+                borderRadius: ZplayRadius.smAll,
+              ),
             ),
-            child: Text(l10nOf(context).dynamicCloudstreamRepoModalRemoveAll((installedList.length).toString()), style: ZplayType.label.toStyle()),
+            child: Text(
+              l10nOf(context).dynamicCloudstreamRepoModalRemoveAll(
+                (installedList.length).toString(),
+              ),
+              style: ZplayType.label.toStyle(),
+            ),
           ),
         ],
       ),
@@ -220,9 +262,15 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
 
     await _manager.uninstallExtensions(installedList);
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10nOf(context).dynamicCloudstreamRepoModalSuccessfullyUninstalledPlugins((installedList.length).toString())),
+    KiruToastMessenger.of(context).showSnackBar(
+      KiruToast(
+        content: Text(
+          l10nOf(
+            context,
+          ).dynamicCloudstreamRepoModalSuccessfullyUninstalledPlugins(
+            (installedList.length).toString(),
+          ),
+        ),
         backgroundColor: tokens.danger,
         behavior: SnackBarBehavior.floating,
       ),
@@ -262,32 +310,49 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
                   width: 44,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: ZplayOpacity.overlayHover),
+                    color: Colors.white.withValues(
+                      alpha: ZplayOpacity.overlayHover,
+                    ),
                     borderRadius: ZplayRadius.xsAll,
                   ),
                 ),
               ),
 
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 8,
+                ),
                 child: LayoutBuilder(
                   builder: (context, constraints) {
                     final isMobile = constraints.maxWidth < 600;
-                    final installedCount = filtered.where((p) => _isInstalled(p)).length;
+                    final installedCount = filtered
+                        .where((p) => _isInstalled(p))
+                        .length;
 
-                    Widget removeAllBtn(bool fullWidth) => ValueListenableBuilder<bool>(
+                    Widget removeAllBtn(bool fullWidth) =>
+                        ValueListenableBuilder<bool>(
                           valueListenable: _manager.isBusy,
                           builder: (context, busy, _) {
-                            return OutlinedButton.icon(
-                              onPressed: busy ? null : _confirmUninstallAllInRepo,
+                            return KiruButton(
+                              kind: KiruButtonKind.outline,
+                              onPressed: busy
+                                  ? null
+                                  : _confirmUninstallAllInRepo,
                               icon: Icon(
                                 Icons.delete_sweep_rounded,
                                 size: 14,
                                 color: tokens.danger,
                               ),
-                              label: Text(
-                                l10nOf(context).dynamicCloudstreamRepoModalRemoveAll((installedCount).toString()),
-                                style: ZplayType.caption.toStyle(color: tokens.danger),
+                              child: Text(
+                                l10nOf(
+                                  context,
+                                ).dynamicCloudstreamRepoModalRemoveAll(
+                                  (installedCount).toString(),
+                                ),
+                                style: ZplayType.caption.toStyle(
+                                  color: tokens.danger,
+                                ),
                                 overflow: TextOverflow.ellipsis,
                               ),
                               style: OutlinedButton.styleFrom(
@@ -299,30 +364,48 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
                                 backgroundColor: tokens.danger.withValues(
                                   alpha: ZplayOpacity.borderDefault,
                                 ),
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 8,
+                                ),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: ZplayRadius.smAll,
+                                ),
                                 visualDensity: VisualDensity.compact,
                               ),
                             );
                           },
                         );
 
-                    Widget installAllBtn(bool fullWidth) => ValueListenableBuilder<bool>(
+                    Widget installAllBtn(bool fullWidth) =>
+                        ValueListenableBuilder<bool>(
                           valueListenable: _manager.isBusy,
                           builder: (context, busy, _) {
-                            return ElevatedButton.icon(
+                            return KiruButton(
                               onPressed: busy ? null : _installAll,
-                              icon: const Icon(Icons.download_rounded, size: 14),
-                              label: Text(
-                                l10nOf(context).dynamicCloudstreamRepoModalInstallAll((uninstalledCount).toString()),
+                              icon: const Icon(
+                                Icons.download_rounded,
+                                size: 14,
+                              ),
+                              child: Text(
+                                l10nOf(
+                                  context,
+                                ).dynamicCloudstreamRepoModalInstallAll(
+                                  (uninstalledCount).toString(),
+                                ),
                                 style: ZplayType.caption.toStyle(),
                                 overflow: TextOverflow.ellipsis,
                               ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: tokens.accent,
                                 foregroundColor: tokens.onAccent,
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                                shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 8,
+                                ),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: ZplayRadius.smAll,
+                                ),
                                 visualDensity: VisualDensity.compact,
                               ),
                             );
@@ -337,13 +420,20 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  l10nOf(context).uiCloudstreamRepoModalAvailablePlugins,
-                                  style: ZplayType.title.toStyle(color: tokens.textPrimary),
+                                  l10nOf(
+                                    context,
+                                  ).uiCloudstreamRepoModalAvailablePlugins,
+                                  style: ZplayType.title.toStyle(
+                                    color: tokens.textPrimary,
+                                  ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              IconButton(
-                                icon: Icon(Icons.close_rounded, color: tokens.textEmphasis),
+                              KiruIconButton(
+                                icon: Icon(
+                                  Icons.close_rounded,
+                                  color: tokens.textEmphasis,
+                                ),
                                 onPressed: () => Navigator.pop(context),
                               ),
                             ],
@@ -368,8 +458,12 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
                     return Row(
                       children: [
                         Text(
-                          l10nOf(context).uiCloudstreamRepoModalAvailableCloudstreamPlugins,
-                          style: ZplayType.title.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).uiCloudstreamRepoModalAvailableCloudstreamPlugins,
+                          style: ZplayType.title.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         const Spacer(),
                         if (installedCount > 0) ...[
@@ -380,8 +474,11 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
                           installAllBtn(false),
                           const SizedBox(width: 8),
                         ],
-                        IconButton(
-                          icon: Icon(Icons.close_rounded, color: tokens.textEmphasis),
+                        KiruIconButton(
+                          icon: Icon(
+                            Icons.close_rounded,
+                            color: tokens.textEmphasis,
+                          ),
                           onPressed: () => Navigator.pop(context),
                         ),
                       ],
@@ -399,8 +496,14 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
                     valueListenable: _manager.busyMessage,
                     builder: (context, msg, _) {
                       return Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 6,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
                           color: tokens.accentSubtle,
                           borderRadius: ZplayRadius.smAll,
@@ -415,13 +518,18 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
                             SizedBox(
                               width: 14,
                               height: 14,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: tokens.accent),
+                              child: KiruLoader(
+                                strokeWidth: 2,
+                                color: tokens.accent,
+                              ),
                             ),
                             const SizedBox(width: 10),
                             Expanded(
                               child: Text(
                                 msg,
-                                style: ZplayType.bodySmall.toStyle(color: tokens.accent),
+                                style: ZplayType.bodySmall.toStyle(
+                                  color: tokens.accent,
+                                ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -436,14 +544,21 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
 
               // Search box
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-                child: TextField(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 6,
+                ),
+                child: KiruFormField(
                   controller: _searchController,
                   style: ZplayType.body.toStyle(color: tokens.textPrimary),
                   onChanged: (val) => setState(() => _searchQuery = val),
                   decoration: InputDecoration(
-                    hintText: l10nOf(context).uiCloudstreamRepoModalSearchPluginsEGSflixSuperstream,
-                    hintStyle: ZplayType.label.toStyle(color: tokens.textDisabled),
+                    hintText: l10nOf(
+                      context,
+                    ).uiCloudstreamRepoModalSearchPluginsEGSflixSuperstream,
+                    hintStyle: ZplayType.label.toStyle(
+                      color: tokens.textDisabled,
+                    ),
                     prefixIcon: Icon(
                       Icons.search_rounded,
                       size: 18,
@@ -451,7 +566,10 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
                     ),
                     filled: true,
                     fillColor: tokens.surfaceRaised,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 12,
+                    ),
                     border: const OutlineInputBorder(
                       borderRadius: ZplayRadius.smAll,
                       borderSide: BorderSide.none,
@@ -465,189 +583,236 @@ class _CloudStreamRepoModalState extends State<CloudStreamRepoModal> {
               // Plugins list
               Expanded(
                 child: _isLoading
-                    ? Center(child: CircularProgressIndicator(color: tokens.accent))
+                    ? Center(child: KiruLoader(color: tokens.accent))
                     : filtered.isEmpty
-                        ? Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(24.0),
-                              child: Text(
-                                _searchQuery.isEmpty
-                                    ? 'No plugins found in added repositories.\nPlease add a CloudStream repository URL first.'
-                                    : 'No plugins matching "$_searchQuery"',
-                                textAlign: TextAlign.center,
-                                style: ZplayType.body.toStyle(color: tokens.textMuted),
-                              ),
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24.0),
+                          child: Text(
+                            _searchQuery.isEmpty
+                                ? 'No plugins found in added repositories.\nPlease add a CloudStream repository URL first.'
+                                : 'No plugins matching "$_searchQuery"',
+                            textAlign: TextAlign.center,
+                            style: ZplayType.body.toStyle(
+                              color: tokens.textMuted,
                             ),
-                          )
-                        : ListView.separated(
-                            controller: scrollController,
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                            itemCount: filtered.length,
-                            separatorBuilder: (_, __) => const SizedBox(height: 8),
-                            itemBuilder: (context, idx) {
-                              final plugin = filtered[idx];
-                              final installed = _isInstalled(plugin);
-                              final id = plugin.internalName ?? plugin.name;
-                              final isProcessing = _installingIds.contains(id);
+                          ),
+                        ),
+                      )
+                    : ListView.separated(
+                        controller: scrollController,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 10,
+                        ),
+                        itemCount: filtered.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 8),
+                        itemBuilder: (context, idx) {
+                          final plugin = filtered[idx];
+                          final installed = _isInstalled(plugin);
+                          final id = plugin.internalName ?? plugin.name;
+                          final isProcessing = _installingIds.contains(id);
 
-                              return Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: Row(
-                                  children: [
-                                    // Plugin logo
-                                    ClipRRect(
-                                      borderRadius: ZplayRadius.smAll,
-                                      child: SizedBox(
-                                        width: 40,
-                                        height: 40,
-                                        child: plugin.iconUrl != null && plugin.iconUrl!.isNotEmpty
-                                            ? CachedNetworkImage(
-                                                imageUrl: plugin.iconUrl!,
-                                                fit: BoxFit.cover,
-                                                errorWidget: (_, __, ___) => Icon(
-                                                  Icons.extension_rounded,
-                                                  color: tokens.textSecondary,
-                                                ),
-                                              )
-                                            : Icon(
-                                                Icons.extension_rounded,
-                                                color: tokens.textSecondary,
-                                              ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 14),
+                          return Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Row(
+                              children: [
+                                // Plugin logo
+                                ClipRRect(
+                                  borderRadius: ZplayRadius.smAll,
+                                  child: SizedBox(
+                                    width: 40,
+                                    height: 40,
+                                    child:
+                                        plugin.iconUrl != null &&
+                                            plugin.iconUrl!.isNotEmpty
+                                        ? CachedNetworkImage(
+                                            imageUrl: plugin.iconUrl!,
+                                            fit: BoxFit.cover,
+                                            errorWidget: (_, __, ___) => Icon(
+                                              Icons.extension_rounded,
+                                              color: tokens.textSecondary,
+                                            ),
+                                          )
+                                        : Icon(
+                                            Icons.extension_rounded,
+                                            color: tokens.textSecondary,
+                                          ),
+                                  ),
+                                ),
+                                const SizedBox(width: 14),
 
-                                    // Info
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                // Info
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
                                         children: [
-                                          Row(
-                                            children: [
-                                              Flexible(
-                                                child: Text(
-                                                  plugin.name,
-                                                  style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
+                                          Flexible(
+                                            child: Text(
+                                              plugin.name,
+                                              style: ZplayType.subtitle.toStyle(
+                                                color: tokens.textPrimary,
                                               ),
-                                              if (plugin.isNsfw) ...[
-                                                const SizedBox(width: 6),
-                                                Container(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
-                                                  decoration: BoxDecoration(
-                                                    color: tokens.danger.withValues(
-                                                      alpha: ZplayOpacity.borderStrong,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                          if (plugin.isNsfw) ...[
+                                            const SizedBox(width: 6),
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 5,
+                                                    vertical: 1.5,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: tokens.danger.withValues(
+                                                  alpha:
+                                                      ZplayOpacity.borderStrong,
+                                                ),
+                                                borderRadius: ZplayRadius.xsAll,
+                                              ),
+                                              child: Text(
+                                                '18+',
+                                                style: ZplayType.caption
+                                                    .toStyle(
+                                                      color: tokens.danger,
                                                     ),
-                                                    borderRadius: ZplayRadius.xsAll,
-                                                  ),
-                                                  child: Text(
-                                                    '18+',
-                                                    style: ZplayType.caption.toStyle(color: tokens.danger),
-                                                  ),
-                                                ),
-                                              ],
-                                            ],
-                                          ),
-                                          const SizedBox(height: 3),
-                                          Row(
-                                            children: [
-                                              Container(
-                                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                                decoration: BoxDecoration(
-                                                  color: tokens.accent.withValues(
-                                                    alpha: ZplayOpacity.borderStrong,
-                                                  ),
-                                                  borderRadius: ZplayRadius.xsAll,
-                                                ),
-                                                child: Text(
-                                                  plugin.effectiveLanguage.toUpperCase(),
-                                                  style: ZplayType.caption.toStyle(color: tokens.accent),
-                                                ),
                                               ),
-                                              const SizedBox(width: 8),
-                                              Text(
-                                                'v${plugin.version ?? "1.0.0"}',
-                                                style: ZplayType.caption.toStyle(color: tokens.textMuted),
-                                              ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ],
                                       ),
-                                    ),
-
-                                    // Install / Installed button
-                                    if (isProcessing)
-                                      SizedBox(
-                                        width: 28,
-                                        height: 28,
-                                        child: CircularProgressIndicator(strokeWidth: 2, color: tokens.accent),
-                                      )
-                                    else if (installed)
+                                      const SizedBox(height: 3),
                                       Row(
-                                        mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                                            decoration: BoxDecoration(
-                                              color: tokens.success.withValues(
-                                                alpha: ZplayOpacity.borderStrong,
-                                              ),
-                                              borderRadius: ZplayRadius.smAll,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 6,
+                                              vertical: 2,
                                             ),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Icon(
-                                                  Icons.check_rounded,
-                                                  size: 13,
-                                                  color: tokens.success,
-                                                ),
-                                                const SizedBox(width: 4),
-                                                Text(
-                                                  l10nOf(context).uiCloudstreamRepoModalInstalled,
-                                                  style: ZplayType.caption.toStyle(
-                                                    color: tokens.success,
-                                                  ),
-                                                ),
-                                              ],
+                                            decoration: BoxDecoration(
+                                              color: tokens.accent.withValues(
+                                                alpha:
+                                                    ZplayOpacity.borderStrong,
+                                              ),
+                                              borderRadius: ZplayRadius.xsAll,
+                                            ),
+                                            child: Text(
+                                              plugin.effectiveLanguage
+                                                  .toUpperCase(),
+                                              style: ZplayType.caption.toStyle(
+                                                color: tokens.accent,
+                                              ),
                                             ),
                                           ),
-                                          const SizedBox(width: 2),
-                                          IconButton(
-                                            icon: Icon(
-                                              Icons.delete_outline_rounded,
-                                              size: 18,
-                                              color: tokens.danger,
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            'v${plugin.version ?? "1.0.0"}',
+                                            style: ZplayType.caption.toStyle(
+                                              color: tokens.textMuted,
                                             ),
-                                            onPressed: () => _uninstall(plugin),
-                                            tooltip: l10nOf(context).uiCloudstreamRepoModalUninstall,
-                                            visualDensity: VisualDensity.compact,
-                                            padding: const EdgeInsets.all(6),
-                                            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
                                           ),
                                         ],
-                                      )
-                                    else
-                                      ElevatedButton(
-                                        onPressed: () => _install(plugin),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: tokens.accent,
-                                          foregroundColor: tokens.onAccent,
-                                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                                          shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
-                                          visualDensity: VisualDensity.compact,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                // Install / Installed button
+                                if (isProcessing)
+                                  SizedBox(
+                                    width: 28,
+                                    height: 28,
+                                    child: KiruLoader(
+                                      strokeWidth: 2,
+                                      color: tokens.accent,
+                                    ),
+                                  )
+                                else if (installed)
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 5,
                                         ),
-                                        child: Text(
-                                          l10nOf(context).uiCloudstreamRepoModalInstall,
-                                          style: ZplayType.label.toStyle(),
+                                        decoration: BoxDecoration(
+                                          color: tokens.success.withValues(
+                                            alpha: ZplayOpacity.borderStrong,
+                                          ),
+                                          borderRadius: ZplayRadius.smAll,
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Icon(
+                                              Icons.check_rounded,
+                                              size: 13,
+                                              color: tokens.success,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              l10nOf(
+                                                context,
+                                              ).uiCloudstreamRepoModalInstalled,
+                                              style: ZplayType.caption.toStyle(
+                                                color: tokens.success,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
+                                      const SizedBox(width: 2),
+                                      KiruIconButton(
+                                        icon: Icon(
+                                          Icons.delete_outline_rounded,
+                                          size: 18,
+                                          color: tokens.danger,
+                                        ),
+                                        onPressed: () => _uninstall(plugin),
+                                        tooltip: l10nOf(
+                                          context,
+                                        ).uiCloudstreamRepoModalUninstall,
+                                        visualDensity: VisualDensity.compact,
+                                        padding: const EdgeInsets.all(6),
+                                        constraints: const BoxConstraints(
+                                          minWidth: 32,
+                                          minHeight: 32,
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                else
+                                  KiruButton(
+                                    onPressed: () => _install(plugin),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: tokens.accent,
+                                      foregroundColor: tokens.onAccent,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 14,
+                                        vertical: 8,
+                                      ),
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: ZplayRadius.smAll,
+                                      ),
+                                      visualDensity: VisualDensity.compact,
+                                    ),
+                                    child: Text(
+                                      l10nOf(
+                                        context,
+                                      ).uiCloudstreamRepoModalInstall,
+                                      style: ZplayType.label.toStyle(),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
               ),
             ],
           ),

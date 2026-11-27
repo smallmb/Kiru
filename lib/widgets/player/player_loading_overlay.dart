@@ -1,3 +1,4 @@
+import '../ui/kiru_controls.dart';
 import 'package:zplay/l10n/media_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -223,11 +224,11 @@ class _PlayerLoadingOverlayState extends State<PlayerLoadingOverlay>
                   height: 100,
                   fit: BoxFit.contain,
                   errorWidget: (_, __, ___) =>
-                      CircularProgressIndicator(color: PlayerTheme.accent),
+                      KiruLoader(color: PlayerTheme.accent),
                 ),
               )
             else
-              CircularProgressIndicator(color: PlayerTheme.accent),
+              KiruLoader(color: PlayerTheme.accent),
             const SizedBox(height: ZplaySpacing.s32),
             Text(
               widget.message,
@@ -262,7 +263,8 @@ class _PlayerLoadingOverlayState extends State<PlayerLoadingOverlay>
 
     final String primaryLabel = canFindSource
         ? (finding
-              ? (widget.findSourceProgress ?? mediaLabel(context, 'Finding a working source…'))
+              ? (widget.findSourceProgress ??
+                    mediaLabel(context, 'Finding a working source…'))
               : mediaLabel(context, 'Find best source'))
         : mediaLabel(context, 'Choose another source');
 
@@ -351,7 +353,9 @@ class _PlayerLoadingOverlayState extends State<PlayerLoadingOverlay>
               if (canFindSource)
                 _StallAction(
                   filled: false,
-                  label: l10nOf(context).uiPlayerLoadingOverlayChooseAnotherSource,
+                  label: l10nOf(
+                    context,
+                  ).uiPlayerLoadingOverlayChooseAnotherSource,
                   onPressed: widget.onChooseSource,
                 ),
               _StallAction(
@@ -452,10 +456,7 @@ class _StallAction extends StatelessWidget {
               child: SizedBox(
                 width: 16,
                 height: 16,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: tokens.bg,
-                ),
+                child: KiruLoader(strokeWidth: 2, color: tokens.bg),
               ),
             ),
           ),
@@ -464,7 +465,7 @@ class _StallAction extends StatelessWidget {
     }
     // The escapes are plain text: present and reachable, never competing with
     // the two choices for attention.
-    return FocusableCard(
+    return PlayerTappable(
       focusNode: focusNode,
       onTap: onPressed,
       builder: (context, state) => CardFocusRing(

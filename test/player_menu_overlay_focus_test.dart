@@ -41,7 +41,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zplay/models/subtitle/subtitle_model.dart';
 import 'package:zplay/services/layout/form_factor.dart';
-import 'package:zplay/widgets/common/focusable_card.dart';
 import 'package:zplay/widgets/player/player_audio_menu.dart';
 import 'package:zplay/widgets/player/player_glass.dart';
 import 'package:zplay/widgets/player/player_remote_keys.dart';
@@ -392,8 +391,12 @@ _PlayerMenuHarnessState _state() => _harness.currentState!;
 /// Opens [spec]'s menu through its real transport trigger, then settles the
 /// post-frame hand-off.
 Future<void> _open(WidgetTester tester, _MenuSpec spec) async {
-  await tester.tap(find.byTooltip(spec.triggerTooltip));
-  await tester.pump();
+  await tester.tap(
+    find.byWidgetPredicate(
+      (w) => w is PlayerTooltip && w.message == spec.triggerTooltip,
+    ),
+  );
+  await tester.pump(const Duration(milliseconds: 120));
   await tester.pump();
 }
 
@@ -409,7 +412,7 @@ String _focusedControl(WidgetTester tester) {
     find.ancestor(
       of: of,
       matching: find.byWidgetPredicate(
-        (w) => w is FocusableCard && identical(w.focusNode, _state().entry),
+        (w) => w is PlayerIconButton && identical(w.focusNode, _state().entry),
       ),
     ),
   )) {
@@ -579,7 +582,9 @@ void main() {
           reason: 'BACK closes the overlay it was pressed in',
         );
         expect(
-          find.byTooltip(spec.triggerTooltip),
+          find.byWidgetPredicate(
+            (w) => w is PlayerTooltip && w.message == spec.triggerTooltip,
+          ),
           findsOneWidget,
           reason:
               'the player route survives: BACK closed the menu, not the '

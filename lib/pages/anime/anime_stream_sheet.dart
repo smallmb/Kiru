@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/anime_titles.dart';
 import 'package:zplay/l10n/media_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
@@ -72,55 +73,59 @@ class _AnimeStreamSheetState extends State<AnimeStreamSheet> {
     _streamSub?.cancel();
     _streamSub = _scraper
         .scrapeStreamsStream(
-      anime: widget.anime,
-      episodeNumber: widget.episodeNumber,
-    )
+          anime: widget.anime,
+          episodeNumber: widget.episodeNumber,
+        )
         .listen(
-      (source) {
-        if (mounted) {
-          setState(() {
-            _allSources.add(source);
-          });
+          (source) {
+            if (mounted) {
+              setState(() {
+                _allSources.add(source);
+              });
 
-          if (widget.autoPlay && _allSources.length == 1) {
-            _playSource(source);
-          }
-        }
-      },
-      onError: (e) {
-        if (mounted) {
-          setState(() {
-            _isScraping = false;
-            _error = e.toString();
-          });
-        }
-      },
-      onDone: () {
-        if (mounted) {
-          setState(() {
-            _isScraping = false;
-            if (_allSources.isEmpty) {
-              _error =
-                  'No playable streams found for Episode ${widget.episodeNumber}.';
+              if (widget.autoPlay && _allSources.length == 1) {
+                _playSource(source);
+              }
             }
-          });
-        }
-      },
-    );
+          },
+          onError: (e) {
+            if (mounted) {
+              setState(() {
+                _isScraping = false;
+                _error = e.toString();
+              });
+            }
+          },
+          onDone: () {
+            if (mounted) {
+              setState(() {
+                _isScraping = false;
+                if (_allSources.isEmpty) {
+                  _error =
+                      'No playable streams found for Episode ${widget.episodeNumber}.';
+                }
+              });
+            }
+          },
+        );
   }
 
   List<StreamSource> get _filteredSources {
     if (_selectedCategory == 'sub') {
       return _allSources
-          .where((s) =>
-              !(s.description?.toLowerCase().contains('dub') ?? false) &&
-              !(s.name?.toLowerCase().contains('dub') ?? false))
+          .where(
+            (s) =>
+                !(s.description?.toLowerCase().contains('dub') ?? false) &&
+                !(s.name?.toLowerCase().contains('dub') ?? false),
+          )
           .toList();
     } else if (_selectedCategory == 'dub') {
       return _allSources
-          .where((s) =>
-              (s.description?.toLowerCase().contains('dub') ?? false) ||
-              (s.name?.toLowerCase().contains('dub') ?? false))
+          .where(
+            (s) =>
+                (s.description?.toLowerCase().contains('dub') ?? false) ||
+                (s.name?.toLowerCase().contains('dub') ?? false),
+          )
           .toList();
     }
     return _allSources;
@@ -139,15 +144,20 @@ class _AnimeStreamSheetState extends State<AnimeStreamSheet> {
       aniDbEpisodes: widget.aniDbEpisodes,
       customEpisodeCount: widget.totalEpisodes,
     );
-    final video =
-        AnimeScraperService.toVideo(widget.anime, widget.episodeNumber);
+    final video = AnimeScraperService.toVideo(
+      widget.anime,
+      widget.episodeNumber,
+    );
 
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (_) => PlayerScreen(
           source: source,
-          title: l10nOf(context).dynamicAnimeStreamSheetEpisode(localizedAnimeTitle(context, widget.anime), (widget.episodeNumber).toString()),
+          title: l10nOf(context).dynamicAnimeStreamSheetEpisode(
+            localizedAnimeTitle(context, widget.anime),
+            (widget.episodeNumber).toString(),
+          ),
           backdropUrl: widget.anime.backdropUrl,
           detail: detail,
           episode: video,
@@ -162,10 +172,16 @@ class _AnimeStreamSheetState extends State<AnimeStreamSheet> {
     final tokens = ZplayTokens.of(context);
 
     return ZplaySheet(
-      title: l10nOf(context).dynamicAnimeStreamSheetEp(localizedAnimeTitle(context, widget.anime), (widget.episodeNumber).toString()),
-      subtitle: _isScraping ? l10nOf(context).finalAnimeStreamSheetCascadingNativeAnimeExtractors :
-            (Localizations.localeOf(context).languageCode == 'zh' ? widget.episodeChineseTitle : null),
-      status: IconButton(
+      title: l10nOf(context).dynamicAnimeStreamSheetEp(
+        localizedAnimeTitle(context, widget.anime),
+        (widget.episodeNumber).toString(),
+      ),
+      subtitle: _isScraping
+          ? l10nOf(context).finalAnimeStreamSheetCascadingNativeAnimeExtractors
+          : (Localizations.localeOf(context).languageCode == 'zh'
+                ? widget.episodeChineseTitle
+                : null),
+      status: KiruIconButton(
         icon: Icon(Icons.close_rounded, color: tokens.textSecondary),
         onPressed: () => Navigator.pop(context),
       ),
@@ -194,15 +210,21 @@ class _AnimeStreamSheetState extends State<AnimeStreamSheet> {
                     label: l10nOf(context).uiAnimeStreamSheetAll,
                     count: _allSources.length,
                   ),
-                  SegmentedTabOption(value: 'sub', label: l10nOf(context).uiAnimeStreamSheetSub),
-                  SegmentedTabOption(value: 'dub', label: l10nOf(context).uiAnimeStreamSheetDub),
+                  SegmentedTabOption(
+                    value: 'sub',
+                    label: l10nOf(context).uiAnimeStreamSheetSub,
+                  ),
+                  SegmentedTabOption(
+                    value: 'dub',
+                    label: l10nOf(context).uiAnimeStreamSheetDub,
+                  ),
                 ],
               ),
             ),
           ),
 
           const SizedBox(height: 6),
-          Divider(color: tokens.borderDefault, height: 1),
+          KiruDivider(color: tokens.borderDefault, height: 1),
 
           // The list names itself with the shared rail header. No grid
           // translation here: the header's own 16 dp inset is exactly the
@@ -230,10 +252,12 @@ class _AnimeStreamSheetState extends State<AnimeStreamSheet> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        CircularProgressIndicator(color: tokens.accent),
+                        KiruLoader(color: tokens.accent),
                         const SizedBox(height: 14),
                         Text(
-                          l10nOf(context).auxAnimeStreamSheetExtractingMegaplayVidwishAllanimeMiruroStreams,
+                          l10nOf(
+                            context,
+                          ).auxAnimeStreamSheetExtractingMegaplayVidwishAllanimeMiruroStreams,
                           style: ZplayType.body.toStyle(
                             color: tokens.textEmphasis,
                           ),
@@ -242,148 +266,144 @@ class _AnimeStreamSheetState extends State<AnimeStreamSheet> {
                     ),
                   )
                 : _allSources.isEmpty && _error != null
-                    ? Padding(
-                        padding: const EdgeInsets.all(28),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.error_outline_rounded,
-                              color: tokens.danger,
-                              size: 40,
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              _error!,
-                              style: ZplayType.body.toStyle(
-                                color: tokens.textEmphasis,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 14),
-                            PillButton(
-                              label: l10nOf(context).uiAnimeStreamSheetRetryScraping,
-                              icon: Icons.refresh_rounded,
-                              onPressed: _startScraping,
-                            ),
-                          ],
+                ? Padding(
+                    padding: const EdgeInsets.all(28),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.error_outline_rounded,
+                          color: tokens.danger,
+                          size: 40,
                         ),
-                      )
-                    : filtered.isEmpty
-                        ? Padding(
-                            padding: const EdgeInsets.all(ZplaySpacing.s32),
-                            child: Text(
-                              l10nOf(context).dynamicAnimeStreamSheetNoSourcesFound(mediaLabel(context, _selectedCategory.toUpperCase())),
-                              style: ZplayType.body.toStyle(
-                                color: tokens.textSecondary,
-                              ),
-                            ),
-                          )
-                        : ListView.separated(
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.all(ZplaySpacing.s16),
-                            itemCount: filtered.length,
-                            separatorBuilder: (_, __) =>
-                                const SizedBox(height: 10),
-                            itemBuilder: (context, index) {
-                              final s = filtered[index];
-                              final isDub =
-                                  (s.description?.toLowerCase().contains('dub') ??
-                                          false) ||
-                                      (s.name?.toLowerCase().contains('dub') ??
-                                          false);
+                        const SizedBox(height: 10),
+                        Text(
+                          _error!,
+                          style: ZplayType.body.toStyle(
+                            color: tokens.textEmphasis,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 14),
+                        PillButton(
+                          label: l10nOf(
+                            context,
+                          ).uiAnimeStreamSheetRetryScraping,
+                          icon: Icons.refresh_rounded,
+                          onPressed: _startScraping,
+                        ),
+                      ],
+                    ),
+                  )
+                : filtered.isEmpty
+                ? Padding(
+                    padding: const EdgeInsets.all(ZplaySpacing.s32),
+                    child: Text(
+                      l10nOf(context).dynamicAnimeStreamSheetNoSourcesFound(
+                        mediaLabel(context, _selectedCategory.toUpperCase()),
+                      ),
+                      style: ZplayType.body.toStyle(
+                        color: tokens.textSecondary,
+                      ),
+                    ),
+                  )
+                : ListView.separated(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.all(ZplaySpacing.s16),
+                    itemCount: filtered.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 10),
+                    itemBuilder: (context, index) {
+                      final s = filtered[index];
+                      final isDub =
+                          (s.description?.toLowerCase().contains('dub') ??
+                              false) ||
+                          (s.name?.toLowerCase().contains('dub') ?? false);
 
-                              return FocusableCard(
-                                onTap: () => _playSource(s),
-                                builder: (context, state) => CardFocusRing(
-                                  focused: state.focused,
-                                  radius: ZplayRadius.mdAll,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: ZplaySpacing.s16,
-                                      vertical: ZplaySpacing.s12,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      // A fill and the app's one ring; the row
-                                      // draws no border box of its own.
-                                      color: tokens.surface,
-                                      borderRadius: ZplayRadius.mdAll,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.all(
-                                            ZplaySpacing.s8,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: tokens.accentSubtle,
-                                            borderRadius: ZplayRadius.smAll,
-                                          ),
-                                          child: Icon(
-                                            Icons.play_circle_fill_rounded,
-                                            color: tokens.accent,
-                                            size: 24,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 14),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                s.name ?? 'Stream Source',
-                                                style: ZplayType.subtitle
-                                                    .toStyle(
-                                                      color: tokens
-                                                          .textPrimary,
-                                                    ),
-                                              ),
-                                              const SizedBox(height: 3),
-                                              Text(
-                                                s.description ?? s.addonName,
-                                                style: ZplayType.caption
-                                                    .toStyle(
-                                                      color: tokens
-                                                          .textSecondary,
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: ZplaySpacing.s8,
-                                            vertical: ZplaySpacing.s4,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: isDub
-                                                ? tokens.warning
-                                                    .withValues(alpha: 0.2)
-                                                : tokens.info
-                                                    .withValues(alpha: 0.2),
-                                            borderRadius: ZplayRadius.xsAll,
-                                          ),
-                                          child: Text(
-                                            isDub ? l10nOf(context).uiAnimeDetailsPageDub : 'SUB',
-                                            style: ZplayType.overline
-                                                .copyWith(
-                                                  weight: FontWeight.w900,
-                                                )
-                                                .toStyle(
-                                                  color: isDub
-                                                      ? tokens.warning
-                                                      : tokens.info,
-                                                ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                      return FocusableCard(
+                        onTap: () => _playSource(s),
+                        builder: (context, state) => CardFocusRing(
+                          focused: state.focused,
+                          radius: ZplayRadius.mdAll,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: ZplaySpacing.s16,
+                              vertical: ZplaySpacing.s12,
+                            ),
+                            decoration: BoxDecoration(
+                              // A fill and the app's one ring; the row
+                              // draws no border box of its own.
+                              color: tokens.surface,
+                              borderRadius: ZplayRadius.mdAll,
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(
+                                    ZplaySpacing.s8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: tokens.accentSubtle,
+                                    borderRadius: ZplayRadius.smAll,
+                                  ),
+                                  child: Icon(
+                                    Icons.play_circle_fill_rounded,
+                                    color: tokens.accent,
+                                    size: 24,
                                   ),
                                 ),
-                              );
-                            },
+                                const SizedBox(width: 14),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        s.name ?? 'Stream Source',
+                                        style: ZplayType.subtitle.toStyle(
+                                          color: tokens.textPrimary,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 3),
+                                      Text(
+                                        s.description ?? s.addonName,
+                                        style: ZplayType.caption.toStyle(
+                                          color: tokens.textSecondary,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: ZplaySpacing.s8,
+                                    vertical: ZplaySpacing.s4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: isDub
+                                        ? tokens.warning.withValues(alpha: 0.2)
+                                        : tokens.info.withValues(alpha: 0.2),
+                                    borderRadius: ZplayRadius.xsAll,
+                                  ),
+                                  child: Text(
+                                    isDub
+                                        ? l10nOf(context).uiAnimeDetailsPageDub
+                                        : 'SUB',
+                                    style: ZplayType.overline
+                                        .copyWith(weight: FontWeight.w900)
+                                        .toStyle(
+                                          color: isDub
+                                              ? tokens.warning
+                                              : tokens.info,
+                                        ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
+                        ),
+                      );
+                    },
+                  ),
           ),
         ],
       ),

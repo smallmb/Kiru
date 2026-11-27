@@ -1,3 +1,5 @@
+import '../ui/kiru_toast.dart';
+import '../ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
@@ -225,7 +227,9 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
                                   ),
                                   const SizedBox(height: ZplaySpacing.s4),
                                   Text(
-                                    l10nOf(context).auxP2PWarningDialogP2pTorrentStreamingNotice,
+                                    l10nOf(
+                                      context,
+                                    ).auxP2PWarningDialogP2pTorrentStreamingNotice,
                                     style: ZplayType.title.toStyle(
                                       color: tokens.textPrimary,
                                     ),
@@ -256,12 +260,14 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
                               excluding:
                                   FormFactorService.of(context) ==
                                   FormFactor.television,
-                              child: IconButton(
+                              child: KiruIconButton(
                                 icon: Icon(
                                   Icons.close_rounded,
                                   color: tokens.textSecondary,
                                 ),
-                                tooltip: l10nOf(context).auxP2PWarningDialogExit,
+                                tooltip: l10nOf(
+                                  context,
+                                ).auxP2PWarningDialogExit,
                                 onPressed: () => Navigator.of(context).pop(),
                               ),
                             ),
@@ -334,7 +340,9 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
                                           ),
                                           Expanded(
                                             child: Text(
-                                              l10nOf(context).auxP2PWarningDialogWouldYouLikeToTurnOffThe,
+                                              l10nOf(
+                                                context,
+                                              ).auxP2PWarningDialogWouldYouLikeToTurnOffThe,
                                               style: ZplayType.subtitle.toStyle(
                                                 color: tokens.textPrimary,
                                               ),
@@ -346,7 +354,9 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
                                     const SizedBox(height: ZplaySpacing.s12),
                                     // Main advisory text
                                     Text(
-                                      l10nOf(context).auxP2PWarningDialogP2pPeerToPeerTorrentStreamingConnects,
+                                      l10nOf(
+                                        context,
+                                      ).auxP2PWarningDialogP2pPeerToPeerTorrentStreamingConnects,
                                       style: ZplayType.body.toStyle(
                                         color: tokens.textPrimary,
                                       ),
@@ -371,15 +381,18 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
                                             context,
                                             icon: Icons.cloud_done_rounded,
                                             iconColor: tokens.success,
-                                            title: l10nOf(context).auxP2PWarningDialogZplayhttpDirectStream,
-                                            subtitle:
-                                                l10nOf(context).auxP2PWarningDialogSafeDirectHttpsWebStreamsNoTorrenting,
+                                            title: l10nOf(
+                                              context,
+                                            ).auxP2PWarningDialogZplayhttpDirectStream,
+                                            subtitle: l10nOf(
+                                              context,
+                                            ).auxP2PWarningDialogSafeDirectHttpsWebStreamsNoTorrenting,
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
                                               vertical: ZplaySpacing.s12,
                                             ),
-                                            child: Divider(
+                                            child: KiruDivider(
                                               height: 1,
                                               color: tokens.borderSubtle,
                                             ),
@@ -388,9 +401,12 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
                                             context,
                                             icon: Icons.hub_rounded,
                                             iconColor: warning,
-                                            title: l10nOf(context).auxP2PWarningDialogZplayTorrentEngine,
-                                            subtitle:
-                                                l10nOf(context).auxP2PWarningDialogP2pSwarmsKnabenTorrentgalaxyInvolvesPeerData,
+                                            title: l10nOf(
+                                              context,
+                                            ).auxP2PWarningDialogZplayTorrentEngine,
+                                            subtitle: l10nOf(
+                                              context,
+                                            ).auxP2PWarningDialogP2pSwarmsKnabenTorrentgalaxyInvolvesPeerData,
                                           ),
                                         ],
                                       ),
@@ -400,7 +416,9 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
 
                                     // Prompt question
                                     Text(
-                                      l10nOf(context).auxP2PWarningDialogNoteYouCanEasilyToggleTheBuilt,
+                                      l10nOf(
+                                        context,
+                                      ).auxP2PWarningDialogNoteYouCanEasilyToggleTheBuilt,
                                       style: ZplayType.caption
                                           .toStyle(color: tokens.textSecondary)
                                           .copyWith(
@@ -491,7 +509,8 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
     return Row(
       children: [
         // Exit button
-        TextButton(
+        KiruButton(
+          kind: KiruButtonKind.ghost,
           onPressed: () => Navigator.of(context).pop(),
           style: TextButton.styleFrom(
             padding: const EdgeInsets.symmetric(
@@ -500,12 +519,16 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
             ),
             foregroundColor: tokens.textSecondary,
           ),
-          child: Text(l10nOf(context).auxP2PWarningDialogExit, style: ZplayType.label.toStyle()),
+          child: Text(
+            l10nOf(context).auxP2PWarningDialogExit,
+            style: ZplayType.label.toStyle(),
+          ),
         ),
         const Spacer(),
 
         // Don't show again button (keeps P2P enabled)
-        OutlinedButton(
+        KiruButton(
+          kind: KiruButtonKind.outline,
           onPressed: () async {
             await P2pSettingsService.setNeverShowWarning(true);
             if (context.mounted) Navigator.of(context).pop();
@@ -521,20 +544,25 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
               borderRadius: ZplayRadius.smAll,
             ),
           ),
-          child: Text(l10nOf(context).auxP2PWarningDialogDonTShowAgain, style: ZplayType.label.toStyle()),
+          child: Text(
+            l10nOf(context).auxP2PWarningDialogDonTShowAgain,
+            style: ZplayType.label.toStyle(),
+          ),
         ),
         const SizedBox(width: ZplaySpacing.s12),
 
         // Yes, Turn Off P2P button
-        ElevatedButton.icon(
+        KiruButton(
           onPressed: () async {
             await P2pSettingsService.setP2pEnabled(false);
             await P2pSettingsService.setNeverShowWarning(true);
             if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+              KiruToastMessenger.of(context).showSnackBar(
+                KiruToast(
                   content: Text(
-                    l10nOf(context).auxP2PWarningDialogP2pTorrentSourceTurnedOffZplayhttpWill,
+                    l10nOf(
+                      context,
+                    ).auxP2PWarningDialogP2pTorrentSourceTurnedOffZplayhttpWill,
                   ),
                   backgroundColor: tokens.success,
                   behavior: SnackBarBehavior.floating,
@@ -544,7 +572,10 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
             }
           },
           icon: const Icon(Icons.check_circle_outline_rounded, size: 18),
-          label: Text(l10nOf(context).auxP2PWarningDialogYesTurnOffP2p, style: ZplayType.label.toStyle()),
+          child: Text(
+            l10nOf(context).auxP2PWarningDialogYesTurnOffP2p,
+            style: ZplayType.label.toStyle(),
+          ),
           style: ElevatedButton.styleFrom(
             backgroundColor: tokens.warning,
             foregroundColor: Colors.black,
@@ -570,15 +601,17 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // Yes, Turn Off P2P button
-        ElevatedButton.icon(
+        KiruButton(
           onPressed: () async {
             await P2pSettingsService.setP2pEnabled(false);
             await P2pSettingsService.setNeverShowWarning(true);
             if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+              KiruToastMessenger.of(context).showSnackBar(
+                KiruToast(
                   content: Text(
-                    l10nOf(context).auxP2PWarningDialogP2pTorrentSourceTurnedOffZplayhttpWill,
+                    l10nOf(
+                      context,
+                    ).auxP2PWarningDialogP2pTorrentSourceTurnedOffZplayhttpWill,
                   ),
                   backgroundColor: tokens.success,
                   behavior: SnackBarBehavior.floating,
@@ -588,7 +621,10 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
             }
           },
           icon: const Icon(Icons.check_circle_outline_rounded, size: 18),
-          label: Text(l10nOf(context).auxP2PWarningDialogYesTurnOffP2p, style: ZplayType.label.toStyle()),
+          child: Text(
+            l10nOf(context).auxP2PWarningDialogYesTurnOffP2p,
+            style: ZplayType.label.toStyle(),
+          ),
           style: ElevatedButton.styleFrom(
             backgroundColor: tokens.warning,
             foregroundColor: Colors.black,
@@ -604,7 +640,8 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
         Row(
           children: [
             Expanded(
-              child: OutlinedButton(
+              child: KiruButton(
+                kind: KiruButtonKind.outline,
                 onPressed: () async {
                   await P2pSettingsService.setNeverShowWarning(true);
                   if (context.mounted) Navigator.of(context).pop();
@@ -626,7 +663,8 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
               ),
             ),
             const SizedBox(width: ZplaySpacing.s8),
-            TextButton(
+            KiruButton(
+              kind: KiruButtonKind.ghost,
               onPressed: () => Navigator.of(context).pop(),
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
@@ -635,7 +673,10 @@ class _P2pWarningDialogState extends State<P2pWarningDialog> {
                 ),
                 foregroundColor: tokens.textSecondary,
               ),
-              child: Text(l10nOf(context).auxP2PWarningDialogExit, style: ZplayType.label.toStyle()),
+              child: Text(
+                l10nOf(context).auxP2PWarningDialogExit,
+                style: ZplayType.label.toStyle(),
+              ),
             ),
           ],
         ),

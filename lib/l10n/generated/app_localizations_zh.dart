@@ -69,6 +69,18 @@ class AppLocalizationsZh extends AppLocalizations {
   String get shellExitFullscreenTooltip => '退出全屏（F11）';
 
   @override
+  String get shellMinimizeWindowTooltip => '最小化窗口';
+
+  @override
+  String get shellMaximizeWindowTooltip => '最大化窗口';
+
+  @override
+  String get shellRestoreWindowTooltip => '还原窗口';
+
+  @override
+  String get shellCloseWindowTooltip => '关闭窗口';
+
+  @override
   String get errorLoadFailed => '无法加载影片';
 
   @override
@@ -6499,7 +6511,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get configCopyDeepOpticalRefractionGlassSheetsPoweredBy =>
-      '基于 liquid_glass_easy 的深层折射玻璃效果';
+      '基于高斯模糊的磨砂背景';
 
   @override
   String get configCopyCinematicPosterFocus => '影院式封面聚焦';

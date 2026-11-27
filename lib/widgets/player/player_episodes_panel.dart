@@ -1,3 +1,4 @@
+import '../ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:ui';
@@ -7,7 +8,6 @@ import '../../models/movie/video.dart';
 import '../../services/theme/design_tokens.dart';
 import 'player_glass.dart';
 import '../../services/storage/app_image_cache.dart';
-import '../common/focusable_card.dart';
 
 /// Ultra-responsive, glassmorphic Episodes Side Panel with season tabs,
 /// auto-scroll to current episode, animated card expansion, and high FPS rendering.
@@ -301,7 +301,7 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
                   // ── Season Tabs Row (if multi-season) ──
                   if (_seasons.length > 1) _buildSeasonTabs(isCompact),
 
-                  Divider(height: 1, color: tokens.borderDefault),
+                  KiruDivider(height: 1, color: tokens.borderDefault),
 
                   // ── Scrollable Episodes List ──
                   Expanded(
@@ -346,7 +346,9 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
                             top: 12,
                             child: _buildScrollFloatingButton(
                               icon: Icons.keyboard_arrow_up_rounded,
-                              tooltip: l10nOf(context).uiPlayerEpisodesPanelScrollUp,
+                              tooltip: l10nOf(
+                                context,
+                              ).uiPlayerEpisodesPanelScrollUp,
                               onTap: () => _scrollStep(false),
                             ),
                           ),
@@ -355,7 +357,9 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
                             bottom: 12,
                             child: _buildScrollFloatingButton(
                               icon: Icons.keyboard_arrow_down_rounded,
-                              tooltip: l10nOf(context).uiPlayerEpisodesPanelScrollDown,
+                              tooltip: l10nOf(
+                                context,
+                              ).uiPlayerEpisodesPanelScrollDown,
                               onTap: () => _scrollStep(true),
                             ),
                           ),
@@ -412,7 +416,10 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
                       .toStyle(color: tokens.textPrimary),
                 ),
                 Text(
-                  l10nOf(context).dynamicPlayerEpisodesPanelEpisodes(_displaySeasonLabel(_selectedSeason), (episodeCount).toString()),
+                  l10nOf(context).dynamicPlayerEpisodesPanelEpisodes(
+                    _displaySeasonLabel(_selectedSeason),
+                    (episodeCount).toString(),
+                  ),
                   style: ZplayType.bodySmall
                       .copyWith(weight: FontWeight.w500)
                       .toStyle(color: tokens.textSecondary),
@@ -554,7 +561,7 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
     required VoidCallback onTap,
   }) {
     final tokens = context.tokens;
-    return Tooltip(
+    return PlayerTooltip(
       message: tooltip,
       child: FocusableInkWell(
         onTap: onTap,
@@ -589,7 +596,7 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
     final hasOverview =
         video.overview != null && video.overview!.trim().isNotEmpty;
 
-    return FocusableCard(
+    return PlayerTappable(
       onTap: () => _handleEpisodeTap(video),
       builder: (context, state) {
         final isHovered = state.highlighted;
@@ -694,7 +701,9 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
                                   borderRadius: ZplayRadius.xsAll,
                                 ),
                                 child: Text(
-                                  l10nOf(context).dynamicPlayerEpisodesPanelEp((epNum).toString()),
+                                  l10nOf(context).dynamicPlayerEpisodesPanelEp(
+                                    (epNum).toString(),
+                                  ),
                                   style: ZplayType.overline
                                       .copyWith(
                                         weight: FontWeight.w800,
@@ -771,7 +780,9 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
                                       ),
                                       const SizedBox(width: ZplaySpacing.s4),
                                       Text(
-                                        l10nOf(context).uiPlayerEpisodesPanelPlaying,
+                                        l10nOf(
+                                          context,
+                                        ).uiPlayerEpisodesPanelPlaying,
                                         style: ZplayType.overline
                                             .copyWith(
                                               weight: FontWeight.w800,
@@ -916,7 +927,7 @@ class _PlayerEpisodesPanelState extends State<PlayerEpisodesPanel> {
     required VoidCallback onTap,
   }) {
     final tokens = context.tokens;
-    return Tooltip(
+    return PlayerTooltip(
       message: tooltip,
       child: FocusableInkWell(
         onTap: onTap,

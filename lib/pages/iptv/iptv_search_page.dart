@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
@@ -53,7 +54,8 @@ class _IptvSearchPageState extends State<IptvSearchPage> {
 
     // Search hardcoded channels
     for (final c in HardcodedChannels.all) {
-      final matchesCategory = _selectedCategory == 'All' || c.category == _selectedCategory;
+      final matchesCategory =
+          _selectedCategory == 'All' || c.category == _selectedCategory;
       if (!matchesCategory) continue;
       if (_query.trim().isEmpty) {
         results.add(c);
@@ -68,7 +70,8 @@ class _IptvSearchPageState extends State<IptvSearchPage> {
 
     // Also search user-added Quick Channels
     for (final qc in widget.quickChannels) {
-      if (_selectedCategory != 'All' && qc.category != _selectedCategory) continue;
+      if (_selectedCategory != 'All' && qc.category != _selectedCategory)
+        continue;
       if (_query.trim().isEmpty) {
         results.add(qc.toHardcoded());
         continue;
@@ -122,7 +125,7 @@ class _IptvSearchPageState extends State<IptvSearchPage> {
           ),
           child: Row(
             children: [
-              IconButton(
+              KiruIconButton(
                 icon: const Icon(Icons.arrow_back_rounded),
                 color: tokens.textPrimary,
                 tooltip: l10nOf(context).uiPlayerTopBarBack,
@@ -137,20 +140,24 @@ class _IptvSearchPageState extends State<IptvSearchPage> {
                     borderRadius: ZplayRadius.mdAll,
                     border: Border.fromBorderSide(tokens.hairline),
                   ),
-                  child: TextField(
+                  child: KiruFormField(
                     controller: _searchCtrl,
                     autofocus: true,
                     style: ZplayType.body.toStyle(color: tokens.textPrimary),
                     decoration: InputDecoration(
-                      hintText: l10nOf(context).auxIptvSearchPageSearch60LiveChannelsLeaguesNetworks,
-                      hintStyle: ZplayType.label.toStyle(color: tokens.textMuted),
+                      hintText: l10nOf(
+                        context,
+                      ).auxIptvSearchPageSearch60LiveChannelsLeaguesNetworks,
+                      hintStyle: ZplayType.label.toStyle(
+                        color: tokens.textMuted,
+                      ),
                       prefixIcon: Icon(
                         Icons.search_rounded,
                         color: tokens.accent,
                         size: 20,
                       ),
                       suffixIcon: _query.isNotEmpty
-                          ? IconButton(
+                          ? KiruIconButton(
                               icon: Icon(
                                 Icons.close_rounded,
                                 color: tokens.textMuted,

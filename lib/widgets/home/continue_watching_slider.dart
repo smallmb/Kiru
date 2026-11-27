@@ -1,3 +1,4 @@
+import '../ui/kiru_controls.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
@@ -113,7 +114,10 @@ class _ContinueWatchingSliderState extends State<ContinueWatchingSlider> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Section Header
-              SectionHeader(title: configLabel(context, widget.title), count: items.length),
+              SectionHeader(
+                title: configLabel(context, widget.title),
+                count: items.length,
+              ),
 
               const SizedBox(height: ZplaySpacing.s12),
 
@@ -484,7 +488,9 @@ class _ContinueWatchingCardState extends State<_ContinueWatchingCard> {
                                 borderRadius: ZplayRadius.xsAll,
                               ),
                               child: Text(
-                                l10nOf(context).uiContinueWatchingSliderHoldOkForOptions,
+                                l10nOf(
+                                  context,
+                                ).uiContinueWatchingSliderHoldOkForOptions,
                                 style: ZplayType.label.toStyle(
                                   color: tokens.textPrimary,
                                 ),
@@ -512,8 +518,10 @@ class _ContinueWatchingCardState extends State<_ContinueWatchingCard> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   // Details Button
-                                  Tooltip(
-                                    message: l10nOf(context).uiContinueWatchingSliderViewDetails,
+                                  KiruTooltip(
+                                    message: l10nOf(
+                                      context,
+                                    ).uiContinueWatchingSliderViewDetails,
                                     child: FocusableCard(
                                       onTap: () => _openDetails(context),
                                       builder: (_, state) => Container(
@@ -540,8 +548,10 @@ class _ContinueWatchingCardState extends State<_ContinueWatchingCard> {
                                   ),
                                   const SizedBox(width: ZplaySpacing.s8),
                                   // Dismiss / Remove Button
-                                  Tooltip(
-                                    message: l10nOf(context).uiContinueWatchingSliderRemoveFromContinueWatching,
+                                  KiruTooltip(
+                                    message: l10nOf(
+                                      context,
+                                    ).uiContinueWatchingSliderRemoveFromContinueWatching,
                                     child: FocusableCard(
                                       onTap: widget.onRemove,
                                       builder: (_, state) => Container(
@@ -791,7 +801,9 @@ class _CardOptionsPanel extends StatelessWidget {
                 ),
                 const SizedBox(height: ZplaySpacing.s8),
                 PillButton(
-                  label: l10nOf(context).uiContinueWatchingSliderRemoveFromContinueWatching,
+                  label: l10nOf(
+                    context,
+                  ).uiContinueWatchingSliderRemoveFromContinueWatching,
                   icon: Icons.close_rounded,
                   variant: PillVariant.secondary,
                   expand: true,

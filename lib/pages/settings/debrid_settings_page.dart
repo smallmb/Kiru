@@ -1,3 +1,5 @@
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
@@ -39,7 +41,8 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
   String _sanitizeKey(String raw) {
     var s = raw.trim();
     if (s.startsWith('Bearer ')) s = s.substring(7).trim();
-    if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
+    if ((s.startsWith('"') && s.endsWith('"')) ||
+        (s.startsWith("'") && s.endsWith("'"))) {
       s = s.substring(1, s.length - 1).trim();
     }
     return s;
@@ -116,7 +119,9 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
       });
 
       if (verifiedUser != null) {
-        _showSnack('$provider key verified ($verifiedUser) & set as active provider!');
+        _showSnack(
+          '$provider key verified ($verifiedUser) & set as active provider!',
+        );
       } else {
         _showSnack('$provider key saved & set as active provider!');
       }
@@ -160,12 +165,12 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
   void _showSnack(String msg, {bool isError = false}) {
     if (!mounted) return;
     final tokens = context.tokens;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+    KiruToastMessenger.of(context).showSnackBar(
+      KiruToast(
         content: Text(msg, style: ZplayType.subtitle.toStyle()),
         behavior: SnackBarBehavior.floating,
         backgroundColor: isError ? tokens.danger : tokens.accent,
-        action: SnackBarAction(
+        action: KiruToastAction(
           label: l10nOf(context).uiDebridSettingsPageDismiss,
           textColor: tokens.onAccent,
           onPressed: () {},
@@ -189,7 +194,9 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: Text(
-              l10nOf(context).auxDebridSettingsPageStreamTorrentsAndMagnetLinksInstantlyThrough,
+              l10nOf(
+                context,
+              ).auxDebridSettingsPageStreamTorrentsAndMagnetLinksInstantlyThrough,
               style: ZplayType.body.toStyle(color: tokens.textSecondary),
             ),
           ),
@@ -214,7 +221,9 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                       width: 44,
                       height: 44,
                       decoration: BoxDecoration(
-                        color: tokens.accent.withValues(alpha: ZplayOpacity.borderStrong),
+                        color: tokens.accent.withValues(
+                          alpha: ZplayOpacity.borderStrong,
+                        ),
                         borderRadius: ZplayRadius.smAll,
                       ),
                       child: Icon(
@@ -229,14 +238,18 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            l10nOf(context).uiDebridSettingsPageUseDebridForStreams,
+                            l10nOf(
+                              context,
+                            ).uiDebridSettingsPageUseDebridForStreams,
                             style: ZplayType.subtitle.toStyle(
                               color: tokens.textPrimary,
                             ),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            l10nOf(context).uiDebridSettingsPageRouteTorrentLinksThroughCloudServers,
+                            l10nOf(
+                              context,
+                            ).uiDebridSettingsPageRouteTorrentLinksThroughCloudServers,
                             style: ZplayType.bodySmall.toStyle(
                               color: tokens.textSecondary,
                             ),
@@ -245,7 +258,7 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                       ),
                     ),
                     const SizedBox(width: 12),
-                    Switch.adaptive(
+                    KiruSwitch(
                       value: _useDebrid,
                       activeColor: tokens.accent,
                       onChanged: (val) async {
@@ -259,18 +272,24 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                               isError: true,
                             );
                           } else {
-                            final hasKey = await _debrid.hasKeyForService(service);
+                            final hasKey = await _debrid.hasKeyForService(
+                              service,
+                            );
                             if (!hasKey) {
                               _showSnack(
                                 '$service has no API key saved. Please enter and save your key below.',
                                 isError: true,
                               );
                             } else {
-                              _showSnack('Debrid streaming activated via $service');
+                              _showSnack(
+                                'Debrid streaming activated via $service',
+                              );
                             }
                           }
                         } else {
-                          _showSnack('Debrid streaming disabled. Using local engine.');
+                          _showSnack(
+                            'Debrid streaming disabled. Using local engine.',
+                          );
                         }
                         await DebridService.refreshDebridReady();
                       },
@@ -279,7 +298,9 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                 ),
                 const SizedBox(height: 14),
                 Text(
-                  l10nOf(context).auxDebridSettingsPageWhenEnabledAllTorrentsFromZplayAnd,
+                  l10nOf(
+                    context,
+                  ).auxDebridSettingsPageWhenEnabledAllTorrentsFromZplayAnd,
                   style: ZplayType.bodySmall.toStyle(
                     color: tokens.textSecondary,
                   ),
@@ -303,24 +324,33 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  l10nOf(context).uiDebridSettingsPageSelectDefaultDebridProvider,
+                  l10nOf(
+                    context,
+                  ).uiDebridSettingsPageSelectDefaultDebridProvider,
                   style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  l10nOf(context).uiDebridSettingsPageZplayWillSendRequestsToThis,
+                  l10nOf(
+                    context,
+                  ).uiDebridSettingsPageZplayWillSendRequestsToThis,
                   style: ZplayType.bodySmall.toStyle(
                     color: tokens.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 12),
-                DropdownButtonFormField<String>(
-                  value: services.contains(_selectedService) ? _selectedService : 'None',
+                KiruDropdown<String>(
+                  value: services.contains(_selectedService)
+                      ? _selectedService
+                      : 'None',
                   dropdownColor: tokens.surfaceOverlay,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: tokens.bg,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 12,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: ZplayRadius.smAll,
                       borderSide: BorderSide(color: tokens.borderDefault),
@@ -341,9 +371,13 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                       child: Row(
                         children: [
                           Icon(
-                            s == 'None' ? Icons.block_rounded : Icons.flash_on_rounded,
+                            s == 'None'
+                                ? Icons.block_rounded
+                                : Icons.flash_on_rounded,
                             size: 16,
-                            color: s == 'None' ? tokens.textMuted : tokens.accent,
+                            color: s == 'None'
+                                ? tokens.textMuted
+                                : tokens.accent,
                           ),
                           const SizedBox(width: 8),
                           Text(s),
@@ -487,9 +521,14 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
               ),
               if (isActive)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 7,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
-                    color: tokens.accent.withValues(alpha: ZplayOpacity.borderStrong),
+                    color: tokens.accent.withValues(
+                      alpha: ZplayOpacity.borderStrong,
+                    ),
                     borderRadius: ZplayRadius.xsAll,
                   ),
                   child: Text(
@@ -499,7 +538,10 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                 ),
               if (statusBadge != null)
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 7,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: (badgeColor ?? tokens.success).withValues(
                       alpha: ZplayOpacity.borderStrong,
@@ -528,19 +570,24 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
           Row(
             children: [
               Expanded(
-                child: TextField(
+                child: KiruFormField(
                   controller: controller,
                   obscureText: isObscured,
                   style: ZplayType.label.toStyle(color: tokens.textPrimary),
                   decoration: InputDecoration(
-                    hintText: l10nOf(context).uiDebridSettingsPagePasteApiKeyToken,
+                    hintText: l10nOf(
+                      context,
+                    ).uiDebridSettingsPagePasteApiKeyToken,
                     hintStyle: ZplayType.bodySmall.toStyle(
                       color: tokens.textDisabled,
                     ),
                     filled: true,
                     fillColor: tokens.bg,
                     isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 10,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: ZplayRadius.smAll,
                       borderSide: BorderSide(color: tokens.borderDefault),
@@ -557,8 +604,12 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (controller.text.isNotEmpty)
-                          IconButton(
-                            icon: Icon(Icons.clear_rounded, color: tokens.textMuted, size: 16),
+                          KiruIconButton(
+                            icon: Icon(
+                              Icons.clear_rounded,
+                              color: tokens.textMuted,
+                              size: 16,
+                            ),
                             padding: const EdgeInsets.all(4),
                             constraints: const BoxConstraints(),
                             tooltip: l10nOf(context).uiDebridSettingsPageClear,
@@ -567,26 +618,36 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                               setState(() {});
                             },
                           ),
-                        IconButton(
+                        KiruIconButton(
                           icon: Icon(
-                            isObscured ? Icons.visibility_off_rounded : Icons.visibility_rounded,
+                            isObscured
+                                ? Icons.visibility_off_rounded
+                                : Icons.visibility_rounded,
                             color: tokens.textMuted,
                             size: 16,
                           ),
                           padding: const EdgeInsets.all(4),
                           constraints: const BoxConstraints(),
-                          tooltip: isObscured ? l10nOf(context).finalDebridSettingsPageShowKey : l10nOf(context).finalDebridSettingsPageHideKey,
+                          tooltip: isObscured
+                              ? l10nOf(context).finalDebridSettingsPageShowKey
+                              : l10nOf(context).finalDebridSettingsPageHideKey,
                           onPressed: () {
                             setState(() {
                               _obscuredMap[name] = !isObscured;
                             });
                           },
                         ),
-                        IconButton(
-                          icon: Icon(Icons.content_paste_rounded, color: tokens.accent, size: 16),
+                        KiruIconButton(
+                          icon: Icon(
+                            Icons.content_paste_rounded,
+                            color: tokens.accent,
+                            size: 16,
+                          ),
                           padding: const EdgeInsets.all(4),
                           constraints: const BoxConstraints(),
-                          tooltip: l10nOf(context).uiDebridSettingsPagePasteFromClipboard,
+                          tooltip: l10nOf(
+                            context,
+                          ).uiDebridSettingsPagePasteFromClipboard,
                           onPressed: () => _pasteToController(controller),
                         ),
                         const SizedBox(width: 4),
@@ -596,20 +657,28 @@ class _DebridSettingsPageState extends State<DebridSettingsPage> {
                 ),
               ),
               const SizedBox(width: 8),
-              ElevatedButton(
+              KiruButton(
                 onPressed: isLoading ? null : () => _saveProviderKey(name),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: tokens.accent,
                   foregroundColor: tokens.onAccent,
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                  shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: ZplayRadius.smAll,
+                  ),
                   elevation: 0,
                 ),
                 child: isLoading
                     ? SizedBox(
                         width: 16,
                         height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2, color: tokens.onAccent),
+                        child: KiruLoader(
+                          strokeWidth: 2,
+                          color: tokens.onAccent,
+                        ),
                       )
                     : Text(
                         l10nOf(context).uiDebridSettingsPageSave,

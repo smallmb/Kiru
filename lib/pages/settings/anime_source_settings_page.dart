@@ -1,8 +1,10 @@
+import '../../widgets/ui/kiru_toast.dart';
 import 'package:flutter/material.dart';
 import '../../l10n/l10n.dart';
 import '../../services/anime/anime_source_settings.dart';
 import '../../services/anime/bangumi_client.dart';
 import '../../widgets/settings/settings_scaffold.dart';
+import '../../widgets/ui/kiru_controls.dart';
 
 class AnimeSourceSettingsPage extends StatefulWidget {
   const AnimeSourceSettingsPage({super.key});
@@ -23,8 +25,11 @@ class _AnimeSourceSettingsPageState extends State<AnimeSourceSettingsPage> {
   }
 
   void _message(String text) {
-    if (mounted)
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+    if (mounted) {
+      KiruToastMessenger.of(
+        context,
+      ).showSnackBar(KiruToast(content: Text(text)));
+    }
   }
 
   Future<void> _save() async {
@@ -70,32 +75,23 @@ class _AnimeSourceSettingsPageState extends State<AnimeSourceSettingsPage> {
           const SizedBox(height: 12),
           ValueListenableBuilder<AnimeSource>(
             valueListenable: AnimeSourceSettings.source,
-            builder: (context, source, _) =>
-                DropdownButtonFormField<AnimeSource>(
-                  initialValue: source,
-                  decoration: InputDecoration(
-                    labelText: l.animeSourceSettingsTitle,
-                  ),
-                  items: [
-                    DropdownMenuItem(
-                      value: AnimeSource.anilist,
-                      child: Text(l.animeSourceAniList),
-                    ),
-                    DropdownMenuItem(
-                      value: AnimeSource.bangumi,
-                      child: Text(l.animeSourceBangumi),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    if (value != null) AnimeSourceSettings.setSource(value);
-                  },
-                ),
+            builder: (context, source, _) => KiruSelect<AnimeSource>(
+              value: source,
+              label: l.animeSourceSettingsTitle,
+              items: {
+                l.animeSourceAniList: AnimeSource.anilist,
+                l.animeSourceBangumi: AnimeSource.bangumi,
+              },
+              onChanged: (value) {
+                if (value != null) AnimeSourceSettings.setSource(value);
+              },
+            ),
           ),
           const SizedBox(height: 12),
           Text(l.animeSourceIdentityHelp),
           ValueListenableBuilder<bool>(
             valueListenable: AnimeSourceSettings.fallback,
-            builder: (context, value, _) => SwitchListTile(
+            builder: (context, value, _) => KiruSwitchRow(
               title: Text(l.animeSourceFallback),
               subtitle: Text(l.animeSourceFallbackHelp),
               value: value,
@@ -103,22 +99,29 @@ class _AnimeSourceSettingsPageState extends State<AnimeSourceSettingsPage> {
             ),
           ),
           const SizedBox(height: 20),
-          TextField(
+          KiruTextField(
             controller: _mirror,
-            decoration: InputDecoration(labelText: l.animeSourceMirror),
+            label: l.animeSourceMirror,
             keyboardType: TextInputType.url,
           ),
           Text(l.animeSourceMirrorHelp),
           const SizedBox(height: 16),
-          TextField(
+          KiruTextField(
             controller: _proxy,
-            decoration: InputDecoration(labelText: l.animeSourceProxy),
+            label: l.animeSourceProxy,
             keyboardType: TextInputType.url,
           ),
           Text(l.animeSourceProxyHelp),
           const SizedBox(height: 16),
-          FilledButton(onPressed: _save, child: Text(l.animeSourceSave)),
-          OutlinedButton(
+          KiruButton(
+            expand: true,
+            onPressed: _save,
+            child: Text(l.animeSourceSave),
+          ),
+          const SizedBox(height: 8),
+          KiruButton(
+            kind: KiruButtonKind.outline,
+            expand: true,
             onPressed: _busy ? null : _test,
             child: Text(l.animeSourceCheck),
           ),

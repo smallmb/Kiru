@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import '../../l10n/l10n.dart';
 
 import 'dart:async';
@@ -10,7 +11,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import '../../widgets/common/zplay_logo.dart';
-import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 
 import '../../models/movie/movie.dart';
 import '../../services/layout/form_factor.dart';
@@ -20,7 +20,6 @@ import '../../models/movie/movie_section.dart';
 import '../../services/addon/addon_manager.dart';
 import '../../services/metadata/metadata_service.dart';
 import '../../services/metadata/metahub_art.dart';
-import '../../services/theme/glass_settings.dart';
 import '../../services/home/home_page_settings.dart';
 import '../../services/collections/collections_service.dart';
 import '../../services/theme/app_theme_service.dart';
@@ -28,7 +27,6 @@ import '../../services/continue_watching/continue_watching_service.dart';
 import '../../services/my_list/my_list_service.dart';
 import '../../widgets/common/animated_ambient_background.dart';
 import '../../widgets/common/card_focus_expansion.dart';
-import '../../widgets/common/custom_scroll_track.dart';
 import '../../widgets/common/error_view.dart';
 import '../../widgets/common/focusable_card.dart';
 import '../../widgets/common/rail_skeleton.dart';
@@ -1241,7 +1239,13 @@ class _HomePageState extends State<HomePage> {
           // overlay painted above this whole stack (see `_buildBody`), so a band
           // drawn in here cannot bleed through it. See `_HeroBackdropBand` for
           // why that ordering is load-bearing rather than incidental.
-          _HeroBackdropBand(url: _heroBackdropUrl, chromeTop: appBarInset),
+          _HeroBackdropBand(
+            url: _heroBackdropUrl,
+            chromeTop: switch (FormFactorService.of(context)) {
+              FormFactor.medium || FormFactor.expanded => 0,
+              _ => appBarInset,
+            },
+          ),
           // ── Main scrollable content ──
           // The skeleton tracks the *unfiltered* load, not the visible
           // sections.
@@ -1374,55 +1378,18 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
 
-      // ── Custom Scroll Track ──
-      //
-      // Gated on the input, not on the width. The width test alone was read as
-      // "desktop only", and a 960 dp television is wider than the 800 it asked
-      // for - so the ten-foot canvas was handed a 55 x 412 dp grab pill that
-      // covered the rail cards and their See All links from the moment the page
-      // moved until a second or so after it stopped. There is no pointer on a
-      // television to grab it with, and the remote has its own way to scroll:
-      // the D-pad moves focus and `_revealFocused` follows it. The width stays
-      // as the *room* test and not the input test: the pill is 412 dp tall, so
-      // a window narrower than this has nowhere to put it on any input.
-      if (!FormFactorService.hasRemoteInput &&
-          MediaQuery.sizeOf(context).width > 800)
-        Positioned(
-          right: 24,
-          bottom: 40,
-          child: CustomScrollTrack(controller: _scrollController),
-        ),
-
       // ── Intro Splash Screen ──
       Positioned.fill(child: _buildIntroOverlay(context)),
     ];
 
-    return ValueListenableBuilder<bool>(
-      valueListenable: GlassSettings.enabled,
-      builder: (context, enabled, _) {
-        final overlays = Stack(children: overlayChildren);
-        if (enabled) {
-          return LiquidGlassView(
-            realTimeCapture: true,
-            useSync: true,
-            pixelRatio: 0.85,
-            refreshRate: LiquidGlassRefreshRate.deviceRefreshRate,
-            regionCapture: true,
-            backgroundWidget: backgroundContent,
-            child: overlays,
-          );
-        }
-
-        return Container(
-          color: context.tokens.bg,
-          child: Stack(
-            children: [
-              RepaintBoundary(child: backgroundContent),
-              ...overlayChildren,
-            ],
-          ),
-        );
-      },
+    return Container(
+      color: context.tokens.bg,
+      child: Stack(
+        children: [
+          RepaintBoundary(child: backgroundContent),
+          ...overlayChildren,
+        ],
+      ),
     );
   }
 
@@ -1656,7 +1623,7 @@ class _GlassAppBar extends StatelessWidget {
               if (!aiQuizEnabled) return const SizedBox.shrink();
               return withRing(
                 quizFocus,
-                IconButton(
+                KiruIconButton(
                   focusNode: quizFocus,
                   icon: const Icon(
                     Icons.auto_awesome_rounded,
@@ -1685,7 +1652,7 @@ class _GlassAppBar extends StatelessWidget {
               if (!calEnabled) return const SizedBox.shrink();
               return withRing(
                 calendarFocus,
-                IconButton(
+                KiruIconButton(
                   focusNode: calendarFocus,
                   icon: const Icon(
                     Icons.calendar_month_rounded,
@@ -1936,7 +1903,9 @@ class _HeroBackdropBand extends StatelessWidget {
                       // `HeroSlide`'s scrim) so there is no seam where the
                       // hero meets the rails.
                       colors: [
-                        tokens.bg.withValues(alpha: 0.90),
+                        tokens.bg.withValues(
+                          alpha: chromeTop == 0 ? 0.50 : 0.90,
+                        ),
                         tokens.bg.withValues(alpha: 0.93),
                         tokens.bg.withValues(alpha: 0.96),
                       ],

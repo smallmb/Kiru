@@ -1,3 +1,4 @@
+import '../ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
@@ -61,7 +62,10 @@ class PlayerAspectMenu extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
-          PlayerMenuHeader(title: l10nOf(context).uiPlayerAspectMenuAspectRatio, onClose: onClose),
+          PlayerMenuHeader(
+            title: l10nOf(context).uiPlayerAspectMenuAspectRatio,
+            onClose: onClose,
+          ),
 
           const SizedBox(height: 6),
 
@@ -85,7 +89,7 @@ class PlayerAspectMenu extends StatelessWidget {
           ),
 
           const SizedBox(height: ZplaySpacing.s12),
-          Divider(color: tokens.borderDefault, height: 1),
+          KiruDivider(color: tokens.borderDefault, height: 1),
           const SizedBox(height: ZplaySpacing.s12),
 
           // Subtitle Size Scaling Slider
@@ -109,22 +113,12 @@ class PlayerAspectMenu extends StatelessWidget {
               ],
             ),
           ),
-          SliderTheme(
-            data: SliderThemeData(
-              activeTrackColor: PlayerTheme.accent,
-              inactiveTrackColor: tokens.textPrimary.withValues(alpha: 0.15),
-              thumbColor: tokens.textPrimary,
-              overlayColor: PlayerTheme.accent.withValues(alpha: 0.2),
-              trackHeight: 4,
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-            ),
-            child: Slider(
-              value: subtitleScale,
-              min: 0.5,
-              max: 2.5,
-              divisions: 20,
-              onChanged: onSubtitleScaleChanged,
-            ),
+          KiruSlider(
+            value: subtitleScale,
+            min: 0.5,
+            max: 2.5,
+            divisions: 20,
+            onChanged: onSubtitleScaleChanged,
           ),
         ],
       ),

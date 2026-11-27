@@ -1,7 +1,10 @@
+import '../ui/kiru_controls.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart' as f;
+import '../../services/theme/forui_theme.dart';
 import 'package:media_kit/media_kit.dart';
 import '../../services/player/player_settings.dart';
 import '../../services/theme/app_theme_service.dart';
@@ -20,10 +23,7 @@ class PlayerSubStyleModal extends StatefulWidget {
   State<PlayerSubStyleModal> createState() => _PlayerSubStyleModalState();
 }
 
-class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
+class _PlayerSubStyleModalState extends State<PlayerSubStyleModal> {
   // User's subtitle colours (player content), not app-palette chrome — each 'hex' is written into the subtitle style, so the swatches keep rendering those exact colours.
   static const List<Map<String, dynamic>> _textColorPalette = [
     {'name': 'White', 'hex': '#FFFFFFFF', 'color': Color(0xFFFFFFFF)},
@@ -53,18 +53,6 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
     {'name': 'Crimson', 'hex': '#FFE11D48', 'color': Color(0xFFE11D48)},
     {'name': 'Neon Cyan', 'hex': '#FF00E5FF', 'color': Color(0xFF00E5FF)},
   ];
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 5, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
 
   Color _parseColorFromHex(String hex, {Color fallback = Colors.white}) {
     var str = hex.replaceAll('#', '').trim();
@@ -124,22 +112,8 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
                   // 3. Quick Presets Carousel
                   _buildPresetsBar(),
 
-                  // 4. Tab Bar Navigation
-                  _buildTabBar(),
-
-                  // 5. Scrollable Tab View Content
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        _buildTypographyTab(),
-                        _buildColorsAndBoxTab(),
-                        _buildOutlinesAndShadowsTab(),
-                        _buildPositionAndLayoutTab(),
-                        _buildAdvancedTab(),
-                      ],
-                    ),
-                  ),
+                  // Forui owns the tab state and scrollable content.
+                  Expanded(child: _buildTabs()),
                 ],
               ),
             ),
@@ -167,59 +141,71 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Container(
-                width: isSmall ? 28 : 34,
-                height: isSmall ? 28 : 34,
-                decoration: BoxDecoration(
-                  color: PlayerTheme.accentSoft,
-                  borderRadius: ZplayRadius.smAll,
-                ),
-                child: Icon(
-                  Icons.subtitles_rounded,
-                  color: PlayerTheme.accent,
-                  size: isSmall ? 16 : 19,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l10nOf(context).uiPlayerSubStyleModalSubtitleAppearance,
-                    style: ZplayType.subtitle
-                        .copyWith(
-                          size: isSmall ? 13.5 : 15.5,
-                          weight: FontWeight.w800,
-                        )
-                        .toStyle(color: PlayerTheme.ink),
+          Expanded(
+            child: Row(
+              children: [
+                Container(
+                  width: isSmall ? 28 : 34,
+                  height: isSmall ? 28 : 34,
+                  decoration: BoxDecoration(
+                    color: PlayerTheme.accentSoft,
+                    borderRadius: ZplayRadius.smAll,
                   ),
-                  Text(
-                    l10nOf(context).uiPlayerSubStyleModalLibassLibmpvHardwareRenderedSubtitles,
-                    style: ZplayType.caption.toStyle(
-                      color: PlayerTheme.inkSubtle,
-                    ),
+                  child: Icon(
+                    Icons.subtitles_rounded,
+                    color: PlayerTheme.accent,
+                    size: isSmall ? 16 : 19,
                   ),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10nOf(context).uiPlayerSubStyleModalSubtitleAppearance,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: ZplayType.subtitle
+                            .copyWith(
+                              size: isSmall ? 13.5 : 15.5,
+                              weight: FontWeight.w800,
+                            )
+                            .toStyle(color: PlayerTheme.ink),
+                      ),
+                      Text(
+                        l10nOf(
+                          context,
+                        ).uiPlayerSubStyleModalLibassLibmpvHardwareRenderedSubtitles,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: ZplayType.caption.toStyle(
+                          color: PlayerTheme.inkSubtle,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           Row(
             children: [
               // Reset Button
-              IconButton(
+              KiruIconButton(
                 icon: Icon(
                   Icons.restart_alt_rounded,
                   size: 19,
                   color: PlayerTheme.inkMuted,
                 ),
-                tooltip: l10nOf(context).uiPlayerSubStyleModalResetSubtitleDefaults,
+                tooltip: l10nOf(
+                  context,
+                ).uiPlayerSubStyleModalResetSubtitleDefaults,
                 onPressed: () =>
                     PlayerSettings.resetSubtitleDefaults(player: widget.player),
               ),
               // Close Button
-              IconButton(
+              KiruIconButton(
                 icon: Icon(
                   Icons.close_rounded,
                   size: 20,
@@ -453,54 +439,53 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
   // Tab Bar Navigation
   // ───────────────────────────────────────────────────────────────────────────
 
-  Widget _buildTabBar() {
-    final tokens = context.tokens;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: tokens.bg.withValues(alpha: 0.09),
-        border: Border(bottom: BorderSide(color: PlayerTheme.edgeSoft)),
-      ),
-      child: TabBar(
-        controller: _tabController,
-        isScrollable: true,
-        tabAlignment: TabAlignment.start,
-        indicatorColor: PlayerTheme.accent,
-        indicatorWeight: 2.5,
-        labelColor: tokens.textPrimary,
-        unselectedLabelColor: PlayerTheme.inkSubtle,
-        labelStyle: ZplayType.bodySmall
-            .copyWith(weight: FontWeight.w700)
-            .toStyle(),
-        unselectedLabelStyle: ZplayType.bodySmall
-            .copyWith(weight: FontWeight.w500)
-            .toStyle(),
-        tabs: [
-          Tab(
-            text: l10nOf(context).finalPlayerSubStyleModalTypography,
-            icon: Icon(Icons.text_fields_rounded, size: 16),
-          ),
-          Tab(
-            text: l10nOf(context).finalPlayerSubStyleModalColorsBox,
-            icon: Icon(Icons.palette_rounded, size: 16),
-          ),
-          Tab(
-            text: l10nOf(context).finalPlayerSubStyleModalOutlineShadow,
-            icon: Icon(Icons.border_style_rounded, size: 16),
-          ),
-          Tab(
-            text: l10nOf(context).finalPlayerSubStyleModalPosition,
-            icon: Icon(Icons.vertical_align_bottom_rounded, size: 16),
-          ),
-          Tab(text: l10nOf(context).finalPlayerSubStyleModalAdvancedAss, icon: Icon(Icons.tune_rounded, size: 16)),
-        ],
-      ),
+  Widget _buildTabs() => KiruForuiTheme.ensure(context, (context) {
+    Widget label(IconData icon, String title) => Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [Icon(icon, size: 16), const SizedBox(width: 6), Text(title)],
     );
-  }
-
-  // ───────────────────────────────────────────────────────────────────────────
-  // Tab 1: Typography
-  // ───────────────────────────────────────────────────────────────────────────
+    return f.FTabs(
+      scrollable: true,
+      expands: true,
+      children: [
+        f.FTabEntry(
+          label: label(
+            Icons.text_fields_rounded,
+            l10nOf(context).finalPlayerSubStyleModalTypography,
+          ),
+          child: _buildTypographyTab(),
+        ),
+        f.FTabEntry(
+          label: label(
+            Icons.palette_rounded,
+            l10nOf(context).finalPlayerSubStyleModalColorsBox,
+          ),
+          child: _buildColorsAndBoxTab(),
+        ),
+        f.FTabEntry(
+          label: label(
+            Icons.border_style_rounded,
+            l10nOf(context).finalPlayerSubStyleModalOutlineShadow,
+          ),
+          child: _buildOutlinesAndShadowsTab(),
+        ),
+        f.FTabEntry(
+          label: label(
+            Icons.vertical_align_bottom_rounded,
+            l10nOf(context).finalPlayerSubStyleModalPosition,
+          ),
+          child: _buildPositionAndLayoutTab(),
+        ),
+        f.FTabEntry(
+          label: label(
+            Icons.tune_rounded,
+            l10nOf(context).finalPlayerSubStyleModalAdvancedAss,
+          ),
+          child: _buildAdvancedTab(),
+        ),
+      ],
+    );
+  });
 
   Widget _buildTypographyTab() {
     final tokens = context.tokens;
@@ -512,51 +497,23 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
         // Font Family Selector
         _buildSectionTitle(l10nOf(context).finalPlayerSubStyleModalFontFamily),
         const SizedBox(height: ZplaySpacing.s8),
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: ZplaySpacing.s12,
-            vertical: ZplaySpacing.s4,
-          ),
-          decoration: BoxDecoration(
-            color: PlayerTheme.raised,
-            borderRadius: ZplayRadius.smAll,
-            border: Border.all(color: PlayerTheme.edgeSoft),
-          ),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<String>(
-              value:
-                  PlayerSettings.popularFonts.contains(
-                    PlayerSettings.subFont.value,
-                  )
-                  ? PlayerSettings.subFont.value
-                  : 'subfont',
-              isExpanded: true,
-              dropdownColor: tokens.surfaceOverlay,
-              icon: Icon(
-                Icons.arrow_drop_down_rounded,
-                color: tokens.textEmphasis,
-              ),
-              items: PlayerSettings.popularFonts.map((f) {
-                final label = f == 'subfont' ? 'Default (ZPlay Subfont)' : f;
-                return DropdownMenuItem<String>(
-                  value: f,
-                  child: Text(
-                    label,
-                    style: ZplayType.label
-                        .toStyle(color: tokens.textPrimary)
-                        .copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontFamily: f == 'subfont' ? 'Poppins' : f,
-                        ),
-                  ),
-                );
-              }).toList(),
-              onChanged: (val) {
-                if (val != null) {
-                  PlayerSettings.setSubFont(val, player: widget.player);
-                }
-              },
-            ),
+        KiruForuiTheme.ensure(
+          context,
+          (context) => KiruSelect<String>(
+            value:
+                PlayerSettings.popularFonts.contains(
+                  PlayerSettings.subFont.value,
+                )
+                ? PlayerSettings.subFont.value
+                : 'subfont',
+            items: {
+              for (final font in PlayerSettings.popularFonts)
+                (font == 'subfont' ? 'Default (Kiru Subfont)' : font): font,
+            },
+            onChanged: (value) {
+              if (value != null)
+                PlayerSettings.setSubFont(value, player: widget.player);
+            },
           ),
         ),
 
@@ -564,11 +521,13 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
 
         // Base Font Size Slider
         _buildSectionTitle(
-          l10nOf(context).subtitleBaseFontSize((PlayerSettings.subFontSize.value).toString()),
+          l10nOf(
+            context,
+          ).subtitleBaseFontSize((PlayerSettings.subFontSize.value).toString()),
         ),
         Row(
           children: [
-            IconButton(
+            KiruIconButton(
               icon: Icon(
                 Icons.remove_circle_outline_rounded,
                 size: 20,
@@ -580,21 +539,18 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
               ),
             ),
             Expanded(
-              child: SliderTheme(
-                data: _sliderTheme(),
-                child: Slider(
-                  value: PlayerSettings.subFontSize.value.toDouble(),
-                  min: 16.0,
-                  max: 72.0,
-                  divisions: 28,
-                  onChanged: (v) => PlayerSettings.setSubFontSize(
-                    v.round(),
-                    player: widget.player,
-                  ),
+              child: KiruSlider(
+                value: PlayerSettings.subFontSize.value.toDouble(),
+                min: 16.0,
+                max: 72.0,
+                divisions: 28,
+                onChanged: (v) => PlayerSettings.setSubFontSize(
+                  v.round(),
+                  player: widget.player,
                 ),
               ),
             ),
-            IconButton(
+            KiruIconButton(
               icon: Icon(
                 Icons.add_circle_outline_rounded,
                 size: 20,
@@ -612,18 +568,17 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
 
         // Scale Multiplier Slider
         _buildSectionTitle(
-          l10nOf(context).subtitleScaleMultiplier(((PlayerSettings.subScale.value * 100).round()).toString()),
-        ),
-        SliderTheme(
-          data: _sliderTheme(),
-          child: Slider(
-            value: PlayerSettings.subScale.value,
-            min: 0.5,
-            max: 2.5,
-            divisions: 20,
-            onChanged: (v) =>
-                PlayerSettings.setSubScale(v, player: widget.player),
+          l10nOf(context).subtitleScaleMultiplier(
+            ((PlayerSettings.subScale.value * 100).round()).toString(),
           ),
+        ),
+        KiruSlider(
+          value: PlayerSettings.subScale.value,
+          min: 0.5,
+          max: 2.5,
+          divisions: 20,
+          onChanged: (v) =>
+              PlayerSettings.setSubScale(v, player: widget.player),
         ),
 
         const SizedBox(height: 14),
@@ -670,7 +625,9 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
       physics: const BouncingScrollPhysics(),
       children: [
         // Text Color Palette
-        _buildSectionTitle(l10nOf(context).finalPlayerSubStyleModalSubtitleTextColor),
+        _buildSectionTitle(
+          l10nOf(context).finalPlayerSubStyleModalSubtitleTextColor,
+        ),
         const SizedBox(height: 10),
         Wrap(
           spacing: 8,
@@ -735,7 +692,11 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
         const SizedBox(height: 22),
 
         // Background Box Style
-        _buildSectionTitle(l10nOf(context).finalPlayerSubStyleModalBackgroundBoxAccessibilityReadability),
+        _buildSectionTitle(
+          l10nOf(
+            context,
+          ).finalPlayerSubStyleModalBackgroundBoxAccessibilityReadability,
+        ),
         const SizedBox(height: 10),
         Column(
           children: _boxColorOptions.map((opt) {
@@ -822,7 +783,9 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
       physics: const BouncingScrollPhysics(),
       children: [
         // Outline Color Selector
-        _buildSectionTitle(l10nOf(context).finalPlayerSubStyleModalOutlineBorderColor),
+        _buildSectionTitle(
+          l10nOf(context).finalPlayerSubStyleModalOutlineBorderColor,
+        ),
         const SizedBox(height: ZplaySpacing.s8),
         Wrap(
           spacing: 8,
@@ -888,36 +851,36 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
 
         // Outline Thickness Slider
         _buildSectionTitle(
-          l10nOf(context).subtitleOutlineThickness((PlayerSettings.subBorderSize.value.toStringAsFixed(1)).toString()),
-        ),
-        SliderTheme(
-          data: _sliderTheme(),
-          child: Slider(
-            value: PlayerSettings.subBorderSize.value,
-            min: 0.0,
-            max: 6.0,
-            divisions: 12,
-            onChanged: (v) =>
-                PlayerSettings.setSubBorderSize(v, player: widget.player),
+          l10nOf(context).subtitleOutlineThickness(
+            (PlayerSettings.subBorderSize.value.toStringAsFixed(1)).toString(),
           ),
+        ),
+        KiruSlider(
+          value: PlayerSettings.subBorderSize.value,
+          min: 0.0,
+          max: 6.0,
+          divisions: 12,
+          onChanged: (v) =>
+              PlayerSettings.setSubBorderSize(v, player: widget.player),
         ),
 
         const SizedBox(height: 18),
 
         // Drop Shadow Offset Slider
         _buildSectionTitle(
-          l10nOf(context).subtitleShadowOffset((PlayerSettings.subShadowOffset.value.toStringAsFixed(1)).toString()),
-        ),
-        SliderTheme(
-          data: _sliderTheme(),
-          child: Slider(
-            value: PlayerSettings.subShadowOffset.value,
-            min: 0.0,
-            max: 6.0,
-            divisions: 12,
-            onChanged: (v) =>
-                PlayerSettings.setSubShadowOffset(v, player: widget.player),
+          l10nOf(context).subtitleShadowOffset(
+            (PlayerSettings.subShadowOffset.value.toStringAsFixed(
+              1,
+            )).toString(),
           ),
+        ),
+        KiruSlider(
+          value: PlayerSettings.subShadowOffset.value,
+          min: 0.0,
+          max: 6.0,
+          divisions: 12,
+          onChanged: (v) =>
+              PlayerSettings.setSubShadowOffset(v, player: widget.player),
         ),
       ],
     );
@@ -933,7 +896,9 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
       physics: const BouncingScrollPhysics(),
       children: [
         // Horizontal Alignment
-        _buildSectionTitle(l10nOf(context).finalPlayerSubStyleModalHorizontalAlignment),
+        _buildSectionTitle(
+          l10nOf(context).finalPlayerSubStyleModalHorizontalAlignment,
+        ),
         const SizedBox(height: ZplaySpacing.s8),
         Row(
           children: [
@@ -957,36 +922,33 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
 
         // Bottom Margin
         _buildSectionTitle(
-          l10nOf(context).subtitleBottomMargin((PlayerSettings.subMarginY.value.round()).toString()),
-        ),
-        SliderTheme(
-          data: _sliderTheme(),
-          child: Slider(
-            value: PlayerSettings.subMarginY.value,
-            min: 10.0,
-            max: 150.0,
-            divisions: 28,
-            onChanged: (v) =>
-                PlayerSettings.setSubMarginY(v, player: widget.player),
+          l10nOf(context).subtitleBottomMargin(
+            (PlayerSettings.subMarginY.value.round()).toString(),
           ),
+        ),
+        KiruSlider(
+          value: PlayerSettings.subMarginY.value,
+          min: 10.0,
+          max: 150.0,
+          divisions: 28,
+          onChanged: (v) =>
+              PlayerSettings.setSubMarginY(v, player: widget.player),
         ),
 
         const SizedBox(height: ZplaySpacing.s20),
 
         // Vertical Screen Position
         _buildSectionTitle(
-          l10nOf(context).subtitleVerticalPosition((PlayerSettings.subPos.value.round()).toString()),
-        ),
-        SliderTheme(
-          data: _sliderTheme(),
-          child: Slider(
-            value: PlayerSettings.subPos.value,
-            min: 0.0,
-            max: 100.0,
-            divisions: 20,
-            onChanged: (v) =>
-                PlayerSettings.setSubPos(v, player: widget.player),
+          l10nOf(context).subtitleVerticalPosition(
+            (PlayerSettings.subPos.value.round()).toString(),
           ),
+        ),
+        KiruSlider(
+          value: PlayerSettings.subPos.value,
+          min: 0.0,
+          max: 100.0,
+          divisions: 20,
+          onChanged: (v) => PlayerSettings.setSubPos(v, player: widget.player),
         ),
       ],
     );
@@ -1076,7 +1038,9 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
       padding: const EdgeInsets.all(ZplaySpacing.s16),
       physics: const BouncingScrollPhysics(),
       children: [
-        _buildSectionTitle(l10nOf(context).finalPlayerSubStyleModalSubtitleRenderingEngine),
+        _buildSectionTitle(
+          l10nOf(context).finalPlayerSubStyleModalSubtitleRenderingEngine,
+        ),
         const SizedBox(height: 10),
 
         // Flutter Engine Option
@@ -1098,7 +1062,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Radio<bool>(
+                  PlayerRadio<bool>(
                     value: false,
                     groupValue: useLibass,
                     activeColor: PlayerTheme.accent,
@@ -1114,14 +1078,18 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10nOf(context).uiPlayerSubStyleModalFlutterSubtitleEngineRecommended,
+                          l10nOf(
+                            context,
+                          ).uiPlayerSubStyleModalFlutterSubtitleEngineRecommended,
                           style: ZplayType.label
                               .copyWith(weight: FontWeight.w700)
                               .toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 3),
                         Text(
-                          l10nOf(context).uiPlayerSubStyleModal100ReliableHardwareAcceleratedSubtitle,
+                          l10nOf(
+                            context,
+                          ).uiPlayerSubStyleModal100ReliableHardwareAcceleratedSubtitle,
                           style: ZplayType.caption.toStyle(
                             color: PlayerTheme.inkSubtle,
                           ),
@@ -1154,7 +1122,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Radio<bool>(
+                  PlayerRadio<bool>(
                     value: true,
                     groupValue: useLibass,
                     activeColor: PlayerTheme.accent,
@@ -1170,14 +1138,18 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10nOf(context).uiPlayerSubStyleModalNativeMpvLibassEngine,
+                          l10nOf(
+                            context,
+                          ).uiPlayerSubStyleModalNativeMpvLibassEngine,
                           style: ZplayType.label
                               .copyWith(weight: FontWeight.w700)
                               .toStyle(color: tokens.textPrimary),
                         ),
                         const SizedBox(height: 3),
                         Text(
-                          l10nOf(context).uiPlayerSubStyleModalDirectGpuVideoTextureRendering,
+                          l10nOf(
+                            context,
+                          ).uiPlayerSubStyleModalDirectGpuVideoTextureRendering,
                           style: ZplayType.caption.toStyle(
                             color: PlayerTheme.inkSubtle,
                           ),
@@ -1191,7 +1163,11 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
           ),
         ),
 
-        _buildSectionTitle(l10nOf(context).finalPlayerSubStyleModalSsaAssFansubScriptOverrideMode),
+        _buildSectionTitle(
+          l10nOf(
+            context,
+          ).finalPlayerSubStyleModalSsaAssFansubScriptOverrideMode,
+        ),
         const SizedBox(height: 10),
         ...overrideModes.map((m) {
           final isSelected = activeOverride == m['val'];
@@ -1219,7 +1195,7 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Radio<String>(
+                    PlayerRadio<String>(
                       value: m['val']!,
                       groupValue: activeOverride,
                       activeColor: PlayerTheme.accent,
@@ -1295,12 +1271,17 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
       'Gold' => l10n.subtitleOptionGold22,
       'Crimson' => l10n.subtitleOptionCrimson23,
       'Neon Cyan' => l10n.subtitleOptionNeonCyan24,
-      'Preserve Anime & SSA/ASS Styling (Recommended)' => l10n.subtitleOptionPreserveAnimeSsaAssStylingRecommended25,
-      'Leaves SSA/ASS anime subtitles untouched to preserve custom karaoke, styling & positions. Plain SRT/VTT are styled with your custom theme.' => l10n.subtitleOptionLeavesSsaAssAnimeSubtitlesUntouched26,
+      'Preserve Anime & SSA/ASS Styling (Recommended)' =>
+        l10n.subtitleOptionPreserveAnimeSsaAssStylingRecommended25,
+      'Leaves SSA/ASS anime subtitles untouched to preserve custom karaoke, styling & positions. Plain SRT/VTT are styled with your custom theme.' =>
+        l10n.subtitleOptionLeavesSsaAssAnimeSubtitlesUntouched26,
       'Scale Only' => l10n.subtitleOptionScaleOnly27,
-      'Applies size scaling to SSA/ASS scripts while preserving their fonts, colors, and author typography.' => l10n.subtitleOptionAppliesSizeScalingToSsaAss28,
-      'Override Colors & Outlines' => l10n.subtitleOptionOverrideColorsOutlines29,
-      'Applies your custom colors and outlines on top of SSA/ASS subtitle scripts.' => l10n.subtitleOptionAppliesYourCustomColorsAndOutlines30,
+      'Applies size scaling to SSA/ASS scripts while preserving their fonts, colors, and author typography.' =>
+        l10n.subtitleOptionAppliesSizeScalingToSsaAss28,
+      'Override Colors & Outlines' =>
+        l10n.subtitleOptionOverrideColorsOutlines29,
+      'Applies your custom colors and outlines on top of SSA/ASS subtitle scripts.' =>
+        l10n.subtitleOptionAppliesYourCustomColorsAndOutlines30,
       _ => raw,
     };
   }
@@ -1347,26 +1328,13 @@ class _PlayerSubStyleModalState extends State<PlayerSubStyleModal>
               ),
             ],
           ),
-          Switch.adaptive(
+          KiruSwitch(
             value: value,
             activeColor: PlayerTheme.accent,
             onChanged: onChanged,
           ),
         ],
       ),
-    );
-  }
-
-  SliderThemeData _sliderTheme() {
-    final tokens = context.tokens;
-
-    return SliderTheme.of(context).copyWith(
-      trackHeight: 3.5,
-      thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-      overlayShape: const RoundSliderOverlayShape(overlayRadius: 12),
-      activeTrackColor: PlayerTheme.accent,
-      inactiveTrackColor: tokens.borderStrong,
-      thumbColor: tokens.textPrimary,
     );
   }
 }

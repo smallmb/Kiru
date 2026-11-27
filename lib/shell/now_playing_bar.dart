@@ -177,7 +177,9 @@ class _TrackInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final remaining = snapshot.duration - snapshot.position;
-    final timeStyle = ZplayType.labelNumeric.toStyle(color: tokens.textMuted);
+    final timeStyle = ZplayType.labelNumeric.toTimingStyle(
+      color: tokens.textMuted,
+    );
 
     return Column(
       mainAxisSize: MainAxisSize.min,

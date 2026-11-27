@@ -1,3 +1,4 @@
+import '../ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 import 'package:zplay/l10n/language_labels.dart';
 
@@ -7,7 +8,6 @@ import 'package:zplay/services/subtitles/subtitle_service.dart';
 import '../../services/theme/app_theme_service.dart';
 import '../../services/theme/design_tokens.dart';
 import 'player_glass.dart';
-import '../common/focusable_card.dart';
 
 /// Full-featured subtitle selection, search, and timing menu.
 /// Responsive across mobile portrait, mobile landscape, tablet, and desktop screens.
@@ -386,13 +386,15 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                           ? SizedBox(
                               width: iconSize,
                               height: iconSize,
-                              child: CircularProgressIndicator(
+                              child: KiruLoader(
                                 color: PlayerTheme.accent,
                                 strokeWidth: 2,
                               ),
                             )
                           : const Icon(Icons.refresh_rounded),
-                      tooltip: l10nOf(context).uiPlayerSubtitleMenuRefreshOnlineSubtitles,
+                      tooltip: l10nOf(
+                        context,
+                      ).uiPlayerSubtitleMenuRefreshOnlineSubtitles,
                       onPressed: _isLoadingSearch ? null : _searchOnline,
                     ),
                     const SizedBox(width: 3),
@@ -403,7 +405,9 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                         size: buttonSize,
                         iconSize: iconSize,
                         icon: const Icon(Icons.timer_outlined),
-                        tooltip: l10nOf(context).uiPlayerSubtitleMenuSubtitleSyncBar,
+                        tooltip: l10nOf(
+                          context,
+                        ).uiPlayerSubtitleMenuSubtitleSyncBar,
                         showActiveBadge: widget.delaySec != 0,
                         onPressed: () {
                           widget.onClose();
@@ -418,7 +422,9 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                       size: buttonSize,
                       iconSize: iconSize,
                       icon: const Icon(Icons.tune_rounded),
-                      tooltip: l10nOf(context).uiPlayerSubtitleMenuSubtitleAppearance,
+                      tooltip: l10nOf(
+                        context,
+                      ).uiPlayerSubtitleMenuSubtitleAppearance,
                       onPressed: () {
                         widget.onClose();
                         widget.onOpenStyleBar();
@@ -432,7 +438,9 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                         size: buttonSize,
                         iconSize: iconSize,
                         icon: const Icon(Icons.text_fields_rounded),
-                        tooltip: l10nOf(context).uiPlayerSubtitleMenuSpeechTextSync,
+                        tooltip: l10nOf(
+                          context,
+                        ).uiPlayerSubtitleMenuSpeechTextSync,
                         onPressed: () {
                           widget.onClose();
                           widget.onOpenTextSync();
@@ -584,7 +592,9 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
       if (_dynamicGroups.isNotEmpty) ...[
         if (!compact) _sectionMarker('LANGUAGES'),
         _languageItem(
-          label: compact ? l10nOf(context).uiPlayerSubtitleMenuAll : 'All Languages',
+          label: compact
+              ? l10nOf(context).uiPlayerSubtitleMenuAll
+              : 'All Languages',
           selected: _selectedLanguage == '__all__',
           compact: compact,
           icon: _emojiIcon('🌐'),
@@ -882,7 +892,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
           ),
           const Spacer(),
           if (compact)
-            FocusableCard(
+            PlayerTappable(
               onTap: _searchOnline,
               builder: (context, _) => Row(
                 children: [
@@ -1018,7 +1028,11 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                               track.language!.isNotEmpty) ...[
                             const SizedBox(width: 5),
                             Text(
-                              localizedLanguageLabel(context, track.language!, uppercaseFallback: true),
+                              localizedLanguageLabel(
+                                context,
+                                track.language!,
+                                uppercaseFallback: true,
+                              ),
                               style: ZplayType.overline
                                   .copyWith(size: 9)
                                   .toStyle(color: PlayerTheme.inkSubtle),
@@ -1068,10 +1082,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircularProgressIndicator(
-              color: PlayerTheme.accent,
-              strokeWidth: 2.5,
-            ),
+            KiruLoader(color: PlayerTheme.accent, strokeWidth: 2.5),
             const SizedBox(height: 10),
             Text(
               l10nOf(context).uiPlayerSubtitleMenuSearchingSubtitles,
@@ -1102,7 +1113,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                     .toStyle(color: PlayerTheme.inkMuted),
               ),
               const SizedBox(height: ZplaySpacing.s12),
-              ElevatedButton.icon(
+              KiruButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: PlayerTheme.accent,
                   foregroundColor: tokens.onAccent,
@@ -1115,7 +1126,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                   ),
                 ),
                 icon: const Icon(Icons.search_rounded, size: 15),
-                label: Text(
+                child: Text(
                   l10nOf(context).uiPlayerSubtitleMenuSearchOnlineProviders,
                   style: ZplayType.caption.copyWith(size: 11.5).toStyle(),
                 ),
@@ -1151,14 +1162,13 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
                 SizedBox(
                   width: 12,
                   height: 12,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: PlayerTheme.accent,
-                  ),
+                  child: KiruLoader(strokeWidth: 2, color: PlayerTheme.accent),
                 ),
                 const SizedBox(width: ZplaySpacing.s8),
                 Text(
-                  l10nOf(context).uiPlayerSubtitleMenuSearchingAdditionalSubtitlesOnline,
+                  l10nOf(
+                    context,
+                  ).uiPlayerSubtitleMenuSearchingAdditionalSubtitlesOnline,
                   style: ZplayType.caption.toStyle(color: PlayerTheme.accent),
                 ),
               ],
@@ -1358,7 +1368,7 @@ class _PlayerSubtitleMenuState extends State<PlayerSubtitleMenu> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          FocusableCard(
+          PlayerTappable(
             onTap: _searchOnline,
             builder: (context, _) {
               return Row(

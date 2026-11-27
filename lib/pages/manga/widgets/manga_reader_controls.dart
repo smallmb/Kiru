@@ -1,3 +1,4 @@
+import '../../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -139,7 +140,9 @@ class ReaderChoiceChip extends StatelessWidget {
           decoration: BoxDecoration(
             color: selected
                 ? tokens.accentSubtle
-                : (state.highlighted ? tokens.borderStrong : tokens.borderDefault),
+                : (state.highlighted
+                      ? tokens.borderStrong
+                      : tokens.borderDefault),
             borderRadius: ZplayRadius.xsAll,
           ),
           child: Row(
@@ -201,7 +204,7 @@ Future<T?> _openChoiceMenu<T>(
     ancestor: overlayBox,
   );
 
-  return showMenu<T>(
+  return showKiruMenu<T>(
     context: context,
     color: tokens.surfaceOverlay,
     shape: RoundedRectangleBorder(
@@ -265,7 +268,9 @@ class MangaPageModeChip extends StatelessWidget {
       valueListenable: MangaSettings.defaultReadingMode,
       builder: (context, mode, _) => Builder(
         builder: (chipContext) => ReaderChoiceChip(
-          label: l10nOf(context).dynamicMangaReaderControlsPageMode((shortLabel(mode)).toString()),
+          label: l10nOf(
+            context,
+          ).dynamicMangaReaderControlsPageMode((shortLabel(mode)).toString()),
           selected: false,
           trailingIcon: Icons.arrow_drop_down_rounded,
           onTap: () => _openMenu(chipContext, mode),
@@ -310,7 +315,9 @@ class MangaAtmosphereChip extends StatelessWidget {
       valueListenable: MangaSettings.readerBackground,
       builder: (context, current, _) => Builder(
         builder: (chipContext) => ReaderChoiceChip(
-          label: l10nOf(context).dynamicMangaReaderControlsAtmosphere((current.label).toString()),
+          label: l10nOf(
+            context,
+          ).dynamicMangaReaderControlsAtmosphere((current.label).toString()),
           swatch: current.color,
           selected: false,
           trailingIcon: Icons.arrow_drop_down_rounded,

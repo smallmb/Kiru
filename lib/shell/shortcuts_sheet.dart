@@ -1,3 +1,4 @@
+import '../widgets/ui/kiru_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -126,7 +127,7 @@ class _ShortcutsSheetState extends State<ShortcutsSheet> {
                     ],
                   ),
                 ),
-                Divider(height: 1, color: tokens.borderDefault),
+                KiruDivider(height: 1, color: tokens.borderDefault),
                 Flexible(
                   child: SingleChildScrollView(
                     padding: const EdgeInsets.fromLTRB(

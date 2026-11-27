@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -34,10 +35,52 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
   String _searchQuery = '';
   String _selectedNetwork = 'All';
 
-  static const _weekdaysShort = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  static const _weekdaysFull = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  static const _monthsShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  static const _monthsFull = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  static const _weekdaysShort = [
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
+    'Sun',
+  ];
+  static const _weekdaysFull = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
+  static const _monthsShort = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+  static const _monthsFull = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
 
   @override
   void initState() {
@@ -215,7 +258,9 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
 
               // ── Network Filter Bar (Netflix, HBO, Apple TV+, etc.) ──
               if (!_isLoadingEpisodes && _allDayEpisodes.isNotEmpty)
-                SliverToBoxAdapter(child: _buildNetworkFilterBar(palette, isMobile)),
+                SliverToBoxAdapter(
+                  child: _buildNetworkFilterBar(palette, isMobile),
+                ),
 
               // ── Main Episodes Feed ──
               ..._buildEpisodesContent(palette, screenWidth, isMobile),
@@ -241,8 +286,12 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
         children: [
           // Back affordance — this page is a pushed route.
           if (canPop)
-            IconButton(
-              icon: Icon(Icons.arrow_back_rounded, color: tokens.textPrimary, size: 22),
+            KiruIconButton(
+              icon: Icon(
+                Icons.arrow_back_rounded,
+                color: tokens.textPrimary,
+                size: 22,
+              ),
               onPressed: () => Navigator.of(context).pop(),
               tooltip: l10nOf(context).uiPlayerTopBarBack,
               splashRadius: 20,
@@ -259,11 +308,15 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
                   l10nOf(context).auxTvCalendarPageTvShowsAiringCalendar,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: ZplayType.titleLarge.toStyle(color: tokens.textPrimary),
+                  style: ZplayType.titleLarge.toStyle(
+                    color: tokens.textPrimary,
+                  ),
                 ),
                 if (!isMobile)
                   Text(
-                    l10nOf(context).auxTvCalendarPageUpcomingBroadcastStreamingEpisodesWithLiveNetwork,
+                    l10nOf(
+                      context,
+                    ).auxTvCalendarPageUpcomingBroadcastStreamingEpisodesWithLiveNetwork,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
@@ -279,13 +332,17 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
             width: isMobile ? 110 : 180,
             height: 36,
             decoration: BoxDecoration(
-              color: tokens.textPrimary.withValues(alpha: ZplayOpacity.borderFaint),
+              color: tokens.textPrimary.withValues(
+                alpha: ZplayOpacity.borderFaint,
+              ),
               borderRadius: ZplayRadius.smAll,
             ),
-            child: TextField(
+            child: KiruFormField(
               controller: _searchController,
               onChanged: _onSearchChanged,
-              style: ZplayType.label.copyWith(size: 13).toStyle(color: tokens.textPrimary),
+              style: ZplayType.label
+                  .copyWith(size: 13)
+                  .toStyle(color: tokens.textPrimary),
               decoration: InputDecoration(
                 hintText: l10nOf(context).auxTvCalendarPageFilterShows,
                 hintStyle: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
@@ -295,7 +352,10 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
                   color: tokens.textMuted,
                 ),
                 border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 8,
+                ),
               ),
             ),
           ),
@@ -311,10 +371,7 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
 
     return Container(
       height: 78,
-      margin: EdgeInsets.symmetric(
-        horizontal: isMobile ? 8 : 20,
-        vertical: 4,
-      ),
+      margin: EdgeInsets.symmetric(horizontal: isMobile ? 8 : 20, vertical: 4),
       child: Row(
         children: [
           // Left Scroll Arrow
@@ -341,8 +398,8 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
                 final weekdayStr = isToday
                     ? 'TODAY'
                     : (_isSameDay(day, today.add(const Duration(days: 1)))
-                        ? 'TOMORROW'
-                        : _formatWeekdayShort(day).toUpperCase());
+                          ? 'TOMORROW'
+                          : _formatWeekdayShort(day).toUpperCase());
                 final dayNumStr = day.day.toString();
                 final monthStr = _formatMonthShort(day);
 
@@ -355,9 +412,14 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
                       duration: const Duration(milliseconds: 200),
                       curve: Curves.easeOutCubic,
                       width: isToday ? 90 : 76,
-                      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 6,
+                        horizontal: 4,
+                      ),
                       decoration: BoxDecoration(
-                        color: isSelected ? tokens.accentSubtle : tokens.surface,
+                        color: isSelected
+                            ? tokens.accentSubtle
+                            : tokens.surface,
                         borderRadius: BorderRadius.circular(ZplayRadius.md),
                       ),
                       child: Column(
@@ -374,7 +436,9 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
                                 .toStyle(
                                   color: isSelected
                                       ? tokens.accent
-                                      : (isToday ? tokens.textPrimary : tokens.textSecondary),
+                                      : (isToday
+                                            ? tokens.textPrimary
+                                            : tokens.textSecondary),
                                 ),
                           ),
                           const SizedBox(height: 3),
@@ -386,14 +450,18 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
                                 style: ZplayType.title
                                     .copyWith(
                                       size: 17,
-                                      weight: isSelected ? FontWeight.w900 : FontWeight.w700,
+                                      weight: isSelected
+                                          ? FontWeight.w900
+                                          : FontWeight.w700,
                                     )
                                     .toStyle(color: tokens.textPrimary),
                               ),
                               const SizedBox(width: 3),
                               Text(
                                 monthStr,
-                                style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                                style: ZplayType.caption.toStyle(
+                                  color: tokens.textSecondary,
+                                ),
                               ),
                             ],
                           ),
@@ -425,10 +493,7 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
 
     return Container(
       height: 38,
-      margin: EdgeInsets.symmetric(
-        horizontal: isMobile ? 8 : 20,
-        vertical: 4,
-      ),
+      margin: EdgeInsets.symmetric(horizontal: isMobile ? 8 : 20, vertical: 4),
       child: Row(
         children: [
           // Filter label icon
@@ -436,7 +501,9 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
             margin: const EdgeInsets.only(right: 6),
             decoration: BoxDecoration(
-              color: tokens.textPrimary.withValues(alpha: ZplayOpacity.borderFaint),
+              color: tokens.textPrimary.withValues(
+                alpha: ZplayOpacity.borderFaint,
+              ),
               borderRadius: BorderRadius.circular(ZplayRadius.sm),
             ),
             child: Row(
@@ -487,9 +554,14 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
                     radius: BorderRadius.circular(ZplayRadius.sm),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 180),
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 6,
+                      ),
                       decoration: BoxDecoration(
-                        color: isSelected ? tokens.accentSubtle : tokens.surface,
+                        color: isSelected
+                            ? tokens.accentSubtle
+                            : tokens.surface,
                         borderRadius: BorderRadius.circular(ZplayRadius.sm),
                       ),
                       child: Row(
@@ -499,38 +571,56 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
                             Icon(
                               Icons.all_inclusive_rounded,
                               size: 13,
-                              color: isSelected ? tokens.accent : tokens.textEmphasis,
+                              color: isSelected
+                                  ? tokens.accent
+                                  : tokens.textEmphasis,
                             )
                           else
                             Icon(
                               _getNetworkIcon(net),
                               size: 13,
-                              color: isSelected ? tokens.accent : tokens.textEmphasis,
+                              color: isSelected
+                                  ? tokens.accent
+                                  : tokens.textEmphasis,
                             ),
                           const SizedBox(width: 5),
                           Text(
                             net,
                             style: ZplayType.caption
-                                .copyWith(size: 12, weight: isSelected ? FontWeight.w800 : FontWeight.w600)
+                                .copyWith(
+                                  size: 12,
+                                  weight: isSelected
+                                      ? FontWeight.w800
+                                      : FontWeight.w600,
+                                )
                                 .toStyle(
-                                  color: isSelected ? tokens.textPrimary : tokens.textEmphasis,
+                                  color: isSelected
+                                      ? tokens.textPrimary
+                                      : tokens.textEmphasis,
                                 ),
                           ),
                           const SizedBox(width: 5),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 5,
+                              vertical: 1,
+                            ),
                             decoration: BoxDecoration(
                               color: isSelected
                                   ? tokens.accent.withValues(alpha: 0.35)
                                   : tokens.borderDefault,
-                              borderRadius: BorderRadius.circular(ZplayRadius.xs),
+                              borderRadius: BorderRadius.circular(
+                                ZplayRadius.xs,
+                              ),
                             ),
                             child: Text(
                               '$count',
                               style: ZplayType.overline
                                   .copyWith(weight: FontWeight.w700)
                                   .toStyle(
-                                    color: isSelected ? tokens.textPrimary : tokens.textSecondary,
+                                    color: isSelected
+                                        ? tokens.textPrimary
+                                        : tokens.textSecondary,
                                   ),
                             ),
                           ),
@@ -556,10 +646,20 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
 
   IconData _getNetworkIcon(String network) {
     final n = network.toLowerCase();
-    if (n.contains('netflix') || n.contains('hbo') || n.contains('apple') || n.contains('disney') || n.contains('amazon') || n.contains('prime') || n.contains('hulu') || n.contains('paramount') || n.contains('peacock')) {
+    if (n.contains('netflix') ||
+        n.contains('hbo') ||
+        n.contains('apple') ||
+        n.contains('disney') ||
+        n.contains('amazon') ||
+        n.contains('prime') ||
+        n.contains('hulu') ||
+        n.contains('paramount') ||
+        n.contains('peacock')) {
       return Icons.play_circle_fill_rounded;
     }
-    if (n.contains('crunchyroll') || n.contains('anime') || n.contains('tokyo')) {
+    if (n.contains('crunchyroll') ||
+        n.contains('anime') ||
+        n.contains('tokyo')) {
       return Icons.animation_rounded;
     }
     return Icons.tv_rounded;
@@ -581,15 +681,13 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
           width: 32,
           height: 74,
           decoration: BoxDecoration(
-            color: tokens.textPrimary.withValues(alpha: ZplayOpacity.borderFaint),
+            color: tokens.textPrimary.withValues(
+              alpha: ZplayOpacity.borderFaint,
+            ),
             borderRadius: BorderRadius.circular(ZplayRadius.md),
           ),
           child: Center(
-            child: Icon(
-              icon,
-              color: tokens.textEmphasis,
-              size: 22,
-            ),
+            child: Icon(icon, color: tokens.textEmphasis, size: 22),
           ),
         ),
       ),
@@ -611,31 +709,31 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
           width: 24,
           height: 32,
           decoration: BoxDecoration(
-            color: tokens.textPrimary.withValues(alpha: ZplayOpacity.borderFaint),
+            color: tokens.textPrimary.withValues(
+              alpha: ZplayOpacity.borderFaint,
+            ),
             borderRadius: BorderRadius.circular(ZplayRadius.sm),
           ),
           child: Center(
-            child: Icon(
-              icon,
-              color: tokens.textEmphasis,
-              size: 16,
-            ),
+            child: Icon(icon, color: tokens.textEmphasis, size: 16),
           ),
         ),
       ),
     );
   }
 
-  List<Widget> _buildEpisodesContent(AppThemePalette palette, double screenWidth, bool isMobile) {
+  List<Widget> _buildEpisodesContent(
+    AppThemePalette palette,
+    double screenWidth,
+    bool isMobile,
+  ) {
     final tokens = context.tokens;
 
     if (_isLoadingEpisodes && _allDayEpisodes.isEmpty) {
       return [
         SliverFillRemaining(
           hasScrollBody: false,
-          child: Center(
-            child: CircularProgressIndicator(color: tokens.accent),
-          ),
+          child: Center(child: KiruLoader(color: tokens.accent)),
         ),
       ];
     }
@@ -652,15 +750,21 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  isNetworkFiltered ? Icons.filter_alt_off_rounded : Icons.tv_off_rounded,
+                  isNetworkFiltered
+                      ? Icons.filter_alt_off_rounded
+                      : Icons.tv_off_rounded,
                   size: 48,
                   color: tokens.textDisabled,
                 ),
                 const SizedBox(height: 12),
                 Text(
                   isNetworkFiltered
-                      ? l10nOf(context).calendarNoNetworkEpisodes(_selectedNetwork)
-                      : l10nOf(context).uiFinalTvCalendarPageNoEpisodesFoundForThisDay,
+                      ? l10nOf(
+                          context,
+                        ).calendarNoNetworkEpisodes(_selectedNetwork)
+                      : l10nOf(
+                          context,
+                        ).uiFinalTvCalendarPageNoEpisodesFoundForThisDay,
                   style: ZplayType.title
                       .copyWith(size: 16, weight: FontWeight.w700)
                       .toStyle(color: tokens.textEmphasis),
@@ -668,20 +772,31 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
                 const SizedBox(height: 6),
                 Text(
                   isNetworkFiltered
-                      ? l10nOf(context).uiFinalTvCalendarPageTrySelectingAllOrADifferent
-                      : l10nOf(context).uiFinalTvCalendarPageSelectAnotherDayFromTheTimeline,
+                      ? l10nOf(
+                          context,
+                        ).uiFinalTvCalendarPageTrySelectingAllOrADifferent
+                      : l10nOf(
+                          context,
+                        ).uiFinalTvCalendarPageSelectAnotherDayFromTheTimeline,
                   style: ZplayType.label.toStyle(color: tokens.textMuted),
                 ),
                 if (isNetworkFiltered) ...[
                   const SizedBox(height: 12),
-                  OutlinedButton.icon(
+                  KiruButton(
+                    kind: KiruButtonKind.outline,
                     onPressed: () => _onNetworkSelected('All'),
                     icon: const Icon(Icons.refresh_rounded, size: 16),
-                    label: Text(l10nOf(context).auxTvCalendarPageShowAllNetworks),
+                    child: Text(
+                      l10nOf(context).auxTvCalendarPageShowAllNetworks,
+                    ),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: tokens.accent,
-                      side: BorderSide(color: tokens.accent.withValues(alpha: 0.4)),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(ZplayRadius.sm)),
+                      side: BorderSide(
+                        color: tokens.accent.withValues(alpha: 0.4),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(ZplayRadius.sm),
+                      ),
                     ),
                   ),
                 ],
@@ -695,81 +810,77 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
     final dateTitle = _formatFullDate(_selectedDay);
 
     return [
-        // Day Header Summary
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(
-              isMobile ? 16 : 28,
-              10,
-              isMobile ? 16 : 28,
-              10,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    dateTitle,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: ZplayType.title
-                        .copyWith(size: isMobile ? 15 : 19, letterSpacing: -0.2)
-                        .toStyle(color: tokens.textPrimary),
-                  ),
+      // Day Header Summary
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            isMobile ? 16 : 28,
+            10,
+            isMobile ? 16 : 28,
+            10,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  dateTitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: ZplayType.title
+                      .copyWith(size: isMobile ? 15 : 19, letterSpacing: -0.2)
+                      .toStyle(color: tokens.textPrimary),
                 ),
-                const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: tokens.accentSubtle,
-                    borderRadius: BorderRadius.circular(ZplayRadius.sm),
-                    border: Border.all(
-                      color: tokens.accent,
-                    ),
-                  ),
-                  child: Text(
-                    _selectedNetwork == 'All'
-                        ? '${episodes.length} Episodes Airing'
-                        : '${episodes.length} on $_selectedNetwork',
-                    style: ZplayType.bodySmall
-                        .copyWith(weight: FontWeight.w700)
-                        .toStyle(color: tokens.accent),
-                  ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
                 ),
-              ],
-            ),
+                decoration: BoxDecoration(
+                  color: tokens.accentSubtle,
+                  borderRadius: BorderRadius.circular(ZplayRadius.sm),
+                  border: Border.all(color: tokens.accent),
+                ),
+                child: Text(
+                  _selectedNetwork == 'All'
+                      ? '${episodes.length} Episodes Airing'
+                      : '${episodes.length} on $_selectedNetwork',
+                  style: ZplayType.bodySmall
+                      .copyWith(weight: FontWeight.w700)
+                      .toStyle(color: tokens.accent),
+                ),
+              ),
+            ],
           ),
         ),
+      ),
 
-        // Episodes Grid / List
-        SliverPadding(
-          padding: EdgeInsets.symmetric(
-            horizontal: isMobile ? 12 : 24,
-            vertical: 6,
-          ),
-          sliver: SliverGrid(
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: isMobile ? 650 : 440,
-              mainAxisExtent: 142,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-            ),
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                final entry = episodes[index];
-                return _EpisodeCalendarCard(
-                  entry: entry,
-                  palette: palette,
-                  onTap: () => _openShowDetails(entry),
-                );
-              },
-              childCount: episodes.length,
-            ),
-          ),
+      // Episodes Grid / List
+      SliverPadding(
+        padding: EdgeInsets.symmetric(
+          horizontal: isMobile ? 12 : 24,
+          vertical: 6,
         ),
+        sliver: SliverGrid(
+          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: isMobile ? 650 : 440,
+            mainAxisExtent: 142,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+          ),
+          delegate: SliverChildBuilderDelegate((context, index) {
+            final entry = episodes[index];
+            return _EpisodeCalendarCard(
+              entry: entry,
+              palette: palette,
+              onTap: () => _openShowDetails(entry),
+            );
+          }, childCount: episodes.length),
+        ),
+      ),
 
-        const SliverToBoxAdapter(
-          child: SizedBox(height: 48),
-        ),
+      const SliverToBoxAdapter(child: SizedBox(height: 48)),
     ];
   }
 }
@@ -807,154 +918,197 @@ class _EpisodeCalendarCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(ZplayRadius.md),
             ),
             child: Row(
-            children: [
-              // Poster Thumbnail
-              ClipRRect(
-                borderRadius: const BorderRadius.horizontal(left: Radius.circular(ZplayRadius.md)),
-                child: SizedBox(
-                  width: 95,
-                  height: double.infinity,
-                  child: posterUrl.isNotEmpty
-                      ? CachedNetworkImage(
-                          imageUrl: posterUrl,
-                          cacheManager: AppImageCache.manager,
-                          fit: BoxFit.cover,
-                          placeholder: (_, __) => Container(
-                            color: tokens.textPrimary.withValues(alpha: ZplayOpacity.borderFaint),
-                            child: Center(
-                              child: Icon(Icons.tv_rounded, color: tokens.textDisabled, size: 28),
-                            ),
-                          ),
-                          errorWidget: (_, __, ___) => Container(
-                            color: tokens.textPrimary.withValues(alpha: ZplayOpacity.borderFaint),
-                            child: Center(
-                              child: Icon(Icons.tv_rounded, color: tokens.textDisabled, size: 28),
-                            ),
-                          ))
-                      : Container(
-                          color: tokens.textPrimary.withValues(alpha: ZplayOpacity.borderFaint),
-                          child: Center(
-                            child: Icon(Icons.tv_rounded, color: tokens.textDisabled, size: 28),
-                          ),
-                        ),
-                ),
-              ),
-
-              // Info Column
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Badge wrap (season/episode code + network badge + airtime)
-                      Wrap(
-                        spacing: 6,
-                        runSpacing: 4,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2.5),
-                            decoration: BoxDecoration(
-                              color: tokens.accentSubtle,
-                              borderRadius: BorderRadius.circular(ZplayRadius.sm),
-                            ),
-                            child: Text(
-                              epCode,
-                              style: ZplayType.caption
-                                  .copyWith(weight: FontWeight.w800)
-                                  .toStyle(color: tokens.accent),
-                            ),
-                          ),
-                          if (entry.network != null && entry.network!.isNotEmpty)
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                              constraints: const BoxConstraints(maxWidth: 100),
-                              decoration: BoxDecoration(
-                                color: tokens.borderDefault,
-                                borderRadius: BorderRadius.circular(ZplayRadius.xs),
+              children: [
+                // Poster Thumbnail
+                ClipRRect(
+                  borderRadius: const BorderRadius.horizontal(
+                    left: Radius.circular(ZplayRadius.md),
+                  ),
+                  child: SizedBox(
+                    width: 95,
+                    height: double.infinity,
+                    child: posterUrl.isNotEmpty
+                        ? CachedNetworkImage(
+                            imageUrl: posterUrl,
+                            cacheManager: AppImageCache.manager,
+                            fit: BoxFit.cover,
+                            placeholder: (_, __) => Container(
+                              color: tokens.textPrimary.withValues(
+                                alpha: ZplayOpacity.borderFaint,
                               ),
-                              child: Text(
-                                entry.network!,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: ZplayType.caption
-                                    .copyWith(size: 10.5, weight: FontWeight.w600)
-                                    .toStyle(color: tokens.textEmphasis),
+                              child: Center(
+                                child: Icon(
+                                  Icons.tv_rounded,
+                                  color: tokens.textDisabled,
+                                  size: 28,
+                                ),
                               ),
                             ),
-                          if (airTimeStr.isNotEmpty)
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.access_time_rounded,
-                                  size: 12,
-                                  color: tokens.textSecondary,
+                            errorWidget: (_, __, ___) => Container(
+                              color: tokens.textPrimary.withValues(
+                                alpha: ZplayOpacity.borderFaint,
+                              ),
+                              child: Center(
+                                child: Icon(
+                                  Icons.tv_rounded,
+                                  color: tokens.textDisabled,
+                                  size: 28,
                                 ),
-                                const SizedBox(width: 3),
-                                Text(
-                                  airTimeStr,
-                                  style: ZplayType.caption
-                                      .copyWith(weight: FontWeight.w600)
-                                      .toStyle(color: tokens.textEmphasis),
-                                ),
-                              ],
+                              ),
                             ),
-                        ],
-                      ),
-                      const SizedBox(height: 5),
-
-                      // Show Title
-                      Text(
-                        entry.showTitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: ZplayType.subtitle
-                            .copyWith(
-                              size: 14.5,
-                              weight: FontWeight.w800,
-                              letterSpacing: -0.2,
-                            )
-                            .toStyle(color: tokens.textPrimary),
-                      ),
-                      const SizedBox(height: 2),
-
-                      // Episode Title
-                      Text(
-                        entry.episodeTitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: ZplayType.bodySmall
-                            .copyWith(size: 12.5, weight: FontWeight.w500)
-                            .toStyle(color: tokens.textEmphasis),
-                      ),
-                      if (entry.overview != null && entry.overview!.isNotEmpty) ...[
-                        const SizedBox(height: 3),
-                        Text(
-                          entry.overview!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: ZplayType.caption.toStyle(color: tokens.textMuted),
-                        ),
-                      ],
-                    ],
+                          )
+                        : Container(
+                            color: tokens.textPrimary.withValues(
+                              alpha: ZplayOpacity.borderFaint,
+                            ),
+                            child: Center(
+                              child: Icon(
+                                Icons.tv_rounded,
+                                color: tokens.textDisabled,
+                                size: 28,
+                              ),
+                            ),
+                          ),
                   ),
                 ),
-              ),
 
-              // Arrow Action
-              Padding(
-                padding: const EdgeInsets.only(right: 12),
-                child: Icon(
-                  Icons.chevron_right_rounded,
-                  color: isHovered ? tokens.accent : tokens.textDisabled,
-                  size: 22,
+                // Info Column
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Badge wrap (season/episode code + network badge + airtime)
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 4,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 7,
+                                vertical: 2.5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: tokens.accentSubtle,
+                                borderRadius: BorderRadius.circular(
+                                  ZplayRadius.sm,
+                                ),
+                              ),
+                              child: Text(
+                                epCode,
+                                style: ZplayType.caption
+                                    .copyWith(weight: FontWeight.w800)
+                                    .toStyle(color: tokens.accent),
+                              ),
+                            ),
+                            if (entry.network != null &&
+                                entry.network!.isNotEmpty)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
+                                constraints: const BoxConstraints(
+                                  maxWidth: 100,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: tokens.borderDefault,
+                                  borderRadius: BorderRadius.circular(
+                                    ZplayRadius.xs,
+                                  ),
+                                ),
+                                child: Text(
+                                  entry.network!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: ZplayType.caption
+                                      .copyWith(
+                                        size: 10.5,
+                                        weight: FontWeight.w600,
+                                      )
+                                      .toStyle(color: tokens.textEmphasis),
+                                ),
+                              ),
+                            if (airTimeStr.isNotEmpty)
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.access_time_rounded,
+                                    size: 12,
+                                    color: tokens.textSecondary,
+                                  ),
+                                  const SizedBox(width: 3),
+                                  Text(
+                                    airTimeStr,
+                                    style: ZplayType.caption
+                                        .copyWith(weight: FontWeight.w600)
+                                        .toStyle(color: tokens.textEmphasis),
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 5),
+
+                        // Show Title
+                        Text(
+                          entry.showTitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: ZplayType.subtitle
+                              .copyWith(
+                                size: 14.5,
+                                weight: FontWeight.w800,
+                                letterSpacing: -0.2,
+                              )
+                              .toStyle(color: tokens.textPrimary),
+                        ),
+                        const SizedBox(height: 2),
+
+                        // Episode Title
+                        Text(
+                          entry.episodeTitle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: ZplayType.bodySmall
+                              .copyWith(size: 12.5, weight: FontWeight.w500)
+                              .toStyle(color: tokens.textEmphasis),
+                        ),
+                        if (entry.overview != null &&
+                            entry.overview!.isNotEmpty) ...[
+                          const SizedBox(height: 3),
+                          Text(
+                            entry.overview!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: ZplayType.caption.toStyle(
+                              color: tokens.textMuted,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ],
-          ),
+
+                // Arrow Action
+                Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: Icon(
+                    Icons.chevron_right_rounded,
+                    color: isHovered ? tokens.accent : tokens.textDisabled,
+                    size: 22,
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

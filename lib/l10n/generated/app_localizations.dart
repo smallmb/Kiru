@@ -220,6 +220,30 @@ abstract class AppLocalizations {
   /// **'Exit Fullscreen (F11)'**
   String get shellExitFullscreenTooltip;
 
+  /// No description provided for @shellMinimizeWindowTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimize window'**
+  String get shellMinimizeWindowTooltip;
+
+  /// No description provided for @shellMaximizeWindowTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximize window'**
+  String get shellMaximizeWindowTooltip;
+
+  /// No description provided for @shellRestoreWindowTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore window'**
+  String get shellRestoreWindowTooltip;
+
+  /// No description provided for @shellCloseWindowTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Close window'**
+  String get shellCloseWindowTooltip;
+
   /// No description provided for @errorLoadFailed.
   ///
   /// In en, this message translates to:
@@ -11554,7 +11578,7 @@ abstract class AppLocalizations {
   /// No description provided for @configCopyDeepOpticalRefractionGlassSheetsPoweredBy.
   ///
   /// In en, this message translates to:
-  /// **'Deep optical refraction glass sheets powered by liquid_glass_easy'**
+  /// **'Frosted panels with Gaussian backdrop blur'**
   String get configCopyDeepOpticalRefractionGlassSheetsPoweredBy;
 
   /// No description provided for @configCopyCinematicPosterFocus.

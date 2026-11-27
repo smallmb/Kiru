@@ -1,3 +1,4 @@
+import '../ui/kiru_controls.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/theme/design_tokens.dart';
@@ -116,7 +117,7 @@ class ZplaySheet extends StatelessWidget {
                 ],
               ),
             ),
-            Divider(height: 1, thickness: 1, color: tokens.borderSubtle),
+            KiruDivider(height: 1, thickness: 1, color: tokens.borderSubtle),
           ],
           child,
         ],

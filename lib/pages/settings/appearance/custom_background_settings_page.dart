@@ -1,7 +1,10 @@
+import '../../../widgets/ui/kiru_tappable.dart';
+import '../../../widgets/ui/kiru_toast.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
+import '../../../widgets/ui/kiru_controls.dart';
 import 'package:flutter/services.dart';
 import '../../../services/theme/design_tokens.dart';
 import '../../../services/theme/app_theme_service.dart';
@@ -13,10 +16,12 @@ class CustomBackgroundSettingsPage extends StatefulWidget {
   const CustomBackgroundSettingsPage({super.key});
 
   @override
-  State<CustomBackgroundSettingsPage> createState() => _CustomBackgroundSettingsPageState();
+  State<CustomBackgroundSettingsPage> createState() =>
+      _CustomBackgroundSettingsPageState();
 }
 
-class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsPage> {
+class _CustomBackgroundSettingsPageState
+    extends State<CustomBackgroundSettingsPage> {
   final TextEditingController _urlController = TextEditingController();
   bool _isUploading = false;
 
@@ -28,11 +33,13 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
 
   void _showSnack(String msg, {bool isError = false}) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+    KiruToastMessenger.of(context).showSnackBar(
+      KiruToast(
         content: Text(msg, style: ZplayType.subtitle.toStyle()),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: isError ? context.tokens.danger : AppThemeService.currentPalette.value.primaryColor,
+        backgroundColor: isError
+            ? context.tokens.danger
+            : AppThemeService.currentPalette.value.primaryColor,
         duration: const Duration(seconds: 2),
       ),
     );
@@ -45,7 +52,11 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
     setState(() => _isUploading = false);
 
     if (success) {
-      _showSnack(l10nOf(context).appearanceDetailBackgroundImageUploadedAndAppliedAcrossAllUi);
+      _showSnack(
+        l10nOf(
+          context,
+        ).appearanceDetailBackgroundImageUploadedAndAppliedAcrossAllUi,
+      );
     }
   }
 
@@ -54,7 +65,10 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
     if (text.isEmpty) return;
 
     if (!text.startsWith('http://') && !text.startsWith('https://')) {
-      _showSnack(l10nOf(context).appearanceDetailPleaseEnterAValidHttpOrHttpsImage, isError: true);
+      _showSnack(
+        l10nOf(context).appearanceDetailPleaseEnterAValidHttpOrHttpsImage,
+        isError: true,
+      );
       return;
     }
 
@@ -78,14 +92,21 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
             return SettingsScaffold(
               title: l10nOf(context).appearanceCustomWallpaper,
               child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 20,
+                ),
                 children: [
                   // ── Header description ──
                   Padding(
                     padding: const EdgeInsets.only(bottom: 16),
                     child: Text(
-                      l10nOf(context).auxCustomBackgroundSettingsPageUploadYourOwnPhotoOrChooseA,
-                      style: ZplayType.body.toStyle(color: tokens.textSecondary),
+                      l10nOf(
+                        context,
+                      ).auxCustomBackgroundSettingsPageUploadYourOwnPhotoOrChooseA,
+                      style: ZplayType.body.toStyle(
+                        color: tokens.textSecondary,
+                      ),
                     ),
                   ),
 
@@ -109,7 +130,9 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                             decoration: BoxDecoration(
                               // Scrim that keeps the caption legible over
                               // whatever wallpaper sits behind it.
-                              color: palette.cardBackgroundColor.withValues(alpha: 0.82),
+                              color: palette.cardBackgroundColor.withValues(
+                                alpha: 0.82,
+                              ),
                               borderRadius: ZplayRadius.mdAll,
                             ),
                             child: Row(
@@ -118,7 +141,9 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                                   width: 44,
                                   height: 44,
                                   decoration: BoxDecoration(
-                                    color: palette.primaryColor.withValues(alpha: 0.2),
+                                    color: palette.primaryColor.withValues(
+                                      alpha: 0.2,
+                                    ),
                                     borderRadius: ZplayRadius.smAll,
                                   ),
                                   child: Icon(
@@ -131,18 +156,39 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                                 Expanded(
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        l10nOf(context).auxAudiobookSettingsPageLiveAtmospherePreview,
-                                        style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                                        l10nOf(
+                                          context,
+                                        ).auxAudiobookSettingsPageLiveAtmospherePreview,
+                                        style: ZplayType.subtitle.toStyle(
+                                          color: tokens.textPrimary,
+                                        ),
                                       ),
                                       const SizedBox(height: 3),
                                       Text(
                                         hasWallpaper
-                                            ? l10nOf(context).wallpaperActivePalette(configLabel(context, palette.name))
-                                            : l10nOf(context).wallpaperDefaultPalette(configLabel(context, palette.name)),
-                                        style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
+                                            ? l10nOf(
+                                                context,
+                                              ).wallpaperActivePalette(
+                                                configLabel(
+                                                  context,
+                                                  palette.name,
+                                                ),
+                                              )
+                                            : l10nOf(
+                                                context,
+                                              ).wallpaperDefaultPalette(
+                                                configLabel(
+                                                  context,
+                                                  palette.name,
+                                                ),
+                                              ),
+                                        style: ZplayType.bodySmall.toStyle(
+                                          color: tokens.textSecondary,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -161,24 +207,38 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                   Row(
                     children: [
                       Expanded(
-                        child: ElevatedButton.icon(
+                        child: KiruButton(
                           onPressed: _isUploading ? null : _handlePickImage,
                           icon: _isUploading
                               ? SizedBox(
                                   width: 18,
                                   height: 18,
-                                  child: CircularProgressIndicator(strokeWidth: 2, color: tokens.onAccent),
+                                  child: KiruLoader(
+                                    strokeWidth: 2,
+                                    color: tokens.onAccent,
+                                  ),
                                 )
-                              : const Icon(Icons.add_photo_alternate_rounded, size: 20),
-                          label: Text(
-                            _isUploading ? l10nOf(context).finalCustomBackgroundSettingsPageUploading : l10nOf(context).appearanceDetailUploadPhotoFromDevice,
+                              : const Icon(
+                                  Icons.add_photo_alternate_rounded,
+                                  size: 20,
+                                ),
+                          child: Text(
+                            _isUploading
+                                ? l10nOf(
+                                    context,
+                                  ).finalCustomBackgroundSettingsPageUploading
+                                : l10nOf(
+                                    context,
+                                  ).appearanceDetailUploadPhotoFromDevice,
                             style: ZplayType.label.toStyle(),
                           ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: palette.primaryColor,
                             foregroundColor: tokens.onAccent,
                             padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: ZplayRadius.smAll,
+                            ),
                             elevation: 0,
                           ),
                         ),
@@ -186,17 +246,30 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                       if (hasWallpaper) ...[
                         const SizedBox(width: 12),
                         IconButton.filledTonal(
-                          tooltip: l10nOf(context).auxCustomBackgroundSettingsPageResetToDefaultBackground,
-                          icon: Icon(Icons.delete_outline_rounded, color: tokens.danger),
+                          tooltip: l10nOf(
+                            context,
+                          ).auxCustomBackgroundSettingsPageResetToDefaultBackground,
+                          icon: Icon(
+                            Icons.delete_outline_rounded,
+                            color: tokens.danger,
+                          ),
                           style: IconButton.styleFrom(
-                            backgroundColor: tokens.danger.withValues(alpha: ZplayOpacity.borderStrong),
+                            backgroundColor: tokens.danger.withValues(
+                              alpha: ZplayOpacity.borderStrong,
+                            ),
                             padding: const EdgeInsets.all(14),
-                            shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: ZplayRadius.smAll,
+                            ),
                           ),
                           onPressed: () async {
                             await CustomBackgroundService.clearBackground();
                             if (!context.mounted) return;
-                            _showSnack(l10nOf(context).appearanceDetailBackgroundResetToDefaultTheme);
+                            _showSnack(
+                              l10nOf(
+                                context,
+                              ).appearanceDetailBackgroundResetToDefaultTheme,
+                            );
                           },
                         ),
                       ],
@@ -207,7 +280,10 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
 
                   // ── URL Input Bar ──
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: tokens.surface,
                       borderRadius: ZplayRadius.smAll,
@@ -215,36 +291,55 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.link_rounded, color: tokens.textMuted, size: 20),
+                        Icon(
+                          Icons.link_rounded,
+                          color: tokens.textMuted,
+                          size: 20,
+                        ),
                         const SizedBox(width: 10),
                         Expanded(
-                          child: TextField(
+                          child: KiruFormField(
                             controller: _urlController,
-                            style: ZplayType.label.toStyle(color: tokens.textPrimary),
+                            style: ZplayType.label.toStyle(
+                              color: tokens.textPrimary,
+                            ),
                             decoration: InputDecoration(
-                              hintText: l10nOf(context).auxCustomBackgroundSettingsPageOrPasteImageUrlHttps,
-                              hintStyle: ZplayType.bodySmall.toStyle(color: tokens.textDisabled),
+                              hintText: l10nOf(
+                                context,
+                              ).auxCustomBackgroundSettingsPageOrPasteImageUrlHttps,
+                              hintStyle: ZplayType.bodySmall.toStyle(
+                                color: tokens.textDisabled,
+                              ),
                               border: InputBorder.none,
                               isDense: true,
                             ),
                             onSubmitted: (_) => _handleApplyUrl(),
                           ),
                         ),
-                        IconButton(
-                          icon: Icon(Icons.content_paste_rounded, color: tokens.textSecondary, size: 18),
+                        KiruIconButton(
+                          icon: Icon(
+                            Icons.content_paste_rounded,
+                            color: tokens.textSecondary,
+                            size: 18,
+                          ),
                           tooltip: l10nOf(context).commonPasteClipboard,
                           onPressed: () async {
-                            final data = await Clipboard.getData(Clipboard.kTextPlain);
+                            final data = await Clipboard.getData(
+                              Clipboard.kTextPlain,
+                            );
                             if (data?.text != null) {
                               _urlController.text = data!.text!.trim();
                             }
                           },
                         ),
-                        TextButton(
+                        KiruButton(
+                          kind: KiruButtonKind.ghost,
                           onPressed: _handleApplyUrl,
                           child: Text(
                             l10nOf(context).uiDiscoverPageApply,
-                            style: ZplayType.label.toStyle(color: palette.primaryColor),
+                            style: ZplayType.label.toStyle(
+                              color: palette.primaryColor,
+                            ),
                           ),
                         ),
                       ],
@@ -255,7 +350,9 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
 
                   // ── 3. Curated Wallpaper Presets ──
                   Text(
-                    l10nOf(context).auxCustomBackgroundSettingsPageCuratedDarkWallpapers,
+                    l10nOf(
+                      context,
+                    ).auxCustomBackgroundSettingsPageCuratedDarkWallpapers,
                     style: ZplayType.overline.toStyle(color: tokens.textMuted),
                   ),
                   const SizedBox(height: 12),
@@ -275,85 +372,102 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                         itemCount: CustomBackgroundService.presets.length,
                         itemBuilder: (context, index) {
                           final preset = CustomBackgroundService.presets[index];
-                          final isSelected = customBg.imageUrl == preset.fullUrl;
+                          final isSelected =
+                              customBg.imageUrl == preset.fullUrl;
 
-                      return InkWell(
-                        onTap: () async {
-                          HapticFeedback.selectionClick();
-                          await CustomBackgroundService.applyPreset(preset);
-                          if (!context.mounted) return;
-                          _showSnack(l10nOf(context).appearanceDetailAppliedWallpaperName(configLabel(context, preset.title)));
-                        },
-                        borderRadius: ZplayRadius.smAll,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: ZplayRadius.smAll,
-                            border: Border.all(
-                              color: isSelected ? palette.primaryColor : tokens.borderDefault,
-                              width: isSelected ? 2.5 : 1.0,
-                            ),
-                            image: DecorationImage(
-                              image: NetworkImage(preset.previewUrl),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          child: Stack(
-                            children: [
-                              Positioned.fill(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: ZplayRadius.smAll,
-                                    // Scrim that makes the preset title legible
-                                    // over the artwork, so it keeps its own alpha.
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        Colors.transparent,
-                                        tokens.bg.withValues(alpha: 0.85),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              if (isSelected)
-                                Positioned(
-                                  top: 6,
-                                  right: 6,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(4),
-                                    decoration: BoxDecoration(
-                                      color: palette.primaryColor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(Icons.check_rounded, color: tokens.onAccent, size: 12),
-                                  ),
-                                ),
-                              Positioned(
-                                bottom: 6,
-                                left: 8,
-                                right: 8,
-                                child: Text(
+                          return KiruTappable(
+                            onTap: () async {
+                              HapticFeedback.selectionClick();
+                              await CustomBackgroundService.applyPreset(preset);
+                              if (!context.mounted) return;
+                              _showSnack(
+                                l10nOf(
+                                  context,
+                                ).appearanceDetailAppliedWallpaperName(
                                   configLabel(context, preset.title),
-                                  style: ZplayType.caption.toStyle(color: tokens.textPrimary),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              );
+                            },
+                            borderRadius: ZplayRadius.smAll,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: ZplayRadius.smAll,
+                                border: Border.all(
+                                  color: isSelected
+                                      ? palette.primaryColor
+                                      : tokens.borderDefault,
+                                  width: isSelected ? 2.5 : 1.0,
+                                ),
+                                image: DecorationImage(
+                                  image: NetworkImage(preset.previewUrl),
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
+                              child: Stack(
+                                children: [
+                                  Positioned.fill(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: ZplayRadius.smAll,
+                                        // Scrim that makes the preset title legible
+                                        // over the artwork, so it keeps its own alpha.
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: [
+                                            Colors.transparent,
+                                            tokens.bg.withValues(alpha: 0.85),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  if (isSelected)
+                                    Positioned(
+                                      top: 6,
+                                      right: 6,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: palette.primaryColor,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          Icons.check_rounded,
+                                          color: tokens.onAccent,
+                                          size: 12,
+                                        ),
+                                      ),
+                                    ),
+                                  Positioned(
+                                    bottom: 6,
+                                    left: 8,
+                                    right: 8,
+                                    child: Text(
+                                      configLabel(context, preset.title),
+                                      style: ZplayType.caption.toStyle(
+                                        color: tokens.textPrimary,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       );
-                      },
-                    );
-                  },
-                ),
+                    },
+                  ),
 
                   const SizedBox(height: 28),
 
                   // ── 4. Atmosphere & Blending Controls ──
                   Text(
-                    l10nOf(context).auxCustomBackgroundSettingsPageWallpaperLightBlendingControls,
+                    l10nOf(
+                      context,
+                    ).auxCustomBackgroundSettingsPageWallpaperLightBlendingControls,
                     style: ZplayType.overline.toStyle(color: tokens.textMuted),
                   ),
                   const SizedBox(height: 12),
@@ -365,20 +479,25 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                         // Opacity / Visibility Slider
                         _buildSliderTile(
                           icon: Icons.opacity_rounded,
-                          title: l10nOf(context).auxCustomBackgroundSettingsPagePhotoVisibilityDarkness,
+                          title: l10nOf(
+                            context,
+                          ).auxCustomBackgroundSettingsPagePhotoVisibilityDarkness,
                           valueText: '${(customBg.opacity * 100).round()}%',
                           value: customBg.opacity,
                           min: 0.10,
                           max: 1.0,
                           activeColor: palette.primaryColor,
-                          onChanged: (v) => CustomBackgroundService.setOpacity(v),
+                          onChanged: (v) =>
+                              CustomBackgroundService.setOpacity(v),
                         ),
-                        Divider(color: tokens.borderStrong, height: 24),
+                        KiruDivider(color: tokens.borderStrong, height: 24),
 
                         // Blur Slider
                         _buildSliderTile(
                           icon: Icons.blur_on_rounded,
-                          title: l10nOf(context).auxCustomBackgroundSettingsPagePhotoSoftBlur,
+                          title: l10nOf(
+                            context,
+                          ).auxCustomBackgroundSettingsPagePhotoSoftBlur,
                           valueText: '${customBg.blur.toStringAsFixed(1)} px',
                           value: customBg.blur,
                           min: 0.0,
@@ -386,35 +505,47 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
                           activeColor: palette.primaryColor,
                           onChanged: (v) => CustomBackgroundService.setBlur(v),
                         ),
-                        Divider(color: tokens.borderStrong, height: 24),
+                        KiruDivider(color: tokens.borderStrong, height: 24),
 
                         // Theme Tint Slider
                         _buildSliderTile(
                           icon: Icons.color_lens_outlined,
-                          title: l10nOf(context).auxCustomBackgroundSettingsPageThemeColorTintOverlay,
-                          valueText: '${(customBg.themeTintOpacity * 100).round()}%',
+                          title: l10nOf(
+                            context,
+                          ).auxCustomBackgroundSettingsPageThemeColorTintOverlay,
+                          valueText:
+                              '${(customBg.themeTintOpacity * 100).round()}%',
                           value: customBg.themeTintOpacity,
                           min: 0.0,
                           max: 0.80,
                           activeColor: palette.primaryColor,
-                          onChanged: (v) => CustomBackgroundService.setThemeTintOpacity(v),
+                          onChanged: (v) =>
+                              CustomBackgroundService.setThemeTintOpacity(v),
                         ),
-                        Divider(color: tokens.borderStrong, height: 24),
+                        KiruDivider(color: tokens.borderStrong, height: 24),
 
                         // Moving Ambient Lights Switch
-                        SwitchListTile.adaptive(
+                        KiruSwitchRow(
                           contentPadding: EdgeInsets.zero,
-                          activeColor: palette.primaryColor,
                           title: Text(
-                            l10nOf(context).auxCustomBackgroundSettingsPageBlendMovingAmbientLights,
-                            style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                            l10nOf(
+                              context,
+                            ).auxCustomBackgroundSettingsPageBlendMovingAmbientLights,
+                            style: ZplayType.subtitle.toStyle(
+                              color: tokens.textPrimary,
+                            ),
                           ),
                           subtitle: Text(
-                            l10nOf(context).auxCustomBackgroundSettingsPageSoftlyIlluminatesAndAnimatesThemeLightsOver,
-                            style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
+                            l10nOf(
+                              context,
+                            ).auxCustomBackgroundSettingsPageSoftlyIlluminatesAndAnimatesThemeLightsOver,
+                            style: ZplayType.bodySmall.toStyle(
+                              color: tokens.textSecondary,
+                            ),
                           ),
                           value: customBg.blendThemeLights,
-                          onChanged: (v) => CustomBackgroundService.setBlendThemeLights(v),
+                          onChanged: (v) =>
+                              CustomBackgroundService.setBlendThemeLights(v),
                         ),
                       ],
                     ),
@@ -471,13 +602,15 @@ class _CustomBackgroundSettingsPageState extends State<CustomBackgroundSettingsP
         SliderTheme(
           data: SliderThemeData(
             activeTrackColor: activeColor,
-            inactiveTrackColor: Colors.white.withValues(alpha: ZplayOpacity.borderStrong),
+            inactiveTrackColor: Colors.white.withValues(
+              alpha: ZplayOpacity.borderStrong,
+            ),
             thumbColor: activeColor,
             trackHeight: 3,
             thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
             overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
           ),
-          child: Slider(
+          child: KiruSlider(
             value: value,
             min: min,
             max: max,

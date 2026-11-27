@@ -1,3 +1,7 @@
+import '../../widgets/ui/kiru_tappable.dart';
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/player/player_glass.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import '../../l10n/l10n.dart';
 
 import 'dart:async';
@@ -10,7 +14,6 @@ import '../../widgets/common/baked_gradient.dart';
 import '../../widgets/common/zplay_logo.dart';
 
 import 'package:flutter/services.dart';
-import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 
@@ -31,7 +34,6 @@ import '../../services/stream/stream_health_checker.dart';
 import '../../services/stream/stream_service.dart';
 import '../../services/theme/app_theme_service.dart';
 import '../../services/theme/design_tokens.dart';
-import '../../services/theme/glass_settings.dart';
 import '../../services/scraper/builtin_providers_settings_service.dart';
 import '../../widgets/common/performance_liquid_lens.dart';
 import '../../widgets/common/focusable_card.dart';
@@ -801,23 +803,7 @@ class _WatchScreenState extends State<WatchScreen>
 
     return Scaffold(
       backgroundColor: context.tokens.bg,
-      body: ValueListenableBuilder<bool>(
-        valueListenable: GlassSettings.enabled,
-        builder: (context, enabled, _) {
-          if (enabled) {
-            return LiquidGlassView(
-              realTimeCapture: true,
-              useSync: true,
-              pixelRatio: 0.85,
-              refreshRate: LiquidGlassRefreshRate.deviceRefreshRate,
-              regionCapture: true,
-              backgroundWidget: background,
-              child: content,
-            );
-          }
-          return Stack(children: [background, content]);
-        },
-      ),
+      body: Stack(children: [background, content]),
     );
   }
 
@@ -1123,7 +1109,9 @@ class _WatchScreenState extends State<WatchScreen>
             ),
             child: Text(
               _isCollection
-                  ? l10nOf(context).mediaCollectionPart((ep.episode ?? 1).toString())
+                  ? l10nOf(
+                      context,
+                    ).mediaCollectionPart((ep.episode ?? 1).toString())
                   : 'S${ep.season ?? '?'}E${ep.episode ?? '?'}',
               style: ZplayType.label
                   .copyWith(weight: FontWeight.w700, letterSpacing: 0.5)
@@ -1386,7 +1374,9 @@ class _WatchScreenState extends State<WatchScreen>
               onTap: () =>
                   setState(() => _synopsisExpanded = !_synopsisExpanded),
               builder: (context, _) => Text(
-                _synopsisExpanded ? l10nOf(context).mediaLabelShowLess : l10nOf(context).mediaLabelReadMore,
+                _synopsisExpanded
+                    ? l10nOf(context).mediaLabelShowLess
+                    : l10nOf(context).mediaLabelReadMore,
                 style: ZplayType.label
                     .copyWith(weight: FontWeight.w600)
                     .toStyle(color: context.tokens.accent),
@@ -1826,9 +1816,21 @@ class _WatchScreenState extends State<WatchScreen>
     onChanged: (value) => setState(() => _selectedSizeFilter = value),
     options: [
       _FilterOption<String?>(null, label: l10nOf(context).sourcesAllSizes),
-      const _FilterOption<String?>('<1gb', label: '< 1 GB', dividerBefore: true),
-      const _FilterOption<String?>('1-5gb', label: '1 GB – 5 GB', short: '1–5 GB'),
-      const _FilterOption<String?>('5-15gb', label: '5 GB – 15 GB', short: '5–15 GB'),
+      const _FilterOption<String?>(
+        '<1gb',
+        label: '< 1 GB',
+        dividerBefore: true,
+      ),
+      const _FilterOption<String?>(
+        '1-5gb',
+        label: '1 GB – 5 GB',
+        short: '1–5 GB',
+      ),
+      const _FilterOption<String?>(
+        '5-15gb',
+        label: '5 GB – 15 GB',
+        short: '5–15 GB',
+      ),
       const _FilterOption<String?>(
         '15-30gb',
         label: '15 GB – 30 GB',
@@ -1889,7 +1891,10 @@ class _WatchScreenState extends State<WatchScreen>
         label: l10nOf(context).sourcesMultiAudio,
         dividerBefore: true,
       ),
-      _FilterOption<String>('english', label: l10nOf(context).sourcesEnglishAudio),
+      _FilterOption<String>(
+        'english',
+        label: l10nOf(context).sourcesEnglishAudio,
+      ),
       _FilterOption<String>(
         'hindi',
         label: l10nOf(context).sourcesHindiAudio,
@@ -1961,8 +1966,8 @@ class _WatchScreenState extends State<WatchScreen>
                 ),
               ],
             ),
-            child: PerformanceLiquidLens(
-              style: PerformanceGlassStyles.menuButton,
+            child: FrostedSurface(
+              kind: FrostedSurfaceKind.menuButton,
               child: Container(
                 height: 36,
                 padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -2089,8 +2094,8 @@ class _WatchScreenState extends State<WatchScreen>
                         ),
                       ],
                     ),
-                    child: PerformanceLiquidLens(
-                      style: PerformanceGlassStyles.menu,
+                    child: FrostedSurface(
+                      kind: FrostedSurfaceKind.menu,
                       child: Container(
                         width: dialogWidth,
                         constraints: BoxConstraints(maxHeight: maxMenuHeight),
@@ -2171,7 +2176,7 @@ class _WatchScreenState extends State<WatchScreen>
                       .toStyle(color: context.tokens.textPrimary),
                 ),
               ),
-              IconButton(
+              KiruIconButton(
                 icon: Icon(
                   Icons.close,
                   color: context.tokens.textSecondary,
@@ -2275,7 +2280,7 @@ class _WatchScreenState extends State<WatchScreen>
                   ),
                   header,
                   const SizedBox(height: ZplaySpacing.s8),
-                  Divider(
+                  KiruDivider(
                     color: context.tokens.textPrimary.withValues(
                       alpha: ZplayOpacity.borderMedium,
                     ),
@@ -2301,7 +2306,7 @@ class _WatchScreenState extends State<WatchScreen>
     required Color activeColor,
     required VoidCallback onTap,
   }) {
-    return InkWell(
+    return KiruTappable(
       onTap: () {
         HapticFeedback.lightImpact();
         onTap();
@@ -2363,14 +2368,15 @@ class _WatchScreenState extends State<WatchScreen>
           ),
         ),
       ),
-      child: IconButton(
+      child: PlayerIconButton(
+        size: 44,
+        iconSize: 18,
         icon: Icon(
           Icons.arrow_back_ios_new_rounded,
           size: 18,
           color: context.tokens.textPrimary,
         ),
         onPressed: () => Navigator.pop(context),
-        padding: EdgeInsets.zero,
       ),
     );
   }
@@ -2982,7 +2988,7 @@ class _AddonSourceIcon extends StatelessWidget {
                 child: SizedBox(
                   width: 14,
                   height: 14,
-                  child: CircularProgressIndicator(
+                  child: KiruLoader(
                     strokeWidth: 2,
                     color: context.tokens.accent,
                   ),
@@ -3085,9 +3091,9 @@ class _CopyMagnetButtonState extends State<_CopyMagnetButton> {
       if (mounted) setState(() => _copied = false);
     });
 
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+    KiruToastMessenger.of(context).hideCurrentSnackBar();
+    KiruToastMessenger.of(context).showSnackBar(
+      KiruToast(
         content: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -3126,11 +3132,13 @@ class _CopyMagnetButtonState extends State<_CopyMagnetButton> {
           child: MouseRegion(
             onEnter: (_) => setState(() => _hovered = true),
             onExit: (_) => setState(() => _hovered = false),
-            child: Tooltip(
-              message: _copied ? l10nOf(context).finalWatchScreenCopied : 'Copy Magnet Link',
+            child: PlayerTooltip(
+              message: _copied
+                  ? l10nOf(context).finalWatchScreenCopied
+                  : 'Copy Magnet Link',
               child: Material(
                 color: Colors.transparent,
-                child: InkWell(
+                child: KiruTappable(
                   onTap: _copy,
                   borderRadius: ZplayRadius.mdAll,
                   child: AnimatedContainer(

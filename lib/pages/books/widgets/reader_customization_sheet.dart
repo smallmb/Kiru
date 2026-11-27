@@ -1,3 +1,5 @@
+import '../../../widgets/ui/kiru_tappable.dart';
+import '../../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:async';
@@ -11,10 +13,7 @@ import 'reader_design_tokens.dart';
 class ReaderCustomizationSheet extends StatefulWidget {
   final String? realBookSampleText;
 
-  const ReaderCustomizationSheet({
-    super.key,
-    this.realBookSampleText,
-  });
+  const ReaderCustomizationSheet({super.key, this.realBookSampleText});
 
   static Future<void> show(BuildContext context, {String? realBookSampleText}) {
     final isDesktop = MediaQuery.of(context).size.width > 760;
@@ -32,14 +31,22 @@ class ReaderCustomizationSheet extends StatefulWidget {
             alignment: Alignment.centerRight,
             child: Material(
               color: Colors.transparent,
-              child: ReaderCustomizationSheet(realBookSampleText: realBookSampleText),
+              child: ReaderCustomizationSheet(
+                realBookSampleText: realBookSampleText,
+              ),
             ),
           );
         },
         transitionBuilder: (ctx, anim1, anim2, child) {
-          final curved = CurvedAnimation(parent: anim1, curve: ReaderTokens.curveSheet);
+          final curved = CurvedAnimation(
+            parent: anim1,
+            curve: ReaderTokens.curveSheet,
+          );
           return SlideTransition(
-            position: Tween<Offset>(begin: const Offset(1, 0), end: Offset.zero).animate(curved),
+            position: Tween<Offset>(
+              begin: const Offset(1, 0),
+              end: Offset.zero,
+            ).animate(curved),
             child: child,
           );
         },
@@ -51,30 +58,23 @@ class ReaderCustomizationSheet extends StatefulWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => ReaderCustomizationSheet(realBookSampleText: realBookSampleText),
+      builder: (ctx) =>
+          ReaderCustomizationSheet(realBookSampleText: realBookSampleText),
     );
   }
 
   @override
-  State<ReaderCustomizationSheet> createState() => _ReaderCustomizationSheetState();
+  State<ReaderCustomizationSheet> createState() =>
+      _ReaderCustomizationSheetState();
 }
 
-class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
-    with SingleTickerProviderStateMixin {
-  late final TabController _tabController;
+class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet> {
   bool _showResetSuccess = false;
   Timer? _resetTimer;
 
   @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
-
-  @override
   void dispose() {
     _resetTimer?.cancel();
-    _tabController.dispose();
     super.dispose();
   }
 
@@ -102,12 +102,18 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
           height: isDesktop ? double.infinity : null,
           constraints: isDesktop
               ? null
-              : BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.88),
+              : BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.88,
+                ),
           decoration: BoxDecoration(
             color: ReaderTokens.surfaceOverlay,
             borderRadius: isDesktop
-                ? const BorderRadius.horizontal(left: Radius.circular(ReaderTokens.radius24))
-                : const BorderRadius.vertical(top: Radius.circular(ReaderTokens.radius24)),
+                ? const BorderRadius.horizontal(
+                    left: Radius.circular(ReaderTokens.radius24),
+                  )
+                : const BorderRadius.vertical(
+                    top: Radius.circular(ReaderTokens.radius24),
+                  ),
             // No outline: the sheet's own scrim is its edge, and a hairline
             // around a floating surface is the second frame the quiet language
             // drops. The soft shadow still separates it from the page.
@@ -119,7 +125,10 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
               // Mobile Drag Handle
               if (!isDesktop)
                 Container(
-                  margin: const EdgeInsets.only(top: ReaderTokens.space12, bottom: ReaderTokens.space8),
+                  margin: const EdgeInsets.only(
+                    top: ReaderTokens.space12,
+                    bottom: ReaderTokens.space8,
+                  ),
                   width: 32,
                   height: 4,
                   decoration: BoxDecoration(
@@ -141,7 +150,11 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.tune_rounded, color: ReaderTokens.accent, size: 18),
+                        Icon(
+                          Icons.tune_rounded,
+                          color: ReaderTokens.accent,
+                          size: 18,
+                        ),
                         const SizedBox(width: ReaderTokens.space8),
                         Text(
                           l10nOf(context).auxReaderCustomizationSheetAppearance,
@@ -179,56 +192,18 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
               // Real Book Text Live Preview
               _buildLivePreview(settings),
 
-              // Underline Tab Bar. No bottom hairline under it: the control's
-              // own accent indicator marks the selected tab, and the line the
-              // container used to draw was a second edge under the sheet's
-              // chrome.
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: ReaderTokens.space24,
-                  vertical: ReaderTokens.space8,
-                ),
-                child: TabBar(
-                  controller: _tabController,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  dividerColor: Colors.transparent,
-                  indicatorColor: ReaderTokens.accent,
-                  indicatorWeight: 2.5,
-                  labelColor: ReaderTokens.accent,
-                  unselectedLabelColor: ReaderTokens.textSecondary,
-                  labelStyle: ReaderTokens.tabLabel,
-                  tabs: [
-                    Tab(text: l10nOf(context).finalPlayerSubStyleModalTypography),
-                    Tab(text: l10nOf(context).finalReaderCustomizationSheetTheme),
-                    Tab(text: l10nOf(context).finalReaderCustomizationSheetLayout),
-                  ],
-                ),
-              ),
-
-              // Tab Views
               Expanded(
-                child: SliderTheme(
-                  data: SliderThemeData(
-                    trackHeight: 2.5,
-                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
-                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
-                    activeTrackColor: ReaderTokens.accent,
-                    inactiveTrackColor: ReaderTokens.borderDefault,
-                    thumbColor: ReaderTokens.accent,
-                    showValueIndicator: ShowValueIndicator.onlyForContinuous,
-                    valueIndicatorColor: ReaderTokens.accent,
-                    valueIndicatorTextStyle: ZplayType.caption.toStyle(
-                      color: ReaderTokens.onAccent,
-                    ),
-                  ),
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
-                      _buildTypographyTab(settings),
-                      _buildThemeTab(settings),
-                      _buildLayoutTab(settings),
-                    ],
-                  ),
+                child: KiruTabs(
+                  labels: [
+                    Text(l10nOf(context).finalPlayerSubStyleModalTypography),
+                    Text(l10nOf(context).finalReaderCustomizationSheetTheme),
+                    Text(l10nOf(context).finalReaderCustomizationSheetLayout),
+                  ],
+                  children: [
+                    _buildTypographyTab(settings),
+                    _buildThemeTab(settings),
+                    _buildLayoutTab(settings),
+                  ],
                 ),
               ),
 
@@ -267,7 +242,11 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
                               ),
                               const SizedBox(width: ReaderTokens.space8),
                               Text(
-                                _showResetSuccess ? l10nOf(context).finalReaderCustomizationSheetReset : 'Reset to Defaults',
+                                _showResetSuccess
+                                    ? l10nOf(
+                                        context,
+                                      ).finalReaderCustomizationSheetReset
+                                    : 'Reset to Defaults',
                                 style: ZplayType.label.toStyle(
                                   color: _showResetSuccess
                                       ? ReaderTokens.success
@@ -348,14 +327,16 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.all(ReaderTokens.space24),
       children: [
-        _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetFontFamily),
+        _buildSectionTitle(
+          l10nOf(context).finalReaderCustomizationSheetFontFamily,
+        ),
         const SizedBox(height: ReaderTokens.space8),
         Wrap(
           spacing: ReaderTokens.space8,
           runSpacing: ReaderTokens.space8,
           children: fonts.map((f) {
             final isSelected = settings.fontFamily == f['key'];
-            return ChoiceChip(
+            return KiruChoiceChip(
               label: Text('${f['name']}'),
               selected: isSelected,
               onSelected: (_) {
@@ -367,7 +348,9 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
               shape: RoundedRectangleBorder(
                 borderRadius: ReaderTokens.rounded8,
                 side: BorderSide(
-                  color: isSelected ? Colors.transparent : ReaderTokens.borderDefault,
+                  color: isSelected
+                      ? Colors.transparent
+                      : ReaderTokens.borderDefault,
                 ),
               ),
               labelStyle: ZplayType.label
@@ -386,7 +369,9 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetFontSize),
+            _buildSectionTitle(
+              l10nOf(context).finalReaderCustomizationSheetFontSize,
+            ),
             Text(
               '${settings.fontSize.round()} px',
               style: ZplayType.label
@@ -397,9 +382,14 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
         ),
         Row(
           children: [
-            Text('A', style: ZplayType.bodySmall.copyWith(weight: FontWeight.w700).toStyle(color: ReaderTokens.textSecondary)),
+            Text(
+              'A',
+              style: ZplayType.bodySmall
+                  .copyWith(weight: FontWeight.w700)
+                  .toStyle(color: ReaderTokens.textSecondary),
+            ),
             Expanded(
-              child: Slider(
+              child: KiruSlider(
                 value: settings.fontSize,
                 min: 14,
                 max: 34,
@@ -408,7 +398,12 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
                 onChanged: (val) => ReaderSettings.updateFontSize(val),
               ),
             ),
-            Text('A', style: ZplayType.titleLarge.toStyle(color: ReaderTokens.textSecondary)),
+            Text(
+              'A',
+              style: ZplayType.titleLarge.toStyle(
+                color: ReaderTokens.textSecondary,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: ReaderTokens.space16),
@@ -417,7 +412,9 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetLineHeight),
+            _buildSectionTitle(
+              l10nOf(context).finalReaderCustomizationSheetLineHeight,
+            ),
             Text(
               '${settings.lineSpacing.toStringAsFixed(2)}×',
               style: ZplayType.label
@@ -426,7 +423,7 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
             ),
           ],
         ),
-        Slider(
+        KiruSlider(
           value: settings.lineSpacing,
           min: 1.2,
           max: 2.2,
@@ -443,13 +440,23 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetAlignment),
+                  _buildSectionTitle(
+                    l10nOf(context).finalReaderCustomizationSheetAlignment,
+                  ),
                   const SizedBox(height: ReaderTokens.space8),
                   Row(
                     children: [
-                      _buildAlignButton(Icons.format_align_left_rounded, TextAlign.left, settings),
+                      _buildAlignButton(
+                        Icons.format_align_left_rounded,
+                        TextAlign.left,
+                        settings,
+                      ),
                       const SizedBox(width: ReaderTokens.space8),
-                      _buildAlignButton(Icons.format_align_justify_rounded, TextAlign.justify, settings),
+                      _buildAlignButton(
+                        Icons.format_align_justify_rounded,
+                        TextAlign.justify,
+                        settings,
+                      ),
                     ],
                   ),
                 ],
@@ -459,9 +466,13 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetFirstLineIndent),
+                  _buildSectionTitle(
+                    l10nOf(
+                      context,
+                    ).finalReaderCustomizationSheetFirstLineIndent,
+                  ),
                   const SizedBox(height: ReaderTokens.space8),
-                  Switch.adaptive(
+                  KiruSwitch(
                     value: settings.firstLineIndent,
                     activeColor: ReaderTokens.accent,
                     onChanged: (val) {
@@ -487,7 +498,9 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.all(ReaderTokens.space24),
       children: [
-        _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetReadingThemes),
+        _buildSectionTitle(
+          l10nOf(context).finalReaderCustomizationSheetReadingThemes,
+        ),
         const SizedBox(height: ReaderTokens.space12),
         Row(
           children: [
@@ -534,7 +547,9 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetReaderBrightness),
+            _buildSectionTitle(
+              l10nOf(context).finalReaderCustomizationSheetReaderBrightness,
+            ),
             Text(
               '${(settings.brightness * 100).round()}%',
               style: ZplayType.label
@@ -545,9 +560,13 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
         ),
         Row(
           children: [
-            Icon(Icons.brightness_low_rounded, color: ReaderTokens.textSecondary, size: 18),
+            Icon(
+              Icons.brightness_low_rounded,
+              color: ReaderTokens.textSecondary,
+              size: 18,
+            ),
             Expanded(
-              child: Slider(
+              child: KiruSlider(
                 value: settings.brightness,
                 min: 0.2,
                 max: 1.0,
@@ -556,7 +575,11 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
                 onChanged: (val) => ReaderSettings.updateBrightness(val),
               ),
             ),
-            Icon(Icons.brightness_high_rounded, color: ReaderTokens.textSecondary, size: 20),
+            Icon(
+              Icons.brightness_high_rounded,
+              color: ReaderTokens.textSecondary,
+              size: 20,
+            ),
           ],
         ),
       ],
@@ -572,7 +595,9 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.all(ReaderTokens.space24),
       children: [
-        _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetPageMargins),
+        _buildSectionTitle(
+          l10nOf(context).finalReaderCustomizationSheetPageMargins,
+        ),
         const SizedBox(height: ReaderTokens.space12),
         Row(
           children: [
@@ -585,14 +610,18 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
         ),
         const SizedBox(height: ReaderTokens.space24),
 
-        _buildSectionTitle(l10nOf(context).finalReaderCustomizationSheetReadingMode),
+        _buildSectionTitle(
+          l10nOf(context).finalReaderCustomizationSheetReadingMode,
+        ),
         const SizedBox(height: ReaderTokens.space12),
         Row(
           children: [
             Expanded(
               child: _buildModeButton(
                 icon: Icons.unfold_more_rounded,
-                label: l10nOf(context).auxReaderCustomizationSheetContinuousScroll,
+                label: l10nOf(
+                  context,
+                ).auxReaderCustomizationSheetContinuousScroll,
                 mode: ReaderMode.scroll,
                 settings: settings,
               ),
@@ -601,7 +630,9 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
             Expanded(
               child: _buildModeButton(
                 icon: Icons.auto_stories_rounded,
-                label: l10nOf(context).auxReaderCustomizationSheetPaginatedTurns,
+                label: l10nOf(
+                  context,
+                ).auxReaderCustomizationSheetPaginatedTurns,
                 mode: ReaderMode.paginated,
                 settings: settings,
               ),
@@ -674,7 +705,10 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
                     decoration: BoxDecoration(
                       color: bg,
                       shape: BoxShape.circle,
-                      border: Border.all(color: textColor.withValues(alpha: 0.5), width: 0.8),
+                      border: Border.all(
+                        color: textColor.withValues(alpha: 0.5),
+                        width: 0.8,
+                      ),
                     ),
                   ),
                 ],
@@ -695,7 +729,11 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
     );
   }
 
-  Widget _buildAlignButton(IconData icon, TextAlign align, ReaderSettingsData settings) {
+  Widget _buildAlignButton(
+    IconData icon,
+    TextAlign align,
+    ReaderSettingsData settings,
+  ) {
     final isSelected = settings.textAlign == align;
     return IconButton.filledTonal(
       icon: Icon(icon, size: 20),
@@ -704,20 +742,30 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
         ReaderSettings.updateTextAlign(align);
       },
       style: IconButton.styleFrom(
-        backgroundColor: isSelected ? ReaderTokens.accent : ReaderTokens.surface,
-        foregroundColor: isSelected ? ReaderTokens.onAccent : ReaderTokens.textSecondary,
+        backgroundColor: isSelected
+            ? ReaderTokens.accent
+            : ReaderTokens.surface,
+        foregroundColor: isSelected
+            ? ReaderTokens.onAccent
+            : ReaderTokens.textSecondary,
         side: BorderSide(
           color: isSelected ? Colors.transparent : ReaderTokens.borderDefault,
         ),
-        shape: const RoundedRectangleBorder(borderRadius: ReaderTokens.rounded8),
+        shape: const RoundedRectangleBorder(
+          borderRadius: ReaderTokens.rounded8,
+        ),
       ),
     );
   }
 
-  Widget _buildMarginChip(String label, MarginPreset preset, ReaderSettingsData settings) {
+  Widget _buildMarginChip(
+    String label,
+    MarginPreset preset,
+    ReaderSettingsData settings,
+  ) {
     final isSelected = settings.marginPreset == preset;
     return Expanded(
-      child: ChoiceChip(
+      child: KiruChoiceChip(
         label: Text(label),
         selected: isSelected,
         onSelected: (_) {
@@ -733,11 +781,11 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
           ),
         ),
         labelStyle: ZplayType.caption
-            .copyWith(
-              weight: isSelected ? FontWeight.w700 : FontWeight.w400,
-            )
+            .copyWith(weight: isSelected ? FontWeight.w700 : FontWeight.w400)
             .toStyle(
-              color: isSelected ? ReaderTokens.onAccent : ReaderTokens.textPrimary,
+              color: isSelected
+                  ? ReaderTokens.onAccent
+                  : ReaderTokens.textPrimary,
             ),
       ),
     );
@@ -750,7 +798,7 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
     required ReaderSettingsData settings,
   }) {
     final isSelected = settings.mode == mode;
-    return InkWell(
+    return KiruTappable(
       onTap: () {
         HapticFeedback.selectionClick();
         ReaderSettings.updateMode(mode);
@@ -762,7 +810,9 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
           color: isSelected ? ReaderTokens.accentSubtle : ReaderTokens.surface,
           borderRadius: ReaderTokens.rounded12,
           border: Border.all(
-            color: isSelected ? ReaderTokens.accent : ReaderTokens.borderDefault,
+            color: isSelected
+                ? ReaderTokens.accent
+                : ReaderTokens.borderDefault,
             width: isSelected ? 2.0 : 1.0,
           ),
         ),
@@ -770,7 +820,9 @@ class _ReaderCustomizationSheetState extends State<ReaderCustomizationSheet>
           children: [
             Icon(
               icon,
-              color: isSelected ? ReaderTokens.accent : ReaderTokens.textSecondary,
+              color: isSelected
+                  ? ReaderTokens.accent
+                  : ReaderTokens.textSecondary,
               size: 20,
             ),
             const SizedBox(height: ReaderTokens.space4),

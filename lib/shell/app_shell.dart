@@ -413,6 +413,7 @@ class _AppShellState extends State<AppShell> {
       pageActions: _controller.pageActions,
       browseVertical: _controller.browseVertical,
       onBrowseVertical: _controller.goBrowseVertical,
+      onSearchSubmitted: _controller.searchFromHeader,
     );
     if (!handOverDown) return rail;
     return _TopChromeHandover(onDown: _handOverDownToPage, child: rail);
@@ -759,7 +760,13 @@ class _AppShellState extends State<AppShell> {
             child: ValueListenableBuilder<double>(
               valueListenable: _slotScrollOffset,
               builder: (context, offset, _) => _nav(
-                blend: 1 - (offset / _navBlendThreshold).clamp(0.0, 1.0),
+                blend:
+                    1 -
+                    (offset /
+                            (_formFactor == FormFactor.television
+                                ? _navBlendThreshold
+                                : 96.0))
+                        .clamp(0.0, 1.0),
                 // The bar is at the top of the window here, so a page's own
                 // header row is directly under it and DOWN out of a row has to
                 // reach it. The phone's bar is at the foot and gets no such

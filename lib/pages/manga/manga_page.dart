@@ -1,8 +1,8 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
-import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../../models/manga/manga.dart';
@@ -13,7 +13,6 @@ import '../../services/manga/manga_service.dart';
 import '../../services/manga/manga_settings.dart';
 import '../../widgets/common/animated_ambient_background.dart';
 import '../../widgets/common/segmented_tabs.dart';
-import '../../widgets/common/custom_scroll_track.dart';
 import '../../widgets/common/focusable_card.dart';
 import '../../widgets/common/pill_button.dart';
 import '../../widgets/common/poster_skeleton.dart';
@@ -57,26 +56,28 @@ class _MangaPageState extends State<MangaPage> {
   final MangaService _mangaService = MangaService();
   late final ScrollController _scrollController;
   final TextEditingController _searchController = TextEditingController();
-  
+
   List<Manga> _mangaList = [];
   List<Map<String, dynamic>> _readingHistory = [];
-  
+
   bool _isLoading = false;
   bool _isLoadingMore = false;
   int _currentPage = 1;
   String _searchQuery = '';
   String _selectedGenre = 'All';
-  
+
   // Track grid layout dimensions
   late double _screenWidth;
 
   @override
   void initState() {
     super.initState();
-    _scrollController = ScrollController(initialScrollOffset: _cachedScrollOffset);
+    _scrollController = ScrollController(
+      initialScrollOffset: _cachedScrollOffset,
+    );
     _searchController.text = _cachedSearchQuery;
     _selectedGenre = _cachedSelectedGenre;
-    
+
     MangaSettings.changeNotifier.addListener(_onSettingsChanged);
     AppThemeService.currentPalette.addListener(_onSettingsChanged);
 
@@ -99,7 +100,7 @@ class _MangaPageState extends State<MangaPage> {
       _isLoading = true;
       _loadInitialData();
     }
-    
+
     MangaService.readingHistoryRevision.addListener(_loadHistory);
     _scrollController.addListener(_onScroll);
   }
@@ -124,9 +125,10 @@ class _MangaPageState extends State<MangaPage> {
       _cachedScrollOffset = _scrollController.offset;
     }
     if (_isLoading || _isLoadingMore) return;
-    
+
     // If we're within 800 pixels of the bottom, load more
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 800) {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 800) {
       _loadMore();
     }
   }
@@ -146,10 +148,13 @@ class _MangaPageState extends State<MangaPage> {
       _currentPage = 1;
       _mangaList.clear();
     });
-    
+
     final results = await Future.wait([
-      _searchQuery.isEmpty 
-          ? _mangaService.getManga(page: _currentPage, tag: _selectedGenre == 'All' ? null : _selectedGenre)
+      _searchQuery.isEmpty
+          ? _mangaService.getManga(
+              page: _currentPage,
+              tag: _selectedGenre == 'All' ? null : _selectedGenre,
+            )
           : _mangaService.searchManga(_searchQuery, page: _currentPage),
       _mangaService.getReadingHistory(),
     ]);
@@ -159,7 +164,7 @@ class _MangaPageState extends State<MangaPage> {
         _mangaList = results[0] as List<Manga>;
         _readingHistory = results[1] as List<Map<String, dynamic>>;
         _isLoading = false;
-        
+
         _cachedMangaList = _mangaList;
         _cachedReadingHistory = _readingHistory;
         _cachedCurrentPage = _currentPage;
@@ -171,23 +176,26 @@ class _MangaPageState extends State<MangaPage> {
 
   Future<void> _loadMore() async {
     setState(() => _isLoadingMore = true);
-    
+
     _currentPage++;
-    final newManga = _searchQuery.isEmpty 
-        ? await _mangaService.getManga(page: _currentPage, tag: _selectedGenre == 'All' ? null : _selectedGenre)
+    final newManga = _searchQuery.isEmpty
+        ? await _mangaService.getManga(
+            page: _currentPage,
+            tag: _selectedGenre == 'All' ? null : _selectedGenre,
+          )
         : await _mangaService.searchManga(_searchQuery, page: _currentPage);
-        
+
     if (mounted) {
       setState(() {
         _mangaList.addAll(newManga);
         _isLoadingMore = false;
-        
+
         _cachedMangaList = _mangaList;
         _cachedCurrentPage = _currentPage;
       });
     }
   }
-  
+
   void _onSearchChanged(String query) {
     if (_searchQuery == query) return;
     _searchQuery = query;
@@ -211,16 +219,19 @@ class _MangaPageState extends State<MangaPage> {
     final manga = Manga.fromJson(mangaJson);
     final chapterIndex = historyEntry['chapterIndex'] as int;
     final pageIndex = historyEntry['pageIndex'] as int;
-    final chaptersList = (historyEntry['chapters'] as List).map((c) => MangaChapter.fromJson(c)).toList();
+    final chaptersList = (historyEntry['chapters'] as List)
+        .map((c) => MangaChapter.fromJson(c))
+        .toList();
 
     Navigator.of(context).push(
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => MangaReaderPage(
-          manga: manga,
-          chapters: chaptersList,
-          currentChapterIndex: chapterIndex,
-          resumePageIndex: pageIndex,
-        ),
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            MangaReaderPage(
+              manga: manga,
+              chapters: chaptersList,
+              currentChapterIndex: chapterIndex,
+              resumePageIndex: pageIndex,
+            ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
         },
@@ -246,9 +257,7 @@ class _MangaPageState extends State<MangaPage> {
         // its own shape.
         return Dialog(
           backgroundColor: tokens.surfaceOverlay,
-          shape: const RoundedRectangleBorder(
-            borderRadius: ZplayRadius.lgAll,
-          ),
+          shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.lgAll),
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 480),
             child: Padding(
@@ -263,7 +272,9 @@ class _MangaPageState extends State<MangaPage> {
                       const SizedBox(width: ZplaySpacing.s12),
                       Text(
                         l10nOf(context).auxMangaPageCustomizeMangaSection,
-                        style: ZplayType.title.toStyle(color: tokens.textPrimary),
+                        style: ZplayType.title.toStyle(
+                          color: tokens.textPrimary,
+                        ),
                       ),
                       const Spacer(),
                       _MangaChromeAction(
@@ -275,7 +286,7 @@ class _MangaPageState extends State<MangaPage> {
                     ],
                   ),
                   const SizedBox(height: ZplaySpacing.s16),
-                  Divider(color: tokens.borderDefault),
+                  KiruDivider(height: 16, color: tokens.borderDefault),
                   const SizedBox(height: ZplaySpacing.s12),
 
                   Text(
@@ -287,7 +298,9 @@ class _MangaPageState extends State<MangaPage> {
                     valueListenable: MangaSettings.cardDensity,
                     builder: (context, density, _) {
                       return SegmentedTabs<MangaCardDensity>(
-                        semanticsLabel: l10nOf(context).auxMangaPageMangaPosterCardDensity,
+                        semanticsLabel: l10nOf(
+                          context,
+                        ).auxMangaPageMangaPosterCardDensity,
                         selected: density,
                         onSelected: MangaSettings.setCardDensity,
                         options: [
@@ -306,12 +319,20 @@ class _MangaPageState extends State<MangaPage> {
                   ValueListenableBuilder<bool>(
                     valueListenable: MangaSettings.enableAmbientLights,
                     builder: (context, enabled, _) {
-                      return SwitchListTile.adaptive(
+                      return KiruSwitchRow(
                         contentPadding: EdgeInsets.zero,
-                        title: Text(l10nOf(context).auxAudiobooksPageMovingAmbientBackgroundGlow, style: ZplayType.label.toStyle(color: tokens.textPrimary)),
+                        title: Text(
+                          l10nOf(
+                            context,
+                          ).auxAudiobooksPageMovingAmbientBackgroundGlow,
+                          style: ZplayType.label.toStyle(
+                            color: tokens.textPrimary,
+                          ),
+                        ),
                         value: enabled,
                         activeColor: tokens.accent,
-                        onChanged: (val) => MangaSettings.setEnableAmbientLights(val),
+                        onChanged: (val) =>
+                            MangaSettings.setEnableAmbientLights(val),
                       );
                     },
                   ),
@@ -319,12 +340,18 @@ class _MangaPageState extends State<MangaPage> {
                   ValueListenableBuilder<bool>(
                     valueListenable: MangaSettings.showContinueReading,
                     builder: (context, show, _) {
-                      return SwitchListTile.adaptive(
+                      return KiruSwitchRow(
                         contentPadding: EdgeInsets.zero,
-                        title: Text(l10nOf(context).auxMangaPageShowContinueReadingSlider, style: ZplayType.label.toStyle(color: tokens.textPrimary)),
+                        title: Text(
+                          l10nOf(context).auxMangaPageShowContinueReadingSlider,
+                          style: ZplayType.label.toStyle(
+                            color: tokens.textPrimary,
+                          ),
+                        ),
                         value: show,
                         activeColor: tokens.accent,
-                        onChanged: (val) => MangaSettings.setShowContinueReading(val),
+                        onChanged: (val) =>
+                            MangaSettings.setShowContinueReading(val),
                       );
                     },
                   ),
@@ -332,24 +359,34 @@ class _MangaPageState extends State<MangaPage> {
                   ValueListenableBuilder<bool>(
                     valueListenable: MangaSettings.showContentTypeBadge,
                     builder: (context, show, _) {
-                      return SwitchListTile.adaptive(
+                      return KiruSwitchRow(
                         contentPadding: EdgeInsets.zero,
-                        title: Text(l10nOf(context).auxMangaPageShowContentTypeBadgeOnPosters, style: ZplayType.label.toStyle(color: tokens.textPrimary)),
+                        title: Text(
+                          l10nOf(
+                            context,
+                          ).auxMangaPageShowContentTypeBadgeOnPosters,
+                          style: ZplayType.label.toStyle(
+                            color: tokens.textPrimary,
+                          ),
+                        ),
                         value: show,
                         activeColor: tokens.accent,
-                        onChanged: (val) => MangaSettings.setShowContentTypeBadge(val),
+                        onChanged: (val) =>
+                            MangaSettings.setShowContentTypeBadge(val),
                       );
                     },
                   ),
 
                   const SizedBox(height: ZplaySpacing.s12),
-                  Divider(color: tokens.borderDefault),
+                  KiruDivider(height: 16, color: tokens.borderDefault),
                   const SizedBox(height: ZplaySpacing.s12),
 
                   SizedBox(
                     width: double.infinity,
                     child: PillButton(
-                      label: l10nOf(context).auxMangaPageMoreAppearanceReaderSettings,
+                      label: l10nOf(
+                        context,
+                      ).auxMangaPageMoreAppearanceReaderSettings,
                       variant: PillVariant.secondary,
                       icon: Icons.settings_rounded,
                       expand: true,
@@ -357,7 +394,9 @@ class _MangaPageState extends State<MangaPage> {
                         Navigator.pop(ctx);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const MangaSettingsPage()),
+                          MaterialPageRoute(
+                            builder: (_) => const MangaSettingsPage(),
+                          ),
                         );
                       },
                     ),
@@ -376,7 +415,6 @@ class _MangaPageState extends State<MangaPage> {
     _screenWidth = MediaQuery.sizeOf(context).width;
     final palette = AppThemeService.currentPalette.value;
     final ambientEnabled = MangaSettings.enableAmbientLights.value;
-    final showScrollTrack = MangaSettings.showScrollTrack.value;
     final tokens = context.tokens;
 
     return Scaffold(
@@ -391,25 +429,13 @@ class _MangaPageState extends State<MangaPage> {
               child: Container(color: palette.scaffoldBackgroundColor),
             ),
 
-          LiquidGlassView(
-            pixelRatio: 0.25,
-            refreshRate: LiquidGlassRefreshRate.low,
-            backgroundWidget: _buildScrollableContent(),
-            child: Stack(
-              children: [
-                // Top App Bar / Search / Customize
-                _buildAppBar(),
-                
-                // Custom Scroll Track (Desktop only)
-                if (_screenWidth > 800 && showScrollTrack)
-                  Positioned(
-                    right: 24,
-                    bottom: 40,
-                    child: CustomScrollTrack(controller: _scrollController),
-                  ),
-
-              ],
-            ),
+          Stack(
+            fit: StackFit.expand,
+            children: [
+              _buildScrollableContent(),
+              // Top App Bar / Search / Customize
+              _buildAppBar(),
+            ],
           ),
         ],
       ),
@@ -435,7 +461,11 @@ class _MangaPageState extends State<MangaPage> {
         // out from under it, and the content starts below both either way.
         SliverToBoxAdapter(
           child: SizedBox(
-            height: topInset + ZplaySpacing.s12 + _chromeFieldHeight + ZplaySpacing.s12,
+            height:
+                topInset +
+                ZplaySpacing.s12 +
+                _chromeFieldHeight +
+                ZplaySpacing.s12,
           ),
         ),
 
@@ -445,10 +475,14 @@ class _MangaPageState extends State<MangaPage> {
         const SliverToBoxAdapter(child: MangaReaderControlBar()),
 
         // ── Continue Reading ──
-        if (showContinue && _readingHistory.isNotEmpty && _searchQuery.isEmpty) ...[
+        if (showContinue &&
+            _readingHistory.isNotEmpty &&
+            _searchQuery.isEmpty) ...[
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.only(top: isMobile ? ZplaySpacing.s16 : ZplaySpacing.s24),
+              padding: EdgeInsets.only(
+                top: isMobile ? ZplaySpacing.s16 : ZplaySpacing.s24,
+              ),
               child: SectionHeader(
                 title: l10nOf(context).auxMangaPageContinueReading,
                 count: _readingHistory.length,
@@ -468,7 +502,9 @@ class _MangaPageState extends State<MangaPage> {
             ),
           ),
           SliverToBoxAdapter(
-            child: SizedBox(height: isMobile ? ZplaySpacing.s16 : ZplaySpacing.s24),
+            child: SizedBox(
+              height: isMobile ? ZplaySpacing.s16 : ZplaySpacing.s24,
+            ),
           ),
         ],
 
@@ -486,11 +522,15 @@ class _MangaPageState extends State<MangaPage> {
           child: Padding(
             // SectionHeader brings its own 8 dp top; 4/8 here keeps the gap the
             // old s12/s16 padding opened above the heading.
-            padding: EdgeInsets.only(top: isMobile ? ZplaySpacing.s4 : ZplaySpacing.s8),
+            padding: EdgeInsets.only(
+              top: isMobile ? ZplaySpacing.s4 : ZplaySpacing.s8,
+            ),
             child: SectionHeader(
               title: _searchQuery.isNotEmpty
                   ? 'Search Results'
-                  : (_selectedGenre == 'All' ? 'Discover Manga' : '$_selectedGenre Manga'),
+                  : (_selectedGenre == 'All'
+                        ? 'Discover Manga'
+                        : '$_selectedGenre Manga'),
               subtitle: _searchQuery.isEmpty && _selectedGenre != 'All'
                   ? 'Filtered by category'
                   : null,
@@ -506,7 +546,9 @@ class _MangaPageState extends State<MangaPage> {
                         if (_selectedGenre != 'All') ...[
                           const SizedBox(width: ZplaySpacing.s8),
                           _ClearGenreChip(
-                            tooltip: l10nOf(context).auxMangaCategoryDropdownResetToAllCategories,
+                            tooltip: l10nOf(
+                              context,
+                            ).auxMangaCategoryDropdownResetToAllCategories,
                             onTap: () => _onGenreSelected('All'),
                           ),
                         ],
@@ -516,13 +558,11 @@ class _MangaPageState extends State<MangaPage> {
             ),
           ),
         ),
-        
+
         if (_isLoading && _mangaList.isEmpty)
           SliverFillRemaining(
             hasScrollBody: false,
-            child: Center(
-              child: CircularProgressIndicator(color: tokens.textPrimary),
-            ),
+            child: Center(child: KiruLoader(color: tokens.textPrimary)),
           )
         else if (_mangaList.isEmpty)
           SliverFillRemaining(
@@ -536,7 +576,10 @@ class _MangaPageState extends State<MangaPage> {
           )
         else
           SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: sizing.sidePadding, vertical: ZplaySpacing.s8),
+            padding: EdgeInsets.symmetric(
+              horizontal: sizing.sidePadding,
+              vertical: ZplaySpacing.s8,
+            ),
             sliver: SliverGrid(
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                 maxCrossAxisExtent: sizing.cardWidth + sizing.spacing * 2,
@@ -544,25 +587,24 @@ class _MangaPageState extends State<MangaPage> {
                 crossAxisSpacing: sizing.spacing,
                 mainAxisExtent: sizing.totalHeight,
               ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return MangaCard(manga: _mangaList[index]);
-                },
-                childCount: _mangaList.length,
-              ),
+              delegate: SliverChildBuilderDelegate((context, index) {
+                return MangaCard(manga: _mangaList[index]);
+              }, childCount: _mangaList.length),
             ),
           ),
-          
+
         if (_isLoadingMore)
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(ZplaySpacing.s32),
-              child: Center(child: CircularProgressIndicator(color: tokens.textPrimary)),
+              child: Center(child: KiruLoader(color: tokens.textPrimary)),
             ),
           ),
-        
+
         SliverToBoxAdapter(
-          child: SizedBox(height: ZplaySpacing.s24 + bottomInset), // Trailing gap only; the dock needed 110 px here
+          child: SizedBox(
+            height: ZplaySpacing.s24 + bottomInset,
+          ), // Trailing gap only; the dock needed 110 px here
         ),
       ],
     );
@@ -593,8 +635,9 @@ class _MangaPageState extends State<MangaPage> {
       child: ListenableBuilder(
         listenable: _scrollController,
         builder: (context, child) {
-          final offset =
-              _scrollController.hasClients ? _scrollController.offset : 0.0;
+          final offset = _scrollController.hasClients
+              ? _scrollController.offset
+              : 0.0;
           final t = (offset / _chromeTintThreshold).clamp(0.0, 1.0);
           return Container(
             padding: EdgeInsets.only(
@@ -645,7 +688,7 @@ class _MangaPageState extends State<MangaPage> {
 
     return SizedBox(
       height: _chromeFieldHeight,
-      child: TextField(
+      child: KiruFormField(
         controller: _searchController,
         onSubmitted: _onSearchChanged,
         textInputAction: TextInputAction.search,
@@ -793,7 +836,8 @@ class _ContinueReadingSliderState extends State<_ContinueReadingSlider> {
   void _updateScrollButtons() {
     if (!_scrollController.hasClients) return;
     final canLeft = _scrollController.position.pixels > 10;
-    final canRight = _scrollController.position.pixels <
+    final canRight =
+        _scrollController.position.pixels <
         _scrollController.position.maxScrollExtent - 10;
     if (canLeft != _canScrollLeft || canRight != _canScrollRight) {
       setState(() {
@@ -865,10 +909,7 @@ class _ContinueReadingSliderState extends State<_ContinueReadingSlider> {
               physics: const BouncingScrollPhysics(),
               itemCount: widget.readingHistory.length,
               itemBuilder: (context, index) {
-                return _buildHistoryCard(
-                  widget.readingHistory[index],
-                  sizing,
-                );
+                return _buildHistoryCard(widget.readingHistory[index], sizing);
               },
             ),
           ),
@@ -926,16 +967,18 @@ class _ContinueReadingSliderState extends State<_ContinueReadingSlider> {
     final title = (mangaJson['title'] ?? 'Unknown').toString();
     final author = (mangaJson['author'] ?? '').toString();
     final coverUrl =
-        (mangaJson['cover_normal'] ?? mangaJson['cover_small'] ?? '').toString();
+        (mangaJson['cover_normal'] ?? mangaJson['cover_small'] ?? '')
+            .toString();
     final chapterIndex = entry['chapterIndex'] as int;
     final chaptersList = entry['chapters'] as List;
 
     final chapterLabel = _chapterLabel(chaptersList, chapterIndex);
     final progress = chaptersList.isEmpty
         ? 0
-        : (((chapterIndex + 1) / chaptersList.length) * 100)
-              .round()
-              .clamp(0, 100);
+        : (((chapterIndex + 1) / chaptersList.length) * 100).round().clamp(
+            0,
+            100,
+          );
     final removeSize = FocusMetrics.controlHeight(context);
 
     return FocusableCard(
@@ -958,81 +1001,87 @@ class _ContinueReadingSliderState extends State<_ContinueReadingSlider> {
             child: SizedBox(
               width: sizing.cardWidth,
               child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CardFocusRing(
-                  focused: state.focused,
-                  radius: ZplayRadius.smAll,
-                  child: Stack(
-                    children: [
-                      ClipRRect(
-                        borderRadius: ZplayRadius.smAll,
-                        child: SizedBox(
-                          width: sizing.cardWidth,
-                          height: sizing.posterHeight,
-                          child: coverUrl.isNotEmpty
-                              ? CachedNetworkImage(
-                                  imageUrl: coverUrl,
-                                  cacheManager: AppImageCache.manager,
-                                  fit: BoxFit.cover,
-                                  alignment: Alignment.topCenter,
-                                  errorWidget: (_, _, _) => const MissingPoster(),
-                                )
-                              : const MissingPoster(),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CardFocusRing(
+                    focused: state.focused,
+                    radius: ZplayRadius.smAll,
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: ZplayRadius.smAll,
+                          child: SizedBox(
+                            width: sizing.cardWidth,
+                            height: sizing.posterHeight,
+                            child: coverUrl.isNotEmpty
+                                ? CachedNetworkImage(
+                                    imageUrl: coverUrl,
+                                    cacheManager: AppImageCache.manager,
+                                    fit: BoxFit.cover,
+                                    alignment: Alignment.topCenter,
+                                    errorWidget: (_, _, _) =>
+                                        const MissingPoster(),
+                                  )
+                                : const MissingPoster(),
+                          ),
                         ),
-                      ),
-                      if (chapterLabel.isNotEmpty)
-                        Positioned(
-                          left: ZplaySpacing.s8,
-                          bottom: ZplaySpacing.s8,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: tokens.bg.withValues(alpha: 0.85),
-                              borderRadius: ZplayRadius.xsAll,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: ZplaySpacing.s4,
-                                vertical: ZplaySpacing.s2,
+                        if (chapterLabel.isNotEmpty)
+                          Positioned(
+                            left: ZplaySpacing.s8,
+                            bottom: ZplaySpacing.s8,
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: tokens.bg.withValues(alpha: 0.85),
+                                borderRadius: ZplayRadius.xsAll,
                               ),
-                              child: Text(
-                                chapterLabel,
-                                style: ZplayType.caption
-                                    .copyWith(weight: FontWeight.w700)
-                                    .toStyle(color: tokens.textPrimary),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: ZplaySpacing.s4,
+                                  vertical: ZplaySpacing.s2,
+                                ),
+                                child: Text(
+                                  chapterLabel,
+                                  style: ZplayType.caption
+                                      .copyWith(weight: FontWeight.w700)
+                                      .toStyle(color: tokens.textPrimary),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      // Removing an entry stays available on the shelf, where
-                      // the entry is. It is a focus target of its own, so the
-                      // remote can reach it without a long press.
-                      Positioned(
-                        top: 0,
-                        right: 0,
-                        child: Tooltip(
-                          message: l10nOf(context).auxMangaPageRemoveFromContinueReading,
-                          child: FocusableCard(
-                            onTap: () => widget.onRemove(mangaId),
-                            builder: (context, closeState) => CardFocusRing(
-                              focused: closeState.focused,
-                              radius: ZplayRadius.fullAll,
-                              child: SizedBox(
-                                width: removeSize,
-                                height: removeSize,
-                                child: Center(
-                                  child: Container(
-                                    width: ZplaySpacing.s24,
-                                    height: ZplaySpacing.s24,
-                                    decoration: BoxDecoration(
-                                      color: tokens.bg.withValues(alpha: 0.75),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      Icons.close_rounded,
-                                      color: tokens.textPrimary,
-                                      size: 16,
+                        // Removing an entry stays available on the shelf, where
+                        // the entry is. It is a focus target of its own, so the
+                        // remote can reach it without a long press.
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: KiruTooltip(
+                            message: l10nOf(
+                              context,
+                            ).auxMangaPageRemoveFromContinueReading,
+                            child: FocusableCard(
+                              onTap: () => widget.onRemove(mangaId),
+                              builder: (context, closeState) => CardFocusRing(
+                                focused: closeState.focused,
+                                radius: ZplayRadius.fullAll,
+                                child: SizedBox(
+                                  width: removeSize,
+                                  height: removeSize,
+                                  child: Center(
+                                    child: Container(
+                                      width: ZplaySpacing.s24,
+                                      height: ZplaySpacing.s24,
+                                      decoration: BoxDecoration(
+                                        color: tokens.bg.withValues(
+                                          alpha: 0.75,
+                                        ),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.close_rounded,
+                                        color: tokens.textPrimary,
+                                        size: 16,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -1040,38 +1089,39 @@ class _ContinueReadingSliderState extends State<_ContinueReadingSlider> {
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: ZplaySpacing.s8),
-                // Both lines are `Flexible`: the rail height is computed from the
-                // type scale, and a font whose line box is a fraction taller than
-                // `size * height` would otherwise overflow this column by that
-                // fraction. Flexible lets the box absorb it.
-                Flexible(
-                  child: Text(
-                    title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
-                  ),
-                ),
-                const SizedBox(height: ZplaySpacing.s4),
-                Flexible(
-                  child: Text(
-                    author.isEmpty
-                        ? '$progress% read'
-                        : '$author · $progress% read',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: ZplayType.bodySmall.toStyle(
-                      color: tokens.textSecondary,
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
+                  const SizedBox(height: ZplaySpacing.s8),
+                  // Both lines are `Flexible`: the rail height is computed from the
+                  // type scale, and a font whose line box is a fraction taller than
+                  // `size * height` would otherwise overflow this column by that
+                  // fraction. Flexible lets the box absorb it.
+                  Flexible(
+                    child: Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: ZplayType.subtitle.toStyle(
+                        color: tokens.textPrimary,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: ZplaySpacing.s4),
+                  Flexible(
+                    child: Text(
+                      author.isEmpty
+                          ? '$progress% read'
+                          : '$author · $progress% read',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: ZplayType.bodySmall.toStyle(
+                        color: tokens.textSecondary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -1108,17 +1158,14 @@ class _ClearGenreChip extends StatelessWidget {
   final String tooltip;
   final VoidCallback onTap;
 
-  const _ClearGenreChip({
-    required this.tooltip,
-    required this.onTap,
-  });
+  const _ClearGenreChip({required this.tooltip, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final height = FocusMetrics.controlHeight(context);
 
-    return Tooltip(
+    return KiruTooltip(
       message: tooltip,
       child: FocusableCard(
         onTap: onTap,

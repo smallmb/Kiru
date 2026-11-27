@@ -10,6 +10,8 @@
 /// vertical on screen looks like it worked.
 library;
 
+import 'package:zplay/services/content/navigation_settings.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,6 +38,13 @@ void main() {
     SharedPreferences.setMockInitialValues(<String, Object>{
       'zplay_p2p_warning_never_show': true,
     });
+    NavigationSettings.enabled.value = {
+      ...NavigationSettings.defaults,
+      'liveTv',
+    };
+    addTearDown(
+      () => NavigationSettings.enabled.value = NavigationSettings.defaults,
+    );
     DeviceProfile.debugSetTelevision(value: true);
     tester.view.devicePixelRatio = 2.0;
     tester.view.physicalSize = const Size(960, 540) * 2.0;

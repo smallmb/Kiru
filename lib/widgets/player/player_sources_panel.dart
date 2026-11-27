@@ -1,3 +1,5 @@
+import '../ui/kiru_toast.dart';
+import '../ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:async';
@@ -14,7 +16,6 @@ import '../../services/anime_arabic/anime_arabic_extractor.dart';
 import '../../services/theme/design_tokens.dart';
 import 'player_glass.dart';
 import 'stream_bitrate_badge.dart';
-import '../common/focusable_card.dart';
 
 /// Heading for the "scrape found nothing" state.
 ///
@@ -151,7 +152,9 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
               (e) => e.number == epNum,
               orElse: () => ArabicEpisode(
                 number: epNum,
-                title: l10nOf(context).dynamicPlayerSourcesPanelEpisode((epNum).toString()),
+                title: l10nOf(
+                  context,
+                ).dynamicPlayerSourcesPanelEpisode((epNum).toString()),
                 encodedHref: '',
                 watchPath: '/e/$slug-$epNum#tok',
               ),
@@ -333,7 +336,7 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
                       widget.errorMessage!.isNotEmpty)
                     _buildErrorBanner(widget.errorMessage!, isCompact),
 
-                  Divider(height: 1, color: tokens.borderDefault),
+                  KiruDivider(height: 1, color: tokens.borderDefault),
 
                   // ── Sources List / Loading / Empty State ──
                   Expanded(
@@ -398,7 +401,10 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
                         ),
                       ),
                       child: Text(
-                        l10nOf(context).dynamicPlayerSourcesPanelSE((sNum).toString(), (eNum).toString()),
+                        l10nOf(context).dynamicPlayerSourcesPanelSE(
+                          (sNum).toString(),
+                          (eNum).toString(),
+                        ),
                         style: ZplayType.caption
                             .copyWith(
                               weight: FontWeight.w800,
@@ -427,7 +433,11 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  l10nOf(context).dynamicPlayerSourcesPanelAllProvidersWatchingVia((widget.currentAddonName).toString()),
+                  l10nOf(
+                    context,
+                  ).dynamicPlayerSourcesPanelAllProvidersWatchingVia(
+                    (widget.currentAddonName).toString(),
+                  ),
                   style: ZplayType.bodySmall
                       .copyWith(weight: FontWeight.w500)
                       .toStyle(color: tokens.textSecondary),
@@ -498,7 +508,7 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
           SizedBox(
             width: 32,
             height: 32,
-            child: CircularProgressIndicator(
+            child: KiruLoader(
               strokeWidth: 2.8,
               valueColor: AlwaysStoppedAnimation<Color>(PlayerTheme.accent),
             ),
@@ -542,10 +552,10 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
               style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
             ),
             const SizedBox(height: ZplaySpacing.s16),
-            ElevatedButton.icon(
+            KiruButton(
               onPressed: _startScraping,
               icon: const Icon(Icons.refresh_rounded, size: 16),
-              label: Text(l10nOf(context).uiPlayerSourcesPanelRescrapeSources),
+              child: Text(l10nOf(context).uiPlayerSourcesPanelRescrapeSources),
               style: ElevatedButton.styleFrom(
                 backgroundColor: PlayerTheme.accent,
                 foregroundColor: tokens.onAccent,
@@ -581,7 +591,7 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
                 SizedBox(
                   width: 14,
                   height: 14,
-                  child: CircularProgressIndicator(
+                  child: KiruLoader(
                     strokeWidth: 2,
                     valueColor: AlwaysStoppedAnimation<Color>(
                       PlayerTheme.accent,
@@ -614,7 +624,7 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
     final resolution = _extractResolution(title);
     final runtimeMinutes = int.tryParse(widget.detail?.runtime ?? '');
 
-    return FocusableCard(
+    return PlayerTappable(
       onTap: () => widget.onPlaySource(source, widget.episode),
       builder: (context, state) {
         final isHovered = state.highlighted;
@@ -766,9 +776,9 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
                     onTap: () {
                       Clipboard.setData(ClipboardData(text: source.magnetUrl!));
                       HapticFeedback.lightImpact();
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                      KiruToastMessenger.of(context).hideCurrentSnackBar();
+                      KiruToastMessenger.of(context).showSnackBar(
+                        KiruToast(
                           content: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -779,7 +789,9 @@ class _PlayerSourcesPanelState extends State<PlayerSourcesPanel> {
                               ),
                               const SizedBox(width: ZplaySpacing.s8),
                               Text(
-                                l10nOf(context).uiPlayerSourcesPanelMagnetLinkCopiedToClipboard,
+                                l10nOf(
+                                  context,
+                                ).uiPlayerSourcesPanelMagnetLinkCopiedToClipboard,
                                 style: ZplayType.label
                                     .copyWith(weight: FontWeight.w600)
                                     .toStyle(color: tokens.textPrimary),

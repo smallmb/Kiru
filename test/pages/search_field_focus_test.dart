@@ -30,6 +30,8 @@
 /// binding, and where focus lands was verified on the device, not here.
 library;
 
+import 'package:zplay/widgets/ui/kiru_controls.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -157,7 +159,7 @@ void main() {
     // leave it: the card is an ordinary focusable, so the arrows that the field
     // itself would swallow still work while the remote is on it.
     final card = find.ancestor(
-      of: find.byType(TextField),
+      of: find.byType(KiruFormField),
       matching: find.byType(FocusableCard),
     );
     expect(
@@ -176,7 +178,7 @@ void main() {
     // The nearest `Focus` above the field is the card's, and the centre button on
     // it is what opens the field - and the platform keyboard - for typing.
     final cardNode = Focus.maybeOf(
-      tester.element(find.byType(TextField)),
+      tester.element(find.byType(KiruFormField)),
       scopeOk: true,
     )!;
     cardNode.requestFocus();
@@ -230,7 +232,7 @@ void main() {
     await openSearchPage(tester);
 
     final cardNode = Focus.maybeOf(
-      tester.element(find.byType(TextField)),
+      tester.element(find.byType(KiruFormField)),
       scopeOk: true,
     )!;
     cardNode.requestFocus();
@@ -292,7 +294,7 @@ void main() {
     await openSearchPage(tester);
 
     Focus.maybeOf(
-      tester.element(find.byType(TextField)),
+      tester.element(find.byType(KiruFormField)),
       scopeOk: true,
     )!.requestFocus();
     await tester.pump();
@@ -344,7 +346,7 @@ void main() {
     );
     expect(
       find.ancestor(
-        of: find.byType(TextField),
+        of: find.byType(KiruFormField),
         matching: find.byType(FocusableCard),
       ),
       findsNothing,

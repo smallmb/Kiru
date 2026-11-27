@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
@@ -69,7 +70,8 @@ class _AnimeArabicStreamSheetState extends State<AnimeArabicStreamSheet> {
       if (hits.isEmpty) {
         setState(() {
           _isScraping = false;
-          _error = 'No playable Arabic streams found for Episode ${widget.episode.number}.';
+          _error =
+              'No playable Arabic streams found for Episode ${widget.episode.number}.';
         });
         return;
       }
@@ -118,7 +120,10 @@ class _AnimeArabicStreamSheetState extends State<AnimeArabicStreamSheet> {
       MaterialPageRoute(
         builder: (_) => PlayerScreen(
           source: source,
-          title: l10nOf(context).dynamicAnimeArabicStreamSheetEpisode((widget.details.title).toString(), (widget.episode.number).toString()),
+          title: l10nOf(context).dynamicAnimeArabicStreamSheetEpisode(
+            (widget.details.title).toString(),
+            (widget.episode.number).toString(),
+          ),
           backdropUrl: widget.details.displayBanner,
           detail: movieDetail,
           episode: video,
@@ -136,7 +141,9 @@ class _AnimeArabicStreamSheetState extends State<AnimeArabicStreamSheet> {
     // shadow this used to draw were the third variant of a sheet in the app.
     return ZplaySheet(
       title: widget.details.title,
-      subtitle: _isScraping ? l10nOf(context).arabicSectionCheckingServers21 : null,
+      subtitle: _isScraping
+          ? l10nOf(context).arabicSectionCheckingServers21
+          : null,
       leading: ClipRRect(
         borderRadius: ZplayRadius.smAll,
         child: CachedNetworkImage(
@@ -154,7 +161,7 @@ class _AnimeArabicStreamSheetState extends State<AnimeArabicStreamSheet> {
           ),
         ),
       ),
-      status: IconButton(
+      status: KiruIconButton(
         onPressed: () => Navigator.pop(context),
         icon: Icon(Icons.close_rounded, color: tokens.textEmphasis),
       ),
@@ -173,7 +180,7 @@ class _AnimeArabicStreamSheetState extends State<AnimeArabicStreamSheet> {
               padding: const EdgeInsets.symmetric(vertical: 36),
               child: Column(
                 children: [
-                  CircularProgressIndicator(color: tokens.accent),
+                  KiruLoader(color: tokens.accent),
                   const SizedBox(height: ZplaySpacing.s16),
                   Text(
                     _statusLine,
@@ -220,7 +227,8 @@ class _AnimeArabicStreamSheetState extends State<AnimeArabicStreamSheet> {
                 shrinkWrap: true,
                 padding: const EdgeInsets.only(bottom: ZplaySpacing.s24),
                 itemCount: _allSources.length,
-                itemBuilder: (context, idx) => _buildSourceTile(_allSources[idx]),
+                itemBuilder: (context, idx) =>
+                    _buildSourceTile(_allSources[idx]),
               ),
             ),
         ],
@@ -272,14 +280,18 @@ class _AnimeArabicStreamSheetState extends State<AnimeArabicStreamSheet> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        source.name ?? l10nOf(context).arabicSectionPlaybackServer24,
+                        source.name ??
+                            l10nOf(context).arabicSectionPlaybackServer24,
                         style: ZplayType.body
                             .copyWith(weight: FontWeight.w700)
                             .toStyle(color: tokens.textPrimary),
                       ),
                       const SizedBox(height: ZplaySpacing.s2),
                       Text(
-                        source.description ?? l10nOf(context).arabicSectionDirectStreamingHighQuality25,
+                        source.description ??
+                            l10nOf(
+                              context,
+                            ).arabicSectionDirectStreamingHighQuality25,
                         style: ZplayType.caption.toStyle(
                           color: tokens.textSecondary,
                         ),

@@ -11,6 +11,7 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:forui/forui.dart' as f;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zplay/widgets/common/trailer_modal.dart';
@@ -258,7 +259,7 @@ void main() {
       await openTrailer(tester, settle: false);
 
       expect(find.byType(TrailerModal), findsOneWidget);
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(f.FCircularProgress), findsOneWidget);
       expect(find.text('Trailer unavailable'), findsNothing);
       expect(tester.takeException(), isNull);
 

@@ -1,3 +1,5 @@
+import '../common/desktop_caption_area.dart';
+import '../ui/kiru_controls.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/theme/design_tokens.dart';
@@ -74,15 +76,20 @@ class SettingsAppBar extends StatelessWidget implements PreferredSizeWidget {
       // page header separated by a line is a page header that looks like a
       // different app from the canvas it sits on.
       toolbarHeight: toolbarHeight,
-      leading: IconButton(
+      flexibleSpace: const DesktopCaptionDrag(
+        key: ValueKey("kiru-settings-caption-drag"),
+      ),
+      leading: KiruIconButton(
         icon: const Icon(Icons.arrow_back_ios_rounded, size: 20),
         onPressed: () => Navigator.pop(context),
       ),
-      title: Text(
-        // One title style and one scale for every page, so no page can restyle
-        // its own - and `titleLarge` is that scale app-wide.
-        title,
-        style: ZplayType.titleLarge.toStyle(color: tokens.textPrimary),
+      title: DesktopCaptionDrag(
+        child: Text(
+          // One title style and one scale for every page, so no page can restyle
+          // its own - and `titleLarge` is that scale app-wide.
+          title,
+          style: ZplayType.titleLarge.toStyle(color: tokens.textPrimary),
+        ),
       ),
       actions: actions,
     );

@@ -1,3 +1,4 @@
+import '../ui/kiru_tappable.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/media_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
@@ -134,7 +135,7 @@ class _MovieSliderSectionState extends State<MovieSliderSection>
             count: widget.section.movies.length,
             subtitle: configLabel(context, widget.section.subtitle),
             trailing: widget.showCalendarButton
-                ? InkWell(
+                ? KiruTappable(
                     onTap: () {
                       Navigator.push(
                         context,

@@ -1,3 +1,5 @@
+import '../../widgets/ui/kiru_tappable.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/media_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
@@ -86,8 +88,9 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   _buildPresetCard(
                     preset: Anime4KPreset.off,
                     title: l10nOf(context).uiVideoSettingsPageDisabledOff,
-                    subtitle:
-                        l10nOf(context).uiVideoSettingsPageStandardVideoPlaybackWithoutGlsl,
+                    subtitle: l10nOf(
+                      context,
+                    ).uiVideoSettingsPageStandardVideoPlaybackWithoutGlsl,
                     tag: 'Standard',
                     tagColor: tokens.textMuted,
                     icon: Icons.block_rounded,
@@ -99,8 +102,9 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   _buildPresetCard(
                     preset: Anime4KPreset.modeAFast,
                     title: l10nOf(context).uiVideoSettingsPageModeAFastBalanced,
-                    subtitle:
-                        l10nOf(context).uiVideoSettingsPageSharpLineRestoration2xCnn,
+                    subtitle: l10nOf(
+                      context,
+                    ).uiVideoSettingsPageSharpLineRestoration2xCnn,
                     tag: 'Recommended',
                     tagColor: tokens.success,
                     icon: Icons.speed_rounded,
@@ -112,65 +116,64 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   const SizedBox(height: 10),
                   _buildPresetCard(
                     preset: Anime4KPreset.modeAHQ,
-                    title: l10nOf(context).uiVideoSettingsPageModeAHighQualityUltra,
-                    subtitle:
-                        l10nOf(context).uiVideoSettingsPageMaximumPerceptualFidelityUsingVery,
+                    title: l10nOf(
+                      context,
+                    ).uiVideoSettingsPageModeAHighQualityUltra,
+                    subtitle: l10nOf(
+                      context,
+                    ).uiVideoSettingsPageMaximumPerceptualFidelityUsingVery,
                     tag: 'Ultra Quality',
                     tagColor: tokens.accent,
                     icon: Icons.diamond_rounded,
                     isSelected: currentPreset == Anime4KPreset.modeAHQ,
-                    onTap: () => PlayerSettings.setAnime4kPreset(
-                      Anime4KPreset.modeAHQ,
-                    ),
+                    onTap: () =>
+                        PlayerSettings.setAnime4kPreset(Anime4KPreset.modeAHQ),
                   ),
                   const SizedBox(height: 10),
                   _buildPresetCard(
                     preset: Anime4KPreset.modeB,
                     title: l10nOf(context).uiVideoSettingsPageModeBSoftDenoise,
-                    subtitle:
-                        l10nOf(context).uiVideoSettingsPageSmoothLineReconstructionAndArtifact,
+                    subtitle: l10nOf(
+                      context,
+                    ).uiVideoSettingsPageSmoothLineReconstructionAndArtifact,
                     tag: 'Denoise',
                     tagColor: tokens.accent,
                     icon: Icons.blur_linear_rounded,
                     isSelected: currentPreset == Anime4KPreset.modeB,
-                    onTap: () => PlayerSettings.setAnime4kPreset(
-                      Anime4KPreset.modeB,
-                    ),
+                    onTap: () =>
+                        PlayerSettings.setAnime4kPreset(Anime4KPreset.modeB),
                   ),
                   const SizedBox(height: 10),
                   _buildPresetCard(
                     preset: Anime4KPreset.modeC,
                     title: l10nOf(context).uiVideoSettingsPageModeCDeblurScale,
-                    subtitle:
-                        l10nOf(context).uiVideoSettingsPageAggressiveDeblurringAndScalingBest,
+                    subtitle: l10nOf(
+                      context,
+                    ).uiVideoSettingsPageAggressiveDeblurringAndScalingBest,
                     tag: 'Deblur',
                     tagColor: tokens.warning,
                     icon: Icons.high_quality_rounded,
                     isSelected: currentPreset == Anime4KPreset.modeC,
-                    onTap: () => PlayerSettings.setAnime4kPreset(
-                      Anime4KPreset.modeC,
-                    ),
+                    onTap: () =>
+                        PlayerSettings.setAnime4kPreset(Anime4KPreset.modeC),
                   ),
                   const SizedBox(height: 10),
                   _buildPresetCard(
                     preset: Anime4KPreset.fsrEasu,
                     title: l10nOf(context).uiVideoSettingsPageFsr10Smooth,
-                    subtitle:
-                        l10nOf(context).videoFsrSmoothExplanation,
+                    subtitle: l10nOf(context).videoFsrSmoothExplanation,
                     tag: mediaLabel(context, 'Live action'),
                     tagColor: tokens.success,
                     icon: Icons.filter_none_rounded,
                     isSelected: currentPreset == Anime4KPreset.fsrEasu,
-                    onTap: () => PlayerSettings.setAnime4kPreset(
-                      Anime4KPreset.fsrEasu,
-                    ),
+                    onTap: () =>
+                        PlayerSettings.setAnime4kPreset(Anime4KPreset.fsrEasu),
                   ),
                   const SizedBox(height: 10),
                   _buildPresetCard(
                     preset: Anime4KPreset.fsrEasuRcas,
                     title: l10nOf(context).uiVideoSettingsPageFsr10Sharp,
-                    subtitle:
-                        l10nOf(context).videoFsrSharpExplanation,
+                    subtitle: l10nOf(context).videoFsrSharpExplanation,
                     tag: mediaLabel(context, 'Use with care'),
                     tagColor: tokens.warning,
                     icon: Icons.filter_alt_rounded,
@@ -199,21 +202,27 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
               children: [
                 _buildInfoRow(
                   icon: Icons.info_outline_rounded,
-                  title: l10nOf(context).uiVideoSettingsPagePlaybackStartApplication,
+                  title: l10nOf(
+                    context,
+                  ).uiVideoSettingsPagePlaybackStartApplication,
                   description:
                       'Shaders are configured before playback begins. Changing a preset applies to the next opened stream or video.',
                 ),
-                Divider(color: tokens.borderStrong, height: 24),
+                KiruDivider(color: tokens.borderStrong, height: 24),
                 _buildInfoRow(
                   icon: Icons.memory_rounded,
-                  title: l10nOf(context).uiVideoSettingsPageHardwareDecoderAcceleration,
+                  title: l10nOf(
+                    context,
+                  ).uiVideoSettingsPageHardwareDecoderAcceleration,
                   description:
                       'media_kit uses native auto-safe hardware decoding to feed GPU texture memory directly into the GLSL shader pass.',
                 ),
-                Divider(color: tokens.borderStrong, height: 24),
+                KiruDivider(color: tokens.borderStrong, height: 24),
                 _buildInfoRow(
                   icon: Icons.devices_rounded,
-                  title: l10nOf(context).uiVideoSettingsPagePlatformRecommendation,
+                  title: l10nOf(
+                    context,
+                  ).uiVideoSettingsPagePlatformRecommendation,
                   description:
                       'For desktop (Windows/macOS/Linux), Mode A HQ provides crystal-clear lines. For mobile devices, Mode A Fast offers smooth 60fps playback.',
                 ),
@@ -231,10 +240,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
               ),
               const SizedBox(width: 8),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 7,
-                  vertical: 2,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                 decoration: BoxDecoration(
                   color: tokens.accent.withValues(
                     alpha: ZplayOpacity.overlayHover,
@@ -258,9 +264,12 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   _buildChoiceCard<HardwareAccelerationMode>(
                     option: HardwareAccelerationMode.autoSafe,
                     current: currentMode,
-                    title: l10nOf(context).uiVideoSettingsPageAutoSafeRecommended,
-                    subtitle:
-                        l10nOf(context).uiVideoSettingsPageGpuHardwareDecodingWithSafe,
+                    title: l10nOf(
+                      context,
+                    ).uiVideoSettingsPageAutoSafeRecommended,
+                    subtitle: l10nOf(
+                      context,
+                    ).uiVideoSettingsPageGpuHardwareDecodingWithSafe,
                     badgeText: 'Default',
                     badgeColor: tokens.accent,
                     icon: Icons.speed_rounded,
@@ -270,9 +279,12 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   _buildChoiceCard<HardwareAccelerationMode>(
                     option: HardwareAccelerationMode.software,
                     current: currentMode,
-                    title: l10nOf(context).uiVideoSettingsPageSoftwareDecodingCrashProof,
-                    subtitle:
-                        l10nOf(context).uiVideoSettingsPagePureCpuDecodingViaFfmpeg,
+                    title: l10nOf(
+                      context,
+                    ).uiVideoSettingsPageSoftwareDecodingCrashProof,
+                    subtitle: l10nOf(
+                      context,
+                    ).uiVideoSettingsPagePureCpuDecodingViaFfmpeg,
                     badgeText: '100% Reliable',
                     badgeColor: tokens.success,
                     icon: Icons.memory_rounded,
@@ -283,8 +295,9 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                     option: HardwareAccelerationMode.forceHardware,
                     current: currentMode,
                     title: l10nOf(context).uiVideoSettingsPageDirectHardware,
-                    subtitle:
-                        l10nOf(context).uiVideoSettingsPageDirectGpuDecodingDirect3d11,
+                    subtitle: l10nOf(
+                      context,
+                    ).uiVideoSettingsPageDirectGpuDecodingDirect3d11,
                     badgeText: 'Max GPU',
                     badgeColor: tokens.warning,
                     icon: Icons.bolt_rounded,
@@ -305,10 +318,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
               ),
               const SizedBox(width: 8),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 7,
-                  vertical: 2,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                 decoration: BoxDecoration(
                   color: tokens.accent.withValues(
                     alpha: ZplayOpacity.overlayHover,
@@ -331,9 +341,10 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   _buildChoiceCard<PlaybackEngine>(
                     option: PlaybackEngine.media3,
                     current: currentEngine,
-                    title: l10nOf(context).auxVideoSettingsPageAndroidSExoplayerFastestAt4k,
-                    subtitle:
-                        l10nOf(context).videoMedia3Explanation,
+                    title: l10nOf(
+                      context,
+                    ).auxVideoSettingsPageAndroidSExoplayerFastestAt4k,
+                    subtitle: l10nOf(context).videoMedia3Explanation,
                     badgeText: mediaLabel(context, 'Faster at 4K'),
                     badgeColor: tokens.success,
                     icon: Icons.bolt_rounded,
@@ -343,9 +354,10 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   _buildChoiceCard<PlaybackEngine>(
                     option: PlaybackEngine.mpv,
                     current: currentEngine,
-                    title: l10nOf(context).auxVideoSettingsPageMpvFullSubtitleControl,
-                    subtitle:
-                        l10nOf(context).videoMpvExplanation,
+                    title: l10nOf(
+                      context,
+                    ).auxVideoSettingsPageMpvFullSubtitleControl,
+                    subtitle: l10nOf(context).videoMpvExplanation,
                     badgeText: mediaLabel(context, 'Most features'),
                     badgeColor: tokens.accent,
                     icon: Icons.tune_rounded,
@@ -354,7 +366,9 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                   const SizedBox(height: 8),
                   _buildInfoRow(
                     icon: Icons.info_outline_rounded,
-                    title: l10nOf(context).uiVideoSettingsPageTorrentsAndLiveTvAlways,
+                    title: l10nOf(
+                      context,
+                    ).uiVideoSettingsPageTorrentsAndLiveTvAlways,
                     description:
                         "Whichever engine you pick here, torrent sources and live channels play through mpv, because Android's player cannot open them. The choice applies to films, series and anything else fetched over plain HTTP.",
                   ),
@@ -371,14 +385,10 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
               return Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: autoRecover
-                      ? tokens.accentSubtle
-                      : Colors.transparent,
+                  color: autoRecover ? tokens.accentSubtle : Colors.transparent,
                   borderRadius: ZplayRadius.mdAll,
                   border: Border.all(
-                    color: autoRecover
-                        ? tokens.accent
-                        : Colors.transparent,
+                    color: autoRecover ? tokens.accent : Colors.transparent,
                     width: autoRecover ? 1.5 : 1.0,
                   ),
                 ),
@@ -412,7 +422,9 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  l10nOf(context).uiVideoSettingsPageAutoRecoverBlackScreens,
+                                  l10nOf(
+                                    context,
+                                  ).uiVideoSettingsPageAutoRecoverBlackScreens,
                                   style: ZplayType.subtitle.toStyle(
                                     color: tokens.textPrimary,
                                   ),
@@ -430,7 +442,9 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                                   borderRadius: ZplayRadius.smAll,
                                 ),
                                 child: Text(
-                                  l10nOf(context).uiVideoSettingsPageActiveWatchdog,
+                                  l10nOf(
+                                    context,
+                                  ).uiVideoSettingsPageActiveWatchdog,
                                   style: ZplayType.caption.toStyle(
                                     color: tokens.success,
                                   ),
@@ -449,7 +463,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Switch.adaptive(
+                    KiruSwitch(
                       value: autoRecover,
                       activeColor: tokens.accent,
                       onChanged: (val) {
@@ -472,10 +486,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
               ),
               const SizedBox(width: 8),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 7,
-                  vertical: 2,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                 decoration: BoxDecoration(
                   color: tokens.accent.withValues(
                     alpha: ZplayOpacity.overlayHover,
@@ -496,9 +507,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
               return Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: isSurface
-                      ? tokens.accentSubtle
-                      : Colors.transparent,
+                  color: isSurface ? tokens.accentSubtle : Colors.transparent,
                   borderRadius: ZplayRadius.mdAll,
                   border: Border.all(
                     color: isSurface ? tokens.accent : Colors.transparent,
@@ -520,9 +529,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                       ),
                       child: Icon(
                         Icons.layers_rounded,
-                        color: isSurface
-                            ? tokens.accent
-                            : tokens.textEmphasis,
+                        color: isSurface ? tokens.accent : tokens.textEmphasis,
                         size: 22,
                       ),
                     ),
@@ -535,7 +542,9 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  l10nOf(context).uiVideoSettingsPageDirectSurfaceSurfaceview,
+                                  l10nOf(
+                                    context,
+                                  ).uiVideoSettingsPageDirectSurfaceSurfaceview,
                                   style: ZplayType.subtitle.toStyle(
                                     color: tokens.textPrimary,
                                   ),
@@ -552,8 +561,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                                               ? tokens.success
                                               : tokens.warning)
                                           .withValues(
-                                            alpha:
-                                                ZplayOpacity.borderStrong,
+                                            alpha: ZplayOpacity.borderStrong,
                                           ),
                                   borderRadius: ZplayRadius.smAll,
                                 ),
@@ -572,7 +580,9 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            l10nOf(context).auxVideoSettingsPageUsesFlutterSurfaceproducerToRenderFramesDirectly,
+                            l10nOf(
+                              context,
+                            ).auxVideoSettingsPageUsesFlutterSurfaceproducerToRenderFramesDirectly,
                             style: ZplayType.bodySmall.toStyle(
                               color: tokens.textSecondary,
                             ),
@@ -581,7 +591,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Switch.adaptive(
+                    KiruSwitch(
                       value: isSurface,
                       activeColor: tokens.accent,
                       onChanged: (val) {
@@ -611,7 +621,7 @@ class _VideoSettingsPageState extends State<VideoSettingsPage> {
     required VoidCallback onTap,
   }) {
     final tokens = context.tokens;
-    return InkWell(
+    return KiruTappable(
       onTap: onTap,
       borderRadius: ZplayRadius.mdAll,
       child: AnimatedContainer(

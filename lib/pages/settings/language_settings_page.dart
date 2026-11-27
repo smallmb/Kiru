@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_tappable.dart';
 import 'package:flutter/material.dart';
 
 import '../../l10n/l10n.dart';
@@ -86,7 +87,7 @@ class _LanguageTile extends StatelessWidget {
             ? tokens.accent.withValues(alpha: ZplayOpacity.overlayHover)
             : tokens.surface,
         borderRadius: ZplayRadius.mdAll,
-        child: InkWell(
+        child: KiruTappable(
           borderRadius: ZplayRadius.mdAll,
           onTap: onTap,
           child: Padding(

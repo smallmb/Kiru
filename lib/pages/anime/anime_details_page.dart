@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/anime_titles.dart';
 import 'package:zplay/services/metadata/anime_chinese_synopsis.dart';
 import 'package:zplay/l10n/media_labels.dart';
@@ -31,10 +32,7 @@ import '../../services/storage/app_image_cache.dart';
 class AnimeDetailsPage extends StatefulWidget {
   final AnimeMedia anime;
 
-  const AnimeDetailsPage({
-    super.key,
-    required this.anime,
-  });
+  const AnimeDetailsPage({super.key, required this.anime});
 
   @override
   State<AnimeDetailsPage> createState() => _AnimeDetailsPageState();
@@ -52,7 +50,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
   int _selectedEpisodeBatch = 0; // 50 episodes per chunk
   int? _highlightedEpisode;
   List<AniDbEpisode>? _aniDbEpisodes;
-  Map<int,String> _episodeChineseNames = const {};
+  Map<int, String> _episodeChineseNames = const {};
 
   static const int _chunkSize = 50;
 
@@ -93,13 +91,10 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
       curve: Curves.easeOut,
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.05),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animController,
-      curve: Curves.easeOutCubic,
-    ));
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.05), end: Offset.zero).animate(
+          CurvedAnimation(parent: _animController, curve: Curves.easeOutCubic),
+        );
 
     _animController.forward();
     _loadDetails();
@@ -125,15 +120,24 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
   Future<void> _refreshSynopsis() async {
     final revision = ++_synopsisRevision;
     final anime = _anime;
-    if (_synopsisLocale != 'zh' || anime.isArabic || anime.descriptionChinese.isNotEmpty || AnimeSourceSettings.source.value == AnimeSource.bangumi) return;
+    if (_synopsisLocale != 'zh' ||
+        anime.isArabic ||
+        anime.descriptionChinese.isNotEmpty ||
+        AnimeSourceSettings.source.value == AnimeSource.bangumi)
+      return;
     final result = await AnimeChineseSynopsis.instance.lookup(anime);
     if (mounted && revision == _synopsisRevision && result != null) {
       setState(() => _chineseSynopsis = result);
     }
   }
 
-  String get _displaySynopsis => _synopsisLocale == 'zh' && _anime.descriptionChinese.isNotEmpty
-      ? _anime.descriptionChinese : _chineseSynopsis ?? (_anime.description.isNotEmpty ? _anime.description : _anime.descriptionChinese);
+  String get _displaySynopsis =>
+      _synopsisLocale == 'zh' && _anime.descriptionChinese.isNotEmpty
+      ? _anime.descriptionChinese
+      : _chineseSynopsis ??
+            (_anime.description.isNotEmpty
+                ? _anime.description
+                : _anime.descriptionChinese);
 
   @override
   void dispose() {
@@ -146,7 +150,9 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
   }
 
   void _loadDetails() async {
-    final full = await AnimeMetadataService.instance.fetchAnimeDetails(_anime.id);
+    final full = await AnimeMetadataService.instance.fetchAnimeDetails(
+      _anime.id,
+    );
     if (mounted) {
       setState(() {
         if (full != null) _anime = full;
@@ -164,8 +170,11 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
   }
 
   Future<void> _loadEpisodeTitles() async {
-    final names=await AnimeMetadataService.instance.fetchEpisodeTitles(_anime.id);
-    if(mounted && names.isNotEmpty)setState(()=>_episodeChineseNames=names);
+    final names = await AnimeMetadataService.instance.fetchEpisodeTitles(
+      _anime.id,
+    );
+    if (mounted && names.isNotEmpty)
+      setState(() => _episodeChineseNames = names);
   }
 
   void _resolveAniDbEpisodes() async {
@@ -202,7 +211,8 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
   void _updateCastScrollButtons() {
     if (!_castScrollController.hasClients) return;
     final canLeft = _castScrollController.position.pixels > 0;
-    final canRight = _castScrollController.position.pixels <
+    final canRight =
+        _castScrollController.position.pixels <
         _castScrollController.position.maxScrollExtent;
     if (_canScrollCastLeft != canLeft || _canScrollCastRight != canRight) {
       setState(() {
@@ -215,7 +225,8 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
   void _updateRelationsScrollButtons() {
     if (!_relationsScrollController.hasClients) return;
     final canLeft = _relationsScrollController.position.pixels > 0;
-    final canRight = _relationsScrollController.position.pixels <
+    final canRight =
+        _relationsScrollController.position.pixels <
         _relationsScrollController.position.maxScrollExtent;
     if (_canScrollRelationsLeft != canLeft ||
         _canScrollRelationsRight != canRight) {
@@ -229,7 +240,8 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
   void _updateRecsScrollButtons() {
     if (!_recsScrollController.hasClients) return;
     final canLeft = _recsScrollController.position.pixels > 0;
-    final canRight = _recsScrollController.position.pixels <
+    final canRight =
+        _recsScrollController.position.pixels <
         _recsScrollController.position.maxScrollExtent;
     if (_canScrollRecsLeft != canLeft || _canScrollRecsRight != canRight) {
       setState(() {
@@ -243,8 +255,10 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
     if (!controller.hasClients) return;
     final viewportWidth = controller.position.viewportDimension;
     final scrollAmount = viewportWidth * 0.7 * directionMultiplier;
-    final target = (controller.position.pixels + scrollAmount)
-        .clamp(0.0, controller.position.maxScrollExtent);
+    final target = (controller.position.pixels + scrollAmount).clamp(
+      0.0,
+      controller.position.maxScrollExtent,
+    );
     controller.animateTo(
       target,
       duration: const Duration(milliseconds: 450),
@@ -286,9 +300,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
   void _navigateToAnime(AnimeMedia target) {
     Navigator.push(
       context,
-      CinematicSlideRoute(
-        page: AnimeDetailsPage(anime: target),
-      ),
+      CinematicSlideRoute(page: AnimeDetailsPage(anime: target)),
     );
   }
 
@@ -299,23 +311,23 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
   /// anime rows use, and the tap still goes through the AniList lookup in
   /// [_buildRelationsRow] rather than the card's own navigation.
   Movie _relationAsMovie(AnimeRelation rel) => Movie(
-        id: 'anilist_${rel.id}',
-        name: rel.title,
-        poster: rel.coverUrl.isEmpty ? null : rel.coverUrl,
-        type: 'anime',
-        addonBaseUrl: '',
-      );
+    id: 'anilist_${rel.id}',
+    name: rel.title,
+    poster: rel.coverUrl.isEmpty ? null : rel.coverUrl,
+    type: 'anime',
+    addonBaseUrl: '',
+  );
 
   /// A display-only [Movie] for the recommendations row. See
   /// [_relationAsMovie] for why the tap is not the card's own.
   Movie _recommendationAsMovie(AnimeMedia rec) => Movie(
-        id: 'anilist_${rec.id}',
-        name: rec.displayTitle,
-        poster: rec.coverUrl.isEmpty ? null : rec.coverUrl,
-        year: rec.seasonYear > 0 ? '${rec.seasonYear}' : null,
-        type: 'anime',
-        addonBaseUrl: '',
-      );
+    id: 'anilist_${rec.id}',
+    name: rec.displayTitle,
+    poster: rec.coverUrl.isEmpty ? null : rec.coverUrl,
+    year: rec.seasonYear > 0 ? '${rec.seasonYear}' : null,
+    type: 'anime',
+    addonBaseUrl: '',
+  );
 
   bool _isDesktop() {
     if (kIsWeb) return true;
@@ -333,8 +345,10 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
     final topInset = MediaQuery.paddingOf(context).top;
     final tokens = ZplayTokens.of(context);
 
-    final heroHeight =
-        (screenSize.height * (isDesktop ? 0.46 : 0.4)).clamp(320.0, 520.0);
+    final heroHeight = (screenSize.height * (isDesktop ? 0.46 : 0.4)).clamp(
+      320.0,
+      520.0,
+    );
     final contentMaxWidth = isDesktop ? 1440.0 : double.infinity;
     final overlap = isDesktop ? 120.0 : 70.0;
 
@@ -345,53 +359,56 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
           children: [
             if (bgUrl.isNotEmpty) _buildBackdrop(bgUrl, screenSize),
 
-          Positioned.fill(
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: contentMaxWidth),
-                  child: SlideTransition(
-                    position: _slideAnimation,
-                    child: FadeTransition(
-                      opacity: _fadeAnimation,
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: isDesktop ? ZplaySpacing.s48 : ZplaySpacing.s24,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: heroHeight - overlap),
-                            isDesktop
-                                ? _buildDesktopLayout(posterUrl)
-                                : _buildMobileLayout(posterUrl),
-                            const SizedBox(height: ZplaySpacing.s32),
-
-                            // Characters & Voice Cast Row
-                            if (_anime.characters.isNotEmpty) ...[
-                              _buildCharactersRow(),
+            Positioned.fill(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: contentMaxWidth),
+                    child: SlideTransition(
+                      position: _slideAnimation,
+                      child: FadeTransition(
+                        opacity: _fadeAnimation,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isDesktop
+                                ? ZplaySpacing.s48
+                                : ZplaySpacing.s24,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: heroHeight - overlap),
+                              isDesktop
+                                  ? _buildDesktopLayout(posterUrl)
+                                  : _buildMobileLayout(posterUrl),
                               const SizedBox(height: ZplaySpacing.s32),
-                            ],
 
-                            // Episodes Section with 50-Chunking & Jump Input
-                            _buildEpisodesSection(),
-                            const SizedBox(height: ZplaySpacing.s32),
+                              // Characters & Voice Cast Row
+                              if (_anime.characters.isNotEmpty) ...[
+                                _buildCharactersRow(),
+                                const SizedBox(height: ZplaySpacing.s32),
+                              ],
 
-                            // Franchise & Relations Row
-                            if (_anime.relations.isNotEmpty) ...[
-                              _buildRelationsRow(),
+                              // Episodes Section with 50-Chunking & Jump Input
+                              _buildEpisodesSection(),
                               const SizedBox(height: ZplaySpacing.s32),
-                            ],
 
-                            // You May Also Like / Recommendations Row
-                            if (_anime.recommendations.isNotEmpty) ...[
-                              _buildRecommendationsRow(),
-                              const SizedBox(height: ZplaySpacing.s32),
-                            ],
+                              // Franchise & Relations Row
+                              if (_anime.relations.isNotEmpty) ...[
+                                _buildRelationsRow(),
+                                const SizedBox(height: ZplaySpacing.s32),
+                              ],
 
-                            const SizedBox(height: ZplaySpacing.s48),
-                          ],
+                              // You May Also Like / Recommendations Row
+                              if (_anime.recommendations.isNotEmpty) ...[
+                                _buildRecommendationsRow(),
+                                const SizedBox(height: ZplaySpacing.s32),
+                              ],
+
+                              const SizedBox(height: ZplaySpacing.s48),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -399,36 +416,35 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
                 ),
               ),
             ),
-          ),
 
-          // Floating Frosted Back Button (Top Left)
-          Positioned(
-            top: isDesktop ? ZplaySpacing.s24 : (topInset + 10),
-            left: isDesktop ? ZplaySpacing.s48 : ZplaySpacing.s16,
-            child: ClipOval(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    color: tokens.textPrimary,
-                    size: 20,
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                  style: IconButton.styleFrom(
-                    backgroundColor: tokens.textPrimary.withValues(
-                      alpha: ZplayOpacity.borderMedium,
+            // Floating Frosted Back Button (Top Left)
+            Positioned(
+              top: isDesktop ? ZplaySpacing.s24 : (topInset + 10),
+              left: isDesktop ? ZplaySpacing.s48 : ZplaySpacing.s16,
+              child: ClipOval(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: KiruIconButton(
+                    icon: Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: tokens.textPrimary,
+                      size: 20,
                     ),
-                    padding: const EdgeInsets.all(ZplaySpacing.s12),
-                    side: BorderSide(color: tokens.borderStrong),
+                    onPressed: () => Navigator.pop(context),
+                    style: IconButton.styleFrom(
+                      backgroundColor: tokens.textPrimary.withValues(
+                        alpha: ZplayOpacity.borderMedium,
+                      ),
+                      padding: const EdgeInsets.all(ZplaySpacing.s12),
+                      side: BorderSide(color: tokens.borderStrong),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
     );
   }
 
@@ -459,7 +475,11 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
                 gradient: LinearGradient(
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
-                  colors: [tokens.bg, tokens.bg.withValues(alpha: 0.6), Colors.transparent],
+                  colors: [
+                    tokens.bg,
+                    tokens.bg.withValues(alpha: 0.6),
+                    Colors.transparent,
+                  ],
                   stops: const [0.0, 0.42, 0.82],
                 ),
               ),
@@ -470,7 +490,11 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, tokens.bg.withValues(alpha: 0.4), tokens.bg],
+                  colors: [
+                    Colors.transparent,
+                    tokens.bg.withValues(alpha: 0.4),
+                    tokens.bg,
+                  ],
                   stops: const [0.0, 0.62, 0.94],
                 ),
               ),
@@ -659,10 +683,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
             child: Text(
               _anime.titleNative,
               style: ZplayType.bodySmall
-                  .copyWith(
-                    size: isDesktop ? 14 : 12,
-                    weight: FontWeight.w500,
-                  )
+                  .copyWith(size: isDesktop ? 14 : 12, weight: FontWeight.w500)
                   .toStyle(color: tokens.textSecondary),
             ),
           ),
@@ -686,7 +707,9 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
     if (_anime.formattedFormat.isNotEmpty) {
       items.add(
         Text(
-          Localizations.localeOf(context).languageCode == 'zh' ? mediaLabel(context, _anime.format) : _anime.formattedFormat,
+          Localizations.localeOf(context).languageCode == 'zh'
+              ? mediaLabel(context, _anime.format)
+              : _anime.formattedFormat,
           style: ZplayType.body.toStyle(color: tokens.textEmphasis),
         ),
       );
@@ -696,7 +719,10 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
     if (totalEps > 0) {
       items.add(
         Text(
-          l10nOf(context).dynamicAnimeDetailsPageEp((totalEps).toString(), (totalEps > 1 ? "s" : "").toString()),
+          l10nOf(context).dynamicAnimeDetailsPageEp(
+            (totalEps).toString(),
+            (totalEps > 1 ? "s" : "").toString(),
+          ),
           style: ZplayType.body.toStyle(color: tokens.textEmphasis),
         ),
       );
@@ -791,7 +817,12 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
 
     return Builder(
       builder: (buttonContext) => PillButton(
-        label: mediaLabel(context, watchItem != null ? watchItem.status.name.toUpperCase() : 'ADD TO LIST'),
+        label: mediaLabel(
+          context,
+          watchItem != null
+              ? watchItem.status.name.toUpperCase()
+              : 'ADD TO LIST',
+        ),
         variant: PillVariant.secondary,
         icon: watchItem != null
             ? Icons.check_circle_rounded
@@ -814,7 +845,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
     final overlay =
         Navigator.of(anchor).overlay!.context.findRenderObject()! as RenderBox;
 
-    final status = await showMenu<AnimeWatchStatus>(
+    final status = await showKiruMenu<AnimeWatchStatus>(
       context: anchor,
       color: tokens.surfaceOverlay,
       constraints: const BoxConstraints(maxHeight: 360),
@@ -835,23 +866,31 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
       items: [
         PopupMenuItem(
           value: AnimeWatchStatus.watching,
-          child: Text(l10nOf(context).uiAnimeDetailsPageWatching,
-              style: ZplayType.body.toStyle(color: tokens.textPrimary)),
+          child: Text(
+            l10nOf(context).uiAnimeDetailsPageWatching,
+            style: ZplayType.body.toStyle(color: tokens.textPrimary),
+          ),
         ),
         PopupMenuItem(
           value: AnimeWatchStatus.planToWatch,
-          child: Text(l10nOf(context).uiAnimeDetailsPagePlanToWatch,
-              style: ZplayType.body.toStyle(color: tokens.textPrimary)),
+          child: Text(
+            l10nOf(context).uiAnimeDetailsPagePlanToWatch,
+            style: ZplayType.body.toStyle(color: tokens.textPrimary),
+          ),
         ),
         PopupMenuItem(
           value: AnimeWatchStatus.completed,
-          child: Text(l10nOf(context).uiAnimeDetailsPageCompleted,
-              style: ZplayType.body.toStyle(color: tokens.textPrimary)),
+          child: Text(
+            l10nOf(context).uiAnimeDetailsPageCompleted,
+            style: ZplayType.body.toStyle(color: tokens.textPrimary),
+          ),
         ),
         PopupMenuItem(
           value: AnimeWatchStatus.dropped,
-          child: Text(l10nOf(context).uiAnimeDetailsPageDropped,
-              style: ZplayType.body.toStyle(color: tokens.textSecondary)),
+          child: Text(
+            l10nOf(context).uiAnimeDetailsPageDropped,
+            style: ZplayType.body.toStyle(color: tokens.textSecondary),
+          ),
         ),
       ],
     );
@@ -897,7 +936,10 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
       children: genres
           .map(
             (g) => Container(
-              padding: const EdgeInsets.symmetric(horizontal: ZplaySpacing.s12, vertical: 6),
+              padding: const EdgeInsets.symmetric(
+                horizontal: ZplaySpacing.s12,
+                vertical: 6,
+              ),
               decoration: BoxDecoration(
                 color: tokens.borderSubtle,
                 borderRadius: ZplayRadius.lgAll,
@@ -942,7 +984,8 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
                     scrollDirection: Axis.horizontal,
                     physics: const BouncingScrollPhysics(),
                     itemCount: _anime.characters.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: ZplaySpacing.s16),
+                    separatorBuilder: (_, __) =>
+                        const SizedBox(width: ZplaySpacing.s16),
                     itemBuilder: (context, index) {
                       final char = _anime.characters[index];
                       return SizedBox(
@@ -981,7 +1024,9 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
                             ),
                             Text(
                               char.role,
-                              style: ZplayType.overline.toStyle(color: tokens.textMuted),
+                              style: ZplayType.overline.toStyle(
+                                color: tokens.textMuted,
+                              ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -1065,8 +1110,14 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
                 // SUB / DUB Switcher
                 SegmentedTabs<bool>(
                   options: [
-                    SegmentedTabOption<bool>(value: false, label: l10nOf(context).uiAnimeDetailsPageSub),
-                    SegmentedTabOption<bool>(value: true, label: l10nOf(context).uiAnimeDetailsPageDub),
+                    SegmentedTabOption<bool>(
+                      value: false,
+                      label: l10nOf(context).uiAnimeDetailsPageSub,
+                    ),
+                    SegmentedTabOption<bool>(
+                      value: true,
+                      label: l10nOf(context).uiAnimeDetailsPageDub,
+                    ),
                   ],
                   selected: _isDub,
                   onSelected: (value) => setState(() => _isDub = value),
@@ -1084,29 +1135,32 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
                     borderRadius: ZplayRadius.smAll,
                     border: Border.all(color: tokens.borderStrong),
                   ),
-                  child: TextField(
+                  child: KiruFormField(
                     controller: _jumpEpController,
                     keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.go,
                     onSubmitted: _jumpToEpisode,
-                    style: ZplayType.bodySmall.toStyle(color: tokens.textPrimary),
+                    style: ZplayType.bodySmall.toStyle(
+                      color: tokens.textPrimary,
+                    ),
                     decoration: InputDecoration(
                       hintText: l10nOf(context).uiAnimeDetailsPageJumpToEp,
-                      hintStyle: ZplayType.caption.toStyle(color: tokens.textMuted),
+                      hintStyle: ZplayType.caption.toStyle(
+                        color: tokens.textMuted,
+                      ),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: ZplaySpacing.s8,
                         vertical: 10,
                       ),
-                      suffixIcon: IconButton(
+                      suffixIcon: KiruIconButton(
                         padding: EdgeInsets.zero,
                         icon: Icon(
                           Icons.arrow_forward_rounded,
                           color: tokens.accent,
                           size: 16,
                         ),
-                        onPressed: () =>
-                            _jumpToEpisode(_jumpEpController.text),
+                        onPressed: () => _jumpToEpisode(_jumpEpController.text),
                       ),
                     ),
                   ),
@@ -1118,7 +1172,9 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
                 if (totalBatches > 1)
                   Container(
                     height: 34,
-                    padding: const EdgeInsets.symmetric(horizontal: ZplaySpacing.s8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: ZplaySpacing.s8,
+                    ),
                     decoration: BoxDecoration(
                       color: tokens.surface,
                       borderRadius: ZplayRadius.smAll,
@@ -1126,7 +1182,7 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
                         color: tokens.accent.withValues(alpha: 0.4),
                       ),
                     ),
-                    child: DropdownButton<int>(
+                    child: KiruDropdown<int>(
                       value: currentBatchSafe,
                       underline: const SizedBox.shrink(),
                       dropdownColor: tokens.surfaceOverlay,
@@ -1138,17 +1194,14 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
                         color: tokens.accent,
                         size: 16,
                       ),
-                      items: List.generate(
-                        totalBatches,
-                        (idx) {
-                          final start = idx * _chunkSize + 1;
-                          final end = math.min((idx + 1) * _chunkSize, totalEps);
-                          return DropdownMenuItem(
-                            value: idx,
-                            child: Text('$start – $end'),
-                          );
-                        },
-                      ),
+                      items: List.generate(totalBatches, (idx) {
+                        final start = idx * _chunkSize + 1;
+                        final end = math.min((idx + 1) * _chunkSize, totalEps);
+                        return DropdownMenuItem(
+                          value: idx,
+                          child: Text('$start – $end'),
+                        );
+                      }),
                       onChanged: (val) {
                         if (val != null) {
                           setState(() => _selectedEpisodeBatch = val);
@@ -1218,19 +1271,17 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
                   color: isHighlighted
                       ? tokens.danger.withValues(alpha: 0.30)
                       : isCurrent
-                          ? tokens.accent.withValues(alpha: 0.35)
-                          : (isWatched
-                              ? tokens.borderDefault
-                              : tokens.surface),
+                      ? tokens.accent.withValues(alpha: 0.35)
+                      : (isWatched ? tokens.borderDefault : tokens.surface),
                   borderRadius: ZplayRadius.smAll,
                   border: Border.all(
                     color: isHighlighted
                         ? tokens.danger
                         : isCurrent
-                            ? tokens.accent
-                            : (isWatched
-                                ? tokens.textDisabled
-                                : tokens.borderDefault),
+                        ? tokens.accent
+                        : (isWatched
+                              ? tokens.textDisabled
+                              : tokens.borderDefault),
                     width: (isCurrent || isHighlighted) ? 1.5 : 1,
                   ),
                 ),
@@ -1247,10 +1298,10 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
                           color: isHighlighted
                               ? tokens.danger
                               : isCurrent
-                                  ? tokens.accent
-                                  : (isWatched
-                                        ? tokens.textEmphasis
-                                        : tokens.textPrimary),
+                              ? tokens.accent
+                              : (isWatched
+                                    ? tokens.textEmphasis
+                                    : tokens.textPrimary),
                         ),
                   ),
                 ),
@@ -1259,8 +1310,10 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
           ),
         );
         final name = _episodeChineseNames[epNum];
-        return Localizations.localeOf(context).languageCode == 'zh' && name != null
-            ? Tooltip(message:name,child:tile) : tile;
+        return Localizations.localeOf(context).languageCode == 'zh' &&
+                name != null
+            ? KiruTooltip(message: name, child: tile)
+            : tile;
       },
     );
   }
@@ -1319,7 +1372,9 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
                 AnimatedPositioned(
                   duration: const Duration(milliseconds: 250),
                   curve: Curves.easeOutCubic,
-                  left: _canScrollRelationsLeft && _isHoveringRelations ? 10 : -60,
+                  left: _canScrollRelationsLeft && _isHoveringRelations
+                      ? 10
+                      : -60,
                   top: 0,
                   bottom: 0,
                   child: Center(
@@ -1332,7 +1387,9 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
                 AnimatedPositioned(
                   duration: const Duration(milliseconds: 250),
                   curve: Curves.easeOutCubic,
-                  right: _canScrollRelationsRight && _isHoveringRelations ? 10 : -60,
+                  right: _canScrollRelationsRight && _isHoveringRelations
+                      ? 10
+                      : -60,
                   top: 0,
                   bottom: 0,
                   child: Center(

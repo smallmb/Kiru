@@ -1,9 +1,9 @@
+import '../ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
 import '../../services/theme/design_tokens.dart';
 import 'player_glass.dart';
-import '../common/focusable_card.dart';
 
 /// Floating glass toolbar for quick live subtitle delay adjustment.
 class SubSyncBar extends StatefulWidget {
@@ -183,7 +183,7 @@ class _SubSyncBarState extends State<SubSyncBar> {
                             ),
                             if (isNonZero) ...[
                               const SizedBox(width: 6),
-                              FocusableCard(
+                              PlayerTappable(
                                 onTap: () => _applyDelay(0.0),
                                 builder: (context, _) => Container(
                                   padding: const EdgeInsets.all(
@@ -233,7 +233,7 @@ class _SubSyncBarState extends State<SubSyncBar> {
                   const SizedBox(width: 4),
                 ],
 
-                ElevatedButton.icon(
+                KiruButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: PlayerTheme.accent,
                     foregroundColor: tokens.onAccent,
@@ -247,7 +247,7 @@ class _SubSyncBarState extends State<SubSyncBar> {
                     minimumSize: const Size(0, 32),
                   ),
                   icon: const Icon(Icons.check_rounded, size: 15),
-                  label: Text(
+                  child: Text(
                     l10nOf(context).uiSubSyncBarDone,
                     style: ZplayType.label.toStyle().copyWith(
                       fontWeight: FontWeight.w600,

@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/media_labels.dart';
 import '../../l10n/l10n.dart';
 
@@ -138,7 +139,9 @@ class _DetailsPageState extends State<DetailsPage>
   /// would let the button and its own budget name different actions.
   String get _playLabel => _isCollection
       ? l10nOf(context).detailsPlayFirst
-      : (_isSeries ? l10nOf(context).detailsPlayEpisodes : l10nOf(context).detailsPlayMovie);
+      : (_isSeries
+            ? l10nOf(context).detailsPlayEpisodes
+            : l10nOf(context).detailsPlayMovie);
 
   late AnimationController _animController;
   late Animation<double> _fadeAnimation;
@@ -222,7 +225,8 @@ class _DetailsPageState extends State<DetailsPage>
     final locale = _displayLocale;
     if (detail == null || locale != 'zh') return;
     final localized = await LocalizedMovieMetadata.lookup(detail, locale!);
-    if (!mounted || request != _localizedRequest || !identical(detail, _detail)) return;
+    if (!mounted || request != _localizedRequest || !identical(detail, _detail))
+      return;
     if (localized != null) setState(() => _localizedText = localized);
   }
 
@@ -713,7 +717,7 @@ class _DetailsPageState extends State<DetailsPage>
     return Scaffold(
       backgroundColor: tokens.bg,
       body: _isLoading
-          ? Center(child: CircularProgressIndicator(color: tokens.accent))
+          ? Center(child: KiruLoader(color: tokens.accent))
           : _detail == null
           ? _buildError()
           : _buildContent(context),
@@ -738,7 +742,7 @@ class _DetailsPageState extends State<DetailsPage>
             style: ZplayType.title.toStyle(color: tokens.textSecondary),
           ),
           const SizedBox(height: ZplaySpacing.s24),
-          ElevatedButton(
+          KiruButton(
             onPressed: () => Navigator.pop(context),
             style: ElevatedButton.styleFrom(
               backgroundColor: tokens.surface,
@@ -1280,7 +1284,8 @@ class _DetailsPageState extends State<DetailsPage>
   // look like an afterthought in the screenshot).
   Widget _buildLogoOrTitle(MovieDetail meta, {required bool isDesktop}) {
     final localizedTitle = _localizedText?.title;
-    if (localizedTitle != null) return _buildTextTitle(localizedTitle, isDesktop);
+    if (localizedTitle != null)
+      return _buildTextTitle(localizedTitle, isDesktop);
     if (meta.logo != null && meta.logo!.isNotEmpty) {
       return ConstrainedBox(
         constraints: BoxConstraints(
@@ -1606,7 +1611,10 @@ class _DetailsPageState extends State<DetailsPage>
                   focused: state.focused,
                   radius: ZplayRadius.xsAll,
                   child: Text(
-                    mediaLabel(context, _isSynopsisExpanded ? 'Show less' : 'Read more'),
+                    mediaLabel(
+                      context,
+                      _isSynopsisExpanded ? 'Show less' : 'Read more',
+                    ),
                     style: ZplayType.body
                         .copyWith(weight: FontWeight.w700)
                         .toStyle(color: tokens.textPrimary),
@@ -2309,7 +2317,9 @@ class _EpisodeCard extends StatelessWidget {
                                 ),
                                 child: Text(
                                   isCollection
-                                      ? l10nOf(context).mediaCollectionPart((ep.episode ?? "?").toString())
+                                      ? l10nOf(context).mediaCollectionPart(
+                                          (ep.episode ?? "?").toString(),
+                                        )
                                       : 'E${ep.episode ?? "?"}',
                                   style: ZplayType.caption
                                       .copyWith(weight: FontWeight.w700)

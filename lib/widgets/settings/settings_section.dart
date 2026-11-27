@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../services/theme/design_tokens.dart';
+import '../ui/kiru_controls.dart';
 
 /// One labelled settings section: an overline heading over a group of rows that
 /// rest on the page canvas, split by hairline dividers instead of one card per
@@ -20,17 +21,45 @@ class SettingsSection extends StatelessWidget {
   /// Suppresses the leading gap: the first section on a page sits directly
   /// under the page's own header instead of the space between sections.
   final bool first;
+  final bool workspace;
 
   const SettingsSection({
     super.key,
     required this.title,
     required this.rows,
     this.first = false,
+    this.workspace = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    if (workspace) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            title,
+            style: ZplayType.titleLarge
+                .copyWith(size: 28, weight: FontWeight.w600)
+                .toStyle(color: tokens.textPrimary),
+          ),
+          const SizedBox(height: 24),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: tokens.surface.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+              child: Column(
+                children: _dividerSeparated(rows, tokens.borderSubtle),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -48,7 +77,14 @@ class SettingsSection extends StatelessWidget {
     final children = <Widget>[];
     for (final row in rows) {
       if (children.isNotEmpty) {
-        children.add(Divider(color: dividerColor, height: 1));
+        children.add(
+          KiruDivider(
+            color: dividerColor,
+            height: 1,
+            indent: 12,
+            endIndent: 12,
+          ),
+        );
       }
       children.add(row);
     }

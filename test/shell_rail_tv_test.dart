@@ -15,6 +15,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:zplay/widgets/common/zplay_logo.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:zplay/services/content/navigation_settings.dart';
 import 'package:zplay/services/layout/device_profile.dart';
 import 'package:zplay/shell/app_shell.dart';
 import 'package:zplay/shell/shell_rail.dart';
@@ -74,7 +75,11 @@ Future<void> _pumpOn(
 }
 
 void main() {
-  tearDown(() => DeviceProfile.debugSetTelevision(value: false));
+  setUp(() => NavigationSettings.enabled.value = NavigationSettings.defaults);
+  tearDown(() {
+    DeviceProfile.debugSetTelevision(value: false);
+    NavigationSettings.enabled.value = NavigationSettings.defaults;
+  });
 
   testWidgets('the bar is a full-width row pinned to the top', (tester) async {
     await _pump(tester, television: true);
@@ -112,8 +117,8 @@ void main() {
     }
     expect(
       find.text('Live TV'),
-      findsWidgets,
-      reason: 'the prototype top bar carries the Live TV destination',
+      findsNothing,
+      reason: 'Live TV is optional and hidden by default',
     );
     // The mark is drawn, not loaded: `ZplayLogo` paints a rounded square and a
     // glyph out of `tokens.accent`, so it cannot fall behind the palette the way

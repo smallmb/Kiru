@@ -1,3 +1,4 @@
+import 'package:zplay/widgets/ui/kiru_controls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,10 +32,17 @@ void main() {
     expect(find.textContaining('themoviedb.org'), findsWidgets);
     expect(find.textContaining('stored only on this device'), findsOneWidget);
 
-    final field = tester.widget<TextField>(find.byType(TextField));
+    final field = tester.widget<EditableText>(find.byType(EditableText));
     expect(field.obscureText, isTrue);
-    expect(field.controller!.text, isEmpty);
-    expect(find.byTooltip('Show Key'), findsOneWidget);
+    expect(field.controller.text, isEmpty);
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            (w is KiruTooltip && w.message == 'Show Key') ||
+            (w is Tooltip && w.message == 'Show Key'),
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('shows the TMDb attribution notice verbatim', (tester) async {

@@ -175,7 +175,7 @@ void main() {
       reason: 'no stored flag means this install has never seen the splash',
     );
     expect(
-      find.text('ZPlay'),
+      find.text('Kiru'),
       findsOneWidget,
       reason: 'the splash is what the user actually sees, not just a key',
     );

@@ -14,6 +14,8 @@
 /// `FocusableCard` handles.
 library;
 
+import 'package:forui/forui.dart' as f;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -32,28 +34,35 @@ void main() {
         FocusHighlightStrategy.alwaysTraditional;
   });
 
-  Finder focusRings() => find.byWidgetPredicate((w) =>
-      w is DecoratedBox &&
-      w.decoration is BoxDecoration &&
-      (w.decoration as BoxDecoration).border != null);
+  Finder focusRings() => find.byWidgetPredicate(
+    (w) =>
+        w is DecoratedBox &&
+        w.decoration is BoxDecoration &&
+        (w.decoration as BoxDecoration).border != null,
+  );
 
-  testWidgets('a card activates on the keys a TV remote actually sends',
-      (tester) async {
+  testWidgets('a card activates on the keys a TV remote actually sends', (
+    tester,
+  ) async {
     final hits = <String>[];
-    await tester.pumpWidget(MaterialApp(
-      home: Scaffold(
-        body: Row(children: [
-          FocusableCard(
-            onTap: () => hits.add('first'),
-            builder: (_, s) => const SizedBox(width: 120, height: 120),
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Row(
+            children: [
+              FocusableCard(
+                onTap: () => hits.add('first'),
+                builder: (_, s) => const SizedBox(width: 120, height: 120),
+              ),
+              FocusableCard(
+                onTap: () => hits.add('second'),
+                builder: (_, s) => const SizedBox(width: 120, height: 120),
+              ),
+            ],
           ),
-          FocusableCard(
-            onTap: () => hits.add('second'),
-            builder: (_, s) => const SizedBox(width: 120, height: 120),
-          ),
-        ]),
+        ),
       ),
-    ));
+    );
     await tester.pump();
 
     await tester.sendKeyEvent(LogicalKeyboardKey.select);
@@ -76,12 +85,16 @@ void main() {
     await tester.pump();
     await tester.sendKeyEvent(LogicalKeyboardKey.gameButtonA);
     await tester.pump();
-    expect(hits, ['first', 'second', 'first'],
-        reason: 'gamepad A is what some remotes report instead of select');
+    expect(hits, [
+      'first',
+      'second',
+      'first',
+    ], reason: 'gamepad A is what some remotes report instead of select');
   });
 
-  testWidgets('a player HUD button is reachable and activates on the remote key',
-      (tester) async {
+  testWidgets('a player HUD button is reachable and activates on the remote key', (
+    tester,
+  ) async {
     // The player's entire HUD is built from PlayerIconButton: 39 of them across
     // 13 files. They were MouseRegion > GestureDetector, so a remote could not
     // reach a single one.
@@ -90,33 +103,44 @@ void main() {
     addTearDown(() => GlassSettings.enabled.value = glassWas);
 
     var hits = 0;
-    await tester.pumpWidget(MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Row(children: [
-            PlayerIconButton(
-              icon: const Icon(Icons.chevron_left_rounded),
-              tooltip: 'Back',
-              onPressed: () => hits += 1,
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Row(
+              children: [
+                PlayerIconButton(
+                  icon: const Icon(Icons.chevron_left_rounded),
+                  tooltip: 'Back',
+                  onPressed: () => hits += 1,
+                ),
+                PlayerIconButton(
+                  icon: const Icon(Icons.download_rounded),
+                  onPressed: () => hits += 10,
+                ),
+              ],
             ),
-            PlayerIconButton(
-              icon: const Icon(Icons.download_rounded),
-              onPressed: () => hits += 10,
-            ),
-          ]),
+          ),
         ),
       ),
-    ));
+    );
     await tester.pump(const Duration(milliseconds: 250));
 
-    expect(find.byType(FocusableCard), findsNWidgets(2),
-        reason: 'HUD buttons must be built on the focus primitive');
+    expect(
+      find.byType(f.FButton),
+      findsNWidgets(2),
+      reason: 'HUD buttons must use the Forui focus primitive',
+    );
 
     await tester.sendKeyEvent(LogicalKeyboardKey.tab);
     await tester.pump(const Duration(milliseconds: 250));
     await tester.sendKeyEvent(LogicalKeyboardKey.select);
     await tester.pump(const Duration(milliseconds: 100));
-    expect(hits, 1, reason: 'the centre key must activate a focused HUD button');
+    expect(
+      hits,
+      1,
+      reason: 'the centre key must activate a focused HUD button',
+    );
 
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pump(const Duration(milliseconds: 250));
@@ -125,8 +149,9 @@ void main() {
     expect(hits, 11, reason: 'arrowRight must move between HUD buttons');
   });
 
-  testWidgets('a MovieCard in a horizontal rail is reachable and navigable',
-      (tester) async {
+  testWidgets('a MovieCard in a horizontal rail is reachable and navigable', (
+    tester,
+  ) async {
     var hits = 0;
     final movie = Movie(
       id: 'zplay-focus-probe',
@@ -136,38 +161,47 @@ void main() {
       addonBaseUrl: 'https://example.invalid',
     );
 
-    await tester.pumpWidget(MaterialApp(
-      home: Scaffold(
-        body: SizedBox(
-          height: 380,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              SizedBox(
-                width: 170,
-                height: 360,
-                child: MovieCard(movie: movie, onTap: () => hits += 1),
-              ),
-              SizedBox(
-                width: 170,
-                height: 360,
-                child: MovieCard(movie: movie, onTap: () => hits += 10),
-              ),
-            ],
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            height: 380,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                SizedBox(
+                  width: 170,
+                  height: 360,
+                  child: MovieCard(movie: movie, onTap: () => hits += 1),
+                ),
+                SizedBox(
+                  width: 170,
+                  height: 360,
+                  child: MovieCard(movie: movie, onTap: () => hits += 10),
+                ),
+              ],
+            ),
           ),
         ),
       ),
-    ));
+    );
     await tester.pump(const Duration(milliseconds: 300));
 
-    expect(find.byType(FocusableCard), findsNWidgets(2),
-        reason: 'MovieCard must stay built on the focus primitive');
+    expect(
+      find.byType(FocusableCard),
+      findsNWidgets(2),
+      reason: 'MovieCard must stay built on the focus primitive',
+    );
 
     await tester.sendKeyEvent(LogicalKeyboardKey.tab);
     await tester.pump(const Duration(milliseconds: 250));
     await tester.sendKeyEvent(LogicalKeyboardKey.select);
     await tester.pump(const Duration(milliseconds: 100));
-    expect(hits, 1, reason: 'the first card activates on the remote centre key');
+    expect(
+      hits,
+      1,
+      reason: 'the first card activates on the remote centre key',
+    );
 
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
     await tester.pump(const Duration(milliseconds: 250));
@@ -175,7 +209,10 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     expect(hits, 11, reason: 'arrowRight must move focus to the next card');
 
-    expect(focusRings(), findsWidgets,
-        reason: 'a focused card with no visible ring is unusable on a TV');
+    expect(
+      focusRings(),
+      findsWidgets,
+      reason: 'a focused card with no visible ring is unusable on a TV',
+    );
   });
 }

@@ -1,3 +1,5 @@
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:async';
@@ -70,14 +72,19 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
     if (!mounted) return;
     if (res == null) {
       setState(() => _pairing = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10nOf(context).uiSimklSettingsPageFailedToRequestSimklPinCode)),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(context).uiSimklSettingsPageFailedToRequestSimklPinCode,
+          ),
+        ),
       );
       return;
     }
 
     final userCode = res['user_code'] as String? ?? '';
-    final verifyUrl = res['verification_url'] as String? ?? 'https://simkl.com/pin';
+    final verifyUrl =
+        res['verification_url'] as String? ?? 'https://simkl.com/pin';
     final interval = (res['interval'] as int? ?? 5).clamp(2, 30);
 
     setState(() {
@@ -152,7 +159,9 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
           Padding(
             padding: const EdgeInsets.only(bottom: ZplaySpacing.s20),
             child: Text(
-              l10nOf(context).auxSimklSettingsPageConnectYourSimklAccountToSynchronizeMovies,
+              l10nOf(
+                context,
+              ).auxSimklSettingsPageConnectYourSimklAccountToSynchronizeMovies,
               style: ZplayType.body.toStyle(color: tokens.textSecondary),
             ),
           ),
@@ -170,10 +179,16 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
                       width: 44,
                       height: 44,
                       decoration: BoxDecoration(
-                        color: _simklBrand.withValues(alpha: ZplayOpacity.borderStrong),
+                        color: _simklBrand.withValues(
+                          alpha: ZplayOpacity.borderStrong,
+                        ),
                         borderRadius: ZplayRadius.smAll,
                       ),
-                      child: const Icon(Icons.tv_rounded, color: _simklBrand, size: 24),
+                      child: const Icon(
+                        Icons.tv_rounded,
+                        color: _simklBrand,
+                        size: 24,
+                      ),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -187,18 +202,35 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
                             children: [
                               Text(
                                 'Simkl',
-                                style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                                style: ZplayType.subtitle.toStyle(
+                                  color: tokens.textPrimary,
+                                ),
                               ),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: ZplaySpacing.s8, vertical: ZplaySpacing.s2),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: ZplaySpacing.s8,
+                                  vertical: ZplaySpacing.s2,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: (_isAuthed ? tokens.success : tokens.borderDefault).withValues(alpha: ZplayOpacity.overlayHover),
+                                  color:
+                                      (_isAuthed
+                                              ? tokens.success
+                                              : tokens.borderDefault)
+                                          .withValues(
+                                            alpha: ZplayOpacity.overlayHover,
+                                          ),
                                   borderRadius: ZplayRadius.xsAll,
                                 ),
                                 child: Text(
-                                  _isAuthed ? l10nOf(context).finalSimklSettingsPageConnected : 'DISCONNECTED',
+                                  _isAuthed
+                                      ? l10nOf(
+                                          context,
+                                        ).finalSimklSettingsPageConnected
+                                      : 'DISCONNECTED',
                                   style: ZplayType.overline.toStyle(
-                                    color: _isAuthed ? tokens.success : tokens.textSecondary,
+                                    color: _isAuthed
+                                        ? tokens.success
+                                        : tokens.textSecondary,
                                   ),
                                 ),
                               ),
@@ -207,11 +239,19 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
                           const SizedBox(height: 4),
                           Text(
                             _isLoading
-                                ? l10nOf(context).uiFinalSimklSettingsPageCheckingCredentials
+                                ? l10nOf(
+                                    context,
+                                  ).uiFinalSimklSettingsPageCheckingCredentials
                                 : _isAuthed
-                                    ? l10nOf(context).accountLoggedInSimkl(_username ?? 'Simkl User')
-                                    : l10nOf(context).uiFinalSimklSettingsPageSignInWithPinToActivate,
-                            style: ZplayType.body.toStyle(color: tokens.textSecondary),
+                                ? l10nOf(context).accountLoggedInSimkl(
+                                    _username ?? 'Simkl User',
+                                  )
+                                : l10nOf(
+                                    context,
+                                  ).uiFinalSimklSettingsPageSignInWithPinToActivate,
+                            style: ZplayType.body.toStyle(
+                              color: tokens.textSecondary,
+                            ),
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -223,29 +263,48 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
 
                 Widget? actionWidget;
                 if (_isAuthed) {
-                  actionWidget = OutlinedButton(
+                  actionWidget = KiruButton(
+                    kind: KiruButtonKind.outline,
                     style: OutlinedButton.styleFrom(
                       foregroundColor: tokens.danger,
                       side: BorderSide(
-                        color: tokens.danger.withValues(alpha: ZplayOpacity.textMuted),
+                        color: tokens.danger.withValues(
+                          alpha: ZplayOpacity.textMuted,
+                        ),
                       ),
-                      shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: ZplayRadius.smAll,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 10,
+                      ),
                     ),
                     onPressed: _logout,
-                    child: Text(l10nOf(context).uiSimklSettingsPageDisconnect, style: ZplayType.label.toStyle()),
+                    child: Text(
+                      l10nOf(context).uiSimklSettingsPageDisconnect,
+                      style: ZplayType.label.toStyle(),
+                    ),
                   );
                 } else if (!_pairing) {
-                  actionWidget = ElevatedButton.icon(
+                  actionWidget = KiruButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _simklBrand,
                       foregroundColor: tokens.textPrimary,
-                      shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
-                      padding: const EdgeInsets.symmetric(horizontal: ZplaySpacing.s16, vertical: 10),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: ZplayRadius.smAll,
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: ZplaySpacing.s16,
+                        vertical: 10,
+                      ),
                     ),
                     onPressed: _startPairing,
                     icon: const Icon(Icons.pin_rounded, size: 18),
-                    label: Text(l10nOf(context).uiSimklSettingsPageConnectSimkl, style: ZplayType.label.toStyle()),
+                    child: Text(
+                      l10nOf(context).uiSimklSettingsPageConnectSimkl,
+                      style: ZplayType.label.toStyle(),
+                    ),
                   );
                 }
 
@@ -271,30 +330,49 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
                     ],
                     if (_pairing && _userCode != null) ...[
                       const SizedBox(height: 20),
-                      Divider(color: tokens.borderStrong),
+                      KiruDivider(height: 16, color: tokens.borderStrong),
                       const SizedBox(height: 16),
                       Center(
                         child: Column(
                           children: [
                             Text(
-                              l10nOf(context).uiSimklSettingsPageEnterThisPinCodeAtSimkl,
-                              style: ZplayType.label.toStyle(color: tokens.textEmphasis),
+                              l10nOf(
+                                context,
+                              ).uiSimklSettingsPageEnterThisPinCodeAtSimkl,
+                              style: ZplayType.label.toStyle(
+                                color: tokens.textEmphasis,
+                              ),
                             ),
                             const SizedBox(height: 12),
                             FocusableInkWell(
                               onTap: () {
-                                Clipboard.setData(ClipboardData(text: _userCode!));
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(l10nOf(context).uiSimklSettingsPagePinCopiedToClipboard)),
+                                Clipboard.setData(
+                                  ClipboardData(text: _userCode!),
+                                );
+                                KiruToastMessenger.of(context).showSnackBar(
+                                  KiruToast(
+                                    content: Text(
+                                      l10nOf(
+                                        context,
+                                      ).uiSimklSettingsPagePinCopiedToClipboard,
+                                    ),
+                                  ),
                                 );
                               },
                               borderRadius: ZplayRadius.smAll,
                               child: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: ZplaySpacing.s24, vertical: 14),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: ZplaySpacing.s24,
+                                  vertical: 14,
+                                ),
                                 decoration: BoxDecoration(
                                   color: tokens.bg,
                                   borderRadius: ZplayRadius.smAll,
-                                  border: Border.all(color: _simklBrand.withValues(alpha: ZplayOpacity.textSecondary)),
+                                  border: Border.all(
+                                    color: _simklBrand.withValues(
+                                      alpha: ZplayOpacity.textSecondary,
+                                    ),
+                                  ),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -308,23 +386,41 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
                                           .copyWith(letterSpacing: 4),
                                     ),
                                     const SizedBox(width: 12),
-                                    Icon(Icons.copy_rounded, color: tokens.textEmphasis, size: 20),
+                                    Icon(
+                                      Icons.copy_rounded,
+                                      color: tokens.textEmphasis,
+                                      size: 20,
+                                    ),
                                   ],
                                 ),
                               ),
                             ),
                             const SizedBox(height: 14),
-                            ElevatedButton.icon(
+                            KiruButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: tokens.borderStrong,
                                 foregroundColor: tokens.textPrimary,
                                 elevation: 0,
-                                shape: const RoundedRectangleBorder(borderRadius: ZplayRadius.smAll),
-                                padding: const EdgeInsets.symmetric(horizontal: ZplaySpacing.s16, vertical: ZplaySpacing.s8),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: ZplayRadius.smAll,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: ZplaySpacing.s16,
+                                  vertical: ZplaySpacing.s8,
+                                ),
                               ),
-                              onPressed: () => _openBrowser('https://simkl.com/pin'),
-                              icon: const Icon(Icons.open_in_browser_rounded, size: 16),
-                              label: Text(l10nOf(context).uiSimklSettingsPageOpenSimklComPin, style: ZplayType.label.toStyle()),
+                              onPressed: () =>
+                                  _openBrowser('https://simkl.com/pin'),
+                              icon: const Icon(
+                                Icons.open_in_browser_rounded,
+                                size: 16,
+                              ),
+                              child: Text(
+                                l10nOf(
+                                  context,
+                                ).uiSimklSettingsPageOpenSimklComPin,
+                                style: ZplayType.label.toStyle(),
+                              ),
                             ),
                             const SizedBox(height: 14),
                             Row(
@@ -333,12 +429,19 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
                                 const SizedBox(
                                   width: 16,
                                   height: 16,
-                                  child: CircularProgressIndicator(strokeWidth: 2, color: _simklBrand),
+                                  child: KiruLoader(
+                                    strokeWidth: 2,
+                                    color: _simklBrand,
+                                  ),
                                 ),
                                 const SizedBox(width: 10),
                                 Text(
-                                  l10nOf(context).uiSimklSettingsPageWaitingForPinApprovalOnSimkl,
-                                  style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
+                                  l10nOf(
+                                    context,
+                                  ).uiSimklSettingsPageWaitingForPinApprovalOnSimkl,
+                                  style: ZplayType.bodySmall.toStyle(
+                                    color: tokens.textSecondary,
+                                  ),
                                 ),
                               ],
                             ),
@@ -361,22 +464,44 @@ class _SimklSettingsPageState extends State<SimklSettingsPage> {
               style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
             ),
             const SizedBox(height: 12),
-            ListTile(
+            KiruListTile(
               leading: const Icon(Icons.sync_rounded, color: _simklBrand),
-              title: Text(l10nOf(context).uiSimklSettingsPageSyncSimklWatchlistContinueWatching, style: ZplayType.body.toStyle(color: tokens.textPrimary)),
-              subtitle: Text(l10nOf(context).uiSimklSettingsPageManuallyTriggersAnImmediatePullFrom, style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary)),
-              trailing: Icon(Icons.arrow_forward_ios_rounded, size: 14, color: tokens.textMuted),
+              title: Text(
+                l10nOf(
+                  context,
+                ).uiSimklSettingsPageSyncSimklWatchlistContinueWatching,
+                style: ZplayType.body.toStyle(color: tokens.textPrimary),
+              ),
+              subtitle: Text(
+                l10nOf(
+                  context,
+                ).uiSimklSettingsPageManuallyTriggersAnImmediatePullFrom,
+                style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
+              ),
+              trailing: Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 14,
+                color: tokens.textMuted,
+              ),
               onTap: () async {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(l10nOf(context).uiSimklSettingsPageSyncingWithSimkl)),
+                KiruToastMessenger.of(context).showSnackBar(
+                  KiruToast(
+                    content: Text(
+                      l10nOf(context).uiSimklSettingsPageSyncingWithSimkl,
+                    ),
+                  ),
                 );
                 await Future.wait([
                   MyListService.syncAll(),
                   ContinueWatchingService.syncCloudSessions(),
                 ]);
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10nOf(context).uiSimklSettingsPageSimklSyncComplete)),
+                  KiruToastMessenger.of(context).showSnackBar(
+                    KiruToast(
+                      content: Text(
+                        l10nOf(context).uiSimklSettingsPageSimklSyncComplete,
+                      ),
+                    ),
                   );
                 }
               },

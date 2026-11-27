@@ -1,3 +1,4 @@
+import '../ui/kiru_controls.dart';
 import 'package:flutter/material.dart';
 
 import '../../l10n/l10n.dart';
@@ -63,20 +64,21 @@ class ErrorView extends StatelessWidget {
               runSpacing: ZplaySpacing.s8,
               alignment: WrapAlignment.center,
               children: [
-                FilledButton.icon(
+                KiruButton(
                   onPressed: onRetry,
                   icon: const Icon(Icons.refresh_rounded),
-                  label: Text(l10n.actionTryAgain),
+                  child: Text(l10n.actionTryAgain),
                   style: FilledButton.styleFrom(
                     backgroundColor: tokens.accent,
                     foregroundColor: tokens.onAccent,
                   ),
                 ),
                 if (secondaryActionLabel != null && onSecondaryAction != null)
-                  OutlinedButton.icon(
+                  KiruButton(
+                    kind: KiruButtonKind.outline,
                     onPressed: onSecondaryAction,
                     icon: const Icon(Icons.copy_all_rounded),
-                    label: Text(secondaryActionLabel!),
+                    child: Text(secondaryActionLabel!),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: tokens.textPrimary,
                       side: BorderSide(color: tokens.borderStrong),

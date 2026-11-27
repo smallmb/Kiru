@@ -161,7 +161,9 @@ class _PlayerSeekBarState extends State<PlayerSeekBar> {
           constraints: const BoxConstraints(minWidth: 46),
           child: Text(
             _formatDuration(displayPosition),
-            style: ZplayType.labelNumeric.toStyle(color: PlayerTheme.inkMuted),
+            style: ZplayType.labelNumeric.toTimingStyle(
+              color: PlayerTheme.inkMuted,
+            ),
           ),
         ),
 
@@ -338,28 +340,13 @@ class _PlayerSeekBarState extends State<PlayerSeekBar> {
                                 ),
                               ),
 
-                              // Played Progress Bar (Gradient)
-                              AnimatedContainer(
-                                duration: const Duration(milliseconds: 150),
+                              // Forui progress fill. Buffer and skip segment layers remain beneath.
+                              PlayerTrackFill(
+                                value: activeFraction,
                                 height: (_isHovered || _isScrubbing) ? 8 : 6,
-                                width: trackWidth * activeFraction,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      PlayerTheme.accent,
-                                      tokens.accentHover,
-                                    ],
-                                  ),
+                                fill: BoxDecoration(
+                                  color: tokens.accent,
                                   borderRadius: ZplayRadius.fullAll,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: PlayerTheme.accent.withValues(
-                                        alpha: 0.5,
-                                      ),
-                                      blurRadius: 6,
-                                      offset: const Offset(0, 1),
-                                    ),
-                                  ],
                                 ),
                               ),
 
@@ -380,20 +367,6 @@ class _PlayerSeekBarState extends State<PlayerSeekBar> {
                                   decoration: BoxDecoration(
                                     color: tokens.textPrimary,
                                     shape: BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: tokens.bg.withValues(alpha: 0.6),
-                                        blurRadius: 8,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                      BoxShadow(
-                                        color: PlayerTheme.accent.withValues(
-                                          alpha: 0.8,
-                                        ),
-                                        blurRadius: 4,
-                                        spreadRadius: 1,
-                                      ),
-                                    ],
                                   ),
                                 ),
                               ),
@@ -470,7 +443,7 @@ class _PlayerSeekBarState extends State<PlayerSeekBar> {
         const SizedBox(width: ZplaySpacing.s12),
 
         // Time End / Remaining Toggle
-        FocusableCard(
+        PlayerTappable(
           onTap: () => setState(() => _showRemainingTime = !_showRemainingTime),
           builder: (context, state) {
             // A remote can land on this too - it is a focus stop beside the
@@ -486,7 +459,7 @@ class _PlayerSeekBarState extends State<PlayerSeekBar> {
                   _showRemainingTime
                       ? (_formatDuration(-remainingDuration))
                       : _formatDuration(widget.duration),
-                  style: ZplayType.labelNumeric.toStyle(
+                  style: ZplayType.labelNumeric.toTimingStyle(
                     color: PlayerTheme.inkMuted,
                   ),
                 ),

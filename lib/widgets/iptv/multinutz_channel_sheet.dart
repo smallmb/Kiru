@@ -1,3 +1,6 @@
+import '../ui/kiru_tappable.dart';
+import '../ui/kiru_toast.dart';
+import '../ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
@@ -139,7 +142,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
     required VoidCallback onPressed,
     double size = 17,
   }) {
-    return IconButton(
+    return KiruIconButton(
       icon: Icon(icon, color: color, size: size),
       tooltip: tooltip,
       visualDensity: VisualDensity.compact,
@@ -154,7 +157,8 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
   /// than a second copy of it.
   Widget _manageButton({required int tab, required String label}) {
     final tokens = context.tokens;
-    return OutlinedButton.icon(
+    return KiruButton(
+      kind: KiruButtonKind.outline,
       style: OutlinedButton.styleFrom(
         foregroundColor: tokens.textPrimary,
         side: BorderSide(color: tokens.borderStrong),
@@ -166,7 +170,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
         minimumSize: const Size(0, 36),
       ),
       icon: const Icon(Icons.settings_input_antenna_rounded, size: 16),
-      label: Text(
+      child: Text(
         label,
         style: ZplayType.bodySmall.copyWith(weight: FontWeight.w700).toStyle(),
       ),
@@ -184,7 +188,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
         ZplaySpacing.s16,
         ZplaySpacing.s8,
       ),
-      child: TextField(
+      child: KiruFormField(
         controller: _searchController,
         style: ZplayType.label.toStyle(color: tokens.textPrimary),
         decoration: InputDecoration(
@@ -247,7 +251,10 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
             horizontal: ZplaySpacing.s16,
             vertical: ZplaySpacing.s8,
           ),
-          child: _manageButton(tab: 0, label: l10nOf(context).auxMultinutzChannelSheetPortals),
+          child: _manageButton(
+            tab: 0,
+            label: l10nOf(context).auxMultinutzChannelSheetPortals,
+          ),
         ),
 
         const SizedBox(height: ZplaySpacing.s8),
@@ -325,7 +332,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
 
     return Material(
       color: Colors.transparent,
-      child: InkWell(
+      child: KiruTappable(
         borderRadius: ZplayRadius.smAll,
         onTap: () {
           Navigator.push(
@@ -379,15 +386,21 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                   const SizedBox(width: ZplaySpacing.s4),
                   _cardIconButton(
                     icon: Icons.copy_rounded,
-                    tooltip: l10nOf(context).auxMultinutzChannelSheetCopyLoginUrlUserPass,
+                    tooltip: l10nOf(
+                      context,
+                    ).auxMultinutzChannelSheetCopyLoginUrlUserPass,
                     color: tokens.textEmphasis,
                     onPressed: () {
                       final text =
                           '${p.portal.url}:${p.portal.username}:${p.portal.password}';
                       Clipboard.setData(ClipboardData(text: text));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(l10nOf(context).dynamicMultinutzChannelSheetCopied((text).toString())),
+                      KiruToastMessenger.of(context).showSnackBar(
+                        KiruToast(
+                          content: Text(
+                            l10nOf(context).dynamicMultinutzChannelSheetCopied(
+                              (text).toString(),
+                            ),
+                          ),
                           duration: const Duration(seconds: 2),
                           backgroundColor: context.tokens.surfaceOverlay,
                         ),
@@ -399,7 +412,11 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                     icon: isFav
                         ? Icons.star_rounded
                         : Icons.star_outline_rounded,
-                    tooltip: isFav ? l10nOf(context).finalMultinutzChannelSheetRemoveFavorite : 'Add to Favorites',
+                    tooltip: isFav
+                        ? l10nOf(
+                            context,
+                          ).finalMultinutzChannelSheetRemoveFavorite
+                        : 'Add to Favorites',
                     color: isFav ? tokens.warning : tokens.textMuted,
                     size: 19,
                     onPressed: () => ctrl.toggleFavoritePortal(p.key),
@@ -407,7 +424,9 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                   const SizedBox(width: ZplaySpacing.s2),
                   _cardIconButton(
                     icon: Icons.delete_outline_rounded,
-                    tooltip: l10nOf(context).auxMultinutzChannelSheetRemovePortal,
+                    tooltip: l10nOf(
+                      context,
+                    ).auxMultinutzChannelSheetRemovePortal,
                     color: tokens.danger,
                     size: 18,
                     onPressed: () => ctrl.deletePortalsByKeys({p.key}),
@@ -460,7 +479,11 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                                 borderRadius: ZplayRadius.xsAll,
                               ),
                               child: Text(
-                                l10nOf(context).dynamicMultinutzChannelSheetExpires((p.expiry).toString()),
+                                l10nOf(
+                                  context,
+                                ).dynamicMultinutzChannelSheetExpires(
+                                  (p.expiry).toString(),
+                                ),
                                 style: ZplayType.overline
                                     .copyWith(weight: FontWeight.w700)
                                     .toStyle(color: palette.primaryColor),
@@ -477,7 +500,12 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                                 borderRadius: ZplayRadius.xsAll,
                               ),
                               child: Text(
-                                l10nOf(context).dynamicMultinutzChannelSheetConnections((p.activeConnections).toString(), (p.maxConnections).toString()),
+                                l10nOf(
+                                  context,
+                                ).dynamicMultinutzChannelSheetConnections(
+                                  (p.activeConnections).toString(),
+                                  (p.maxConnections).toString(),
+                                ),
                                 style: ZplayType.overline.toStyle(
                                   color: tokens.textEmphasis,
                                 ),
@@ -568,7 +596,9 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                 borderRadius: ZplayRadius.xsAll,
               ),
               child: Text(
-                l10nOf(context).dynamicMultinutzChannelSheetExpires((group.portal.expiry).toString()),
+                l10nOf(context).dynamicMultinutzChannelSheetExpires(
+                  (group.portal.expiry).toString(),
+                ),
                 style: ZplayType.overline
                     .copyWith(weight: FontWeight.w700)
                     .toStyle(color: palette.primaryColor),
@@ -582,7 +612,10 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                 borderRadius: ZplayRadius.xsAll,
               ),
               child: Text(
-                l10nOf(context).dynamicMultinutzChannelSheetConnections((group.portal.activeConnections).toString(), (group.portal.maxConnections).toString()),
+                l10nOf(context).dynamicMultinutzChannelSheetConnections(
+                  (group.portal.activeConnections).toString(),
+                  (group.portal.maxConnections).toString(),
+                ),
                 style: ZplayType.overline.toStyle(color: tokens.textEmphasis),
               ),
             ),
@@ -630,7 +663,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
       );
     }
 
-    return ExpansionTile(
+    return KiruAccordion(
       collapsedShape: const RoundedRectangleBorder(),
       shape: RoundedRectangleBorder(
         side: BorderSide(
@@ -673,15 +706,23 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                     const SizedBox(width: ZplaySpacing.s4),
                     _cardIconButton(
                       icon: Icons.copy_rounded,
-                      tooltip: l10nOf(context).auxMultinutzChannelSheetCopyLoginUrlUserPass,
+                      tooltip: l10nOf(
+                        context,
+                      ).auxMultinutzChannelSheetCopyLoginUrlUserPass,
                       color: tokens.textEmphasis,
                       onPressed: () {
                         final text =
                             '${group.portal.portal.url}:${group.portal.portal.username}:${group.portal.portal.password}';
                         Clipboard.setData(ClipboardData(text: text));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(l10nOf(context).dynamicMultinutzChannelSheetCopied((text).toString())),
+                        KiruToastMessenger.of(context).showSnackBar(
+                          KiruToast(
+                            content: Text(
+                              l10nOf(
+                                context,
+                              ).dynamicMultinutzChannelSheetCopied(
+                                (text).toString(),
+                              ),
+                            ),
                             duration: const Duration(seconds: 2),
                             backgroundColor: context.tokens.surfaceOverlay,
                           ),
@@ -693,7 +734,11 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                       icon: isFav
                           ? Icons.star_rounded
                           : Icons.star_outline_rounded,
-                      tooltip: isFav ? l10nOf(context).finalMultinutzChannelSheetRemoveFavorite : 'Add to Favorites',
+                      tooltip: isFav
+                          ? l10nOf(
+                              context,
+                            ).finalMultinutzChannelSheetRemoveFavorite
+                          : 'Add to Favorites',
                       color: isFav ? tokens.warning : tokens.textMuted,
                       size: 19,
                       onPressed: () =>
@@ -702,7 +747,9 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                     const SizedBox(width: ZplaySpacing.s2),
                     _cardIconButton(
                       icon: Icons.delete_outline_rounded,
-                      tooltip: l10nOf(context).auxMultinutzChannelSheetRemovePortal,
+                      tooltip: l10nOf(
+                        context,
+                      ).auxMultinutzChannelSheetRemovePortal,
                       color: tokens.danger,
                       size: 18,
                       onPressed: () =>
@@ -737,7 +784,9 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                 padding: const EdgeInsets.all(ZplaySpacing.s16),
                 child: Center(
                   child: Text(
-                    l10nOf(context).auxMultinutzChannelSheetNoLiveChannelsAvailableForThisPortal,
+                    l10nOf(
+                      context,
+                    ).auxMultinutzChannelSheetNoLiveChannelsAvailableForThisPortal,
                     style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
                   ),
                 ),
@@ -750,7 +799,9 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                   vertical: ZplaySpacing.s4,
                 ),
                 child: Text(
-                  l10nOf(context).dynamicMultinutzChannelSheetLiveChannels((group.hits.length).toString()),
+                  l10nOf(context).dynamicMultinutzChannelSheetLiveChannels(
+                    (group.hits.length).toString(),
+                  ),
                   style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                 ),
               ),
@@ -780,7 +831,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
     final tokens = context.tokens;
     return Material(
       color: Colors.transparent,
-      child: ListTile(
+      child: KiruListTile(
         leading: hit.stream.icon.isNotEmpty
             ? ClipRRect(
                 borderRadius: ZplayRadius.xsAll,
@@ -845,7 +896,10 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
             horizontal: ZplaySpacing.s16,
             vertical: ZplaySpacing.s8,
           ),
-          child: _manageButton(tab: 1, label: l10nOf(context).auxMultinutzChannelSheetPlaylists),
+          child: _manageButton(
+            tab: 1,
+            label: l10nOf(context).auxMultinutzChannelSheetPlaylists,
+          ),
         ),
 
         const SizedBox(height: ZplaySpacing.s8),
@@ -898,7 +952,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
   Widget _buildM3uChannelGroup(M3uChannelGroup group, AppThemePalette palette) {
     final tokens = context.tokens;
 
-    return ExpansionTile(
+    return KiruAccordion(
       collapsedShape: const RoundedRectangleBorder(),
       shape: RoundedRectangleBorder(
         side: BorderSide(
@@ -950,9 +1004,13 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
               final text = group.playlist.sourceUrl ?? '';
               if (text.isNotEmpty) {
                 Clipboard.setData(ClipboardData(text: text));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(l10nOf(context).dynamicMultinutzChannelSheetCopied((text).toString())),
+                KiruToastMessenger.of(context).showSnackBar(
+                  KiruToast(
+                    content: Text(
+                      l10nOf(
+                        context,
+                      ).dynamicMultinutzChannelSheetCopied((text).toString()),
+                    ),
                     duration: const Duration(seconds: 2),
                     backgroundColor: context.tokens.surfaceOverlay,
                   ),
@@ -978,7 +1036,9 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                 padding: const EdgeInsets.all(ZplaySpacing.s16),
                 child: Center(
                   child: Text(
-                    l10nOf(context).auxMultinutzChannelSheetNoChannelsInThisPlaylist,
+                    l10nOf(
+                      context,
+                    ).auxMultinutzChannelSheetNoChannelsInThisPlaylist,
                     style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
                   ),
                 ),
@@ -991,7 +1051,9 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                   vertical: ZplaySpacing.s4,
                 ),
                 child: Text(
-                  l10nOf(context).dynamicMultinutzChannelSheetChannels((group.channels.length).toString()),
+                  l10nOf(context).dynamicMultinutzChannelSheetChannels(
+                    (group.channels.length).toString(),
+                  ),
                   style: ZplayType.caption.toStyle(color: tokens.textSecondary),
                 ),
               ),
@@ -1011,7 +1073,7 @@ class _MultiNutzChannelSheetState extends State<MultiNutzChannelSheet> {
                     final ch = group.channels[chIndex];
                     return Material(
                       color: Colors.transparent,
-                      child: InkWell(
+                      child: KiruTappable(
                         borderRadius: ZplayRadius.smAll,
                         onTap: () {
                           Navigator.pop(context);

@@ -20,8 +20,7 @@
 ///    "More Info" to "e Info" while the hero was not what had focus.
 ///  * **The bar underlined Browse after a press on Live TV** - a mark reporting a
 ///    destination the user did not choose.
-///  * **The scroll grab-pill covered the rails on a television**, because the
-///    pointer-only affordance was gated on the window being wider than 800 dp.
+///  * 自定义滚动轨道会遮挡电视端的内容，因此所有页面都不再挂载该控件。
 ///  * **The media-type chip sat in the last ten dp of the canvas**, inside a
 ///    television's overscan.
 ///
@@ -33,6 +32,10 @@
 /// `FocusHighlightStrategy.alwaysTraditional`, a scripted metadata client and a
 /// stored addon list - nothing reaches the network.
 library;
+
+import 'package:zplay/services/content/navigation_settings.dart';
+
+import 'package:zplay/widgets/ui/kiru_controls.dart';
 
 import 'dart:convert';
 
@@ -125,6 +128,10 @@ FocusNode _ownNode(Element widget) {
   void visit(Element element) {
     if (found != null) return;
     final w = element.widget;
+    if (w is KiruIconButton && w.focusNode != null) {
+      found = w.focusNode;
+      return;
+    }
     if (w is FocusableActionDetector) {
       found = w.focusNode;
       return;
@@ -145,7 +152,19 @@ FocusNode _ownNode(Element widget) {
   return found!;
 }
 
-FocusNode _ownNodeOf(Finder f) => _ownNode(f.evaluate().first);
+FocusNode _ownNodeOf(Finder f) {
+  final element = f.evaluate().first;
+  FocusNode? explicit;
+  element.visitAncestorElements((ancestor) {
+    final w = ancestor.widget;
+    if (w is KiruIconButton && w.focusNode != null) {
+      explicit = w.focusNode;
+      return false;
+    }
+    return true;
+  });
+  return explicit ?? _ownNode(element);
+}
 
 /// One line worth putting in a failure message: what holds focus, where it is and
 /// how big it is. Rects are not decoration here - "focus is on the page's own
@@ -173,6 +192,10 @@ Future<void> _press(WidgetTester tester, LogicalKeyboardKey key) async {
 /// Mounts the whole shell on the television canvas and waits for the cold start
 /// (a 1.8 s splash plus the addon rail) to land.
 Future<void> _pumpTelevisionShell(WidgetTester tester) async {
+  NavigationSettings.enabled.value = {...NavigationSettings.defaults, 'liveTv'};
+  addTearDown(
+    () => NavigationSettings.enabled.value = NavigationSettings.defaults,
+  );
   DeviceProfile.debugSetTelevision(value: true);
   tester.view.devicePixelRatio = _dpr;
   tester.view.physicalSize = _canvas * _dpr;
@@ -196,8 +219,16 @@ Future<void> _pumpDesktopShell(WidgetTester tester) async {
   await tester.pump(const Duration(seconds: 3));
 }
 
-Finder _calendar() => find.byTooltip('TV Airing Calendar');
-Finder _quiz() => find.byTooltip('AI Taste Quiz');
+Finder _calendar() => find.byWidgetPredicate(
+  (w) =>
+      (w is KiruTooltip && w.message == 'TV Airing Calendar') ||
+      (w is Tooltip && w.message == 'TV Airing Calendar'),
+);
+Finder _quiz() => find.byWidgetPredicate(
+  (w) =>
+      (w is KiruTooltip && w.message == 'AI Taste Quiz') ||
+      (w is Tooltip && w.message == 'AI Taste Quiz'),
+);
 
 /// A row of the shell's own bar.
 ///
@@ -864,35 +895,35 @@ void main() {
   });
 
   group('Home: the chrome the television was given', () {
-    testWidgets('a television gets no scroll grab-pill', (tester) async {
+    testWidgets('a television has no custom scroll track', (tester) async {
       await _pumpTelevisionShell(tester);
       expect(
         find.byType(CustomScrollTrack),
         findsNothing,
-        reason:
-            'the 55 x 412 dp grab-pill is a pointer affordance and covered '
-            'the rail cards and their See All links on a 960 dp canvas',
+        reason: '自定义滚动轨道已从所有页面移除',
       );
 
-      // It must not appear once the page moves either: the gate is the input,
-      // not the moment of scrolling.
+      // 页面滚动后也不应重新出现该控件。
       _ownNodeOf(_heroPill('Play')).requestFocus();
       await tester.pump();
       await _press(tester, LogicalKeyboardKey.arrowDown);
       await _press(tester, LogicalKeyboardKey.arrowDown);
       await tester.pump(const Duration(milliseconds: 200));
-      expect(find.byType(CustomScrollTrack), findsNothing);
+      expect(
+        find.byType(CustomScrollTrack),
+        findsNothing,
+        reason: '页面滚动后仍不显示自定义滚动轨道',
+      );
     });
 
-    testWidgets('a wide pointer window still gets it', (tester) async {
+    testWidgets('a wide pointer window also has no custom scroll track', (
+      tester,
+    ) async {
       await _pumpDesktopShell(tester);
       expect(
         find.byType(CustomScrollTrack),
-        findsOneWidget,
-        reason:
-            'the pill is what a mouse or a trackpad uses to drag a long '
-            'page: removing it from every wide window would be a regression, '
-            'not a fix',
+        findsNothing,
+        reason: '宽屏页面同样不再挂载自定义滚动轨道',
       );
     });
 

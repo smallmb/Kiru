@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/content/content_settings.dart';
+import '../../services/content/navigation_settings.dart';
 import '../../services/layout/form_factor.dart';
 import '../../services/theme/design_tokens.dart';
 import '../../shell/app_shell_scope.dart';
@@ -35,6 +36,20 @@ enum BrowseVertical {
   audiobooks,
   music,
   adult,
+}
+
+/// The global navigation and Browse share this exact ordered module list.
+List<BrowseVertical> visibleBrowseVerticals({bool? adultEnabled}) => [
+  for (final vertical in BrowseVertical.values)
+    if (vertical == BrowseVertical.adult
+        ? (adultEnabled ?? ContentSettings.adultEnabled.value)
+        : NavigationSettings.isEnabled(vertical.name))
+      vertical,
+];
+
+BrowseVertical resolveBrowseVertical(BrowseVertical requested) {
+  final visible = visibleBrowseVerticals();
+  return visible.contains(requested) ? requested : visible.first;
 }
 
 extension BrowseVerticalX on BrowseVertical {
@@ -147,10 +162,7 @@ _buildVerticals(BuildContext context, {required bool adultEnabled}) {
   // offer. Only [BrowseVertical.adult] is conditional today; the filter is
   // written as a per-vertical rule so adding another gated vertical does not
   // mean re-deriving which list is authoritative.
-  final visible = <BrowseVertical>[
-    for (final vertical in BrowseVertical.values)
-      if (vertical != BrowseVertical.adult || adultEnabled) vertical,
-  ];
+  final visible = visibleBrowseVerticals(adultEnabled: adultEnabled);
 
   return (
     verticals: visible,
@@ -169,7 +181,10 @@ _buildVerticals(BuildContext context, {required bool adultEnabled}) {
     // reused on every rebuild: an adult toggle re-lists these children without
     // remounting the verticals that were already stacked, and the off-screen
     // pages keep their scroll offsets.
-    pages: [for (final vertical in visible) vertical.page],
+    pages: [
+      for (final vertical in visible)
+        KeyedSubtree(key: ValueKey(vertical), child: vertical.page),
+    ],
   );
 }
 
@@ -189,7 +204,7 @@ class BrowsePage extends StatefulWidget {
 }
 
 class _BrowsePageState extends State<BrowsePage> {
-  BrowseVertical _vertical = BrowseVertical.moviesAndTv;
+  BrowseVertical _vertical = resolveBrowseVertical(BrowseVertical.moviesAndTv);
 
   /// The shell's request channel for a specific vertical, or null outside a
   /// shell.
@@ -205,7 +220,8 @@ class _BrowsePageState extends State<BrowsePage> {
   @override
   void initState() {
     super.initState();
-    ContentSettings.adultEnabled.addListener(_onAdultContentChanged);
+    ContentSettings.adultEnabled.addListener(_onVisibilityChanged);
+    NavigationSettings.enabled.addListener(_onVisibilityChanged);
   }
 
   @override
@@ -216,27 +232,21 @@ class _BrowsePageState extends State<BrowsePage> {
     _verticalRequest?.removeListener(_onVerticalRequest);
     _verticalRequest = next;
     _verticalRequest?.addListener(_onVerticalRequest);
-    if (next != null) _vertical = next.value;
+    if (next != null) _vertical = resolveBrowseVertical(next.value);
   }
 
   void _onVerticalRequest() {
     final requested = _verticalRequest?.value;
-    if (!mounted || requested == null || requested == _vertical) return;
-    setState(() => _vertical = requested);
+    if (!mounted || requested == null) return;
+    final resolved = resolveBrowseVertical(requested);
+    if (resolved != _vertical) setState(() => _vertical = resolved);
   }
 
-  /// The 18+ vertical stops being offered the moment the global Adult Content
-  /// switch goes off, so a selection that names it has to fall back - or the
-  /// strip would show no pill selected and the stack no child to show.
-  void _onAdultContentChanged() {
+  void _onVisibilityChanged() {
     if (!mounted) return;
-    if (!ContentSettings.adultEnabled.value &&
-        _vertical == BrowseVertical.adult) {
-      setState(() => _vertical = BrowseVertical.moviesAndTv);
-      AppShellScope.of(
-        context,
-      )?.reportBrowseVertical(BrowseVertical.moviesAndTv);
-    }
+    final resolved = resolveBrowseVertical(_vertical);
+    setState(() => _vertical = resolved);
+    AppShellScope.of(context)?.reportBrowseVertical(resolved);
   }
 
   /// The visible verticals are settings, not a constant, so the whole layout
@@ -254,6 +264,14 @@ class _BrowsePageState extends State<BrowsePage> {
       builder: (context, adultEnabled, _) =>
           _buildLayout(adultEnabled: adultEnabled),
     );
+  }
+
+  @override
+  void dispose() {
+    ContentSettings.adultEnabled.removeListener(_onVisibilityChanged);
+    NavigationSettings.enabled.removeListener(_onVisibilityChanged);
+    _verticalRequest?.removeListener(_onVerticalRequest);
+    super.dispose();
   }
 
   Widget _buildLayout({required bool adultEnabled}) {

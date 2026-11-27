@@ -1,80 +1,52 @@
+import 'dart:ui' show ImageFilter;
 import 'package:flutter/material.dart';
-import 'package:liquid_glass_easy/liquid_glass_easy.dart';
-
 import '../../services/theme/design_tokens.dart';
 import '../../services/theme/glass_settings.dart';
 
-/// Reusable styles keep the package render object from receiving a new
-/// style identity and repainting when an unrelated parent rebuilds.
-abstract final class PerformanceGlassStyles {
-  static LiquidGlassStyle get dock => GlassSettings.createDockGlassStyle();
-  static LiquidGlassStyle get sheet => GlassSettings.createSheetGlassStyle();
-  static LiquidGlassStyle get menuButton =>
-      GlassSettings.createButtonGlassStyle();
-  static LiquidGlassStyle get menu => GlassSettings.createSheetGlassStyle();
-}
+enum FrostedSurfaceKind { dock, sheet, menuButton, menu }
 
-/// A deliberately constrained use of the package's real lens.
-class PerformanceLiquidLens extends StatelessWidget {
-  final LiquidGlassStyle? style;
-  final Widget child;
-  final bool visible;
-
-  const PerformanceLiquidLens({
+class FrostedSurface extends StatelessWidget {
+  const FrostedSurface({
     super.key,
-    this.style,
+    this.kind = FrostedSurfaceKind.dock,
     required this.child,
     this.visible = true,
   });
-
-  /// The lens is chrome, so its fallback is two semantic surfaces rather than
-  /// the fork's near-blacks. The 0.94 keeps the panel reading as glass — the page
-  /// behind it still shows through, which is what the real lens does.
-  static const double _fallbackAlpha = 0.94;
-
-  BoxDecoration _fallbackDecoration(ZplayTokens tokens) => BoxDecoration(
-    borderRadius: ZplayRadius.lgAll,
-    gradient: LinearGradient(
-      begin: Alignment.topLeft,
-      end: Alignment.bottomRight,
-      colors: [
-        tokens.surfaceOverlay.withValues(alpha: _fallbackAlpha),
-        tokens.surface.withValues(alpha: _fallbackAlpha),
-      ],
-    ),
-  );
-
+  final FrostedSurfaceKind kind;
+  final Widget child;
+  final bool visible;
   @override
   Widget build(BuildContext context) {
-    final tokens = ZplayTokens.of(context);
-
+    final tokens = context.tokens;
+    final radius = kind == FrostedSurfaceKind.menuButton
+        ? ZplayRadius.smAll
+        : ZplayRadius.lgAll;
     return ValueListenableBuilder<bool>(
       valueListenable: GlassSettings.enabled,
       child: child,
-      builder: (context, enabled, cachedChild) {
-        if (!enabled) {
-          return Container(
-            clipBehavior: Clip.antiAlias,
-            decoration: _fallbackDecoration(tokens),
-            child: cachedChild,
+      builder: (context, enabled, child) => ValueListenableBuilder<double>(
+        valueListenable: GlassSettings.blurSigma,
+        child: child,
+        builder: (context, sigma, child) {
+          final blur = enabled && visible && sigma.isFinite && sigma > 0;
+          final surface = ColoredBox(
+            color: tokens.surfaceOverlay.withValues(alpha: blur ? .72 : .94),
+            child: child!,
           );
-        }
-
-        return ValueListenableBuilder<int>(
-          valueListenable: GlassSettings.styleRevision,
-          builder: (context, _, __) {
-            final effectiveStyle = style ?? PerformanceGlassStyles.dock;
-            return RepaintBoundary(
-              child: LiquidGlassLens(
-                style: effectiveStyle,
-                visibility: visible,
-                useImpellerBackdrop: true,
-                child: cachedChild,
-              ),
-            );
-          },
-        );
-      },
+          return ClipRRect(
+            borderRadius: radius,
+            child: blur
+                ? BackdropFilter(
+                    filter: ImageFilter.blur(
+                      sigmaX: sigma.clamp(0.0, 10.0),
+                      sigmaY: sigma.clamp(0.0, 10.0),
+                    ),
+                    child: surface,
+                  )
+                : surface,
+          );
+        },
+      ),
     );
   }
 }

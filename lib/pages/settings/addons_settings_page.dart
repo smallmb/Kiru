@@ -1,3 +1,5 @@
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'dart:io';
@@ -134,10 +136,13 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
         url,
       );
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
           content: Text(
-            l10nOf(context).dynamicAddonsSettingsPageConnectedTo((addon.manifest.name).toString(), (_selectedDebridService).toString()),
+            l10nOf(context).dynamicAddonsSettingsPageConnectedTo(
+              (addon.manifest.name).toString(),
+              (_selectedDebridService).toString(),
+            ),
           ),
           behavior: SnackBarBehavior.floating,
           backgroundColor: context.tokens.success,
@@ -145,8 +150,8 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
           content: Text(e.toString().replaceFirst('Exception: ', '')),
           behavior: SnackBarBehavior.floating,
           backgroundColor: context.tokens.danger,
@@ -167,8 +172,8 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       await _manager.replaceAddonUrl(installed.manifest.id, template.plainUrl);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
           content: Text(e.toString().replaceFirst('Exception: ', '')),
           behavior: SnackBarBehavior.floating,
           backgroundColor: context.tokens.danger,
@@ -194,9 +199,13 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       final addon = await _manager.addAddon(url);
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10nOf(context).dynamicAddonsSettingsPageInstalledSuccessfully((addon.manifest.name).toString())),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(context).dynamicAddonsSettingsPageInstalledSuccessfully(
+              (addon.manifest.name).toString(),
+            ),
+          ),
           behavior: SnackBarBehavior.floating,
           backgroundColor: context.tokens.success,
         ),
@@ -204,8 +213,8 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
     } catch (e) {
       if (!mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
           content: Text(e.toString().replaceFirst('Exception: ', '')),
           behavior: SnackBarBehavior.floating,
           backgroundColor: context.tokens.danger,
@@ -221,7 +230,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       context: context,
       builder: (context) {
         final tokens = context.tokens;
-        return AlertDialog(
+        return KiruAlertDialog(
           backgroundColor: tokens.surfaceOverlay,
           shape: RoundedRectangleBorder(
             borderRadius: ZplayRadius.lgAll,
@@ -236,14 +245,15 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             style: ZplayType.body.toStyle(color: tokens.textSecondary),
           ),
           actions: [
-            TextButton(
+            KiruButton(
+              kind: KiruButtonKind.ghost,
               onPressed: () => Navigator.pop(context, false),
               child: Text(
                 l10nOf(context).uiAddonsSettingsPageCancel,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
             ),
-            ElevatedButton(
+            KiruButton(
               onPressed: () => Navigator.pop(context, true),
               style: ElevatedButton.styleFrom(
                 backgroundColor: tokens.accent,
@@ -256,7 +266,10 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                   vertical: 12,
                 ),
               ),
-              child: Text(l10nOf(context).uiAddonsSettingsPageContinue, style: ZplayType.label.toStyle()),
+              child: Text(
+                l10nOf(context).uiAddonsSettingsPageContinue,
+                style: ZplayType.label.toStyle(),
+              ),
             ),
           ],
         );
@@ -271,7 +284,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       context: context,
       builder: (context) {
         final tokens = context.tokens;
-        return AlertDialog(
+        return KiruAlertDialog(
           backgroundColor: tokens.surfaceOverlay,
           shape: RoundedRectangleBorder(
             borderRadius: ZplayRadius.lgAll,
@@ -286,11 +299,13 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                l10nOf(context).uiAddonsSettingsPagePasteTheStremioAddonManifestJson,
+                l10nOf(
+                  context,
+                ).uiAddonsSettingsPagePasteTheStremioAddonManifestJson,
                 style: ZplayType.body.toStyle(color: tokens.textSecondary),
               ),
               const SizedBox(height: ZplaySpacing.s16),
-              TextField(
+              KiruFormField(
                 controller: controller,
                 autofocus: true,
                 style: ZplayType.bodySmall.toStyle(color: tokens.textPrimary),
@@ -323,14 +338,15 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             ],
           ),
           actions: [
-            TextButton(
+            KiruButton(
+              kind: KiruButtonKind.ghost,
               onPressed: () => Navigator.pop(context),
               child: Text(
                 l10nOf(context).uiAddonsSettingsPageCancel,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
             ),
-            ElevatedButton(
+            KiruButton(
               onPressed: () => Navigator.pop(context, controller.text),
               style: ElevatedButton.styleFrom(
                 backgroundColor: tokens.accent,
@@ -343,7 +359,10 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                   vertical: 12,
                 ),
               ),
-              child: Text(l10nOf(context).uiAddonsSettingsPageInstall, style: ZplayType.label.toStyle()),
+              child: Text(
+                l10nOf(context).uiAddonsSettingsPageInstall,
+                style: ZplayType.label.toStyle(),
+              ),
             ),
           ],
         );
@@ -362,26 +381,33 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       context: context,
       builder: (context) {
         final tokens = context.tokens;
-        return AlertDialog(
+        return KiruAlertDialog(
           backgroundColor: tokens.surfaceOverlay,
           shape: RoundedRectangleBorder(
             borderRadius: ZplayRadius.lgAll,
             side: tokens.hairlineStrong,
           ),
-          title: Text(l10nOf(context).dynamicAddonsSettingsPageRemove((addon.manifest.name).toString())),
+          title: Text(
+            l10nOf(
+              context,
+            ).dynamicAddonsSettingsPageRemove((addon.manifest.name).toString()),
+          ),
           content: Text(
-            l10nOf(context).auxAddonsSettingsPageItsCatalogsAndMetadataWillBeRemoved,
+            l10nOf(
+              context,
+            ).auxAddonsSettingsPageItsCatalogsAndMetadataWillBeRemoved,
             style: ZplayType.body.toStyle(color: tokens.textSecondary),
           ),
           actions: [
-            TextButton(
+            KiruButton(
+              kind: KiruButtonKind.ghost,
               onPressed: () => Navigator.pop(context),
               child: Text(
                 l10nOf(context).uiAddonsSettingsPageCancel,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
             ),
-            ElevatedButton(
+            KiruButton(
               onPressed: () async {
                 Navigator.pop(context);
                 await _manager.removeAddon(addon.manifest.id);
@@ -412,9 +438,11 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
     try {
       await _csManager.addRepo(url);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10nOf(context).uiAddonsSettingsPageRepositoryAddedSuccessfully),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(context).uiAddonsSettingsPageRepositoryAddedSuccessfully,
+          ),
           behavior: SnackBarBehavior.floating,
           backgroundColor: context.tokens.success,
         ),
@@ -424,26 +452,31 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
         context: context,
         builder: (context) {
           final tokens = context.tokens;
-          return AlertDialog(
+          return KiruAlertDialog(
             backgroundColor: tokens.surfaceOverlay,
             shape: RoundedRectangleBorder(
               borderRadius: ZplayRadius.lgAll,
               side: tokens.hairlineStrong,
             ),
-            title: Text(l10nOf(context).uiAddonsSettingsPageInstallRepositoryPlugins),
+            title: Text(
+              l10nOf(context).uiAddonsSettingsPageInstallRepositoryPlugins,
+            ),
             content: Text(
-              l10nOf(context).auxAddonsSettingsPageWouldYouLikeToInstallAllPlugins,
+              l10nOf(
+                context,
+              ).auxAddonsSettingsPageWouldYouLikeToInstallAllPlugins,
               style: ZplayType.body.toStyle(color: tokens.textEmphasis),
             ),
             actions: [
-              TextButton(
+              KiruButton(
+                kind: KiruButtonKind.ghost,
                 onPressed: () => Navigator.pop(context, false),
                 child: Text(
                   l10nOf(context).uiAddonsSettingsPageBrowseLater,
                   style: ZplayType.label.toStyle(color: tokens.textSecondary),
                 ),
               ),
-              ElevatedButton(
+              KiruButton(
                 onPressed: () => Navigator.pop(context, true),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: tokens.accent,
@@ -467,8 +500,8 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       }
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
           content: Text(e.toString().replaceFirst('Exception: ', '')),
           behavior: SnackBarBehavior.floating,
           backgroundColor: context.tokens.danger,
@@ -485,7 +518,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       barrierDismissible: false,
       builder: (context) {
         final tokens = context.tokens;
-        return AlertDialog(
+        return KiruAlertDialog(
           backgroundColor: tokens.surfaceOverlay,
           shape: RoundedRectangleBorder(
             borderRadius: ZplayRadius.lgAll,
@@ -499,7 +532,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(height: ZplaySpacing.s8),
-              CircularProgressIndicator(color: tokens.accent),
+              KiruLoader(color: tokens.accent),
               const SizedBox(height: ZplaySpacing.s16),
               ValueListenableBuilder<String>(
                 valueListenable: _csManager.busyMessage,
@@ -519,10 +552,14 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       final count = await _csManager.installAllFromRepo(repoUrl);
       if (mounted) Navigator.pop(context);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
           content: Text(
-            l10nOf(context).dynamicAddonsSettingsPageSuccessfullyInstalledPluginsFromRepository((count).toString()),
+            l10nOf(
+              context,
+            ).dynamicAddonsSettingsPageSuccessfullyInstalledPluginsFromRepository(
+              (count).toString(),
+            ),
           ),
           backgroundColor: context.tokens.success,
           behavior: SnackBarBehavior.floating,
@@ -532,9 +569,13 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
     } catch (e) {
       if (mounted) Navigator.pop(context);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10nOf(context).dynamicAddonsSettingsPageInstallationError((e).toString())),
+      KiruToastMessenger.of(context).showSnackBar(
+        KiruToast(
+          content: Text(
+            l10nOf(
+              context,
+            ).dynamicAddonsSettingsPageInstallationError((e).toString()),
+          ),
           backgroundColor: context.tokens.danger,
           behavior: SnackBarBehavior.floating,
         ),
@@ -549,7 +590,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       context: context,
       builder: (context) {
         final tokens = context.tokens;
-        return AlertDialog(
+        return KiruAlertDialog(
           backgroundColor: tokens.surfaceOverlay,
           shape: RoundedRectangleBorder(
             borderRadius: ZplayRadius.lgAll,
@@ -564,11 +605,13 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                l10nOf(context).auxAddonsSettingsPagePasteTheRepositoryUrlSupportsCloudstreamrepoRepo,
+                l10nOf(
+                  context,
+                ).auxAddonsSettingsPagePasteTheRepositoryUrlSupportsCloudstreamrepoRepo,
                 style: ZplayType.body.toStyle(color: tokens.textSecondary),
               ),
               const SizedBox(height: ZplaySpacing.s16),
-              TextField(
+              KiruFormField(
                 controller: controller,
                 autofocus: true,
                 style: ZplayType.bodySmall.toStyle(color: tokens.textPrimary),
@@ -601,25 +644,27 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             ],
           ),
           actions: [
-            TextButton.icon(
+            KiruButton(
+              kind: KiruButtonKind.ghost,
               onPressed: () {
                 Navigator.pop(context);
                 CloudStreamMarketplaceModal.show(context);
               },
               icon: Icon(Icons.hub_rounded, size: 16, color: tokens.accent),
-              label: Text(
+              child: Text(
                 l10nOf(context).uiAddonsSettingsPageBrowseMarketplace,
                 style: ZplayType.label.toStyle(color: tokens.accent),
               ),
             ),
-            TextButton(
+            KiruButton(
+              kind: KiruButtonKind.ghost,
               onPressed: () => Navigator.pop(context),
               child: Text(
                 l10nOf(context).uiAddonsSettingsPageCancel,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
             ),
-            ElevatedButton(
+            KiruButton(
               onPressed: () => Navigator.pop(context, controller.text),
               style: ElevatedButton.styleFrom(
                 backgroundColor: tokens.accent,
@@ -632,7 +677,10 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                   vertical: 12,
                 ),
               ),
-              child: Text(l10nOf(context).uiAddonsSettingsPageAddRepository, style: ZplayType.label.toStyle()),
+              child: Text(
+                l10nOf(context).uiAddonsSettingsPageAddRepository,
+                style: ZplayType.label.toStyle(),
+              ),
             ),
           ],
         );
@@ -645,26 +693,33 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       context: context,
       builder: (context) {
         final tokens = context.tokens;
-        return AlertDialog(
+        return KiruAlertDialog(
           backgroundColor: tokens.surfaceOverlay,
           shape: RoundedRectangleBorder(
             borderRadius: ZplayRadius.lgAll,
             side: tokens.hairlineStrong,
           ),
-          title: Text(l10nOf(context).dynamicAddonsSettingsPageRemove((ext.name).toString())),
+          title: Text(
+            l10nOf(
+              context,
+            ).dynamicAddonsSettingsPageRemove((ext.name).toString()),
+          ),
           content: Text(
-            l10nOf(context).auxAddonsSettingsPageThisCloudstreamExtensionWillBeUninstalled,
+            l10nOf(
+              context,
+            ).auxAddonsSettingsPageThisCloudstreamExtensionWillBeUninstalled,
             style: ZplayType.body.toStyle(color: tokens.textSecondary),
           ),
           actions: [
-            TextButton(
+            KiruButton(
+              kind: KiruButtonKind.ghost,
               onPressed: () => Navigator.pop(context),
               child: Text(
                 l10nOf(context).uiAddonsSettingsPageCancel,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
             ),
-            ElevatedButton(
+            KiruButton(
               onPressed: () async {
                 Navigator.pop(context);
                 await _csManager.uninstallExtension(ext);
@@ -700,7 +755,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       context: context,
       builder: (dialogCtx) {
         final tokens = context.tokens;
-        return AlertDialog(
+        return KiruAlertDialog(
           backgroundColor: tokens.surfaceOverlay,
           shape: RoundedRectangleBorder(
             borderRadius: ZplayRadius.lgAll,
@@ -720,14 +775,15 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             style: ZplayType.body.toStyle(color: tokens.textEmphasis),
           ),
           actions: [
-            TextButton(
+            KiruButton(
+              kind: KiruButtonKind.ghost,
               onPressed: () => Navigator.pop(dialogCtx),
               child: Text(
                 l10nOf(context).uiAddonsSettingsPageCancel,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
             ),
-            ElevatedButton(
+            KiruButton(
               onPressed: () async {
                 Navigator.pop(dialogCtx);
                 await _csManager.uninstallExtensions(toRemove);
@@ -735,8 +791,8 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 setState(() {
                   _selectedCsExtensionKeys.clear();
                 });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
+                KiruToastMessenger.of(context).showSnackBar(
+                  KiruToast(
                     content: Row(
                       children: [
                         Icon(
@@ -745,9 +801,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                           size: 18,
                         ),
                         const SizedBox(width: ZplaySpacing.s8),
-                        Text(
-                          l10nOf(context).addonsRemovedCount(count),
-                        ),
+                        Text(l10nOf(context).addonsRemovedCount(count)),
                       ],
                     ),
                     backgroundColor: tokens.danger,
@@ -762,7 +816,12 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                   borderRadius: ZplayRadius.smAll,
                 ),
               ),
-              child: Text(l10nOf(context).dynamicAddonsSettingsPageRemove2((count).toString()), style: ZplayType.label.toStyle()),
+              child: Text(
+                l10nOf(
+                  context,
+                ).dynamicAddonsSettingsPageRemove2((count).toString()),
+                style: ZplayType.label.toStyle(),
+              ),
             ),
           ],
         );
@@ -775,26 +834,33 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
       context: context,
       builder: (context) {
         final tokens = context.tokens;
-        return AlertDialog(
+        return KiruAlertDialog(
           backgroundColor: tokens.surfaceOverlay,
           shape: RoundedRectangleBorder(
             borderRadius: ZplayRadius.lgAll,
             side: tokens.hairlineStrong,
           ),
-          title: Text(l10nOf(context).dynamicAddonsSettingsPageRemove((repo.name).toString())),
+          title: Text(
+            l10nOf(
+              context,
+            ).dynamicAddonsSettingsPageRemove((repo.name).toString()),
+          ),
           content: Text(
-            l10nOf(context).auxAddonsSettingsPagePluginsFromThisRepositoryWillNotBe,
+            l10nOf(
+              context,
+            ).auxAddonsSettingsPagePluginsFromThisRepositoryWillNotBe,
             style: ZplayType.body.toStyle(color: tokens.textSecondary),
           ),
           actions: [
-            TextButton(
+            KiruButton(
+              kind: KiruButtonKind.ghost,
               onPressed: () => Navigator.pop(context),
               child: Text(
                 l10nOf(context).uiAddonsSettingsPageCancel,
                 style: ZplayType.label.toStyle(color: tokens.textSecondary),
               ),
             ),
-            ElevatedButton(
+            KiruButton(
               onPressed: () async {
                 Navigator.pop(context);
                 await _csManager.removeRepo(repo.url);
@@ -880,7 +946,9 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
         Padding(
           padding: const EdgeInsets.only(bottom: ZplaySpacing.s20),
           child: Text(
-            l10nOf(context).uiAddonsSettingsPageAddonsProvideMetadataCatalogsAndStreaming,
+            l10nOf(
+              context,
+            ).uiAddonsSettingsPageAddonsProvideMetadataCatalogsAndStreaming,
             style: ZplayType.body.toStyle(color: tokens.textSecondary),
           ),
         ),
@@ -914,7 +982,9 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 borderRadius: ZplayRadius.xsAll,
               ),
               child: Text(
-                l10nOf(context).dynamicAddonsSettingsPageTotal((addons.length).toString()),
+                l10nOf(
+                  context,
+                ).dynamicAddonsSettingsPageTotal((addons.length).toString()),
                 style: ZplayType.caption.toStyle(color: tokens.accent),
               ),
             ),
@@ -940,7 +1010,9 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  l10nOf(context).uiAddonsSettingsPageClickAddAddonAboveToInstall,
+                  l10nOf(
+                    context,
+                  ).uiAddonsSettingsPageClickAddAddonAboveToInstall,
                   textAlign: TextAlign.center,
                   style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
                 ),
@@ -1027,7 +1099,9 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
         ),
         const SizedBox(height: ZplaySpacing.s4),
         Text(
-          l10nOf(context).auxAddonsSettingsPageInstallsTheAddonForTheDebridProvider,
+          l10nOf(
+            context,
+          ).auxAddonsSettingsPageInstallsTheAddonForTheDebridProvider,
           style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
         ),
         const SizedBox(height: ZplaySpacing.s12),
@@ -1077,7 +1151,9 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
         Padding(
           padding: const EdgeInsets.only(bottom: ZplaySpacing.s16),
           child: Text(
-            l10nOf(context).auxAddonsSettingsPageCloudstreamCs3ExtensionsProvideStreamProvidersDirectly,
+            l10nOf(
+              context,
+            ).auxAddonsSettingsPageCloudstreamCs3ExtensionsProvideStreamProvidersDirectly,
             style: ZplayType.body.toStyle(color: tokens.textSecondary),
           ),
         ),
@@ -1124,8 +1200,12 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                           children: [
                             Text(
                               isReady
-                                  ? l10nOf(context).uiFinalAddonsSettingsPageCloudstreamEngineReady
-                                  : l10nOf(context).uiFinalAddonsSettingsPageRuntimeSetupRequired,
+                                  ? l10nOf(
+                                      context,
+                                    ).uiFinalAddonsSettingsPageCloudstreamEngineReady
+                                  : l10nOf(
+                                      context,
+                                    ).uiFinalAddonsSettingsPageRuntimeSetupRequired,
                               style: ZplayType.subtitle.toStyle(
                                 color: tokens.textPrimary,
                               ),
@@ -1133,7 +1213,9 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                             const SizedBox(height: ZplaySpacing.s2),
                             Text(
                               isReady
-                                  ? l10nOf(context).uiFinalAddonsSettingsPageNativeEngineActiveAndListeningFor
+                                  ? l10nOf(
+                                      context,
+                                    ).uiFinalAddonsSettingsPageNativeEngineActiveAndListeningFor
                                   : (isDownloading
                                         ? (_csDownloader.status.value.isNotEmpty
                                               ? _csDownloader.status.value
@@ -1172,7 +1254,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 const SizedBox(height: ZplaySpacing.s12),
                 ClipRRect(
                   borderRadius: ZplayRadius.xsAll,
-                  child: LinearProgressIndicator(
+                  child: KiruProgress(
                     value: _csDownloader.progress.value > 0
                         ? _csDownloader.progress.value
                         : null,
@@ -1238,7 +1320,9 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                         runSpacing: 4,
                         children: [
                           Text(
-                            l10nOf(context).uiAddonsSettingsPageRepositoryMarketplace,
+                            l10nOf(
+                              context,
+                            ).uiAddonsSettingsPageRepositoryMarketplace,
                             style: ZplayType.subtitle.toStyle(
                               color: tokens.textPrimary,
                             ),
@@ -1270,7 +1354,9 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                       ),
                       const SizedBox(height: ZplaySpacing.s4),
                       Text(
-                        l10nOf(context).auxAddonsSettingsPageBrowseCuratedTurkish3rabiEnglishHindiGlobal,
+                        l10nOf(
+                          context,
+                        ).auxAddonsSettingsPageBrowseCuratedTurkish3rabiEnglishHindiGlobal,
                         style: ZplayType.bodySmall.toStyle(
                           color: tokens.textSecondary,
                         ),
@@ -1324,7 +1410,9 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                     const SizedBox(width: ZplaySpacing.s8),
                     Flexible(
                       child: Text(
-                        l10nOf(context).uiAddonsSettingsPageBrowseAvailablePlugins,
+                        l10nOf(
+                          context,
+                        ).uiAddonsSettingsPageBrowseAvailablePlugins,
                         style: ZplayType.label.toStyle(color: tokens.onAccent),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -1360,10 +1448,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                       SizedBox(
                         width: 18,
                         height: 18,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: tokens.accent,
-                        ),
+                        child: KiruLoader(strokeWidth: 2, color: tokens.accent),
                       )
                     else
                       Icon(
@@ -1415,7 +1500,8 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                   allKeys.every(_selectedCsExtensionKeys.contains);
               final anySelected = _selectedCsExtensionKeys.isNotEmpty;
 
-              return TextButton.icon(
+              return KiruButton(
+                kind: KiruButtonKind.ghost,
                 onPressed: () {
                   setState(() {
                     if (allSelected || anySelected) {
@@ -1434,10 +1520,16 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                   size: 16,
                   color: anySelected ? tokens.accent : tokens.textSecondary,
                 ),
-                label: Text(
+                child: Text(
                   allSelected
                       ? l10nOf(context).uiFinalAddonsSettingsPageDeselectAll
-                      : (anySelected ? l10nOf(context).uiFinalAddonsSettingsPageDeselectAll : l10nOf(context).uiFinalAddonsSettingsPageSelectAll),
+                      : (anySelected
+                            ? l10nOf(
+                                context,
+                              ).uiFinalAddonsSettingsPageDeselectAll
+                            : l10nOf(
+                                context,
+                              ).uiFinalAddonsSettingsPageSelectAll),
                   style: ZplayType.caption.toStyle(
                     color: anySelected ? tokens.accent : tokens.textEmphasis,
                   ),
@@ -1461,11 +1553,13 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             }
 
             Widget removeSelectedBtn() {
-              return ElevatedButton.icon(
+              return KiruButton(
                 onPressed: () => _confirmRemoveSelectedCsExtensions(installed),
                 icon: const Icon(Icons.delete_sweep_rounded, size: 14),
-                label: Text(
-                  l10nOf(context).dynamicAddonsSettingsPageRemove2((_selectedCsExtensionKeys.length).toString()),
+                child: Text(
+                  l10nOf(context).dynamicAddonsSettingsPageRemove2(
+                    (_selectedCsExtensionKeys.length).toString(),
+                  ),
                   style: ZplayType.caption.toStyle(),
                 ),
                 style: ElevatedButton.styleFrom(
@@ -1494,7 +1588,9 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 borderRadius: ZplayRadius.xsAll,
               ),
               child: Text(
-                l10nOf(context).dynamicAddonsSettingsPageTotal((installed.length).toString()),
+                l10nOf(
+                  context,
+                ).dynamicAddonsSettingsPageTotal((installed.length).toString()),
                 style: ZplayType.caption.toStyle(color: tokens.accent),
               ),
             );
@@ -1507,7 +1603,9 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                     children: [
                       Expanded(
                         child: Text(
-                          l10nOf(context).uiAddonsSettingsPageInstalledExtensions,
+                          l10nOf(
+                            context,
+                          ).uiAddonsSettingsPageInstalledExtensions,
                           style: ZplayType.overline.toStyle(
                             color: tokens.textMuted,
                           ),
@@ -1538,7 +1636,9 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
             return Row(
               children: [
                 Text(
-                  l10nOf(context).uiAddonsSettingsPageInstalledCloudstreamExtensions,
+                  l10nOf(
+                    context,
+                  ).uiAddonsSettingsPageInstalledCloudstreamExtensions,
                   style: ZplayType.overline.toStyle(color: tokens.textMuted),
                 ),
                 const Spacer(),
@@ -1574,7 +1674,9 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  l10nOf(context).uiAddonsSettingsPageClickBrowseAvailablePluginsToFind,
+                  l10nOf(
+                    context,
+                  ).uiAddonsSettingsPageClickBrowseAvailablePluginsToFind,
                   textAlign: TextAlign.center,
                   style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
                 ),
@@ -1635,7 +1737,9 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 borderRadius: ZplayRadius.xsAll,
               ),
               child: Text(
-                l10nOf(context).dynamicAddonsSettingsPageRepos((repos.length).toString()),
+                l10nOf(
+                  context,
+                ).dynamicAddonsSettingsPageRepos((repos.length).toString()),
                 style: ZplayType.caption.toStyle(color: tokens.textSecondary),
               ),
             ),
@@ -1656,7 +1760,9 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                 const SizedBox(width: 14),
                 Expanded(
                   child: Text(
-                    l10nOf(context).uiAddonsSettingsPageNoCustomRepositoriesAddedClickAdd,
+                    l10nOf(
+                      context,
+                    ).uiAddonsSettingsPageNoCustomRepositoriesAddedClickAdd,
                     style: ZplayType.bodySmall.toStyle(
                       color: tokens.textSecondary,
                     ),
@@ -1709,28 +1815,34 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
                         ],
                       ),
                     ),
-                    IconButton(
+                    KiruIconButton(
                       icon: const Icon(Icons.download_rounded, size: 20),
                       color: tokens.accent,
                       splashRadius: 18,
-                      tooltip: l10nOf(context).uiAddonsSettingsPageInstallAllPluginsFromThisRepository,
+                      tooltip: l10nOf(
+                        context,
+                      ).uiAddonsSettingsPageInstallAllPluginsFromThisRepository,
                       onPressed: () => _installAllFromRepo(repo.url),
                     ),
-                    IconButton(
+                    KiruIconButton(
                       icon: const Icon(Icons.storefront_rounded, size: 19),
                       color: tokens.textEmphasis,
                       splashRadius: 18,
-                      tooltip: l10nOf(context).uiAddonsSettingsPageBrowseRepositoryPlugins,
+                      tooltip: l10nOf(
+                        context,
+                      ).uiAddonsSettingsPageBrowseRepositoryPlugins,
                       onPressed: () async {
                         await CloudStreamRepoModal.show(context);
                         if (mounted) setState(() {});
                       },
                     ),
-                    IconButton(
+                    KiruIconButton(
                       icon: const Icon(Icons.delete_outline_rounded, size: 18),
                       color: tokens.textMuted,
                       splashRadius: 18,
-                      tooltip: l10nOf(context).uiAddonsSettingsPageRemoveRepository,
+                      tooltip: l10nOf(
+                        context,
+                      ).uiAddonsSettingsPageRemoveRepository,
                       onPressed: () => _confirmRemoveCsRepo(repo),
                     ),
                   ],
@@ -1744,7 +1856,7 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
 
   Widget _buildSetupEngineButton() {
     final tokens = context.tokens;
-    return ElevatedButton.icon(
+    return KiruButton(
       onPressed: () async {
         try {
           await _csDownloader.setupRuntime();
@@ -1753,9 +1865,13 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
           if (mounted) setState(() {});
         } catch (e) {
           if (!mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(l10nOf(context).dynamicAddonsSettingsPageRuntimeSetupError((e).toString())),
+          KiruToastMessenger.of(context).showSnackBar(
+            KiruToast(
+              content: Text(
+                l10nOf(
+                  context,
+                ).dynamicAddonsSettingsPageRuntimeSetupError((e).toString()),
+              ),
               backgroundColor: tokens.danger,
               behavior: SnackBarBehavior.floating,
             ),
@@ -1763,7 +1879,10 @@ class _AddonsSettingsPageState extends State<AddonsSettingsPage> {
         }
       },
       icon: const Icon(Icons.download_rounded, size: 16),
-      label: Text(l10nOf(context).uiAddonsSettingsPageSetupEngine, style: ZplayType.label.toStyle()),
+      child: Text(
+        l10nOf(context).uiAddonsSettingsPageSetupEngine,
+        style: ZplayType.label.toStyle(),
+      ),
       style: ElevatedButton.styleFrom(
         backgroundColor: tokens.accent,
         foregroundColor: tokens.onAccent,
@@ -1914,7 +2033,7 @@ class _AddonCard extends StatelessWidget {
         Widget upDownButtons() => Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
+            KiruIconButton(
               icon: const Icon(Icons.keyboard_arrow_up_rounded, size: 20),
               color: onMoveUp != null
                   ? tokens.textEmphasis
@@ -1925,7 +2044,7 @@ class _AddonCard extends StatelessWidget {
               constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
               visualDensity: VisualDensity.compact,
             ),
-            IconButton(
+            KiruIconButton(
               icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 20),
               color: onMoveDown != null
                   ? tokens.textEmphasis
@@ -1939,11 +2058,10 @@ class _AddonCard extends StatelessWidget {
           ],
         );
 
-        Widget switchWidget() => Switch.adaptive(
+        Widget switchWidget() => KiruSwitch(
           value: addon.enabled,
           onChanged: onToggle,
           activeColor: providerColor,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         );
 
         Widget builtInTag() => Container(
@@ -1953,12 +2071,14 @@ class _AddonCard extends StatelessWidget {
             borderRadius: ZplayRadius.xsAll,
           ),
           child: Text(
-            isP2p ? l10nOf(context).finalAddonsSettingsPageBuiltInTorrent : 'BUILT-IN HTTP',
+            isP2p
+                ? l10nOf(context).finalAddonsSettingsPageBuiltInTorrent
+                : 'BUILT-IN HTTP',
             style: ZplayType.overline.toStyle(color: providerColor),
           ),
         );
 
-        Widget removeButton() => IconButton(
+        Widget removeButton() => KiruIconButton(
           icon: const Icon(Icons.delete_outline_rounded, size: 19),
           color: tokens.danger.withValues(alpha: ZplayOpacity.textSecondary),
           onPressed: onRemove,
@@ -2114,7 +2234,9 @@ class _AddonCard extends StatelessWidget {
                           if (hasCatalogs)
                             _FeatureToggleChip(
                               icon: Icons.grid_view_rounded,
-                              label: l10nOf(context).uiAddonsSettingsPageCatalogs,
+                              label: l10nOf(
+                                context,
+                              ).uiAddonsSettingsPageCatalogs,
                               count: m.catalogs.isNotEmpty
                                   ? m.catalogs.length
                                   : null,
@@ -2135,7 +2257,9 @@ class _AddonCard extends StatelessWidget {
                           if (hasStreams)
                             _FeatureToggleChip(
                               icon: Icons.play_circle_outline_rounded,
-                              label: l10nOf(context).uiAddonsSettingsPageSources,
+                              label: l10nOf(
+                                context,
+                              ).uiAddonsSettingsPageSources,
                               isEnabled: addon.enableStreams,
                               onTap: () => onUpdateFeature(
                                 enableStreams: !addon.enableStreams,
@@ -2144,7 +2268,9 @@ class _AddonCard extends StatelessWidget {
                           if (hasSubtitles)
                             _FeatureToggleChip(
                               icon: Icons.subtitles_rounded,
-                              label: l10nOf(context).uiAddonsSettingsPageSubtitles,
+                              label: l10nOf(
+                                context,
+                              ).uiAddonsSettingsPageSubtitles,
                               isEnabled: addon.enableSubtitles,
                               onTap: () => onUpdateFeature(
                                 enableSubtitles: !addon.enableSubtitles,
@@ -2381,16 +2507,15 @@ class _AddAddonButton extends StatelessWidget {
               SizedBox(
                 width: 20,
                 height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: tokens.accent,
-                ),
+                child: KiruLoader(strokeWidth: 2, color: tokens.accent),
               )
             else
               Icon(Icons.add_rounded, color: tokens.accent, size: 22),
             const SizedBox(width: 10),
             Text(
-              isLoading ? l10nOf(context).finalAddonsSettingsPageInstalling : 'Add Addon',
+              isLoading
+                  ? l10nOf(context).finalAddonsSettingsPageInstalling
+                  : 'Add Addon',
               style: ZplayType.subtitle.toStyle(color: tokens.accent),
             ),
           ],
@@ -2455,10 +2580,7 @@ class _DebridAddonCard extends StatelessWidget {
               SizedBox(
                 width: 14,
                 height: 14,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: tokens.accent,
-                ),
+                child: KiruLoader(strokeWidth: 2, color: tokens.accent),
               )
             else
               Icon(
@@ -2468,7 +2590,9 @@ class _DebridAddonCard extends StatelessWidget {
               ),
             const SizedBox(width: 6),
             Text(
-              isBusy ? l10nOf(context).finalAddonsSettingsPageConnecting : 'Connect',
+              isBusy
+                  ? l10nOf(context).finalAddonsSettingsPageConnecting
+                  : 'Connect',
               style: ZplayType.bodySmall.toStyle(
                 color: isServiceReady ? tokens.accent : tokens.textDisabled,
               ),
@@ -2576,7 +2700,9 @@ class _DebridAddonCard extends StatelessWidget {
                 child: Text(
                   isServiceReady
                       ? l10nOf(context).addonsUsesServiceKey(selectedService)
-                      : l10nOf(context).uiFinalAddonsSettingsPageNoDebridProviderIsSetUp,
+                      : l10nOf(
+                          context,
+                        ).uiFinalAddonsSettingsPageNoDebridProviderIsSetUp,
                   style: ZplayType.caption.toStyle(
                     color: isServiceReady
                         ? tokens.textMuted
@@ -2591,7 +2717,9 @@ class _DebridAddonCard extends StatelessWidget {
           if (!isServiceReady) ...[
             const SizedBox(height: ZplaySpacing.s4),
             Text(
-              l10nOf(context).auxAddonsSettingsPageSetUpADebridProviderInSettings,
+              l10nOf(
+                context,
+              ).auxAddonsSettingsPageSetUpADebridProviderInSettings,
               style: ZplayType.caption.toStyle(color: tokens.textMuted),
             ),
           ],
@@ -2822,15 +2950,14 @@ class _CloudStreamCard extends StatelessWidget {
           const SizedBox(width: ZplaySpacing.s8),
 
           // Switch
-          Switch(
+          KiruSwitch(
             value: source.enabled,
             activeColor: tokens.accent,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             onChanged: onToggle,
           ),
 
           // Delete
-          IconButton(
+          KiruIconButton(
             icon: const Icon(Icons.delete_outline_rounded, size: 20),
             color: tokens.textMuted,
             splashRadius: 18,

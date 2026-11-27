@@ -1,3 +1,4 @@
+import '../../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -116,7 +117,9 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                     width: 42,
                     height: 42,
                     decoration: BoxDecoration(
-                      color: palette.primaryColor.withValues(alpha: ZplayOpacity.overlayHover),
+                      color: palette.primaryColor.withValues(
+                        alpha: ZplayOpacity.overlayHover,
+                      ),
                       borderRadius: ZplayRadius.smAll,
                     ),
                     child: Icon(
@@ -131,18 +134,26 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10nOf(context).auxLiveTvSettingsPageShowLiveSpotlightBanner,
-                          style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).auxLiveTvSettingsPageShowLiveSpotlightBanner,
+                          style: ZplayType.subtitle.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          l10nOf(context).auxLiveTvSettingsPageFeaturedChampionshipMatchesAndTopBroadcastChannels,
-                          style: ZplayType.bodySmall.toStyle(color: tokens.textSecondary),
+                          l10nOf(
+                            context,
+                          ).auxLiveTvSettingsPageFeaturedChampionshipMatchesAndTopBroadcastChannels,
+                          style: ZplayType.bodySmall.toStyle(
+                            color: tokens.textSecondary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Switch.adaptive(
+                  KiruSwitch(
                     value: enabled,
                     activeColor: palette.primaryColor,
                     onChanged: (val) {
@@ -155,7 +166,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
 
               if (enabled) ...[
                 const SizedBox(height: 16),
-                Divider(color: tokens.borderSubtle),
+                KiruDivider(height: 16, color: tokens.borderSubtle),
                 const SizedBox(height: 12),
 
                 // Style Selection
@@ -175,14 +186,17 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       },
                       options: [
                         for (final style in HeroStyle.values)
-                          SegmentedTabOption(value: style, label: configLabel(context, style.label)),
+                          SegmentedTabOption(
+                            value: style,
+                            label: configLabel(context, style.label),
+                          ),
                       ],
                     );
                   },
                 ),
 
                 const SizedBox(height: 16),
-                Divider(color: tokens.borderSubtle),
+                KiruDivider(height: 16, color: tokens.borderSubtle),
                 const SizedBox(height: 12),
 
                 // Auto Rotate
@@ -196,21 +210,30 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                l10nOf(context).auxLiveTvSettingsPageAutoRotateChannels,
-                                style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                                l10nOf(
+                                  context,
+                                ).auxLiveTvSettingsPageAutoRotateChannels,
+                                style: ZplayType.subtitle.toStyle(
+                                  color: tokens.textPrimary,
+                                ),
                               ),
                               const SizedBox(height: 2),
                               Text(
-                                l10nOf(context).auxLiveTvSettingsPageAutomaticallyCycleThroughFeaturedLiveEvents,
-                                style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                                l10nOf(
+                                  context,
+                                ).auxLiveTvSettingsPageAutomaticallyCycleThroughFeaturedLiveEvents,
+                                style: ZplayType.caption.toStyle(
+                                  color: tokens.textSecondary,
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        Switch.adaptive(
+                        KiruSwitch(
                           value: autoRotate,
                           activeColor: palette.primaryColor,
-                          onChanged: (val) => IptvSettings.setHeroAutoRotate(val),
+                          onChanged: (val) =>
+                              IptvSettings.setHeroAutoRotate(val),
                         ),
                       ],
                     );
@@ -233,12 +256,22 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  l10nOf(context).auxLiveTvSettingsPageRotationInterval,
-                                  style: ZplayType.label.toStyle(color: tokens.textEmphasis),
+                                  l10nOf(
+                                    context,
+                                  ).auxLiveTvSettingsPageRotationInterval,
+                                  style: ZplayType.label.toStyle(
+                                    color: tokens.textEmphasis,
+                                  ),
                                 ),
                                 Text(
-                                  l10nOf(context).dynamicLiveTvSettingsPageSeconds((seconds).toString()),
-                                  style: ZplayType.labelNumeric.toStyle(color: palette.primaryColor),
+                                  l10nOf(
+                                    context,
+                                  ).dynamicLiveTvSettingsPageSeconds(
+                                    (seconds).toString(),
+                                  ),
+                                  style: ZplayType.labelNumeric.toStyle(
+                                    color: palette.primaryColor,
+                                  ),
                                 ),
                               ],
                             ),
@@ -246,16 +279,21 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                             SliderTheme(
                               data: SliderTheme.of(context).copyWith(
                                 activeTrackColor: palette.primaryColor,
-                                inactiveTrackColor: Colors.white.withValues(alpha: ZplayOpacity.borderMedium),
+                                inactiveTrackColor: Colors.white.withValues(
+                                  alpha: ZplayOpacity.borderMedium,
+                                ),
                                 thumbColor: palette.primaryColor,
                                 trackHeight: 3,
                               ),
-                              child: Slider(
+                              child: KiruSlider(
                                 value: seconds.toDouble(),
                                 min: 3,
                                 max: 15,
                                 divisions: 12,
-                                onChanged: (val) => IptvSettings.setHeroRotateSeconds(val.round()),
+                                onChanged: (val) =>
+                                    IptvSettings.setHeroRotateSeconds(
+                                      val.round(),
+                                    ),
                               ),
                             ),
                           ],
@@ -296,14 +334,17 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                 },
                 options: [
                   for (final density in CardDensity.values)
-                    SegmentedTabOption(value: density, label: configLabel(context, density.label)),
+                    SegmentedTabOption(
+                      value: density,
+                      label: configLabel(context, density.label),
+                    ),
                 ],
               );
             },
           ),
 
           const SizedBox(height: 16),
-          Divider(color: tokens.borderSubtle),
+          KiruDivider(height: 16, color: tokens.borderSubtle),
           const SizedBox(height: 12),
 
           // Hover Zoom Slider
@@ -319,11 +360,15 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                     children: [
                       Text(
                         l10nOf(context).auxLiveTvSettingsPageCardHoverScaleZoom,
-                        style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
+                        style: ZplayType.subtitle.toStyle(
+                          color: tokens.textEmphasis,
+                        ),
                       ),
                       Text(
                         '+$percent%',
-                        style: ZplayType.labelNumeric.toStyle(color: palette.primaryColor),
+                        style: ZplayType.labelNumeric.toStyle(
+                          color: palette.primaryColor,
+                        ),
                       ),
                     ],
                   ),
@@ -331,11 +376,13 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                   SliderTheme(
                     data: SliderTheme.of(context).copyWith(
                       activeTrackColor: palette.primaryColor,
-                      inactiveTrackColor: Colors.white.withValues(alpha: ZplayOpacity.borderMedium),
+                      inactiveTrackColor: Colors.white.withValues(
+                        alpha: ZplayOpacity.borderMedium,
+                      ),
                       thumbColor: palette.primaryColor,
                       trackHeight: 3,
                     ),
-                    child: Slider(
+                    child: KiruSlider(
                       value: zoom,
                       min: 1.00,
                       max: 1.15,
@@ -349,7 +396,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
           ),
 
           const SizedBox(height: 12),
-          Divider(color: tokens.borderSubtle),
+          KiruDivider(height: 16, color: tokens.borderSubtle),
           const SizedBox(height: 12),
 
           // HD Badge Toggle
@@ -363,18 +410,26 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10nOf(context).auxLiveTvSettingsPageShowLiveHdStreamBadge,
-                          style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).auxLiveTvSettingsPageShowLiveHdStreamBadge,
+                          style: ZplayType.subtitle.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          l10nOf(context).auxLiveTvSettingsPageDisplayRadiantLiveBroadcastBadgeOnChannel,
-                          style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                          l10nOf(
+                            context,
+                          ).auxLiveTvSettingsPageDisplayRadiantLiveBroadcastBadgeOnChannel,
+                          style: ZplayType.caption.toStyle(
+                            color: tokens.textSecondary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Switch.adaptive(
+                  KiruSwitch(
                     value: showHd,
                     activeColor: palette.primaryColor,
                     onChanged: (val) => IptvSettings.setShowHdBadge(val),
@@ -385,7 +440,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
           ),
 
           const SizedBox(height: 12),
-          Divider(color: tokens.borderSubtle),
+          KiruDivider(height: 16, color: tokens.borderSubtle),
           const SizedBox(height: 12),
 
           // Category Tag Toggle
@@ -399,18 +454,26 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10nOf(context).auxLiveTvSettingsPageShowChannelCategoryTag,
-                          style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).auxLiveTvSettingsPageShowChannelCategoryTag,
+                          style: ZplayType.subtitle.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          l10nOf(context).auxLiveTvSettingsPageShowCategoryLabelBelowChannelName,
-                          style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                          l10nOf(
+                            context,
+                          ).auxLiveTvSettingsPageShowCategoryLabelBelowChannelName,
+                          style: ZplayType.caption.toStyle(
+                            color: tokens.textSecondary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Switch.adaptive(
+                  KiruSwitch(
                     value: showTag,
                     activeColor: palette.primaryColor,
                     onChanged: (val) => IptvSettings.setShowCategoryTag(val),
@@ -421,7 +484,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
           ),
 
           const SizedBox(height: 12),
-          Divider(color: tokens.borderSubtle),
+          KiruDivider(height: 16, color: tokens.borderSubtle),
           const SizedBox(height: 12),
 
           // Feed Health Toggle
@@ -435,18 +498,26 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10nOf(context).auxLiveTvSettingsPageShowFeedHealthBadge,
-                          style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).auxLiveTvSettingsPageShowFeedHealthBadge,
+                          style: ZplayType.subtitle.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          l10nOf(context).auxLiveTvSettingsPageMarkAChannelAsAliveUncheckedOr,
-                          style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                          l10nOf(
+                            context,
+                          ).auxLiveTvSettingsPageMarkAChannelAsAliveUncheckedOr,
+                          style: ZplayType.caption.toStyle(
+                            color: tokens.textSecondary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Switch.adaptive(
+                  KiruSwitch(
                     value: showHealth,
                     activeColor: palette.primaryColor,
                     onChanged: (val) => IptvSettings.setShowHealthBadge(val),
@@ -477,20 +548,32 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        l10nOf(context).auxLiveTvSettingsPageChannelCategoriesSections,
-                        style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                        l10nOf(
+                          context,
+                        ).auxLiveTvSettingsPageChannelCategoriesSections,
+                        style: ZplayType.subtitle.toStyle(
+                          color: tokens.textPrimary,
+                        ),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        l10nOf(context).auxLiveTvSettingsPageToggleVisibilityOfLiveTvRows,
-                        style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                        l10nOf(
+                          context,
+                        ).auxLiveTvSettingsPageToggleVisibilityOfLiveTvRows,
+                        style: ZplayType.caption.toStyle(
+                          color: tokens.textSecondary,
+                        ),
                       ),
                     ],
                   ),
-                  TextButton.icon(
+                  KiruButton(
+                    kind: KiruButtonKind.ghost,
                     onPressed: () => IptvSettings.resetCategories(),
                     icon: const Icon(Icons.refresh_rounded, size: 16),
-                    label: Text(l10nOf(context).auxLiveTvSettingsPageResetAll, style: ZplayType.label.toStyle()),
+                    child: Text(
+                      l10nOf(context).auxLiveTvSettingsPageResetAll,
+                      style: ZplayType.label.toStyle(),
+                    ),
                     style: TextButton.styleFrom(
                       foregroundColor: palette.primaryColor,
                     ),
@@ -498,20 +581,20 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                 ],
               ),
               const SizedBox(height: 12),
-              Divider(color: tokens.borderSubtle),
+              KiruDivider(height: 16, color: tokens.borderSubtle),
               const SizedBox(height: 6),
 
               ...IptvSettings.defaultCategories.map((cat) {
                 final isVisible = visibleList.contains(cat);
-                return CheckboxListTile(
+                return KiruCheckboxRow(
                   contentPadding: EdgeInsets.zero,
                   title: Text(
                     cat,
-                    style: ZplayType.subtitle.toStyle(color: isVisible ? tokens.textPrimary : tokens.textMuted),
+                    style: ZplayType.subtitle.toStyle(
+                      color: isVisible ? tokens.textPrimary : tokens.textMuted,
+                    ),
                   ),
                   value: isVisible,
-                  activeColor: palette.primaryColor,
-                  checkColor: tokens.textPrimary,
                   onChanged: (val) {
                     IptvSettings.toggleCategoryVisibility(cat);
                   },
@@ -547,14 +630,17 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                 },
                 options: [
                   for (final s in PortalCardStyle.values)
-                    SegmentedTabOption(value: s, label: configLabel(context, s.label)),
+                    SegmentedTabOption(
+                      value: s,
+                      label: configLabel(context, s.label),
+                    ),
                 ],
               );
             },
           ),
 
           const SizedBox(height: 16),
-          Divider(color: tokens.borderSubtle),
+          KiruDivider(height: 16, color: tokens.borderSubtle),
           const SizedBox(height: 12),
 
           ValueListenableBuilder<bool>(
@@ -567,18 +653,26 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10nOf(context).auxLiveTvSettingsPageShowPortalExpiryDate,
-                          style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).auxLiveTvSettingsPageShowPortalExpiryDate,
+                          style: ZplayType.subtitle.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          l10nOf(context).auxLiveTvSettingsPageDisplaySubscriptionExpirationTagOnPortalCards,
-                          style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                          l10nOf(
+                            context,
+                          ).auxLiveTvSettingsPageDisplaySubscriptionExpirationTagOnPortalCards,
+                          style: ZplayType.caption.toStyle(
+                            color: tokens.textSecondary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Switch.adaptive(
+                  KiruSwitch(
                     value: showExpiry,
                     activeColor: palette.primaryColor,
                     onChanged: (val) => IptvSettings.setShowPortalExpiry(val),
@@ -589,7 +683,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
           ),
 
           const SizedBox(height: 12),
-          Divider(color: tokens.borderSubtle),
+          KiruDivider(height: 16, color: tokens.borderSubtle),
           const SizedBox(height: 12),
 
           ValueListenableBuilder<bool>(
@@ -602,21 +696,30 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10nOf(context).auxLiveTvSettingsPageShowMaxActiveConnectionsTag,
-                          style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).auxLiveTvSettingsPageShowMaxActiveConnectionsTag,
+                          style: ZplayType.subtitle.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          l10nOf(context).auxLiveTvSettingsPageDisplayCurrentAndMaxConcurrentStreamingConnections,
-                          style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                          l10nOf(
+                            context,
+                          ).auxLiveTvSettingsPageDisplayCurrentAndMaxConcurrentStreamingConnections,
+                          style: ZplayType.caption.toStyle(
+                            color: tokens.textSecondary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Switch.adaptive(
+                  KiruSwitch(
                     value: showConn,
                     activeColor: palette.primaryColor,
-                    onChanged: (val) => IptvSettings.setShowPortalConnections(val),
+                    onChanged: (val) =>
+                        IptvSettings.setShowPortalConnections(val),
                   ),
                 ],
               );
@@ -624,7 +727,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
           ),
 
           const SizedBox(height: 12),
-          Divider(color: tokens.borderSubtle),
+          KiruDivider(height: 16, color: tokens.borderSubtle),
           const SizedBox(height: 12),
 
           Text(
@@ -639,8 +742,14 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                 selected: tabIdx,
                 onSelected: IptvSettings.setDefaultPortalTab,
                 options: [
-                  SegmentedTabOption(value: 0, label: l10nOf(context).auxLiveTvSettingsPageXtreamPanels),
-                  SegmentedTabOption(value: 1, label: l10nOf(context).auxLiveTvSettingsPageM3uPlaylists),
+                  SegmentedTabOption(
+                    value: 0,
+                    label: l10nOf(context).auxLiveTvSettingsPageXtreamPanels,
+                  ),
+                  SegmentedTabOption(
+                    value: 1,
+                    label: l10nOf(context).auxLiveTvSettingsPageM3uPlaylists,
+                  ),
                 ],
               );
             },
@@ -673,20 +782,24 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                 },
                 options: [
                   for (final l in PortalBrowserLayout.values)
-                    SegmentedTabOption(value: l, label: configLabel(context, l.label)),
+                    SegmentedTabOption(
+                      value: l,
+                      label: configLabel(context, l.label),
+                    ),
                 ],
               );
             },
           ),
 
           const SizedBox(height: 16),
-          Divider(color: tokens.borderSubtle),
+          KiruDivider(height: 16, color: tokens.borderSubtle),
           const SizedBox(height: 12),
 
           ValueListenableBuilder<PortalBrowserLayout>(
             valueListenable: IptvSettings.browserLayout,
             builder: (context, layout, _) {
-              if (layout != PortalBrowserLayout.grid) return const SizedBox.shrink();
+              if (layout != PortalBrowserLayout.grid)
+                return const SizedBox.shrink();
               return ValueListenableBuilder<int>(
                 valueListenable: IptvSettings.browserGridColumns,
                 builder: (context, cols, _) {
@@ -697,12 +810,20 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            l10nOf(context).auxIptvPortalBrowserPageGridStreamColumns,
-                            style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
+                            l10nOf(
+                              context,
+                            ).auxIptvPortalBrowserPageGridStreamColumns,
+                            style: ZplayType.subtitle.toStyle(
+                              color: tokens.textEmphasis,
+                            ),
                           ),
                           Text(
-                            l10nOf(context).dynamicLiveTvSettingsPageColumns((cols).toString()),
-                            style: ZplayType.labelNumeric.toStyle(color: palette.primaryColor),
+                            l10nOf(context).dynamicLiveTvSettingsPageColumns(
+                              (cols).toString(),
+                            ),
+                            style: ZplayType.labelNumeric.toStyle(
+                              color: palette.primaryColor,
+                            ),
                           ),
                         ],
                       ),
@@ -710,20 +831,23 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       SliderTheme(
                         data: SliderTheme.of(context).copyWith(
                           activeTrackColor: palette.primaryColor,
-                          inactiveTrackColor: Colors.white.withValues(alpha: ZplayOpacity.borderMedium),
+                          inactiveTrackColor: Colors.white.withValues(
+                            alpha: ZplayOpacity.borderMedium,
+                          ),
                           thumbColor: palette.primaryColor,
                           trackHeight: 3,
                         ),
-                        child: Slider(
+                        child: KiruSlider(
                           value: cols.toDouble(),
                           min: 2,
                           max: 6,
                           divisions: 4,
-                          onChanged: (val) => IptvSettings.setBrowserGridColumns(val.round()),
+                          onChanged: (val) =>
+                              IptvSettings.setBrowserGridColumns(val.round()),
                         ),
                       ),
                       const SizedBox(height: 12),
-                      Divider(color: tokens.borderSubtle),
+                      KiruDivider(height: 16, color: tokens.borderSubtle),
                       const SizedBox(height: 12),
                     ],
                   );
@@ -742,12 +866,18 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        l10nOf(context).auxLiveTvSettingsPageCategorySidebarWidth,
-                        style: ZplayType.subtitle.toStyle(color: tokens.textEmphasis),
+                        l10nOf(
+                          context,
+                        ).auxLiveTvSettingsPageCategorySidebarWidth,
+                        style: ZplayType.subtitle.toStyle(
+                          color: tokens.textEmphasis,
+                        ),
                       ),
                       Text(
                         '${width.round()} px',
-                        style: ZplayType.labelNumeric.toStyle(color: palette.primaryColor),
+                        style: ZplayType.labelNumeric.toStyle(
+                          color: palette.primaryColor,
+                        ),
                       ),
                     ],
                   ),
@@ -755,11 +885,13 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                   SliderTheme(
                     data: SliderTheme.of(context).copyWith(
                       activeTrackColor: palette.primaryColor,
-                      inactiveTrackColor: Colors.white.withValues(alpha: ZplayOpacity.borderMedium),
+                      inactiveTrackColor: Colors.white.withValues(
+                        alpha: ZplayOpacity.borderMedium,
+                      ),
                       thumbColor: palette.primaryColor,
                       trackHeight: 3,
                     ),
-                    child: Slider(
+                    child: KiruSlider(
                       value: width,
                       min: 200.0,
                       max: 340.0,
@@ -773,7 +905,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
           ),
 
           const SizedBox(height: 12),
-          Divider(color: tokens.borderSubtle),
+          KiruDivider(height: 16, color: tokens.borderSubtle),
           const SizedBox(height: 12),
 
           ValueListenableBuilder<bool>(
@@ -786,18 +918,26 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10nOf(context).auxIptvPortalBrowserPageShowChannelStreamLogos,
-                          style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).auxIptvPortalBrowserPageShowChannelStreamLogos,
+                          style: ZplayType.subtitle.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          l10nOf(context).auxLiveTvSettingsPageDisplayChannelPosterAndLogosInStream,
-                          style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                          l10nOf(
+                            context,
+                          ).auxLiveTvSettingsPageDisplayChannelPosterAndLogosInStream,
+                          style: ZplayType.caption.toStyle(
+                            color: tokens.textSecondary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Switch.adaptive(
+                  KiruSwitch(
                     value: showLogos,
                     activeColor: palette.primaryColor,
                     onChanged: (val) => IptvSettings.setShowStreamLogos(val),
@@ -808,7 +948,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
           ),
 
           const SizedBox(height: 12),
-          Divider(color: tokens.borderSubtle),
+          KiruDivider(height: 16, color: tokens.borderSubtle),
           const SizedBox(height: 12),
 
           ValueListenableBuilder<bool>(
@@ -821,18 +961,26 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10nOf(context).auxIptvPortalBrowserPageShowEpgNowPlayingSnippet,
-                          style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).auxIptvPortalBrowserPageShowEpgNowPlayingSnippet,
+                          style: ZplayType.subtitle.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          l10nOf(context).auxLiveTvSettingsPageDisplayCurrentTelevisionGuideTitleBelowChannel,
-                          style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                          l10nOf(
+                            context,
+                          ).auxLiveTvSettingsPageDisplayCurrentTelevisionGuideTitleBelowChannel,
+                          style: ZplayType.caption.toStyle(
+                            color: tokens.textSecondary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Switch.adaptive(
+                  KiruSwitch(
                     value: showEpg,
                     activeColor: palette.primaryColor,
                     onChanged: (val) => IptvSettings.setShowEpgSnippet(val),
@@ -843,7 +991,7 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
           ),
 
           const SizedBox(height: 12),
-          Divider(color: tokens.borderSubtle),
+          KiruDivider(height: 16, color: tokens.borderSubtle),
           const SizedBox(height: 12),
 
           ValueListenableBuilder<bool>(
@@ -856,18 +1004,26 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          l10nOf(context).auxIptvPortalBrowserPageShowCategoryStreamCounts,
-                          style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                          l10nOf(
+                            context,
+                          ).auxIptvPortalBrowserPageShowCategoryStreamCounts,
+                          style: ZplayType.subtitle.toStyle(
+                            color: tokens.textPrimary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          l10nOf(context).auxLiveTvSettingsPageShowNumberOfAvailableStreamsNextTo,
-                          style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                          l10nOf(
+                            context,
+                          ).auxLiveTvSettingsPageShowNumberOfAvailableStreamsNextTo,
+                          style: ZplayType.caption.toStyle(
+                            color: tokens.textSecondary,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Switch.adaptive(
+                  KiruSwitch(
                     value: showCount,
                     activeColor: palette.primaryColor,
                     onChanged: (val) => IptvSettings.setShowCategoryCount(val),
@@ -898,18 +1054,24 @@ class _LiveTvSettingsPageState extends State<LiveTvSettingsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      l10nOf(context).auxLiveTvSettingsPageIncludeFreePublicSources,
-                      style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                      l10nOf(
+                        context,
+                      ).auxLiveTvSettingsPageIncludeFreePublicSources,
+                      style: ZplayType.subtitle.toStyle(
+                        color: tokens.textPrimary,
+                      ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       l10nOf(context).appearancePublicPlaylistHelp,
-                      style: ZplayType.caption.toStyle(color: tokens.textSecondary),
+                      style: ZplayType.caption.toStyle(
+                        color: tokens.textSecondary,
+                      ),
                     ),
                   ],
                 ),
               ),
-              Switch.adaptive(
+              KiruSwitch(
                 value: includeFree,
                 activeColor: palette.primaryColor,
                 onChanged: (val) => IptvSettings.setIncludeFreeSources(val),

@@ -1,3 +1,5 @@
+import 'package:forui/forui.dart' as f;
+import '../ui/kiru_controls.dart';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -262,35 +264,23 @@ class _WaveformSeekbarState extends State<WaveformSeekbar>
 
   Widget _buildSlider(AppThemePalette palette) {
     final look = widget._look;
-    return SliderTheme(
-      data: SliderTheme.of(context).copyWith(
-        activeTrackColor: palette.primaryColor,
-        inactiveTrackColor: Colors.white.withValues(
-          alpha: look.sliderInactiveAlpha,
-        ),
-        thumbColor: look.sliderAccentThumb
-            ? palette.primaryColor
-            : Colors.white,
-        thumbShape: RoundSliderThumbShape(
-          enabledThumbRadius: look.sliderThumbRadius,
-        ),
-        trackHeight: 4,
-        overlayColor: palette.primaryColor.withValues(alpha: 0.2),
+    return KiruSlider(
+      sliderStyle: f.FSliderStyleDelta.delta(
+        crossAxisExtent: 4,
+        thumbSize: look.sliderThumbRadius * 2,
       ),
-      child: Slider(
-        value: _currentProgress,
-        onChanged: (val) {
-          setState(() {
-            _isDragging = true;
-            _dragProgress = val;
-          });
-        },
-        onChangeEnd: (val) {
-          setState(() => _isDragging = false);
-          final targetMs = (val * widget.duration.inMilliseconds).round();
-          widget.onSeek(Duration(milliseconds: targetMs));
-        },
-      ),
+      value: _currentProgress,
+      onChanged: (val) {
+        setState(() {
+          _isDragging = true;
+          _dragProgress = val;
+        });
+      },
+      onChangeEnd: (val) {
+        setState(() => _isDragging = false);
+        final targetMs = (val * widget.duration.inMilliseconds).round();
+        widget.onSeek(Duration(milliseconds: targetMs));
+      },
     );
   }
 

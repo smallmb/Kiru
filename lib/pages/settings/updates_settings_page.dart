@@ -1,3 +1,5 @@
+import '../../widgets/ui/kiru_toast.dart';
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
@@ -34,8 +36,8 @@ class _UpdatesSettingsPageState extends State<UpdatesSettingsPage> {
           builder: (context) => UpdateDialog(updateInfo: updateInfo),
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+        KiruToastMessenger.of(context).showSnackBar(
+          KiruToast(
             content: Text(l10nOf(context).uiUpdatesSettingsPageZplayIsUpToDate),
             backgroundColor: context.tokens.accent,
             behavior: SnackBarBehavior.floating,
@@ -44,9 +46,13 @@ class _UpdatesSettingsPageState extends State<UpdatesSettingsPage> {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(l10nOf(context).dynamicUpdatesSettingsPageErrorCheckingUpdates((e).toString())),
+        KiruToastMessenger.of(context).showSnackBar(
+          KiruToast(
+            content: Text(
+              l10nOf(
+                context,
+              ).dynamicUpdatesSettingsPageErrorCheckingUpdates((e).toString()),
+            ),
             backgroundColor: context.tokens.danger,
             behavior: SnackBarBehavior.floating,
           ),
@@ -85,8 +91,12 @@ class _UpdatesSettingsPageState extends State<UpdatesSettingsPage> {
           FutureBuilder<PackageInfo>(
             future: PackageInfo.fromPlatform(),
             builder: (context, snapshot) {
-              final version = snapshot.hasData ? snapshot.data!.version : '1.1.6';
-              final buildNumber = snapshot.hasData ? snapshot.data!.buildNumber : '2019';
+              final version = snapshot.hasData
+                  ? snapshot.data!.version
+                  : '1.1.6';
+              final buildNumber = snapshot.hasData
+                  ? snapshot.data!.buildNumber
+                  : '2019';
               // Deliberately not PackageInfo.appName: on Windows that reads
               // the executable's ProductName, which is a lowercase path
               // segment ("zplay") because path_provider derives
@@ -129,7 +139,12 @@ class _UpdatesSettingsPageState extends State<UpdatesSettingsPage> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                l10nOf(context).dynamicUpdatesSettingsPageInstalledVersionVBuild((version).toString(), (buildNumber).toString()),
+                                l10nOf(
+                                  context,
+                                ).dynamicUpdatesSettingsPageInstalledVersionVBuild(
+                                  (version).toString(),
+                                  (buildNumber).toString(),
+                                ),
                                 style: ZplayType.bodySmall.toStyle(
                                   color: tokens.textSecondary,
                                 ),
@@ -142,7 +157,7 @@ class _UpdatesSettingsPageState extends State<UpdatesSettingsPage> {
                     const SizedBox(height: 18),
                     SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton.icon(
+                      child: KiruButton(
                         onPressed: _isCheckingForUpdates
                             ? null
                             : () => _checkForUpdates(context),
@@ -150,14 +165,18 @@ class _UpdatesSettingsPageState extends State<UpdatesSettingsPage> {
                             ? SizedBox(
                                 width: 16,
                                 height: 16,
-                                child: CircularProgressIndicator(
+                                child: KiruLoader(
                                   strokeWidth: 2,
                                   color: tokens.onAccent,
                                 ),
                               )
                             : const Icon(Icons.refresh_rounded, size: 18),
-                        label: Text(
-                          _isCheckingForUpdates ? l10nOf(context).finalUpdatesSettingsPageCheckingForUpdates : 'Check for Updates',
+                        child: Text(
+                          _isCheckingForUpdates
+                              ? l10nOf(
+                                  context,
+                                ).finalUpdatesSettingsPageCheckingForUpdates
+                              : 'Check for Updates',
                           style: ZplayType.label.toStyle(),
                         ),
                         style: ElevatedButton.styleFrom(
@@ -190,14 +209,18 @@ class _UpdatesSettingsPageState extends State<UpdatesSettingsPage> {
             context: context,
             icon: Icons.verified_rounded,
             title: l10nOf(context).uiUpdatesSettingsPageOfficialStableChannel,
-            subtitle: l10nOf(context).uiUpdatesSettingsPageDirectGithubReleaseDistributionWithAutomated,
+            subtitle: l10nOf(
+              context,
+            ).uiUpdatesSettingsPageDirectGithubReleaseDistributionWithAutomated,
           ),
           const SizedBox(height: 10),
           _buildInfoTile(
             context: context,
             icon: Icons.security_rounded,
             title: l10nOf(context).uiUpdatesSettingsPageSeamlessInAppPatching,
-            subtitle: l10nOf(context).uiUpdatesSettingsPageDownloadsAndAppliesExecutableUpdatesDirectly,
+            subtitle: l10nOf(
+              context,
+            ).uiUpdatesSettingsPageDownloadsAndAppliesExecutableUpdatesDirectly,
           ),
         ],
       ),
@@ -231,9 +254,7 @@ class _UpdatesSettingsPageState extends State<UpdatesSettingsPage> {
               children: [
                 Text(
                   title,
-                  style: ZplayType.subtitle.toStyle(
-                    color: tokens.textPrimary,
-                  ),
+                  style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
                 ),
                 const SizedBox(height: 2),
                 Text(

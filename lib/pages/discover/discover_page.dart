@@ -1,3 +1,4 @@
+import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/media_labels.dart';
 import '../../l10n/l10n.dart';
 
@@ -677,7 +678,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
     if (_items.isEmpty && _isLoading) {
       return Center(
-        child: CircularProgressIndicator(
+        child: KiruLoader(
           color: AppThemeService.currentPalette.value.primaryColor,
         ),
       );
@@ -783,7 +784,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
         itemBuilder: (context, index) {
           if (index == _items.length) {
             return Center(
-              child: CircularProgressIndicator(
+              child: KiruLoader(
                 color: AppThemeService.currentPalette.value.primaryColor,
               ),
             );
@@ -850,7 +851,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
               ),
               const SizedBox(height: ZplaySpacing.s8),
               Text(
-                l10nOf(context).discoverRequiredFields(missing.map((e) => mediaLabel(context, e.name)).join(' & ')),
+                l10nOf(context).discoverRequiredFields(
+                  missing.map((e) => mediaLabel(context, e.name)).join(' & '),
+                ),
                 textAlign: TextAlign.center,
                 style: ZplayType.body.toStyle(color: tokens.textEmphasis),
               ),
@@ -862,7 +865,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 alignment: WrapAlignment.center,
                 children: missing.map((extra) {
                   if (extra.options.isNotEmpty) {
-                    return PopupMenuButton<String>(
+                    return KiruPopupMenu<String>(
                       tooltip: mediaLabel(context, extra.name),
                       constraints: const BoxConstraints(maxHeight: 360),
                       color: tokens.surface,
@@ -899,7 +902,10 @@ class _DiscoverPageState extends State<DiscoverPage> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              l10nOf(context).dynamicDiscoverPageSelect((extra.name[0].toUpperCase()).toString(), (extra.name.substring(1)).toString()),
+                              l10nOf(context).dynamicDiscoverPageSelect(
+                                (extra.name[0].toUpperCase()).toString(),
+                                (extra.name.substring(1)).toString(),
+                              ),
                               style: ZplayType.label
                                   .copyWith(weight: FontWeight.w600)
                                   .toStyle(color: tokens.onAccent),
@@ -915,7 +921,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                       ),
                     );
                   } else {
-                    return ElevatedButton.icon(
+                    return KiruButton(
                       onPressed: () => _showCustomExtraDialog(extra.name),
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
@@ -934,8 +940,10 @@ class _DiscoverPageState extends State<DiscoverPage> {
                         ),
                       ),
                       icon: const Icon(Icons.edit_rounded, size: 16),
-                      label: Text(
-                        l10nOf(context).dynamicDiscoverPageEnter(mediaLabel(context, extra.name)),
+                      child: Text(
+                        l10nOf(context).dynamicDiscoverPageEnter(
+                          mediaLabel(context, extra.name),
+                        ),
                         style: ZplayType.label.toStyle(),
                       ),
                     );
@@ -958,24 +966,28 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
+      builder: (ctx) => KiruAlertDialog(
         backgroundColor: tokens.surfaceOverlay,
         shape: RoundedRectangleBorder(
           borderRadius: ZplayRadius.mdAll,
           side: tokens.hairline,
         ),
         title: Text(
-          l10nOf(context).dynamicDiscoverPageEnter(mediaLabel(context, extraName)),
+          l10nOf(
+            context,
+          ).dynamicDiscoverPageEnter(mediaLabel(context, extraName)),
           style: ZplayType.title.toStyle(color: tokens.textPrimary),
         ),
         content: SizedBox(
           width: (screenWidth - 64).clamp(260.0, 420.0),
-          child: TextField(
+          child: KiruFormField(
             controller: controller,
             autofocus: true,
             style: ZplayType.body.toStyle(color: tokens.textPrimary),
             decoration: InputDecoration(
-              hintText: l10nOf(context).dynamicDiscoverPageTypeHere(mediaLabel(context, extraName)),
+              hintText: l10nOf(
+                context,
+              ).dynamicDiscoverPageTypeHere(mediaLabel(context, extraName)),
               hintStyle: ZplayType.body.toStyle(color: tokens.textDisabled),
               enabledBorder: UnderlineInputBorder(
                 borderSide: tokens.hairlineStrong,
@@ -993,14 +1005,15 @@ class _DiscoverPageState extends State<DiscoverPage> {
           ),
         ),
         actions: [
-          TextButton(
+          KiruButton(
+            kind: KiruButtonKind.ghost,
             onPressed: () => Navigator.pop(ctx),
             child: Text(
               l10nOf(context).uiDiscoverPageCancel,
               style: ZplayType.label.toStyle(color: tokens.textSecondary),
             ),
           ),
-          ElevatedButton(
+          KiruButton(
             style: ElevatedButton.styleFrom(
               backgroundColor:
                   AppThemeService.currentPalette.value.primaryColor,
@@ -1037,7 +1050,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
     final isRequired = extra.isRequired;
     final isSelected = currentVal != null && currentVal.isNotEmpty;
     final label = _isPointerLayout(context) && extra.options.isNotEmpty
-        ? (isSelected ? mediaLabel(context, currentVal) : mediaLabel(context, _extraTitle(extra.name)))
+        ? (isSelected
+              ? mediaLabel(context, currentVal)
+              : mediaLabel(context, _extraTitle(extra.name)))
         : extra.options.isNotEmpty
         ? '${mediaLabel(context, extra.name)}: ${mediaLabel(context, currentVal ?? 'All')}'
         : '${mediaLabel(context, extra.name)}: ${mediaLabel(context, currentVal ?? (isRequired ? 'Required' : 'Enter'))}';
@@ -1073,7 +1088,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 // it says.
                 value: '',
                 child: Text(
-                  l10nOf(context).dynamicDiscoverPageAll(mediaLabel(context, extra.name)),
+                  l10nOf(
+                    context,
+                  ).dynamicDiscoverPageAll(mediaLabel(context, extra.name)),
                   style: ZplayType.body.toStyle(color: tokens.textPrimary),
                 ),
               ),
@@ -1159,7 +1176,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
         '${mediaLabel(context, AddonManager.instance.catalogDisplayName(e.catalog))}'
         '${_selectedType == _adultType ? ' · ${e.addon.manifest.name}' : ''}';
     return _DiscoverPill(
-      label: entry == null ? mediaLabel(context, 'Sort by') : l10nOf(context).discoverSortCatalog(nameOf(entry)),
+      label: entry == null
+          ? mediaLabel(context, 'Sort by')
+          : l10nOf(context).discoverSortCatalog(nameOf(entry)),
       trailing: Icons.keyboard_arrow_down_rounded,
       onActivate: (pill) =>
           _openPillMenu<({InstalledAddon addon, AddonCatalog catalog})>(
@@ -1181,7 +1200,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
                       if (e.catalog.hasRequiredExtra) ...[
                         const SizedBox(width: ZplaySpacing.s8),
                         Text(
-                          l10nOf(context).dynamicDiscoverPageBy((_requiredExtraLabel(e.catalog)).toString()),
+                          l10nOf(context).dynamicDiscoverPageBy(
+                            (_requiredExtraLabel(e.catalog)).toString(),
+                          ),
                           style: ZplayType.label.toStyle(
                             color: tokens.textMuted,
                           ),
@@ -1205,7 +1226,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
     final button = pill.findRenderObject()! as RenderBox;
     final overlay =
         Navigator.of(pill).overlay!.context.findRenderObject()! as RenderBox;
-    final choice = await showMenu<T>(
+    final choice = await showKiruMenu<T>(
       context: pill,
       color: tokens.surface,
       constraints: const BoxConstraints(maxHeight: 360),
@@ -1310,7 +1331,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                   // layout jump in practice: inside the shell the gate is always
                   // false, so the row always starts at the gutter.
                   if (Navigator.of(context).canPop())
-                    IconButton(
+                    KiruIconButton(
                       icon: Icon(
                         Icons.arrow_back_ios_rounded,
                         size: 19,
@@ -1360,7 +1381,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                         padding: const EdgeInsets.symmetric(
                           horizontal: ZplaySpacing.s12,
                         ),
-                        child: TextField(
+                        child: KiruFormField(
                           controller: _searchController,
                           // Never on a television.
                           //
@@ -1384,12 +1405,20 @@ class _DiscoverPageState extends State<DiscoverPage> {
                           decoration: InputDecoration(
                             hintText: isNarrow
                                 ? mediaLabel(context, 'Search...')
-                                : l10nOf(context).discoverSearchWithin(mediaLabel(context, _selectedCatalogEntry?.catalog.name ?? l10nOf(context).discoverDefaultCatalog)),
+                                : l10nOf(context).discoverSearchWithin(
+                                    mediaLabel(
+                                      context,
+                                      _selectedCatalogEntry?.catalog.name ??
+                                          l10nOf(
+                                            context,
+                                          ).discoverDefaultCatalog,
+                                    ),
+                                  ),
                             hintStyle: ZplayType.body.toStyle(
                               color: tokens.textSecondary,
                             ),
                             border: InputBorder.none,
-                            suffixIcon: IconButton(
+                            suffixIcon: KiruIconButton(
                               icon: Icon(
                                 Icons.close_rounded,
                                 size: 18,
@@ -1411,7 +1440,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                       MetadataService.catalogSearchIsTrustworthy(
                         _selectedCatalogEntry?.addon.baseUrl ?? '',
                       ))
-                    IconButton(
+                    KiruIconButton(
                       icon: Icon(
                         Icons.search_rounded,
                         color: tokens.textEmphasis,
@@ -1438,7 +1467,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 // and a way into the catalog's own search. They sit at the start
                 // of the chip row so they cost no row of their own.
                 if (television && Navigator.of(context).canPop()) ...[
-                  IconButton(
+                  KiruIconButton(
                     icon: Icon(
                       Icons.arrow_back_ios_rounded,
                       size: 19,
@@ -1454,7 +1483,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                     MetadataService.catalogSearchIsTrustworthy(
                       _selectedCatalogEntry?.addon.baseUrl ?? '',
                     )) ...[
-                  IconButton(
+                  KiruIconButton(
                     icon: Icon(
                       Icons.search_rounded,
                       color: tokens.textEmphasis,
@@ -1468,8 +1497,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 // Type selector popup/dropdown
                 if (_availableTypes.isNotEmpty) ...[
                   _DiscoverPill(
-                    label:
-                        _localizedCatalogType(context, _selectedType),
+                    label: _localizedCatalogType(context, _selectedType),
                     trailing: Icons.arrow_drop_down,
                     height: television ? selectorH : null,
                     onActivate: (pill) => _openPillMenu<String>(
@@ -1652,7 +1680,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                 // `_buildInlineExtraChip`.
                                 value: '',
                                 child: Text(
-                                  l10nOf(context).dynamicDiscoverPageAll(mediaLabel(context, extra.name)),
+                                  l10nOf(context).dynamicDiscoverPageAll(
+                                    mediaLabel(context, extra.name),
+                                  ),
                                   style: ZplayType.body.toStyle(
                                     color: tokens.textPrimary,
                                   ),
@@ -1736,7 +1766,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
       },
       child: Row(
         children: [
-          IconButton(
+          KiruIconButton(
             icon: Icon(Icons.arrow_back, color: tokens.textPrimary),
             onPressed: () => Navigator.of(context).pop(),
           ),
@@ -1762,7 +1792,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
           children: [
             if (_legacyLoading)
               Center(
-                child: CircularProgressIndicator(
+                child: KiruLoader(
                   color: AppThemeService.currentPalette.value.primaryColor,
                 ),
               )
@@ -1771,7 +1801,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
             else if (_legacySections.isEmpty)
               Center(
                 child: Text(
-                  l10nOf(context).dynamicDiscoverPageNoResultsFoundFor((widget.query).toString()),
+                  l10nOf(context).dynamicDiscoverPageNoResultsFoundFor(
+                    (widget.query).toString(),
+                  ),
                   style: ZplayType.subtitle.toStyle(
                     color: tokens.textSecondary,
                   ),

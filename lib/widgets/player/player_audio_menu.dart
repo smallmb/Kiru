@@ -1,10 +1,10 @@
+import '../ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 import 'package:zplay/l10n/language_labels.dart';
 
 import 'package:flutter/material.dart';
 import 'player_glass.dart';
 import '../../services/theme/design_tokens.dart';
-import '../common/focusable_card.dart';
 
 class PlayerAudioTrack {
   final int index;
@@ -71,7 +71,13 @@ class PlayerAudioMenu extends StatelessWidget {
   String? _getTrackSubtitle(BuildContext context, PlayerAudioTrack track) {
     final parts = <String>[];
     if (track.language != null && track.language!.isNotEmpty) {
-      parts.add(localizedLanguageLabel(context, track.language!, uppercaseFallback: true));
+      parts.add(
+        localizedLanguageLabel(
+          context,
+          track.language!,
+          uppercaseFallback: true,
+        ),
+      );
     }
     if (track.codec != null && track.codec!.isNotEmpty) {
       parts.add(track.codec!.toUpperCase());
@@ -296,7 +302,9 @@ class PlayerAudioMenu extends StatelessWidget {
                           ),
                           const SizedBox(width: ZplaySpacing.s8),
                           Text(
-                            l10nOf(context).uiPlayerAudioMenuDefaultAudioStreamPlaying,
+                            l10nOf(
+                              context,
+                            ).uiPlayerAudioMenuDefaultAudioStreamPlaying,
                             style: ZplayType.label.toStyle(
                               color: tokens.textSecondary,
                             ),
@@ -307,7 +315,7 @@ class PlayerAudioMenu extends StatelessWidget {
             ),
 
             SizedBox(height: isCompactH ? ZplaySpacing.s4 : ZplaySpacing.s8),
-            Divider(color: tokens.borderDefault, height: 1),
+            KiruDivider(color: tokens.borderDefault, height: 1),
             SizedBox(height: isCompactH ? ZplaySpacing.s4 : ZplaySpacing.s8),
 
             // Audio Sync Offset Row
@@ -379,7 +387,7 @@ class PlayerAudioMenu extends StatelessWidget {
                           ),
                           if (delaySec != 0) ...[
                             const SizedBox(width: 6),
-                            FocusableCard(
+                            PlayerTappable(
                               onTap: () => onDelayChanged(0.0),
                               builder: (context, _) => Icon(
                                 Icons.refresh_rounded,
@@ -397,7 +405,8 @@ class PlayerAudioMenu extends StatelessWidget {
                     children: [
                       // -0.5s
                       Expanded(
-                        child: OutlinedButton(
+                        child: KiruButton(
+                          kind: KiruButtonKind.outline,
                           style: OutlinedButton.styleFrom(
                             foregroundColor: tokens.textPrimary,
                             side: BorderSide(color: tokens.borderStrong),
@@ -426,7 +435,8 @@ class PlayerAudioMenu extends StatelessWidget {
                       const SizedBox(width: ZplaySpacing.s4),
                       // -0.1s
                       Expanded(
-                        child: OutlinedButton(
+                        child: KiruButton(
+                          kind: KiruButtonKind.outline,
                           style: OutlinedButton.styleFrom(
                             foregroundColor: tokens.textPrimary,
                             side: BorderSide(color: tokens.borderStrong),
@@ -455,7 +465,8 @@ class PlayerAudioMenu extends StatelessWidget {
                       const SizedBox(width: ZplaySpacing.s4),
                       // +0.1s
                       Expanded(
-                        child: OutlinedButton(
+                        child: KiruButton(
+                          kind: KiruButtonKind.outline,
                           style: OutlinedButton.styleFrom(
                             foregroundColor: tokens.textPrimary,
                             side: BorderSide(color: tokens.borderStrong),
@@ -484,7 +495,8 @@ class PlayerAudioMenu extends StatelessWidget {
                       const SizedBox(width: ZplaySpacing.s4),
                       // +0.5s
                       Expanded(
-                        child: OutlinedButton(
+                        child: KiruButton(
+                          kind: KiruButtonKind.outline,
                           style: OutlinedButton.styleFrom(
                             foregroundColor: tokens.textPrimary,
                             side: BorderSide(color: tokens.borderStrong),
