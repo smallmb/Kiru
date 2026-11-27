@@ -20,6 +20,14 @@
 ///    control agree with itself.
 library;
 
+import 'package:zplay/widgets/immersive/immersive_content_layout.dart';
+import 'package:zplay/widgets/home/hero_banner.dart';
+import 'package:zplay/widgets/common/baked_gradient.dart';
+import 'package:zplay/widgets/common/section_header.dart';
+import 'package:zplay/widgets/common/hover_scroll_rail.dart';
+import 'package:zplay/models/continue_watching/continue_watching_item.dart';
+import 'package:zplay/services/continue_watching/continue_watching_service.dart';
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -27,6 +35,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zplay/pages/home/home_page.dart';
+import 'package:zplay/pages/discover/discover_page.dart';
 import 'package:zplay/services/addon/addon_manager.dart';
 import 'package:zplay/services/home/home_page_settings.dart';
 import 'package:zplay/services/layout/form_factor.dart';
@@ -283,4 +292,98 @@ void main() {
       reason: 'the hero must start exactly one gap under the page row',
     );
   });
+  testWidgets('desktop home merges hero and leading rail on one grid', (
+    tester,
+  ) async {
+    DeviceProfile.debugSetTelevision(value: false);
+    HomePageSettings.heroStyle.value = HeroStyle.immersive;
+    HomePageSettings.enableSpotlight.value = true;
+    final oldItems = ContinueWatchingService.activeItems.value;
+    addTearDown(() => ContinueWatchingService.activeItems.value = oldItems);
+    ContinueWatchingService.activeItems.value = [
+      ContinueWatchingItem(
+        id: 'home-test',
+        title: 'Resume sample',
+        type: 'movie',
+        positionSeconds: 180,
+        totalDurationSeconds: 600,
+        lastWatchedAt: DateTime(2026),
+        isTorrent: false,
+      ),
+    ];
+    await _mountHome(
+      tester,
+      physicalSize: const Size(1440, 900),
+      devicePixelRatio: 1,
+    );
+    await _settle(tester);
+    final scope = tester.widget<ImmersiveContentLayout>(
+      find.byType(ImmersiveContentLayout),
+    );
+    expect(scope.gutter, 48);
+    expect(scope.overlap, 108);
+    expect(find.byType(ImmersiveHeroGroup), findsOneWidget);
+    final hero = tester.getRect(find.byType(HeroBanner));
+    final rail = tester.getRect(find.byType(ContinueWatchingSlider));
+    expect(rail.top, closeTo(hero.bottom, 1));
+    final vertical = find.descendant(
+      of: find.byType(HeroBanner),
+      matching: find.byWidgetPredicate(
+        (w) => w is BakedGradient && w.axis == Axis.vertical,
+      ),
+    );
+    expect(vertical, findsWidgets);
+    final art = tester.getRect(vertical.first);
+    expect(art.bottom, closeTo(rail.top + scope.overlap, 1));
+    final gradient = tester.widget<BakedGradient>(vertical.first).gradient;
+    expect(gradient.colors.last.a, 1);
+    final header = find.descendant(
+      of: find.byType(ContinueWatchingSlider),
+      matching: find.byType(SectionHeader),
+    );
+    expect(
+      tester
+          .getTopLeft(
+            find.descendant(of: header, matching: find.byType(Text)).first,
+          )
+          .dx,
+      closeTo(scope.gutter, 1),
+    );
+    final slider = tester.widget<HoverScrollRail>(
+      find.descendant(
+        of: find.byType(ContinueWatchingSlider),
+        matching: find.byType(HoverScrollRail),
+      ),
+    );
+    expect(slider.padding, EdgeInsets.symmetric(horizontal: scope.gutter));
+    expect(find.text('Resume sample'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets(
+    'migrated film hub keeps the original rails and opens the catalogue',
+    (tester) async {
+      DeviceProfile.debugSetTelevision(value: false);
+      tester.view.physicalSize = const Size(1440, 1000);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(const MaterialApp(home: HomePage(filmHub: true)));
+      await _settle(tester);
+      expect(find.byType(HeroBanner), findsOneWidget);
+      final entry = find.byKey(const ValueKey('kiru-film-catalog-entry'));
+      await tester.scrollUntilVisible(
+        entry,
+        180,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(entry, findsOneWidget);
+      await tester.ensureVisible(entry);
+      await tester.tap(entry);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 600));
+      expect(find.byType(DiscoverPage), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
 }

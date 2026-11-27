@@ -1,3 +1,4 @@
+import '../immersive/immersive_content_layout.dart';
 import '../ui/kiru_controls.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -100,16 +101,23 @@ class _ContinueWatchingSliderState extends State<ContinueWatchingSlider> {
 
         if (items.isEmpty) return const SizedBox.shrink();
 
+        final layout = ImmersiveContentLayout.maybeOf(context);
         final screenWidth = MediaQuery.sizeOf(context).width;
         final cardWidth = screenWidth > 900
             ? 280.0
             : screenWidth > 600
             ? 240.0
             : 200.0;
-        final cardHeight = cardWidth * 0.62 + 60.0;
+        final cardHeight = layout == null
+            ? cardWidth * 0.62 + 60.0
+            : cardWidth * 9 / 16 + 64;
 
         return Padding(
-          padding: const EdgeInsets.only(bottom: ZplaySpacing.s24),
+          padding: EdgeInsets.only(
+            bottom: layout == null
+                ? ZplaySpacing.s24
+                : ImmersiveContentLayout.railGap,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -125,8 +133,8 @@ class _ContinueWatchingSliderState extends State<ContinueWatchingSlider> {
               // always used for its arrows.
               HoverScrollRail(
                 height: cardHeight,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: ZplaySpacing.s16,
+                padding: EdgeInsets.symmetric(
+                  horizontal: layout?.gutter ?? ZplaySpacing.s16,
                 ),
                 spacing: ZplaySpacing.s16,
                 edgeTolerance: HoverScrollRail.slopEdgeTolerance,
@@ -326,7 +334,11 @@ class _ContinueWatchingCardState extends State<_ContinueWatchingCard> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final item = widget.item;
-    final imgHeight = widget.width * 0.58;
+    final immersive = ImmersiveContentLayout.maybeOf(context) != null;
+    final imgHeight = widget.width * (immersive ? 9 / 16 : 0.58);
+    final radius = immersive
+        ? BorderRadius.circular(ImmersiveContentLayout.artworkRadius)
+        : ZplayRadius.mdAll;
     final progress = item.progressPercent;
     final imageUrl = item.backdropUrl ?? item.posterUrl;
 
@@ -347,7 +359,7 @@ class _ContinueWatchingCardState extends State<_ContinueWatchingCard> {
         focusNode: _cardNode,
         builder: (_, state) => CardFocusRing(
           focused: state.focused,
-          radius: ZplayRadius.mdAll,
+          radius: radius,
           child: AnimatedContainer(
             duration: ZplayMotion.base,
             curve: ZplayMotion.standard,
@@ -358,323 +370,330 @@ class _ContinueWatchingCardState extends State<_ContinueWatchingCard> {
                 ? Matrix4.diagonal3Values(1.02, 1.02, 1.0)
                 : Matrix4.identity(),
             transformAlignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: tokens.surface.withValues(alpha: 0.75),
-              borderRadius: ZplayRadius.mdAll,
-              border: Border.all(
-                color: state.highlighted
-                    ? tokens.borderStrong
-                    : tokens.borderDefault,
-                width: 1.0,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(
-                    alpha: state.highlighted ? 0.45 : 0.30,
+            decoration: immersive
+                ? null
+                : BoxDecoration(
+                    color: tokens.surface.withValues(alpha: 0.75),
+                    borderRadius: ZplayRadius.mdAll,
+                    border: Border.all(
+                      color: state.highlighted
+                          ? tokens.borderStrong
+                          : tokens.borderDefault,
+                      width: 1.0,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(
+                          alpha: state.highlighted ? 0.45 : 0.30,
+                        ),
+                        blurRadius: state.highlighted ? 24 : 16,
+                        offset: Offset(0, state.highlighted ? 12 : 8),
+                      ),
+                    ],
                   ),
-                  blurRadius: state.highlighted ? 24 : 16,
-                  offset: Offset(0, state.highlighted ? 12 : 8),
-                ),
-              ],
-            ),
             child: ClipRRect(
-              borderRadius: ZplayRadius.mdAll,
+              borderRadius: immersive ? BorderRadius.zero : radius,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Backdrop / Thumbnail with Play Overlay & Badge
-                  Stack(
-                    children: [
-                      Container(
-                        width: widget.width,
-                        height: imgHeight,
-                        color: tokens.surface,
-                        child: imageUrl != null && imageUrl.isNotEmpty
-                            ? CachedNetworkImage(
-                                imageUrl: imageUrl,
-                                cacheManager: AppImageCache.manager,
-                                // Thumb is widget.width (200-280px) 16:9; bound to ~3x.
-                                memCacheWidth: (widget.width * 3)
-                                    .round()
-                                    .clamp(96, 1280)
-                                    .toInt(),
-                                memCacheHeight: (imgHeight * 3)
-                                    .round()
-                                    .clamp(96, 1280)
-                                    .toInt(),
-                                fit: BoxFit.cover,
-                                errorWidget: (_, __, ___) =>
-                                    _buildPlaceholder(context),
-                              )
-                            : _buildPlaceholder(context),
-                      ),
+                  ClipRRect(
+                    borderRadius: immersive ? radius : BorderRadius.zero,
+                    child: Stack(
+                      children: [
+                        Container(
+                          width: widget.width,
+                          height: imgHeight,
+                          color: tokens.surface,
+                          child: imageUrl != null && imageUrl.isNotEmpty
+                              ? CachedNetworkImage(
+                                  imageUrl: imageUrl,
+                                  cacheManager: AppImageCache.manager,
+                                  // Thumb is widget.width (200-280px) 16:9; bound to ~3x.
+                                  memCacheWidth: (widget.width * 3)
+                                      .round()
+                                      .clamp(96, 1280)
+                                      .toInt(),
+                                  memCacheHeight: (imgHeight * 3)
+                                      .round()
+                                      .clamp(96, 1280)
+                                      .toInt(),
+                                  fit: BoxFit.cover,
+                                  errorWidget: (_, __, ___) =>
+                                      _buildPlaceholder(context),
+                                )
+                              : _buildPlaceholder(context),
+                        ),
 
-                      // Gradient overlay
-                      Positioned.fill(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.transparent,
-                                tokens.bg.withValues(alpha: 0.6),
+                        // Gradient overlay
+                        Positioned.fill(
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.transparent,
+                                  tokens.bg.withValues(alpha: 0.6),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        // Play button: permanently visible where there is no
+                        // pointer to reveal it, hover-revealed where there is.
+                        // Scale tracks the same rule so it never rests half-sized.
+                        Positioned.fill(
+                          child: Center(
+                            child: Builder(
+                              builder: (context) {
+                                final revealed =
+                                    state.highlighted ||
+                                    !continueWatchingHasPointer();
+                                return AnimatedScale(
+                                  scale: revealed ? 1.0 : 0.8,
+                                  duration: const Duration(milliseconds: 180),
+                                  child: AnimatedOpacity(
+                                    opacity: revealed ? 1.0 : 0.0,
+                                    duration: const Duration(milliseconds: 180),
+                                    child: Container(
+                                      width: 44,
+                                      height: 44,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: tokens.accent,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: tokens.accent.withValues(
+                                              alpha: 0.5,
+                                            ),
+                                            blurRadius: 14,
+                                          ),
+                                        ],
+                                      ),
+                                      child: Icon(
+                                        Icons.play_arrow_rounded,
+                                        color: tokens.textPrimary,
+                                        size: 28,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+
+                        // On a television the corner icons cannot be reached, so
+                        // the focused card says how to get at the same actions.
+                        if (FormFactorService.hasRemoteInput)
+                          Positioned(
+                            top: ZplaySpacing.s8,
+                            right: ZplaySpacing.s8,
+                            child: AnimatedOpacity(
+                              opacity: state.focused ? 1.0 : 0.0,
+                              duration: ZplayMotion.fast,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: ZplaySpacing.s8,
+                                  vertical: ZplaySpacing.s4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: tokens.bg.withValues(alpha: 0.8),
+                                  borderRadius: ZplayRadius.xsAll,
+                                ),
+                                child: Text(
+                                  l10nOf(
+                                    context,
+                                  ).uiContinueWatchingSliderHoldOkForOptions,
+                                  style: ZplayType.label.toStyle(
+                                    color: tokens.textPrimary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        else
+                          // Action Buttons (Top-Right: always on mobile, on highlight on desktop)
+                          Positioned(
+                            top: ZplaySpacing.s8,
+                            right: ZplaySpacing.s8,
+                            child: AnimatedOpacity(
+                              opacity:
+                                  (state.highlighted ||
+                                      !continueWatchingHasPointer())
+                                  ? 1.0
+                                  : 0.0,
+                              duration: const Duration(milliseconds: 180),
+                              child: IgnorePointer(
+                                ignoring:
+                                    !(state.highlighted ||
+                                        !continueWatchingHasPointer()),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    // Details Button
+                                    KiruTooltip(
+                                      message: l10nOf(
+                                        context,
+                                      ).uiContinueWatchingSliderViewDetails,
+                                      child: FocusableCard(
+                                        onTap: () => _openDetails(context),
+                                        builder: (_, state) => Container(
+                                          padding: const EdgeInsets.all(
+                                            ZplaySpacing.s4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: tokens.bg.withValues(
+                                              alpha: 0.75,
+                                            ),
+                                            border: Border.all(
+                                              color: tokens.borderStrong,
+                                              width: 0.8,
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            Icons.info_outline_rounded,
+                                            size: 14,
+                                            color: tokens.textPrimary,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: ZplaySpacing.s8),
+                                    // Dismiss / Remove Button
+                                    KiruTooltip(
+                                      message: l10nOf(
+                                        context,
+                                      ).uiContinueWatchingSliderRemoveFromContinueWatching,
+                                      child: FocusableCard(
+                                        onTap: widget.onRemove,
+                                        builder: (_, state) => Container(
+                                          padding: const EdgeInsets.all(
+                                            ZplaySpacing.s4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: tokens.bg.withValues(
+                                              alpha: 0.75,
+                                            ),
+                                            border: Border.all(
+                                              color: tokens.borderStrong,
+                                              width: 0.8,
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            Icons.close_rounded,
+                                            size: 14,
+                                            color: tokens.textPrimary,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        // Source Tag (Top-Left)
+                        Positioned(
+                          top: ZplaySpacing.s8,
+                          left: ZplaySpacing.s8,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: ZplaySpacing.s8,
+                              vertical: ZplaySpacing.s2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: tokens.bg.withValues(alpha: 0.65),
+                              borderRadius: ZplayRadius.xsAll,
+                              border: Border.all(
+                                color: tokens.borderStrong,
+                                width: 0.6,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  item.isTorrent
+                                      ? Icons.cloud_download_rounded
+                                      : Icons.link_rounded,
+                                  size: 10,
+                                  color: item.isTorrent
+                                      ? tokens.info
+                                      : tokens.success,
+                                ),
+                                const SizedBox(width: ZplaySpacing.s4),
+                                Text(
+                                  item.addonName ??
+                                      (item.isTorrent ? 'Torrent' : 'Stream'),
+                                  style: ZplayType.overline.toStyle(
+                                    color: tokens.textPrimary,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                         ),
-                      ),
 
-                      // Play button: permanently visible where there is no
-                      // pointer to reveal it, hover-revealed where there is.
-                      // Scale tracks the same rule so it never rests half-sized.
-                      Positioned.fill(
-                        child: Center(
-                          child: Builder(
-                            builder: (context) {
-                              final revealed =
-                                  state.highlighted ||
-                                  !continueWatchingHasPointer();
-                              return AnimatedScale(
-                                scale: revealed ? 1.0 : 0.8,
-                                duration: const Duration(milliseconds: 180),
-                                child: AnimatedOpacity(
-                                  opacity: revealed ? 1.0 : 0.0,
-                                  duration: const Duration(milliseconds: 180),
-                                  child: Container(
-                                    width: 44,
-                                    height: 44,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: tokens.accent,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: tokens.accent.withValues(
-                                            alpha: 0.5,
-                                          ),
-                                          blurRadius: 14,
-                                        ),
-                                      ],
-                                    ),
-                                    child: Icon(
-                                      Icons.play_arrow_rounded,
-                                      color: tokens.textPrimary,
-                                      size: 28,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-
-                      // On a television the corner icons cannot be reached, so
-                      // the focused card says how to get at the same actions.
-                      if (FormFactorService.hasRemoteInput)
+                        // Remaining time / Percentage (Bottom-Right)
                         Positioned(
-                          top: ZplaySpacing.s8,
+                          bottom: ZplaySpacing.s8,
                           right: ZplaySpacing.s8,
-                          child: AnimatedOpacity(
-                            opacity: state.focused ? 1.0 : 0.0,
-                            duration: ZplayMotion.fast,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: ZplaySpacing.s8,
-                                vertical: ZplaySpacing.s4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: tokens.bg.withValues(alpha: 0.8),
-                                borderRadius: ZplayRadius.xsAll,
-                              ),
-                              child: Text(
-                                l10nOf(
-                                  context,
-                                ).uiContinueWatchingSliderHoldOkForOptions,
-                                style: ZplayType.label.toStyle(
-                                  color: tokens.textPrimary,
-                                ),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: ZplaySpacing.s8,
+                              vertical: ZplaySpacing.s2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: tokens.bg.withValues(alpha: 0.75),
+                              borderRadius: ZplayRadius.xsAll,
+                            ),
+                            child: Text(
+                              item.remainingMinutes > 0
+                                  ? '${item.remainingMinutes}m left'
+                                  : '${(progress * 100).toInt()}%',
+                              style: ZplayType.caption.toStyle(
+                                color: tokens.textPrimary,
                               ),
                             ),
                           ),
-                        )
-                      else
-                        // Action Buttons (Top-Right: always on mobile, on highlight on desktop)
+                        ),
+
+                        // Bottom Progress Bar
                         Positioned(
-                          top: ZplaySpacing.s8,
-                          right: ZplaySpacing.s8,
-                          child: AnimatedOpacity(
-                            opacity:
-                                (state.highlighted ||
-                                    !continueWatchingHasPointer())
-                                ? 1.0
-                                : 0.0,
-                            duration: const Duration(milliseconds: 180),
-                            child: IgnorePointer(
-                              ignoring:
-                                  !(state.highlighted ||
-                                      !continueWatchingHasPointer()),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  // Details Button
-                                  KiruTooltip(
-                                    message: l10nOf(
-                                      context,
-                                    ).uiContinueWatchingSliderViewDetails,
-                                    child: FocusableCard(
-                                      onTap: () => _openDetails(context),
-                                      builder: (_, state) => Container(
-                                        padding: const EdgeInsets.all(
-                                          ZplaySpacing.s4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: tokens.bg.withValues(
-                                            alpha: 0.75,
-                                          ),
-                                          border: Border.all(
-                                            color: tokens.borderStrong,
-                                            width: 0.8,
-                                          ),
-                                        ),
-                                        child: Icon(
-                                          Icons.info_outline_rounded,
-                                          size: 14,
-                                          color: tokens.textPrimary,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: ZplaySpacing.s8),
-                                  // Dismiss / Remove Button
-                                  KiruTooltip(
-                                    message: l10nOf(
-                                      context,
-                                    ).uiContinueWatchingSliderRemoveFromContinueWatching,
-                                    child: FocusableCard(
-                                      onTap: widget.onRemove,
-                                      builder: (_, state) => Container(
-                                        padding: const EdgeInsets.all(
-                                          ZplaySpacing.s4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: tokens.bg.withValues(
-                                            alpha: 0.75,
-                                          ),
-                                          border: Border.all(
-                                            color: tokens.borderStrong,
-                                            width: 0.8,
-                                          ),
-                                        ),
-                                        child: Icon(
-                                          Icons.close_rounded,
-                                          size: 14,
-                                          color: tokens.textPrimary,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                          left: immersive ? 8 : 0,
+                          right: immersive ? 8 : 0,
+                          bottom: immersive ? 8 : 0,
+                          child: Container(
+                            height: 3.5,
+                            color: tokens.textPrimary.withValues(
+                              alpha: ZplayOpacity.overlayHover,
                             ),
-                          ),
-                        ),
-                      // Source Tag (Top-Left)
-                      Positioned(
-                        top: ZplaySpacing.s8,
-                        left: ZplaySpacing.s8,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: ZplaySpacing.s8,
-                            vertical: ZplaySpacing.s2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: tokens.bg.withValues(alpha: 0.65),
-                            borderRadius: ZplayRadius.xsAll,
-                            border: Border.all(
-                              color: tokens.borderStrong,
-                              width: 0.6,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                item.isTorrent
-                                    ? Icons.cloud_download_rounded
-                                    : Icons.link_rounded,
-                                size: 10,
-                                color: item.isTorrent
-                                    ? tokens.info
-                                    : tokens.success,
-                              ),
-                              const SizedBox(width: ZplaySpacing.s4),
-                              Text(
-                                item.addonName ??
-                                    (item.isTorrent ? 'Torrent' : 'Stream'),
-                                style: ZplayType.overline.toStyle(
-                                  color: tokens.textPrimary,
+                            alignment: Alignment.centerLeft,
+                            child: FractionallySizedBox(
+                              widthFactor: progress,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: tokens.accent,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: tokens.accent.withValues(
+                                        alpha: 0.6,
+                                      ),
+                                      blurRadius: 4,
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      // Remaining time / Percentage (Bottom-Right)
-                      Positioned(
-                        bottom: ZplaySpacing.s8,
-                        right: ZplaySpacing.s8,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: ZplaySpacing.s8,
-                            vertical: ZplaySpacing.s2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: tokens.bg.withValues(alpha: 0.75),
-                            borderRadius: ZplayRadius.xsAll,
-                          ),
-                          child: Text(
-                            item.remainingMinutes > 0
-                                ? '${item.remainingMinutes}m left'
-                                : '${(progress * 100).toInt()}%',
-                            style: ZplayType.caption.toStyle(
-                              color: tokens.textPrimary,
                             ),
                           ),
                         ),
-                      ),
-
-                      // Bottom Progress Bar
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                          height: 3.5,
-                          color: tokens.textPrimary.withValues(
-                            alpha: ZplayOpacity.overlayHover,
-                          ),
-                          alignment: Alignment.centerLeft,
-                          child: FractionallySizedBox(
-                            widthFactor: progress,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: tokens.accent,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: tokens.accent.withValues(alpha: 0.6),
-                                    blurRadius: 4,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
 
                   // Title and Episode Metadata
@@ -683,8 +702,8 @@ class _ContinueWatchingCardState extends State<_ContinueWatchingCard> {
                   // stay their own nodes.
                   ExcludeSemantics(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: ZplaySpacing.s8,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: immersive ? 0 : ZplaySpacing.s8,
                         vertical: ZplaySpacing.s8,
                       ),
                       child: Column(

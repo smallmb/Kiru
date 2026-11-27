@@ -1,3 +1,4 @@
+import '../../widgets/common/desktop_caption_area.dart';
 import '../../widgets/ui/kiru_tappable.dart';
 import '../../widgets/ui/kiru_toast.dart';
 import '../../widgets/player/player_glass.dart';
@@ -793,6 +794,13 @@ class _WatchScreenState extends State<WatchScreen>
               ? _buildDesktopLayout(screenSize)
               : _buildMobileLayout(screenSize),
         ),
+        if (isDesktop)
+          const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: DesktopCaptionBand(key: ValueKey('kiru-watch-caption-drag')),
+          ),
         Positioned(
           top: MediaQuery.of(context).padding.top + 8,
           left: 12,

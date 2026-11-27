@@ -227,6 +227,69 @@ void main() {
     expect(calls, isNot(contains('startDragging')));
   }, skip: !Platform.isWindows);
 
+  testWidgets('caption hover stays rounded and window actions still work', (
+    tester,
+  ) async {
+    final calls = <String>[];
+    var maximized = false;
+    const channel = MethodChannel('window_manager');
+    final messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      calls.add(call.method);
+      if (call.method == 'maximize') maximized = true;
+      if (call.method == 'unmaximize') maximized = false;
+      return switch (call.method) {
+        'isFullScreen' => false,
+        'isMaximized' => maximized,
+        _ => null,
+      };
+    });
+    addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+    await pumpRail(tester, const Size(1920, 1080));
+    final close = find.byKey(const ValueKey('kiru-caption-close-surface'));
+    final idle =
+        tester.widget<AnimatedContainer>(close).decoration as BoxDecoration;
+    expect(idle.color!.a, 0);
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    await mouse.addPointer(location: tester.getCenter(close));
+    await tester.pump(const Duration(milliseconds: 150));
+    final hover =
+        tester.widget<AnimatedContainer>(close).decoration as BoxDecoration;
+    expect(hover.color!.a, closeTo(.08, .01));
+    expect(hover.borderRadius, BorderRadius.circular(10));
+    expect(tester.getSize(close), const Size(36, 34));
+    await mouse.removePointer();
+    await tester.pump(const Duration(milliseconds: 150));
+    await tester.tap(find.byIcon(Icons.remove_rounded));
+    await tester.pump(const Duration(milliseconds: 150));
+    await tester.tap(find.byIcon(Icons.crop_square_rounded));
+    await tester.pump(const Duration(milliseconds: 150));
+    await tester.tap(find.byIcon(Icons.filter_none_rounded));
+    await tester.pump(const Duration(milliseconds: 150));
+    await tester.tap(close);
+    await tester.pump(const Duration(milliseconds: 150));
+    expect(
+      calls,
+      containsAllInOrder(['minimize', 'maximize', 'unmaximize', 'close']),
+    );
+    expect(calls, isNot(contains('startDragging')));
+    expect(tester.takeException(), isNull);
+  }, skip: !Platform.isWindows);
+
+  testWidgets('desktop search has a compact responsive width', (tester) async {
+    final surface = find.byKey(const ValueKey('kiru-header-search-surface'));
+    for (final width in [1100.0, 1440.0, 1920.0]) {
+      await pumpRail(tester, Size(width, 900));
+      expect(
+        tester.getSize(surface).width,
+        closeTo((width * .18).clamp(160.0, 280.0), .01),
+      );
+      expect(tester.getSize(surface).height, 38);
+      expect(tester.takeException(), isNull);
+    }
+  });
+
   testWidgets('header search accepts and submits keywords', (tester) async {
     String? query;
     await pumpRail(

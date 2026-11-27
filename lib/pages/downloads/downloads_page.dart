@@ -1,3 +1,6 @@
+import '../../widgets/immersive/library_chrome.dart';
+import '../../widgets/common/tab_strip.dart';
+import '../../widgets/common/desktop_caption_area.dart';
 import '../../widgets/ui/kiru_toast.dart';
 import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
@@ -22,18 +25,22 @@ import '../../widgets/common/focusable_card.dart';
 import '../../widgets/common/segmented_tabs.dart';
 
 class DownloadsPage extends StatefulWidget {
-  const DownloadsPage({super.key});
+  const DownloadsPage({super.key, this.embedded = false, this.libraryTabs});
+  final Widget? libraryTabs;
+  final bool embedded;
 
   @override
   State<DownloadsPage> createState() => _DownloadsPageState();
 }
 
 /// Which transfer list the page shows. Only the selected one is built.
-enum DownloadTab { active, downloaded }
+enum DownloadTab { active, downloaded, all, failed }
 
 class _DownloadsPageState extends State<DownloadsPage> {
   /// The list the switcher is on. Changing it only swaps the content slivers.
-  DownloadTab _tab = DownloadTab.active;
+  late DownloadTab _tab = widget.libraryTabs == null
+      ? DownloadTab.active
+      : DownloadTab.all;
 
   /// Device capacity for the partition downloads land on, or null while it is
   /// being measured and whenever it cannot be determined. The meter is only
@@ -153,71 +160,147 @@ class _DownloadsPageState extends State<DownloadsPage> {
       builder: (context, palette, _) {
         final tokens = context.tokens;
         return Scaffold(
-          backgroundColor: tokens.bg,
-          body: AnimatedAmbientBackground(
-            child: ValueListenableBuilder<List<DownloadTask>>(
+          backgroundColor: widget.libraryTabs != null
+              ? Colors.transparent
+              : tokens.bg,
+          body: _background(
+            ValueListenableBuilder<List<DownloadTask>>(
               valueListenable: DownloadService.instance.tasksNotifier,
               builder: (context, tasks, _) {
-                final activeCount = tasks
-                    .where((t) => !t.isCompleted && !t.isFailed)
-                    .length;
+                final activeCount = tasks.where((t) => !t.isCompleted).length;
                 final completedCount = tasks.where((t) => t.isCompleted).length;
                 final activeTasks = tasks.where((t) => !t.isCompleted).toList();
                 final completedTasks = tasks
                     .where((t) => t.isCompleted)
                     .toList();
 
-                return CustomScrollView(
+                Widget scroll(double inset) => CustomScrollView(
+                  key: const PageStorageKey('kiru-library-download-scroll'),
+                  primary: false,
                   physics: const BouncingScrollPhysics(
                     parent: AlwaysScrollableScrollPhysics(),
                   ),
                   slivers: [
-                    SliverToBoxAdapter(
-                      child: _buildHeader(tokens, activeCount, completedCount),
-                    ),
+                    if (widget.embedded)
+                      SliverToBoxAdapter(child: SizedBox(height: inset)),
+                    if (widget.libraryTabs == null)
+                      SliverToBoxAdapter(
+                        child: _buildHeader(
+                          tokens,
+                          activeCount,
+                          completedCount,
+                        ),
+                      ),
+                    if (widget.libraryTabs != null)
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: libraryGutter(context),
+                            vertical: 8,
+                          ),
+                          child: Text(
+                            l10nOf(
+                              context,
+                            ).downloadsSummary(activeCount, completedCount),
+                            style: ZplayType.caption.toStyle(
+                              color: tokens.textMuted,
+                            ),
+                          ),
+                        ),
+                      ),
                     if (_storageInfo != null)
                       SliverToBoxAdapter(
                         child: _StorageBreakdownBar(info: _storageInfo!),
                       ),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(
-                          ZplaySpacing.s20,
-                          ZplaySpacing.s16,
-                          ZplaySpacing.s20,
-                          ZplaySpacing.s4,
-                        ),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: SegmentedTabs<DownloadTab>(
-                            semanticsLabel: l10nOf(
-                              context,
-                            ).uiDownloadsPageDownloadList,
-                            selected: _tab,
-                            onSelected: (tab) => setState(() => _tab = tab),
-                            options: [
-                              SegmentedTabOption(
-                                value: DownloadTab.active,
-                                label: l10nOf(context).uiDownloadsPageActive,
-                                count: activeCount,
-                              ),
-                              SegmentedTabOption(
-                                value: DownloadTab.downloaded,
-                                label: l10nOf(
-                                  context,
-                                ).uiDownloadsPageDownloaded,
-                                count: completedCount,
-                              ),
-                            ],
+                    if (widget.libraryTabs == null)
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            ZplaySpacing.s20,
+                            ZplaySpacing.s16,
+                            ZplaySpacing.s20,
+                            ZplaySpacing.s4,
+                          ),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: SegmentedTabs<DownloadTab>(
+                              semanticsLabel: l10nOf(
+                                context,
+                              ).uiDownloadsPageDownloadList,
+                              selected: _tab,
+                              onSelected: (tab) => setState(() => _tab = tab),
+                              options: [
+                                SegmentedTabOption(
+                                  value: DownloadTab.active,
+                                  label: l10nOf(context).uiDownloadsPageActive,
+                                  count: activeCount,
+                                ),
+                                SegmentedTabOption(
+                                  value: DownloadTab.downloaded,
+                                  label: l10nOf(
+                                    context,
+                                  ).uiDownloadsPageDownloaded,
+                                  count: completedCount,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    if (_tab == DownloadTab.active)
-                      _buildActiveList(activeTasks, palette)
+                    if (_tab == DownloadTab.all) ...[
+                      if (activeTasks.isNotEmpty || completedTasks.isEmpty)
+                        _buildActiveList(activeTasks, palette),
+                      if (completedTasks.isNotEmpty)
+                        _buildCompletedList(completedTasks, palette),
+                    ] else if (_tab == DownloadTab.failed)
+                      _buildActiveList(
+                        activeTasks.where((t) => t.isFailed).toList(),
+                        palette,
+                      )
+                    else if (_tab == DownloadTab.active)
+                      _buildActiveList(
+                        widget.libraryTabs == null
+                            ? activeTasks
+                            : activeTasks.where((t) => !t.isFailed).toList(),
+                        palette,
+                      )
                     else
                       _buildCompletedList(completedTasks, palette),
                   ],
+                );
+                if (widget.libraryTabs == null) {
+                  return scroll(MediaQuery.paddingOf(context).top);
+                }
+                final zh = Localizations.localeOf(context).languageCode == 'zh';
+                return LibraryChrome(
+                  tabs: widget.libraryTabs!,
+                  actions: _folderButton(tokens),
+                  filters: SizedBox(
+                    height: 44,
+                    child: TabStrip<DownloadTab>(
+                      options: [
+                        TabStripOption(
+                          value: DownloadTab.all,
+                          label: l10nOf(context).uiMyListPageAll,
+                        ),
+                        TabStripOption(
+                          value: DownloadTab.active,
+                          label: l10nOf(context).uiDownloadsPageActive,
+                        ),
+                        TabStripOption(
+                          value: DownloadTab.downloaded,
+                          label: l10nOf(context).uiDownloadsPageDownloaded,
+                        ),
+                        TabStripOption(
+                          value: DownloadTab.failed,
+                          label: zh ? '\u5931\u8d25' : 'Failed',
+                        ),
+                      ],
+                      selected: _tab,
+                      onSelected: (tab) => setState(() => _tab = tab),
+                    ),
+                  ),
+                  contentBuilder: scroll,
                 );
               },
             ),
@@ -234,53 +317,62 @@ class _DownloadsPageState extends State<DownloadsPage> {
     return Padding(
       padding: EdgeInsets.fromLTRB(
         ZplaySpacing.s20,
-        MediaQuery.paddingOf(context).top + ZplaySpacing.s12,
+        (widget.embedded ? 0 : MediaQuery.paddingOf(context).top) +
+            ZplaySpacing.s12,
         ZplaySpacing.s8,
         ZplaySpacing.s8,
       ),
       child: Row(
         children: [
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10nOf(context).uiDownloadsPageDownloads,
-                  style: ZplayType.titleLarge.toStyle(
-                    color: tokens.textPrimary,
+            child: DesktopCaptionDrag(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (!widget.embedded)
+                    Text(
+                      l10nOf(context).uiDownloadsPageDownloads,
+                      style: ZplayType.titleLarge.toStyle(
+                        color: tokens.textPrimary,
+                      ),
+                    ),
+                  const SizedBox(height: ZplaySpacing.s2),
+                  Text(
+                    l10nOf(
+                      context,
+                    ).downloadsSummary(activeCount, completedCount),
+                    style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
                   ),
-                ),
-                const SizedBox(height: ZplaySpacing.s2),
-                Text(
-                  l10nOf(context).downloadsSummary(activeCount, completedCount),
-                  style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-          KiruIconButton(
-            icon: Icon(
-              Icons.folder_open_rounded,
-              color: tokens.textSecondary,
-              size: 22,
-            ),
-            tooltip: l10nOf(context).uiDownloadsPageOpenDownloadsFolder,
-            onPressed: () async {
-              final dir = await DownloadPathHelper.getDownloadsDirectoryPath();
-              final opened = await OpenFileLocationHelper.openLocation(dir);
-              if (!opened && mounted) {
-                KiruToastMessenger.of(context).showSnackBar(
-                  KiruToast(
-                    content: Text(l10nOf(context).downloadsFolderPath(dir)),
-                  ),
-                );
-              }
-            },
-          ),
+          _folderButton(tokens),
         ],
       ),
     );
   }
+
+  Widget _background(Widget child) => widget.libraryTabs == null
+      ? AnimatedAmbientBackground(child: child)
+      : child;
+  Widget _folderButton(ZplayTokens tokens) => KiruIconButton(
+    icon: Icon(
+      Icons.folder_open_rounded,
+      color: tokens.textSecondary,
+      size: 22,
+    ),
+    tooltip: l10nOf(context).uiDownloadsPageOpenDownloadsFolder,
+    onPressed: () async {
+      final dir = await DownloadPathHelper.getDownloadsDirectoryPath();
+      final opened = await OpenFileLocationHelper.openLocation(dir);
+      if (!opened && mounted) {
+        KiruToastMessenger.of(context).showSnackBar(
+          KiruToast(content: Text(l10nOf(context).downloadsFolderPath(dir))),
+        );
+      }
+    },
+  );
 
   Widget _buildActiveList(List<DownloadTask> tasks, AppThemePalette palette) {
     final tokens = context.tokens;
@@ -313,8 +405,10 @@ class _DownloadsPageState extends State<DownloadsPage> {
     }
 
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: ZplaySpacing.s16,
+      padding: EdgeInsets.symmetric(
+        horizontal: widget.libraryTabs == null
+            ? ZplaySpacing.s16
+            : libraryGutter(context),
         vertical: ZplaySpacing.s16,
       ),
       sliver: SliverList.separated(
@@ -849,7 +943,8 @@ class _DownloadsPageState extends State<DownloadsPage> {
                           color: tokens.textPrimary,
                         ),
                       ),
-                      const SizedBox(height: ZplaySpacing.s2),
+                      if (!widget.embedded)
+                        const SizedBox(height: ZplaySpacing.s2),
                       Text(
                         task.season != null && task.episode != null
                             ? 'S${task.season}:E${task.episode} • Offline'

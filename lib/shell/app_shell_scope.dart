@@ -20,6 +20,7 @@ import 'package:flutter/widgets.dart';
 import '../pages/browse/browse_page.dart'
     show BrowseVertical, resolveBrowseVertical;
 import '../services/layout/form_factor.dart';
+import '../services/search/unified_search_result.dart';
 import 'app_shell.dart';
 
 // A page retargets an affordance with `AppShellScope.of(context)?.go(ShellSlot.x)`,
@@ -80,10 +81,20 @@ class AppShellController {
   /// Search submitted by the desktop header; consumed by the search page.
   final ValueNotifier<String?> headerSearch = ValueNotifier<String?>(null);
 
+  final searchCategoryRequest = ValueNotifier<SearchCategory?>(null);
+  final searchText = ValueNotifier<String>('');
+
+  void openSearch({SearchCategory category = SearchCategory.all}) {
+    if (go(ShellSlot.search)) searchCategoryRequest.value = category;
+  }
+
   void searchFromHeader(String query) {
+    final alreadySearching = current.value == ShellSlot.search;
     if (!go(ShellSlot.search)) return;
+    if (!alreadySearching) searchCategoryRequest.value = SearchCategory.all;
     final value = query.trim();
-    if (value.isNotEmpty) headerSearch.value = value;
+    searchText.value = value;
+    headerSearch.value = value;
   }
 
   final ValueListenable<ShellSlot> _current;
@@ -253,6 +264,8 @@ class AppShellController {
   void dispose() {
     _browseVertical.dispose();
     headerSearch.dispose();
+    searchCategoryRequest.dispose();
+    searchText.dispose();
   }
 }
 

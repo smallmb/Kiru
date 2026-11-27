@@ -1,3 +1,4 @@
+import '../../widgets/common/desktop_caption_area.dart';
 import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -359,6 +360,13 @@ class _AnimeArabicDetailsPageState extends State<AnimeArabicDetailsPage>
             // it: this button is the whole of the top chrome, and it floats on
             // the canvas - no opaque band, no hairline - the way the film details
             // page's back affordance does.
+            if (isDesktop)
+              const Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: DesktopCaptionBand(height: 24),
+              ),
             Positioned(
               top: isDesktop
                   ? ZplaySpacing.s24

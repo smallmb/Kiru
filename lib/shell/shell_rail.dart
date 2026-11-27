@@ -1,7 +1,9 @@
 import '../widgets/ui/kiru_controls.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:flutter/services.dart';
+import 'package:forui/forui.dart' as f;
+import '../services/theme/forui_theme.dart';
 import '../widgets/common/zplay_logo.dart';
 import '../services/content/content_settings.dart';
 import '../services/content/navigation_settings.dart';
@@ -53,6 +55,7 @@ class ShellRail extends StatelessWidget {
     this.browseVertical,
     this.onBrowseVertical,
     this.onSearchSubmitted,
+    this.searchText,
   });
 
   /// Icons the current page lends to the capsule - see
@@ -61,6 +64,7 @@ class ShellRail extends StatelessWidget {
   final ValueListenable<BrowseVertical>? browseVertical;
   final ValueChanged<BrowseVertical>? onBrowseVertical;
   final ValueChanged<String>? onSearchSubmitted;
+  final ValueListenable<String>? searchText;
 
   final ShellSlot current;
   final ValueChanged<ShellSlot> onSelect;
@@ -341,11 +345,12 @@ class ShellRail extends StatelessWidget {
                 const SizedBox(width: 18),
                 if (MediaQuery.sizeOf(context).width >= 1100)
                   _HeaderSearchField(
-                    width: (MediaQuery.sizeOf(context).width * 0.265).clamp(
-                      184.0,
-                      400.0,
+                    width: (MediaQuery.sizeOf(context).width * 0.18).clamp(
+                      160.0,
+                      280.0,
                     ),
                     label: l10n.navSearch,
+                    searchText: searchText,
                     onSubmit:
                         onSearchSubmitted ?? (_) => onSelect(ShellSlot.search),
                   )
@@ -385,8 +390,9 @@ class ShellRail extends StatelessWidget {
                     child: Semantics(
                       button: true,
                       label: l10n.shellMinimizeWindowTooltip,
-                      child: WindowCaptionButton.minimize(
-                        brightness: Theme.of(context).brightness,
+                      child: _KiruCaptionButton(
+                        icon: Icons.remove_rounded,
+
                         onPressed: () {
                           window.minimize();
                         },
@@ -405,14 +411,16 @@ class ShellRail extends StatelessWidget {
                           button: true,
                           label: label,
                           child: isMaximized
-                              ? WindowCaptionButton.unmaximize(
-                                  brightness: Theme.of(context).brightness,
+                              ? _KiruCaptionButton(
+                                  icon: Icons.filter_none_rounded,
+
                                   onPressed: () {
                                     window.toggleMaximize();
                                   },
                                 )
-                              : WindowCaptionButton.maximize(
-                                  brightness: Theme.of(context).brightness,
+                              : _KiruCaptionButton(
+                                  icon: Icons.crop_square_rounded,
+
                                   onPressed: () {
                                     window.toggleMaximize();
                                   },
@@ -426,8 +434,10 @@ class ShellRail extends StatelessWidget {
                     child: Semantics(
                       button: true,
                       label: l10n.shellCloseWindowTooltip,
-                      child: WindowCaptionButton.close(
-                        brightness: Theme.of(context).brightness,
+                      child: _KiruCaptionButton(
+                        icon: Icons.close_rounded,
+                        destructive: true,
+
                         onPressed: () {
                           window.close();
                         },
@@ -1328,10 +1338,12 @@ class _HeaderSearchField extends StatefulWidget {
     required this.width,
     required this.label,
     required this.onSubmit,
+    this.searchText,
   });
   final double width;
   final String label;
   final ValueChanged<String> onSubmit;
+  final ValueListenable<String>? searchText;
   @override
   State<_HeaderSearchField> createState() => _HeaderSearchFieldState();
 }
@@ -1339,8 +1351,36 @@ class _HeaderSearchField extends StatefulWidget {
 class _HeaderSearchFieldState extends State<_HeaderSearchField> {
   final _controller = TextEditingController();
   final _focus = FocusNode();
+  void _syncQuery() {
+    final text = widget.searchText?.value;
+    if (text != null && text != _controller.text) {
+      _controller.value = TextEditingValue(
+        text: text,
+        selection: TextSelection.collapsed(offset: text.length),
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.searchText?.addListener(_syncQuery);
+    _syncQuery();
+  }
+
+  @override
+  void didUpdateWidget(covariant _HeaderSearchField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.searchText != widget.searchText) {
+      oldWidget.searchText?.removeListener(_syncQuery);
+      widget.searchText?.addListener(_syncQuery);
+      _syncQuery();
+    }
+  }
+
   @override
   void dispose() {
+    widget.searchText?.removeListener(_syncQuery);
     _controller.dispose();
     _focus.dispose();
     super.dispose();
@@ -1356,6 +1396,7 @@ class _HeaderSearchFieldState extends State<_HeaderSearchField> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return SizedBox(
+      key: const ValueKey('kiru-header-search-surface'),
       width: widget.width,
       height: 38,
       child: _HeaderGlassSurface(
@@ -1409,4 +1450,78 @@ class _HeaderSearchFieldState extends State<_HeaderSearchField> {
       ),
     );
   }
+}
+
+/// Window actions use the same rounded, translucent feedback as the rest of
+/// Kiru, while retaining the full original 46dp hit target.
+class _KiruCaptionButton extends StatelessWidget {
+  const _KiruCaptionButton({
+    required this.icon,
+    required this.onPressed,
+    this.destructive = false,
+  });
+  final IconData icon;
+  final VoidCallback onPressed;
+  final bool destructive;
+
+  @override
+  Widget build(BuildContext context) =>
+      KiruForuiTheme.ensure(context, (context) {
+        final tokens = context.tokens;
+        return f.FTappable.static(
+          onPress: onPressed,
+          behavior: HitTestBehavior.opaque,
+          shortcuts: const {
+            SingleActivator(LogicalKeyboardKey.enter): ActivateIntent(),
+            SingleActivator(LogicalKeyboardKey.space): ActivateIntent(),
+          },
+          style: f.FTappableStyle(
+            cursor: const f.FVariants.all(SystemMouseCursors.click),
+            motion: f.FTappableMotion.none,
+            pressedEnterDuration: Duration.zero,
+            pressedExitDuration: Duration.zero,
+          ),
+          builder: (context, variants, _) {
+            final pressed = variants.contains(f.FTappableVariant.pressed);
+            final hovered = variants.contains(f.FTappableVariant.hovered);
+            final focused = variants.contains(f.FTappableVariant.focused);
+            final active = pressed || hovered;
+            final foreground = destructive && active
+                ? tokens.danger
+                : tokens.textPrimary;
+            return SizedBox(
+              width: 46,
+              child: Center(
+                child: AnimatedContainer(
+                  key: ValueKey(
+                    destructive
+                        ? 'kiru-caption-close-surface'
+                        : 'kiru-caption-surface',
+                  ),
+                  duration: MediaQuery.disableAnimationsOf(context)
+                      ? Duration.zero
+                      : const Duration(milliseconds: 120),
+                  width: 36,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: tokens.textPrimary.withValues(
+                      alpha: pressed
+                          ? .14
+                          : hovered || focused
+                          ? .08
+                          : 0,
+                    ),
+                    border: focused
+                        ? Border.all(color: tokens.accent, width: 1.5)
+                        : null,
+                  ),
+                  alignment: Alignment.center,
+                  child: Icon(icon, size: 16, color: foreground),
+                ),
+              ),
+            );
+          },
+        );
+      });
 }

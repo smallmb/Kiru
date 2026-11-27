@@ -1,3 +1,4 @@
+import '../../widgets/common/desktop_caption_area.dart';
 import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/media_labels.dart';
 import '../../l10n/l10n.dart';
@@ -952,6 +953,13 @@ class _DetailsPageState extends State<DetailsPage>
             ),
           ),
         ),
+        if (isDesktop)
+          const Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: DesktopCaptionBand(height: 24),
+          ),
         Positioned(
           top: isDesktop ? ZplaySpacing.s24 : (topInset + 10),
           left: isDesktop ? ZplaySpacing.s48 : ZplaySpacing.s16,

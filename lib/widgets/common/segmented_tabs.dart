@@ -14,6 +14,7 @@ class SegmentedTabOption<T> {
     required this.value,
     required this.label,
     this.count,
+    this.icon,
   });
 
   final T value;
@@ -22,6 +23,7 @@ class SegmentedTabOption<T> {
   /// Shown under the label. Null hides the number, for callers whose data has
   /// no meaningful count — a wrong number is worse than none.
   final int? count;
+  final IconData? icon;
 }
 
 /// A single-choice control: equal-width segments, and one accent bar that
@@ -66,6 +68,7 @@ class SegmentedTabs<T> extends StatelessWidget {
 
   /// Defaults to the 44px comfortable minimum target.
   final double height;
+  final bool inlineCounts;
 
   const SegmentedTabs({
     super.key,
@@ -74,6 +77,7 @@ class SegmentedTabs<T> extends StatelessWidget {
     required this.onSelected,
     this.semanticsLabel,
     this.height = 44,
+    this.inlineCounts = false,
   }) : assert(options.length > 1, 'a segmented control needs two or more tabs');
 
   /// The corner radius of a segment, less the [_inset].
@@ -217,6 +221,7 @@ class SegmentedTabs<T> extends StatelessWidget {
                         width: segmentWidth,
                         child: _Segment(
                           option: option,
+                          inlineCounts: inlineCounts,
                           selected: option.value == selected,
                           radius: radius,
                           onTap: () => onSelected(option.value),
@@ -293,7 +298,9 @@ class SegmentedTabs<T> extends StatelessWidget {
   /// so it cannot drift from the [Text] again. Any future budget here must be
   /// taken the same way.
   double _contentSegmentWidth(BuildContext context) => math.max(
-    _widestLabel(context) + (_hPad + _inset) * 2 + _ringAllowance,
+    _widestLabel(context) +
+        ((inlineCounts ? 8 : _hPad) + _inset) * 2 +
+        _ringAllowance,
     _minSegmentWidth,
   );
 
@@ -315,7 +322,15 @@ class SegmentedTabs<T> extends StatelessWidget {
         context.textWidth(option.label, _labelStyle(true), maxLines: 1),
       );
       final count = option.count;
-      if (count != null) {
+      if (count != null && inlineCounts) {
+        widest = math.max(
+          widest,
+          context.textWidth(option.label, _labelStyle(true), maxLines: 1) +
+              context.textWidth(count.toString(), _countStyle, maxLines: 1) +
+              8 +
+              (option.icon == null ? 0 : 22),
+        );
+      } else if (count != null) {
         widest = math.max(
           widest,
           context.textWidth('$count', _countStyle, maxLines: 1),
@@ -359,11 +374,13 @@ class SegmentedTabs<T> extends StatelessWidget {
 class _Segment<T> extends StatelessWidget {
   final SegmentedTabOption<T> option;
   final bool selected;
+  final bool inlineCounts;
   final BorderRadius radius;
   final VoidCallback onTap;
 
   const _Segment({
     required this.option,
+    required this.inlineCounts,
     required this.selected,
     required this.radius,
     required this.onTap,
@@ -411,8 +428,8 @@ class _Segment<T> extends StatelessWidget {
             child: Container(
               alignment: Alignment.center,
               margin: const EdgeInsets.all(SegmentedTabs._inset),
-              padding: const EdgeInsets.symmetric(
-                horizontal: SegmentedTabs._hPad,
+              padding: EdgeInsets.symmetric(
+                horizontal: inlineCounts ? 8 : SegmentedTabs._hPad,
               ),
               // **A resting segment paints nothing.** Not a fill, not a
               // border: this box used to carry a 0.06 white hover wash, which
@@ -421,33 +438,62 @@ class _Segment<T> extends StatelessWidget {
               // fill gone there is nothing left to disambiguate, so the wash
               // went too and a pointed-at segment is marked by its label's
               // brightness — the affordance the control's own selection uses.
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    configLabel(context, option.label),
-                    // A narrow segment must ellipsise rather than wrap, or it
-                    // would push the control past its fixed height.
-                    maxLines: 1,
-                    softWrap: false,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                    style: SegmentedTabs._labelStyle(
-                      selected,
-                    ).copyWith(color: foreground),
-                  ),
-                  if (option.count != null)
-                    Text(
-                      '${option.count}',
-                      maxLines: 1,
-                      softWrap: false,
-                      overflow: TextOverflow.ellipsis,
-                      style: SegmentedTabs._countStyle.copyWith(
-                        color: secondary,
-                      ),
+              child: inlineCounts
+                  ? Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (option.icon != null) ...[
+                          Icon(option.icon, size: 17, color: foreground),
+                          const SizedBox(width: 5),
+                        ],
+                        Flexible(
+                          child: Text(
+                            configLabel(context, option.label),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: SegmentedTabs._labelStyle(
+                              selected,
+                            ).copyWith(color: foreground),
+                          ),
+                        ),
+                        if (option.count != null) ...[
+                          const SizedBox(width: 6),
+                          Text(
+                            option.count.toString(),
+                            style: SegmentedTabs._countStyle.copyWith(
+                              color: secondary,
+                            ),
+                          ),
+                        ],
+                      ],
+                    )
+                  : Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          configLabel(context, option.label),
+                          // A narrow segment must ellipsise rather than wrap, or it
+                          // would push the control past its fixed height.
+                          maxLines: 1,
+                          softWrap: false,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: SegmentedTabs._labelStyle(
+                            selected,
+                          ).copyWith(color: foreground),
+                        ),
+                        if (option.count != null)
+                          Text(
+                            '${option.count}',
+                            maxLines: 1,
+                            softWrap: false,
+                            overflow: TextOverflow.ellipsis,
+                            style: SegmentedTabs._countStyle.copyWith(
+                              color: secondary,
+                            ),
+                          ),
+                      ],
                     ),
-                ],
-              ),
             ),
           );
         },

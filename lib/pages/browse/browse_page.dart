@@ -14,7 +14,7 @@ import '../anime/anime_page.dart';
 import '../audiobooks/audiobooks_page.dart';
 import '../books/books_page.dart';
 import '../collections/collections_page.dart';
-import '../discover/discover_page.dart';
+import '../home/home_page.dart';
 import '../iptv/iptv_page.dart';
 import '../manga/manga_page.dart';
 import '../music/music_page.dart';
@@ -119,7 +119,7 @@ extension BrowseVerticalX on BrowseVertical {
   Widget get page {
     switch (this) {
       case BrowseVertical.moviesAndTv:
-        return const DiscoverPage();
+        return const HomePage(filmHub: true);
       case BrowseVertical.collections:
         return const CollectionsPage();
       case BrowseVertical.liveTv:

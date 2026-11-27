@@ -1,3 +1,4 @@
+import '../../widgets/common/desktop_caption_area.dart';
 import '../../widgets/ui/kiru_tappable.dart';
 import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
@@ -1001,90 +1002,95 @@ class _IptvPlayerPageState extends State<IptvPlayerPage>
                                 ),
                                 const SizedBox(width: ZplaySpacing.s8),
                                 Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 6,
-                                              vertical: ZplaySpacing.s2,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: isLive
-                                                  ? tokens.danger
-                                                  : AppThemeService
-                                                        .currentPalette
-                                                        .value
-                                                        .primaryColor,
-                                              borderRadius: ZplayRadius.xsAll,
-                                            ),
-                                            child: Text(
-                                              isLive
-                                                  ? l10nOf(
-                                                      context,
-                                                    ).channelLiveBadge
-                                                  : (ch.category.isNotEmpty
-                                                        ? ch.category
-                                                              .toUpperCase()
-                                                        : 'VOD'),
-                                              style: ZplayType.overline
-                                                  .copyWith(
-                                                    weight: FontWeight.w700,
-                                                  )
-                                                  .toStyle(
-                                                    color: tokens.textPrimary,
+                                  child: DesktopCaptionDrag(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 6,
+                                                    vertical: ZplaySpacing.s2,
                                                   ),
+                                              decoration: BoxDecoration(
+                                                color: isLive
+                                                    ? tokens.danger
+                                                    : AppThemeService
+                                                          .currentPalette
+                                                          .value
+                                                          .primaryColor,
+                                                borderRadius: ZplayRadius.xsAll,
+                                              ),
+                                              child: Text(
+                                                isLive
+                                                    ? l10nOf(
+                                                        context,
+                                                      ).channelLiveBadge
+                                                    : (ch.category.isNotEmpty
+                                                          ? ch.category
+                                                                .toUpperCase()
+                                                          : 'VOD'),
+                                                style: ZplayType.overline
+                                                    .copyWith(
+                                                      weight: FontWeight.w700,
+                                                    )
+                                                    .toStyle(
+                                                      color: tokens.textPrimary,
+                                                    ),
+                                              ),
                                             ),
-                                          ),
+                                            const SizedBox(
+                                              width: ZplaySpacing.s8,
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                currentTitle,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: ZplayType.title
+                                                    .copyWith(
+                                                      weight: FontWeight.w700,
+                                                    )
+                                                    .toStyle(
+                                                      color: tokens.textPrimary,
+                                                    ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        if (currentHit != null) ...[
                                           const SizedBox(
-                                            width: ZplaySpacing.s8,
+                                            height: ZplaySpacing.s2,
                                           ),
-                                          Expanded(
-                                            child: Text(
-                                              currentTitle,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: ZplayType.title
-                                                  .copyWith(
-                                                    weight: FontWeight.w700,
+                                          Text(
+                                            isCategoryList
+                                                ? l10nOf(
+                                                    context,
+                                                  ).iptvCurrentChannel(
+                                                    _activeHitIndex + 1,
+                                                    _hits.length,
+                                                    currentHit.portal.name,
                                                   )
-                                                  .toStyle(
-                                                    color: tokens.textPrimary,
+                                                : l10nOf(
+                                                    context,
+                                                  ).iptvCurrentSource(
+                                                    _activeHitIndex + 1,
+                                                    _hits.length,
+                                                    currentHit.portal.name,
                                                   ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: ZplayType.bodySmall.toStyle(
+                                              color: tokens.textEmphasis,
                                             ),
                                           ),
                                         ],
-                                      ),
-                                      if (currentHit != null) ...[
-                                        const SizedBox(height: ZplaySpacing.s2),
-                                        Text(
-                                          isCategoryList
-                                              ? l10nOf(
-                                                  context,
-                                                ).iptvCurrentChannel(
-                                                  _activeHitIndex + 1,
-                                                  _hits.length,
-                                                  currentHit.portal.name,
-                                                )
-                                              : l10nOf(
-                                                  context,
-                                                ).iptvCurrentSource(
-                                                  _activeHitIndex + 1,
-                                                  _hits.length,
-                                                  currentHit.portal.name,
-                                                ),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: ZplayType.bodySmall.toStyle(
-                                            color: tokens.textEmphasis,
-                                          ),
-                                        ),
                                       ],
-                                    ],
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: ZplaySpacing.s12),

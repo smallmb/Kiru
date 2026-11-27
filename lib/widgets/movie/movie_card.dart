@@ -1,3 +1,4 @@
+import '../immersive/immersive_content_layout.dart';
 import 'localized_movie_title.dart';
 import 'package:zplay/l10n/media_labels.dart';
 import 'dart:async';
@@ -321,7 +322,12 @@ String _metaLine(BuildContext context, Movie movie) => [
       HomePageSettings.showRating.value)
     '★ ${_formatRating(movie.imdbRating!)}',
   if (movie.year != null && movie.year!.isNotEmpty) movie.year!,
-  mediaLabel(context, movie.type == 'series' ? 'Series' : (movie.type == 'anime' ? 'Anime' : 'Movie')),
+  mediaLabel(
+    context,
+    movie.type == 'series'
+        ? 'Series'
+        : (movie.type == 'anime' ? 'Anime' : 'Movie'),
+  ),
 ].join(' · ');
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -439,7 +445,11 @@ class MovieCard extends StatelessWidget {
                       color: FormFactorService.hasRemoteInput
                           ? Colors.white
                           : null,
-                      radius: ZplayRadius.cardAll,
+                      radius: ImmersiveContentLayout.maybeOf(context) == null
+                          ? ZplayRadius.cardAll
+                          : BorderRadius.circular(
+                              ImmersiveContentLayout.artworkRadius,
+                            ),
                       // The shared box; everything that is *this* card lives in
                       // the slots - the type and rating badges, the hover
                       // trailer, and the play disc.
@@ -497,12 +507,16 @@ class MovieCard extends StatelessWidget {
                             ? CardRankBadge(rank: rank!)
                             : null,
                         bottomCenter: switch (CardFreshness.of(movie)) {
-                          final tag? => CardStatusTag(label: mediaLabel(context, tag.label)),
+                          final tag? => CardStatusTag(
+                            label: mediaLabel(context, tag.label),
+                          ),
                           null => null,
                         },
                         topLeft:
                             rank == null && state.focused && typeLabel != null
-                            ? CardTypeBadge(label: mediaLabel(context, typeLabel))
+                            ? CardTypeBadge(
+                                label: mediaLabel(context, typeLabel),
+                              )
                             : null,
                         // Rating badge (top-right). Present in every state -
                         // the prototype's resting card already shows the score.
@@ -716,9 +730,12 @@ class _CardFocusDetailsState extends State<_CardFocusDetails> {
     // what a bare `join` produces whenever a field is absent.
     final facts = <String>[
       if (movie.year != null && movie.year!.isNotEmpty) movie.year!,
-      mediaLabel(context, movie.type == 'series'
-          ? 'Series'
-          : (movie.type == 'anime' ? 'Anime' : 'Movie')),
+      mediaLabel(
+        context,
+        movie.type == 'series'
+            ? 'Series'
+            : (movie.type == 'anime' ? 'Anime' : 'Movie'),
+      ),
       if (runtime != null && runtime.isNotEmpty) runtime,
       if (movie.imdbRating != null && movie.imdbRating!.isNotEmpty)
         '★ ${_formatRating(movie.imdbRating!)}',

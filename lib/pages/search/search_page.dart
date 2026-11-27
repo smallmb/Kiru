@@ -1,3 +1,19 @@
+import '../../services/search/film_search_filters.dart';
+import '../../widgets/search/film_search_filter_bar.dart';
+import '../../services/theme/forui_theme.dart';
+import '../../services/search/unified_search_result.dart';
+import '../../models/anime/anime_media.dart';
+import '../../services/anime/anime_metadata_service.dart';
+import '../../services/anime/anime_source_settings.dart';
+import '../../services/content/content_settings.dart';
+import '../../widgets/anime/anime_card.dart';
+import '../../widgets/common/segmented_tabs.dart';
+import '../../utils/navigation/route_transitions.dart';
+import '../anime/anime_details_page.dart';
+import '../../services/search/anime_search_filters.dart';
+import '../../widgets/search/anime_search_filter_bar.dart';
+import '../../widgets/anime/anime_slider_section.dart';
+import '../anime_arabic/anime_arabic_details_page.dart';
 import '../../widgets/ui/kiru_toast.dart';
 import '../../widgets/ui/kiru_controls.dart';
 import 'dart:async';
@@ -110,7 +126,13 @@ class SearchFailureLedger {
 }
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  const SearchPage({
+    super.key,
+    this.initialCategory = SearchCategory.all,
+    this.animeMetadata,
+  });
+  final SearchCategory initialCategory;
+  final AnimeMetadataService? animeMetadata;
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -164,8 +186,219 @@ class _SearchPageState extends State<SearchPage> {
 
   Timer? _debounce;
   bool _isLoading = false;
-  List<MovieSection> _results = [];
+  final List<MovieSection> _results = [];
   String _lastQuery = '';
+  late SearchCategory _category = widget.initialCategory;
+  SearchSort _sort = SearchSort.relevance;
+  List<AnimeMedia> _animeResults = [];
+  int _searchRevision = 0;
+
+  AnimeMetadataService get _animeMetadata =>
+      widget.animeMetadata ?? AnimeMetadataService.instance;
+  AnimeSearchFilters _animeFilters = const AnimeSearchFilters();
+  List<AnimeMedia> _filteredAnime = [];
+  bool _loadingFilteredAnime = false;
+  Object? _filterError;
+  int _filterRevision = 0;
+  List<List<AnimeMedia>> _animeDiscovery = [];
+  bool _loadingAnimeDiscovery = false;
+  bool _animeDiscoveryRequested = false;
+  int _discoveryRevision = 0;
+  bool get _usesAnimeFilters =>
+      _category == SearchCategory.anime &&
+      (_animeFilters.active ||
+          (_lastQuery.isEmpty && _sort != SearchSort.relevance));
+
+  List<AnimeMedia> _safeAnime(List<AnimeMedia> items) => items
+      .where((a) => ContentSettings.adultEnabled.value || !a.isAdult)
+      .toList();
+
+  void _selectCategory(SearchCategory category) {
+    setState(() => _category = category);
+    if (category == SearchCategory.anime || category == SearchCategory.all) {
+      _loadAnimeDiscovery();
+    }
+    _runAnimeFilters(_lastQuery);
+    _runFilmBrowse();
+  }
+
+  Future<void> _loadAnimeDiscovery({bool refresh = false}) async {
+    if (_animeDiscoveryRequested && !refresh) return;
+    _animeDiscoveryRequested = true;
+    final revision = ++_discoveryRevision;
+    setState(() {
+      _loadingAnimeDiscovery = true;
+      _animeDiscovery = [];
+    });
+    final service = _animeMetadata;
+    Future<List<AnimeMedia>> safe(
+      Future<List<AnimeMedia>> Function() load,
+    ) async {
+      try {
+        return _safeAnime(await load());
+      } catch (_) {
+        return [];
+      }
+    }
+
+    final lists = await Future.wait([
+      safe(() => service.fetchTrendingAnime(perPage: 20)),
+      safe(() => service.fetchPopularThisSeason(perPage: 20)),
+      safe(() => service.fetchTopRated(perPage: 20)),
+    ]);
+    if (!mounted || revision != _discoveryRevision) return;
+    setState(() {
+      _animeDiscovery = lists;
+      _loadingAnimeDiscovery = false;
+    });
+  }
+
+  void _setAnimeFilters(AnimeSearchFilters value) {
+    setState(() => _animeFilters = value);
+    _runAnimeFilters(_lastQuery);
+  }
+
+  Future<void> _runAnimeFilters(String query) async {
+    final revision = ++_filterRevision;
+    setState(() {
+      _filteredAnime = [];
+      _filterError = null;
+      _loadingFilteredAnime = _usesAnimeFilters;
+    });
+    if (!_usesAnimeFilters) return;
+    final sort = query.isNotEmpty
+        ? 'SEARCH_MATCH'
+        : switch (_sort) {
+            SearchSort.relevance => 'TRENDING_DESC',
+            SearchSort.newest => 'START_DATE_DESC',
+            SearchSort.rating => 'SCORE_DESC',
+          };
+    try {
+      final items = await _animeFilters.search(
+        query,
+        sort: sort,
+        service: _animeMetadata,
+      );
+      if (!mounted || revision != _filterRevision) return;
+      setState(() {
+        _filteredAnime = _safeAnime(items);
+        _loadingFilteredAnime = false;
+      });
+    } catch (error) {
+      if (!mounted || revision != _filterRevision) return;
+      setState(() {
+        _filterError = error;
+        _loadingFilteredAnime = false;
+      });
+    }
+  }
+
+  final _filmFiltersByCategory = <SearchCategory, FilmSearchFilters>{};
+  FilmSearchFilters get _filmFilters =>
+      _filmFiltersByCategory[_category] ?? const FilmSearchFilters();
+  bool get _isFilmCategory =>
+      _category == SearchCategory.movie ||
+      _category == SearchCategory.series ||
+      _category == SearchCategory.variety;
+  bool get _usesFilmBrowse =>
+      _isFilmCategory &&
+      _lastQuery.isEmpty &&
+      (_filmFilters.active ||
+          _category == SearchCategory.variety ||
+          _sort != SearchSort.relevance);
+  List<MovieSection> _filmBrowseSections = [];
+  bool _loadingFilmBrowse = false;
+  int _filmBrowseRevision = 0;
+  bool _enrichingFilm = false;
+
+  void _setFilmFilters(FilmSearchFilters filters) {
+    setState(() => _filmFiltersByCategory[_category] = filters);
+    _runFilmBrowse();
+  }
+
+  Future<void> _runFilmBrowse() async {
+    final revision = ++_filmBrowseRevision;
+    setState(() {
+      _filmBrowseSections = [];
+      _loadingFilmBrowse = _usesFilmBrowse;
+    });
+    if (!_usesFilmBrowse) return;
+    final category = _category;
+    final filters = _filmFilters;
+    final sections = await FilmSearchCatalogs.browse(category, filters);
+    if (!mounted || revision != _filmBrowseRevision || !_usesFilmBrowse) return;
+    setState(() => _filmBrowseSections = sections);
+    // Quarter and status may need a detail lookup; keep other results visible.
+    if (filters.quarter != null || filters.status != null) {
+      final candidates = [...sections, ..._suggestedSections]
+          .map(
+            (s) => MovieSection(
+              title: s.title,
+              subtitle: s.subtitle,
+              contentType: s.contentType,
+              addonBaseUrl: s.addonBaseUrl,
+              catalog: s.catalog,
+              movies: s.movies
+                  .where(
+                    (m) => UnifiedSearchResult.movie(m).category == category,
+                  )
+                  .toList(),
+            ),
+          )
+          .toList();
+      final enriched = await FilmSearchCatalogs.enrich(candidates);
+      if (!mounted || revision != _filmBrowseRevision || !_usesFilmBrowse)
+        return;
+      setState(() => _filmBrowseSections = enriched);
+    }
+    if (mounted && revision == _filmBrowseRevision)
+      setState(() => _loadingFilmBrowse = false);
+  }
+
+  bool get _hasResults => _results.isNotEmpty || _animeResults.isNotEmpty;
+  List<UnifiedSearchResult> get _visibleResults {
+    final results = collectUnifiedResults(
+      _usesAnimeFilters
+          ? const []
+          : _usesFilmBrowse
+          ? [..._filmBrowseSections, ..._suggestedSections]
+          : _results,
+      _usesAnimeFilters ? _filteredAnime : _animeResults,
+      const [],
+      query: _lastQuery,
+      category: _category,
+      sort: _sort,
+    );
+    return _isFilmCategory && _filmFilters.active
+        ? results
+              .where((r) => r.movie != null && _filmFilters.matches(r.movie!))
+              .toList()
+        : results;
+  }
+
+  void _clearResults() {
+    _results.clear();
+    _enrichingFilm = false;
+    _animeResults = [];
+  }
+
+  void _onCategoryRequest() {
+    final request = _shell?.searchCategoryRequest.value;
+    if (!mounted || request == null) return;
+    _shell!.searchCategoryRequest.value = null;
+    _selectCategory(request);
+  }
+
+  void _onAnimeSourceChanged() {
+    if (!mounted) return;
+    if (_animeDiscoveryRequested) _loadAnimeDiscovery(refresh: true);
+    if (_lastQuery.isNotEmpty && !_isMagnetMode) {
+      final query = _searchController.text.trim();
+      if (query.isNotEmpty) _performSearch(query);
+    } else if (_usesAnimeFilters) {
+      _runAnimeFilters('');
+    }
+  }
 
   /// Synthetic catalog id for the keyless title rail. There is no addon
   /// catalog behind it, so its slider hides See All.
@@ -195,7 +428,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   SearchOutcome get _outcome => classifySearchResult(
-    resultCount: _results.length,
+    resultCount: _hasResults ? 1 : 0,
     failureCount: _ledger.failedSources,
   );
 
@@ -214,9 +447,12 @@ class _SearchPageState extends State<SearchPage> {
   /// on the new title. Each leg gets a recorder pinned to its own query.
   void Function(String source, Object error) _sourceErrorRecorderFor(
     String query,
+    int revision,
   ) {
     return (source, error) {
-      if (!mounted || _lastQuery != query) return;
+      if (!mounted || _lastQuery != query || _searchRevision != revision) {
+        return;
+      }
       _recordSourceFailure(source, error);
     };
   }
@@ -265,6 +501,8 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
+    AnimeSourceSettings.revision.addListener(_onAnimeSourceChanged);
+    ContentSettings.adultEnabled.addListener(_onAnimeSourceChanged);
     // The field's own node answers BACK and `escape`; see [_onFieldKeyEvent] for
     // why the handler has to live here rather than on a widget above the field.
     _focusNode.onKeyEvent = _onFieldKeyEvent;
@@ -279,6 +517,13 @@ class _SearchPageState extends State<SearchPage> {
     HardwareKeyboard.instance.addHandler(_onFieldKeyUp);
     _loadSearchHistory();
     _loadSuggestions();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted &&
+          (_shell == null || _shell!.current.value == ShellSlot.search)) {
+        _loadAnimeDiscovery();
+        if (_usesFilmBrowse) _runFilmBrowse();
+      }
+    });
     // After the first frame, never before: the field must paint and take input
     // immediately, and a channel round trip on the frame that opens the page
     // would put the microphone's existence between the user and the keyboard.
@@ -298,9 +543,14 @@ class _SearchPageState extends State<SearchPage> {
     if (identical(shell, _shell)) return;
     _shell?.current.removeListener(_onSlotChanged);
     _shell?.headerSearch.removeListener(_onHeaderSearch);
+    _shell?.searchCategoryRequest.removeListener(_onCategoryRequest);
     _shell = shell;
     shell?.current.addListener(_onSlotChanged);
     shell?.headerSearch.addListener(_onHeaderSearch);
+    shell?.searchCategoryRequest.addListener(_onCategoryRequest);
+    if (shell?.searchCategoryRequest.value != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _onCategoryRequest());
+    }
     if (shell?.headerSearch.value != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) _onHeaderSearch();
@@ -375,12 +625,23 @@ class _SearchPageState extends State<SearchPage> {
     shell.headerSearch.value = null;
     _debounce?.cancel();
     _searchController.text = query;
-    _performSearch(query);
+    if (query.isEmpty) {
+      _onSearchChanged(query);
+    } else {
+      _performSearch(query);
+    }
   }
 
   void _onSlotChanged() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _publishChromeEntry();
+      if (mounted) {
+        _publishChromeEntry();
+        if (_shell?.current.value == ShellSlot.search &&
+            (_category == SearchCategory.all ||
+                _category == SearchCategory.anime)) {
+          _loadAnimeDiscovery();
+        }
+      }
     });
   }
 
@@ -497,7 +758,7 @@ class _SearchPageState extends State<SearchPage> {
       final sections = await AddonManager.instance.fetchAllHomeSections();
       if (mounted) {
         setState(() {
-          _suggestedSections = sections.take(4).toList();
+          _suggestedSections = sections;
           _isLoadingSuggestions = false;
         });
       }
@@ -561,6 +822,7 @@ class _SearchPageState extends State<SearchPage> {
     FocusManager.instance.removeListener(_onFocusChanged);
     _shell?.current.removeListener(_onSlotChanged);
     _shell?.headerSearch.removeListener(_onHeaderSearch);
+    _shell?.searchCategoryRequest.removeListener(_onCategoryRequest);
     // Before the box's node goes anywhere: the shell's bar reads this handle at
     // key time, and a node this page is dismantling is not one it may hand the
     // remote to.
@@ -569,6 +831,8 @@ class _SearchPageState extends State<SearchPage> {
     _releaseBackClaim?.call();
     _releaseBackClaim = null;
     _shell = null;
+    AnimeSourceSettings.revision.removeListener(_onAnimeSourceChanged);
+    ContentSettings.adultEnabled.removeListener(_onAnimeSourceChanged);
     _fieldNode.dispose();
     _micFocusNode.dispose();
     _searchController.dispose();
@@ -582,9 +846,12 @@ class _SearchPageState extends State<SearchPage> {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
 
     final trimmed = query.trim();
+    _shell?.searchText.value = query;
+    _searchRevision++;
+    _filterRevision++;
     if (trimmed.isEmpty) {
       setState(() {
-        _results.clear();
+        _clearResults();
         _isLoading = false;
         _lastQuery = '';
         _isMagnetMode = false;
@@ -593,10 +860,20 @@ class _SearchPageState extends State<SearchPage> {
         // survive to be shown against the next one.
         _ledger.reset();
       });
+      _runAnimeFilters('');
+      _runFilmBrowse();
       return;
     }
 
     if (_isStreamLink(trimmed)) {
+      setState(() {
+        _isLoading = false;
+        _lastQuery = '';
+        _isMagnetMode = false;
+        _magnetQuery = '';
+        _clearResults();
+        _ledger.reset();
+      });
       _playDirectStream(trimmed);
       return;
     }
@@ -605,8 +882,10 @@ class _SearchPageState extends State<SearchPage> {
       setState(() {
         _isMagnetMode = true;
         _magnetQuery = trimmed;
+        _lastQuery = '';
+        _ledger.reset();
         _isLoading = false;
-        _results.clear();
+        _clearResults();
       });
       return;
     } else if (_isMagnetMode) {
@@ -617,17 +896,26 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     _debounce = Timer(const Duration(milliseconds: 600), () {
-      if (trimmed != _lastQuery) {
-        _performSearch(trimmed);
-      }
+      _performSearch(trimmed);
     });
   }
 
   void _performSearch(String query) async {
     final trimmed = query.trim();
     if (trimmed.isEmpty) return;
+    _shell?.searchText.value = trimmed;
+    _debounce?.cancel();
+    final revision = ++_searchRevision;
 
     if (_isStreamLink(trimmed)) {
+      setState(() {
+        _isLoading = false;
+        _lastQuery = '';
+        _isMagnetMode = false;
+        _magnetQuery = '';
+        _clearResults();
+        _ledger.reset();
+      });
       _playDirectStream(trimmed);
       return;
     }
@@ -636,8 +924,10 @@ class _SearchPageState extends State<SearchPage> {
       setState(() {
         _isMagnetMode = true;
         _magnetQuery = trimmed;
+        _lastQuery = '';
+        _ledger.reset();
         _isLoading = false;
-        _results.clear();
+        _clearResults();
       });
       return;
     }
@@ -648,18 +938,24 @@ class _SearchPageState extends State<SearchPage> {
       _isLoading = true;
       _lastQuery = trimmed;
       _isMagnetMode = false;
-      _results = [];
+      _clearResults();
       // Failures belong to the query that produced them; carrying them into
       // the next search would blame the new query for the old outage.
       _ledger.reset();
-      _ledger.searchedSourceCount = _searchedSourceTotalFor(query: trimmed);
+      _ledger.searchedSourceCount = _searchedSourceTotalFor(query: trimmed) + 1;
     });
 
+    _filmBrowseRevision++;
+    _loadingFilmBrowse = false;
+    if (_usesAnimeFilters) _runAnimeFilters(trimmed);
     final currentQuery = trimmed;
     final l10n = l10nOf(context);
+    bool active() =>
+        mounted && _lastQuery == currentQuery && _searchRevision == revision;
+    final recordFailure = _sourceErrorRecorderFor(currentQuery, revision);
 
     void addSection(MovieSection section, {bool isCloudStream = false}) {
-      if (!mounted || _lastQuery != currentQuery) return;
+      if (!active()) return;
       if (section.movies.isEmpty) return;
 
       // Prevent duplicate sections
@@ -691,10 +987,10 @@ class _SearchPageState extends State<SearchPage> {
             onSectionResult: (section) {
               addSection(section, isCloudStream: false);
             },
-            onSourceError: _sourceErrorRecorderFor(currentQuery),
+            onSourceError: recordFailure,
           )
           .catchError((e) {
-            _recordSourceFailure('Addons', e);
+            recordFailure('Addons', e);
             return <MovieSection>[];
           });
 
@@ -704,7 +1000,7 @@ class _SearchPageState extends State<SearchPage> {
                   ? CloudStreamManager.instance.searchAcrossExtensions(
                       currentQuery,
                       onProviderResult: (providerName, items) {
-                        if (!mounted || _lastQuery != currentQuery) return;
+                        if (!active()) return;
                         if (items.isEmpty) return;
 
                         final movies = <Movie>[];
@@ -749,6 +1045,18 @@ class _SearchPageState extends State<SearchPage> {
                                       ? (item['extraData'] as Map)['year']
                                             ?.toString()
                                       : null),
+                              genres: Movie.parseGenres(
+                                item['genres'] ??
+                                    item['genre'] ??
+                                    (item['extraData'] is Map
+                                        ? (item['extraData'] as Map)['genres']
+                                        : null),
+                              ),
+                              status: item['status']?.toString(),
+                              releasedAt: DateTime.tryParse(
+                                (item['released'] ?? item['release_date'] ?? '')
+                                    .toString(),
+                              ),
                               type: isSeries ? 'series' : 'movie',
                               addonBaseUrl: 'cloudstream',
                             ),
@@ -771,11 +1079,11 @@ class _SearchPageState extends State<SearchPage> {
                           addSection(section, isCloudStream: true);
                         }
                       },
-                      onSourceError: _sourceErrorRecorderFor(currentQuery),
+                      onSourceError: recordFailure,
                     )
                   : Future.value(<String, List<Map<String, dynamic>>>{}))
               .catchError((e) {
-                _recordSourceFailure('CloudStream', e);
+                recordFailure('CloudStream', e);
                 return <String, List<Map<String, dynamic>>>{};
               });
 
@@ -785,7 +1093,7 @@ class _SearchPageState extends State<SearchPage> {
       final titleSearch =
           MetadataService.suggestionSearch(
                 query: currentQuery,
-                onSourceError: _sourceErrorRecorderFor(currentQuery),
+                onSourceError: recordFailure,
               )
               .then((movies) {
                 addSection(
@@ -804,17 +1112,44 @@ class _SearchPageState extends State<SearchPage> {
                 );
               })
               .catchError((e) {
-                _recordSourceFailure(l10n.searchSourceTitleLookup, e);
+                recordFailure(l10n.searchSourceTitleLookup, e);
               });
 
-      await Future.wait([addonSearch, csSearch, titleSearch]);
+      final animeSearch = _animeMetadata
+          .searchUnifiedAnime(currentQuery)
+          .then((items) {
+            if (!active()) return;
+            setState(
+              () => _animeResults = items
+                  .where(
+                    (a) => ContentSettings.adultEnabled.value || !a.isAdult,
+                  )
+                  .toList(),
+            );
+          })
+          .catchError((Object e) => recordFailure('Anime', e));
+      await Future.wait([addonSearch, csSearch, titleSearch, animeSearch]);
+      if (active()) {
+        setState(() => _enrichingFilm = true);
+        final enriched = await FilmSearchCatalogs.enrich(
+          List.of(_results),
+          limit: 24,
+        );
+        if (active())
+          setState(() {
+            _results
+              ..clear()
+              ..addAll(enriched);
+            _enrichingFilm = false;
+          });
+      }
     } catch (e) {
       // A leg that throws synchronously, or a Future.wait rejection that
       // outran the handlers above, is still a source that did not answer.
-      _recordSourceFailure('Search', e);
+      recordFailure('Search', e);
     }
 
-    if (mounted && _lastQuery == currentQuery) {
+    if (active()) {
       setState(() {
         _isLoading = false;
       });
@@ -1413,148 +1748,10 @@ class _SearchPageState extends State<SearchPage> {
                   key: ValueKey(_magnetQuery),
                   magnet: _magnetQuery,
                 )
-              else if (_isLoading && _results.isEmpty)
-                Center(
-                  child: KiruLoader(
-                    color: AppThemeService.currentPalette.value.primaryColor,
-                  ),
-                )
-              else if (!_isLoading && _lastQuery.isNotEmpty && _results.isEmpty)
-                _buildSearchEmptyState(_outcome)
-              else if (_results.isNotEmpty)
-                Column(
-                  children: [
-                    if (_outcome == SearchOutcome.incomplete)
-                      _buildFailureLedger(topPadding),
-                    Expanded(
-                      child: ListView.builder(
-                        clipBehavior: Clip.none,
-                        padding: EdgeInsets.only(
-                          top: topPadding + kToolbarHeight + ZplaySpacing.s40,
-                          bottom:
-                              ZplaySpacing.s40 +
-                              MediaQuery.paddingOf(context).bottom,
-                        ),
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: _results.length + (_isLoading ? 1 : 0),
-                        itemBuilder: (context, index) {
-                          if (index < _results.length) {
-                            final sec = _results[index];
-                            final slider = MovieSliderSection(
-                              key: ValueKey(
-                                '${sec.addonBaseUrl}_${sec.catalog.id}_${sec.subtitle}',
-                              ),
-                              section: sec,
-                              // **One feed is one shelf, on whichever page shows
-                              // it.**
-                              //
-                              // These are the same addon catalogues Home shelves:
-                              // `searchAll` builds each rail from the addon's own
-                              // `AddonCatalog`, which is also what names it (a
-                              // Cinemeta result rail titled "Popular" is the row
-                              // Home shows under that name), and the suggested
-                              // group below is literally `fetchAllHomeSections()`.
-                              // Home draws its rails in `CardArtwork.landscape` on
-                              // purpose - a seven-wide row of 2:3 posters at ten
-                              // feet is mostly unreadable captions, and a row's own
-                              // heading is what names its titles. Search never asked
-                              // for a shape, so it drew the enum's poster default
-                              // and the same shelf came out as 16:9 tiles on Home
-                              // and 187 x 299 dp portrait cards here.
-                              //
-                              // Adopting Home's shape rather than the other way
-                              // round: Home's choice is the deliberate one (it is
-                              // written down where it is made, and the rail height
-                              // and its skeleton both follow it), and Search had
-                              // simply never made one. Every other page keeps the
-                              // poster default - their rails are not these feeds.
-                              artwork: CardArtwork.landscape,
-                              // Only rails backed by a real addon catalog can expand.
-                              // The titles rail is synthetic, and the CloudStream rails
-                              // carry a cs_* id no addon serves, so See All would open a
-                              // CatalogPage that fetches nothing.
-                              showSeeAll:
-                                  sec.catalog.id != _titleRailCatalogId &&
-                                  !sec.catalog.id.startsWith('cs_'),
-                            );
-
-                            // The Cinemeta leg is pinned above the community legs, so
-                            // it is tagged as the spine rather than left to look like
-                            // one more addon's rail. `_performSearch` inserts it at
-                            // index 0; this only names what the ordering already does.
-                            final isSpine =
-                                sec.addonBaseUrl.contains('cinemeta') ||
-                                sec.subtitle.toLowerCase().contains('cinemeta');
-                            if (!isSpine) return slider;
-
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.fromLTRB(
-                                    ZplaySpacing.s16,
-                                    0,
-                                    ZplaySpacing.s16,
-                                    ZplaySpacing.s4,
-                                  ),
-                                  child: _PinnedSpineTag(),
-                                ),
-                                slider,
-                              ],
-                            );
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: ZplaySpacing.s24,
-                            ),
-                            child: Center(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SizedBox(
-                                    width: 14,
-                                    height: 14,
-                                    child: KiruLoader(
-                                      strokeWidth: 2,
-                                      color: AppThemeService
-                                          .currentPalette
-                                          .value
-                                          .primaryColor,
-                                    ),
-                                  ),
-                                  const SizedBox(width: ZplaySpacing.s8),
-                                  Text(
-                                    l10nOf(context).searchingMoreSources,
-                                    style: ZplayType.bodySmall.toStyle(
-                                      color: tokens.textSecondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                )
               else
-                _buildDiscoveryEmptyState(topPadding),
-
-              if (_isLoading && _results.isNotEmpty)
-                Positioned(
-                  top: topPadding + kToolbarHeight + ZplaySpacing.s8,
-                  left: 0,
-                  right: 0,
-                  child: SizedBox(
-                    height: 2,
-                    child: KiruProgress(
-                      backgroundColor: Colors.transparent,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        AppThemeService.currentPalette.value.primaryColor,
-                      ),
-                    ),
-                  ),
+                KiruForuiTheme.ensure(
+                  context,
+                  (_) => _buildUnifiedResults(topPadding, hasShellHeaderSearch),
                 ),
 
               // The remote's keyboard. Hung off the body rather than the band
@@ -1593,6 +1790,252 @@ class _SearchPageState extends State<SearchPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  String _sortLabel(SearchSort sort) {
+    final language = Localizations.localeOf(context).languageCode;
+    return switch (sort) {
+      SearchSort.relevance =>
+        language == 'zh'
+            ? '\u7efc\u5408'
+            : language == 'ar'
+            ? '\u0627\u0644\u0635\u0644\u0629'
+            : 'Relevance',
+      SearchSort.newest =>
+        language == 'zh'
+            ? '\u6700\u65b0'
+            : language == 'ar'
+            ? '\u0627\u0644\u0623\u062d\u062f\u062b'
+            : 'Newest',
+      SearchSort.rating =>
+        language == 'zh'
+            ? '\u8bc4\u5206'
+            : language == 'ar'
+            ? '\u0627\u0644\u062a\u0642\u064a\u064a\u0645'
+            : 'Rating',
+    };
+  }
+
+  void _openAnime(UnifiedSearchResult result) {
+    Navigator.push(
+      context,
+      CinematicSlideRoute(
+        page: result.arabic != null
+            ? AnimeArabicDetailsPage(anime: result.arabic!)
+            : AnimeDetailsPage(anime: result.anime!),
+      ),
+    );
+  }
+
+  Widget _buildUnifiedResults(double topPadding, bool shellField) {
+    final tokens = context.tokens;
+    final l10n = l10nOf(context);
+    final visible = _visibleResults;
+    final start = topPadding + (shellField ? 8 : kToolbarHeight + 16);
+    final gutter = MediaQuery.sizeOf(context).width >= 1100 ? 48.0 : 16.0;
+    final labels = {
+      SearchCategory.all: l10n.uiMyListPageAll,
+      SearchCategory.movie: l10n.mediaTypeMovie,
+      SearchCategory.series: l10n.mediaTypeSeries,
+      SearchCategory.anime: l10n.mediaTypeAnime,
+      SearchCategory.variety: varietyLabel(context),
+    };
+    return Padding(
+      padding: EdgeInsets.only(top: start),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: gutter),
+            child: Row(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: SegmentedTabs<SearchCategory>(
+                      key: const ValueKey('kiru-search-categories'),
+                      options: [
+                        for (final category in SearchCategory.values)
+                          SegmentedTabOption(
+                            value: category,
+                            label: labels[category]!,
+                          ),
+                      ],
+                      selected: _category,
+                      onSelected: _selectCategory,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                KiruPopupMenu<SearchSort>(
+                  key: const ValueKey('kiru-search-sort'),
+                  initialValue: _sort,
+                  tooltip: l10n.uiAnimeSearchPageSortBy,
+                  itemBuilder: (_) => [
+                    for (final sort in SearchSort.values)
+                      PopupMenuItem(value: sort, child: Text(_sortLabel(sort))),
+                  ],
+                  onSelected: (sort) {
+                    setState(() => _sort = sort);
+                    if (_category == SearchCategory.anime &&
+                        _lastQuery.isEmpty) {
+                      _runAnimeFilters('');
+                    }
+                    if (_isFilmCategory && _lastQuery.isEmpty) _runFilmBrowse();
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 12,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          _sortLabel(_sort),
+                          style: ZplayType.subtitle.toStyle(
+                            color: tokens.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          size: 18,
+                          color: tokens.textSecondary,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (_category == SearchCategory.anime)
+            Padding(
+              padding: EdgeInsets.fromLTRB(gutter, 8, gutter, 8),
+              child: AnimeSearchFilterBar(
+                key: const ValueKey('kiru-inline-anime-filters'),
+                filters: _animeFilters,
+                onChanged: _setAnimeFilters,
+              ),
+            ),
+          if (_isFilmCategory)
+            Padding(
+              padding: EdgeInsets.fromLTRB(gutter, 8, gutter, 8),
+              child: FilmSearchFilterBar(
+                category: _category,
+                filters: _filmFilters,
+                onChanged: _setFilmFilters,
+              ),
+            ),
+          if (_lastQuery.isNotEmpty || _usesAnimeFilters || _usesFilmBrowse)
+            Padding(
+              padding: EdgeInsets.fromLTRB(gutter, 8, gutter, 0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      _lastQuery.isNotEmpty ? _lastQuery : labels[_category]!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: ZplayType.title.toStyle(color: tokens.textPrimary),
+                    ),
+                  ),
+                  Text(
+                    l10n.animeSearchResultCount(visible.length),
+                    style: ZplayType.bodySmall.toStyle(
+                      color: tokens.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          if (_isFilmCategory && _filmFilters.active)
+            Padding(
+              padding: EdgeInsets.fromLTRB(gutter, 0, gutter, 4),
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Text(
+                  Localizations.localeOf(context).languageCode == 'zh'
+                      ? '\u4ec5\u663e\u793a\u5df2\u83b7\u53d6\u4e14\u7b26\u5408\u6761\u4ef6\u7684\u5f71\u89c6\uff0c\u7f3a\u5c11\u76f8\u5e94\u5143\u6570\u636e\u7684\u5185\u5bb9\u6682\u4e0d\u7eb3\u5165\u7b5b\u9009'
+                      : 'Filters include available results with matching metadata.',
+                  style: ZplayType.caption.toStyle(color: tokens.textMuted),
+                ),
+              ),
+            ),
+          if (_usesAnimeFilters
+              ? _loadingFilteredAnime
+              : _usesFilmBrowse
+              ? (_loadingFilmBrowse || _isLoadingSuggestions)
+              : (_isLoading || _enrichingFilm))
+            const SizedBox(height: 2, child: KiruProgress()),
+          if (!_usesAnimeFilters && _outcome == SearchOutcome.incomplete)
+            _buildFailureLedger(0, includeHeaderInset: false),
+          Expanded(
+            child: _usesAnimeFilters && _filterError != null
+                ? ErrorView(
+                    title: l10n.searchFailureTitle,
+                    error: l10n.searchFailureAdvice,
+                    onRetry: () => _runAnimeFilters(_lastQuery),
+                  )
+                : _lastQuery.isEmpty && !_usesAnimeFilters && !_usesFilmBrowse
+                ? _buildDiscoveryEmptyState(0, includeHeaderInset: false)
+                : visible.isEmpty
+                ? ((_usesAnimeFilters
+                          ? _loadingFilteredAnime
+                          : _usesFilmBrowse
+                          ? (_loadingFilmBrowse || _isLoadingSuggestions)
+                          : (_isLoading || _enrichingFilm))
+                      ? const Center(child: KiruLoader())
+                      : !_hasResults && !_usesAnimeFilters && !_usesFilmBrowse
+                      ? _buildSearchEmptyState(_outcome)
+                      : Center(
+                          child: Text(
+                            _lastQuery.isEmpty
+                                ? (_isFilmCategory
+                                      ? l10n.searchNoResults(labels[_category]!)
+                                      : l10n.uiAnimeSearchPageNoAnimeFoundMatchingYour)
+                                : l10n.searchNoResults(_lastQuery),
+                            style: TextStyle(color: tokens.textSecondary),
+                          ),
+                        ))
+                : LayoutBuilder(
+                    builder: (context, bounds) {
+                      final columns = ((bounds.maxWidth - gutter * 2) / 170)
+                          .floor()
+                          .clamp(2, 10);
+                      final width =
+                          (bounds.maxWidth - gutter * 2 - (columns - 1) * 16) /
+                          columns;
+                      return GridView.builder(
+                        key: ValueKey(_category),
+                        padding: EdgeInsets.fromLTRB(gutter, 16, gutter, 32),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: columns,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 20,
+                          mainAxisExtent: width * 1.48 + 72,
+                        ),
+                        itemCount: visible.length,
+                        itemBuilder: (context, index) {
+                          final result = visible[index];
+                          return KeyedSubtree(
+                            key: ValueKey(result.identity),
+                            child: result.movie != null
+                                ? MovieCard(movie: result.movie!)
+                                : AnimeCard(
+                                    anime: result.anime!,
+                                    width: width,
+                                    onTap: () => _openAnime(result),
+                                  ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+          ),
+        ],
       ),
     );
   }
@@ -1681,14 +2124,19 @@ class _SearchPageState extends State<SearchPage> {
   /// addons, CloudStream) while `sourceErrors` counts the addons and extensions
   /// inside those legs, so subtracting one from the other would produce a
   /// number that is simply wrong - two dead addons would read as two dead legs.
-  Widget _buildFailureLedger(double topPadding) {
+  Widget _buildFailureLedger(
+    double topPadding, {
+    bool includeHeaderInset = true,
+  }) {
     final tokens = context.tokens;
     final l10n = l10nOf(context);
     final failed = _ledger.sourceErrors;
 
     return Padding(
       padding: EdgeInsets.only(
-        top: topPadding + kToolbarHeight + ZplaySpacing.s8,
+        top: includeHeaderInset
+            ? topPadding + kToolbarHeight + ZplaySpacing.s8
+            : 8,
         left: ZplaySpacing.s16,
         right: ZplaySpacing.s16,
       ),
@@ -1748,14 +2196,40 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildDiscoveryEmptyState(double topPadding) {
+  Widget _buildDiscoveryEmptyState(
+    double topPadding, {
+    bool includeHeaderInset = true,
+  }) {
     final tokens = context.tokens;
     final l10n = l10nOf(context);
+    final suggestions = _category == SearchCategory.all
+        ? _suggestedSections.take(4).toList()
+        : [
+            for (final section in _suggestedSections)
+              MovieSection(
+                title: section.title,
+                subtitle: section.subtitle,
+                contentType: section.contentType,
+                addonBaseUrl: section.addonBaseUrl,
+                catalog: section.catalog,
+                movies: section.movies
+                    .where(
+                      (m) => UnifiedSearchResult.movie(m).category == _category,
+                    )
+                    .toList(),
+              ),
+          ].where((s) => s.movies.isNotEmpty).take(4).toList();
 
+    final showAnime =
+        _category == SearchCategory.all || _category == SearchCategory.anime;
+    final hasAnime =
+        showAnime && _animeDiscovery.any((items) => items.isNotEmpty);
     return ListView(
       clipBehavior: Clip.none,
       padding: EdgeInsets.only(
-        top: topPadding + kToolbarHeight + ZplaySpacing.s12,
+        top: includeHeaderInset
+            ? topPadding + kToolbarHeight + ZplaySpacing.s12
+            : ZplaySpacing.s12,
         bottom: ZplaySpacing.s40 + MediaQuery.paddingOf(context).bottom,
       ),
       physics: const BouncingScrollPhysics(),
@@ -1802,7 +2276,7 @@ class _SearchPageState extends State<SearchPage> {
         ],
 
         // Discover / Trending Content
-        if (_suggestedSections.isNotEmpty) ...[
+        if (suggestions.isNotEmpty) ...[
           const SizedBox(height: ZplaySpacing.s8),
           // One quiet section title rather than an eyebrow: the same
           // [SectionHeader] the rails under it use, so the group label and the
@@ -1812,13 +2286,15 @@ class _SearchPageState extends State<SearchPage> {
           // Home's own rail list (`_loadSuggestions` calls
           // `fetchAllHomeSections`), so it draws in Home's shape - the same
           // shelf, one shape. See the results list above for the whole reason.
-          ..._suggestedSections.map(
+          ...suggestions.map(
             (sec) => MovieSliderSection(
               section: sec,
               artwork: CardArtwork.landscape,
+              showSeeAll: _category == SearchCategory.all,
             ),
           ),
-        ] else if (_isLoadingSuggestions) ...[
+        ] else if (_isLoadingSuggestions &&
+            _category != SearchCategory.anime) ...[
           const SizedBox(height: ZplaySpacing.s32),
           Center(
             child: KiruLoader(
@@ -1828,13 +2304,46 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ],
 
+        if (showAnime) ...[
+          for (var i = 0; i < _animeDiscovery.length; i++)
+            if (_animeDiscovery[i].isNotEmpty)
+              AnimeSliderSection(
+                title: [
+                  l10n.uiAnimeSearchPageTrendingAnime,
+                  l10n.uiAnimeSearchPagePopularThisSeason,
+                  l10n.uiAnimeSearchPageAllTimeTopRated,
+                ][i],
+                animeList: _animeDiscovery[i],
+                onAnimeTap: (anime) =>
+                    _openAnime(UnifiedSearchResult.anime(anime)),
+              ),
+          if (!_loadingAnimeDiscovery &&
+              _animeDiscoveryRequested &&
+              !hasAnime &&
+              _category == SearchCategory.anime)
+            Center(
+              child: KiruButton(
+                kind: KiruButtonKind.ghost,
+                onPressed: () => _loadAnimeDiscovery(refresh: true),
+                child: Text(l10n.actionRetry),
+              ),
+            ),
+          if (_loadingAnimeDiscovery)
+            const Padding(
+              padding: EdgeInsets.all(24),
+              child: Center(child: KiruLoader()),
+            ),
+        ],
+
         // A void. With no search history and no suggestions, this rendered as a
         // black rectangle with nothing in it, which on a television reads as a
         // broken screen rather than an empty one - and there is no keyboard
         // there to make the cause obvious.
         if (_searchHistory.isEmpty &&
-            _suggestedSections.isEmpty &&
-            !_isLoadingSuggestions) ...[
+            suggestions.isEmpty &&
+            !hasAnime &&
+            !(showAnime && _loadingAnimeDiscovery) &&
+            (!_isLoadingSuggestions || _category == SearchCategory.anime)) ...[
           const SizedBox(height: ZplaySpacing.s48),
           Center(
             child: Column(
@@ -1923,29 +2432,6 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ),
       ),
-    );
-  }
-}
-
-/// The `PINNED SPINE` tag above the canonical metadata rail.
-///
-/// Cinemeta is the one leg that answers for every install and the rail the
-/// other legs are ranked against, so it is labelled rather than left looking
-/// like one more addon's results. Not a control: nothing to focus, so it
-/// carries no focus node.
-///
-/// One accent line of type, no fill and no box. It used to be a
-/// `tokens.surfaceRaised` chip with a radius, which made the label read as a
-/// button the remote could not reach - and the page's only other boxes were
-/// the results, so the tag competed with them for attention it did not need.
-class _PinnedSpineTag extends StatelessWidget {
-  const _PinnedSpineTag();
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      l10nOf(context).searchPinnedSpine,
-      style: ZplayType.overline.toStyle(color: context.tokens.accent),
     );
   }
 }

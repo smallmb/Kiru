@@ -53,21 +53,20 @@ class AnilistService implements AnimeMetadataProvider {
     }
 
     try {
-      final res = await http.post(
-        Uri.parse(_endpoint),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'User-Agent':
-              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
-          'Origin': 'https://anilist.co',
-          'Referer': 'https://anilist.co/',
-        },
-        body: jsonEncode({
-          'query': query,
-          'variables': variables,
-        }),
-      ).timeout(const Duration(seconds: 15));
+      final res = await http
+          .post(
+            Uri.parse(_endpoint),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'User-Agent':
+                  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+              'Origin': 'https://anilist.co',
+              'Referer': 'https://anilist.co/',
+            },
+            body: jsonEncode({'query': query, 'variables': variables}),
+          )
+          .timeout(const Duration(seconds: 15));
 
       if (res.statusCode == 200) {
         final decoded = jsonDecode(res.body) as Map<String, dynamic>;
@@ -136,7 +135,8 @@ class AnilistService implements AnimeMetadataProvider {
     int page = 1,
     int perPage = 20,
   }) async {
-    final query = '''
+    final query =
+        '''
       query (\$page: Int, \$perPage: Int) {
         Page(page: \$page, perPage: \$perPage) {
           media(type: ANIME, sort: TRENDING_DESC, isAdult: ${ContentSettings.adultEnabled.value}) {
@@ -155,7 +155,8 @@ class AnilistService implements AnimeMetadataProvider {
     int page = 1,
     int perPage = 20,
   }) async {
-    final query = '''
+    final query =
+        '''
       query (\$page: Int, \$perPage: Int, \$season: MediaSeason, \$seasonYear: Int) {
         Page(page: \$page, perPage: \$perPage) {
           media(type: ANIME, season: \$season, seasonYear: \$seasonYear, sort: POPULARITY_DESC, isAdult: ${ContentSettings.adultEnabled.value}) {
@@ -179,7 +180,8 @@ class AnilistService implements AnimeMetadataProvider {
     int page = 1,
     int perPage = 20,
   }) async {
-    final query = '''
+    final query =
+        '''
       query (\$page: Int, \$perPage: Int, \$season: MediaSeason, \$seasonYear: Int) {
         Page(page: \$page, perPage: \$perPage) {
           media(type: ANIME, season: \$season, seasonYear: \$seasonYear, sort: POPULARITY_DESC, isAdult: ${ContentSettings.adultEnabled.value}) {
@@ -203,7 +205,8 @@ class AnilistService implements AnimeMetadataProvider {
     int page = 1,
     int perPage = 20,
   }) async {
-    final query = '''
+    final query =
+        '''
       query (\$page: Int, \$perPage: Int) {
         Page(page: \$page, perPage: \$perPage) {
           media(type: ANIME, sort: SCORE_DESC, isAdult: ${ContentSettings.adultEnabled.value}) {
@@ -223,7 +226,8 @@ class AnilistService implements AnimeMetadataProvider {
     int page = 1,
     int perPage = 20,
   }) async {
-    final query = '''
+    final query =
+        '''
       query (\$page: Int, \$perPage: Int, \$genre: String) {
         Page(page: \$page, perPage: \$perPage) {
           media(type: ANIME, genre: \$genre, sort: POPULARITY_DESC, isAdult: ${ContentSettings.adultEnabled.value}) {
@@ -253,13 +257,18 @@ class AnilistService implements AnimeMetadataProvider {
     bool isAdult = false,
     int page = 1,
     int perPage = 30,
+    bool throwOnFailure = false,
   }) async {
     final hasSearch = search.trim().isNotEmpty;
-    final sortClause = hasSearch ? '[SEARCH_MATCH, POPULARITY_DESC]' : '[$sort]';
-    final isAdultFinal = ContentSettings.adultEnabled.value &&
+    final sortClause = hasSearch
+        ? '[SEARCH_MATCH, POPULARITY_DESC]'
+        : '[$sort]';
+    final isAdultFinal =
+        ContentSettings.adultEnabled.value &&
         (isAdult || (genre != null && genre.toLowerCase() == 'hentai'));
 
-    final query = '''
+    final query =
+        '''
       query (\$page: Int, \$perPage: Int, \$search: String, \$genre: String, \$year: Int, \$season: MediaSeason, \$format: MediaFormat, \$status: MediaStatus, \$isAdult: Boolean) {
         Page(page: \$page, perPage: \$perPage) {
           media(type: ANIME, search: \$search, genre: \$genre, seasonYear: \$year, season: \$season, format: \$format, status: \$status, sort: $sortClause, isAdult: \$isAdult) {
@@ -276,7 +285,8 @@ class AnilistService implements AnimeMetadataProvider {
       if (hasSearch) 'search': search.trim(),
       if (genre != null && genre.isNotEmpty && genre != 'All') 'genre': genre,
       if (year != null) 'year': year,
-      if (season != null && season.isNotEmpty && season != 'All') 'season': season.toUpperCase(),
+      if (season != null && season.isNotEmpty && season != 'All')
+        'season': season.toUpperCase(),
       if (format != null && format.isNotEmpty && format != 'All')
         'format': format.toUpperCase(),
       if (status != null && status.isNotEmpty && status != 'All')
@@ -284,6 +294,9 @@ class AnilistService implements AnimeMetadataProvider {
     };
 
     final data = await _postGraphQL(query, variables);
+    if (throwOnFailure && data == null) {
+      throw StateError('AniList search did not return data');
+    }
     return _parseMediaList(data);
   }
 
@@ -315,7 +328,8 @@ class AnilistService implements AnimeMetadataProvider {
 
   /// Full Anime Details (Including Voice Actors/Characters, Relations, Recommendations)
   Future<AnimeMedia?> fetchAnimeDetails(int anilistId) async {
-    const query = '''
+    const query =
+        '''
       query (\$id: Int) {
         Media(id: \$id, type: ANIME) {
           $_mediaFields

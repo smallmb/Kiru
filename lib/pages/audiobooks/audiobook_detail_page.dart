@@ -1,3 +1,4 @@
+import '../../widgets/common/desktop_caption_area.dart';
 import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -169,14 +170,16 @@ class _AudiobookDetailPageState extends State<AudiobookDetailPage> {
                       ),
                       const SizedBox(width: ZplaySpacing.s12),
                       Expanded(
-                        child: Text(
-                          l10nOf(
-                            context,
-                          ).auxAudiobookDetailPageAudiobookDetails,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: ZplayType.titleLarge.toStyle(
-                            color: tokens.textPrimary,
+                        child: DesktopCaptionDrag(
+                          child: Text(
+                            l10nOf(
+                              context,
+                            ).auxAudiobookDetailPageAudiobookDetails,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: ZplayType.titleLarge.toStyle(
+                              color: tokens.textPrimary,
+                            ),
                           ),
                         ),
                       ),

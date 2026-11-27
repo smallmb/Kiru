@@ -25,6 +25,10 @@ library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zplay/models/my_list/my_list_item.dart';
+import 'package:zplay/services/my_list/my_list_service.dart';
+import 'package:zplay/pages/downloads/downloads_page.dart';
 
 import 'package:zplay/pages/library/library_page.dart';
 import 'package:zplay/widgets/common/segmented_tabs.dart';
@@ -65,11 +69,11 @@ void main() {
     expect(
       control.width,
       lessThan(page.width * 0.6),
-      reason: 'a two-tab switcher sized to its labels is a fraction of the '
+      reason:
+          'a two-tab switcher sized to its labels is a fraction of the '
           '${page.width} dp page. A full-width track is the reported bug.',
     );
   });
-
 
   testWidgets('both labels are shown in full', (tester) async {
     await mountOnTelevision(tester);
@@ -90,7 +94,8 @@ void main() {
     expect(
       find.descendant(of: inSwitcher, matching: find.textContaining('…')),
       findsNothing,
-      reason: 'a label shortened inside the track means the track is too narrow',
+      reason:
+          'a label shortened inside the track means the track is too narrow',
     );
   });
 
@@ -104,5 +109,103 @@ void main() {
     // sits next to and nearly half again as tall as Home's filter pills.
     final control = tester.getSize(find.byType(SegmentedTabs<LibraryTab>));
     expect(control.height, 48.0);
+  });
+  testWidgets(
+    'glass header overlays content and tabs preserve the saved list',
+    (tester) async {
+      SharedPreferences.setMockInitialValues({});
+      MyListService.items.value = List.generate(
+        30,
+        (i) => MyListItem(
+          traktId: i + 1,
+          title: 'Saved title $i',
+          type: 'movie',
+          addedAt: DateTime(2026),
+        ),
+      );
+      addTearDown(() => MyListService.items.value = []);
+      tester.view.physicalSize = const Size(1440, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder: (context) => MediaQuery(
+              data: MediaQuery.of(
+                context,
+              ).copyWith(padding: const EdgeInsets.only(top: 64)),
+              child: const LibraryPage(),
+            ),
+          ),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 300));
+      final header = find.byKey(const ValueKey('kiru-library-glass-header'));
+      final scroll = find.byKey(
+        const PageStorageKey('kiru-library-saved-scroll'),
+      );
+      final switcher = find.byType(SegmentedTabs<LibraryTab>);
+      expect(
+        find.descendant(of: header, matching: find.byType(BackdropFilter)),
+        findsOneWidget,
+      );
+      final before = tester.getRect(header);
+      expect(before.top, 64);
+      expect(tester.getTopLeft(switcher).dx, 48);
+      expect(
+        tester.widget<SegmentedTabs<LibraryTab>>(switcher).inlineCounts,
+        isTrue,
+      );
+      expect(find.text('Library'), findsNothing);
+      expect(tester.getRect(scroll).top, 0);
+      await tester.drag(scroll, const Offset(0, -480));
+      await tester.pump(const Duration(milliseconds: 500));
+      final position = tester
+          .state<ScrollableState>(
+            find
+                .descendant(of: scroll, matching: find.byType(Scrollable))
+                .first,
+          )
+          .position;
+      expect(position.pixels, greaterThan(0));
+      final offset = position.pixels;
+      expect(tester.getRect(header), before);
+      await tester.tap(
+        find.descendant(of: switcher, matching: find.text('Downloads')),
+      );
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.byType(DownloadsPage), findsOneWidget);
+      expect(
+        find.byKey(const PageStorageKey('kiru-library-download-scroll')),
+        findsOneWidget,
+      );
+      await tester.tap(
+        find.descendant(of: switcher, matching: find.text('My List')),
+      );
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(position.pixels, closeTo(offset, 1));
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
+
+  testWidgets('compact library header and filters fit a phone', (tester) async {
+    tester.view.physicalSize = const Size(360, 720);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(const MaterialApp(home: LibraryPage()));
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(tester.takeException(), isNull);
+    await tester.tap(
+      find.descendant(
+        of: find.byType(SegmentedTabs<LibraryTab>),
+        matching: find.text('Downloads'),
+      ),
+    );
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(tester.takeException(), isNull);
+    await tester.pumpWidget(const SizedBox.shrink());
   });
 }

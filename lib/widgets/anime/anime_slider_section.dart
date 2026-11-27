@@ -1,3 +1,4 @@
+import '../immersive/immersive_content_layout.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/anime/anime_media.dart';
@@ -26,10 +27,13 @@ class AnimeSliderSection extends StatelessWidget {
   Widget build(BuildContext context) {
     if (animeList.isEmpty) return const SizedBox.shrink();
 
+    final layout = ImmersiveContentLayout.maybeOf(context);
     final sizing = MovieCardSizing.fromWidth(MediaQuery.sizeOf(context).width);
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 26),
+      padding: EdgeInsets.only(
+        bottom: layout == null ? 26 : ImmersiveContentLayout.railGap,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -46,7 +50,9 @@ class AnimeSliderSection extends StatelessWidget {
           // always used for its arrows.
           HoverScrollRail(
             height: sizing.totalHeight,
-            padding: EdgeInsets.symmetric(horizontal: sizing.sidePadding),
+            padding: EdgeInsets.symmetric(
+              horizontal: layout?.gutter ?? sizing.sidePadding,
+            ),
             spacing: sizing.spacing,
             edgeTolerance: HoverScrollRail.slopEdgeTolerance,
             itemCount: animeList.length,

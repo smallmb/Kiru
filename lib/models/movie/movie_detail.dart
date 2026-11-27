@@ -13,6 +13,8 @@ class MovieDetail {
   final String? year;
   final String? imdbRating;
   final List<String> genres;
+  final String? status;
+  final DateTime? releasedAt;
   final List<String> cast;
   final List<String> director;
   final String? runtime;
@@ -38,6 +40,8 @@ class MovieDetail {
     this.year,
     this.imdbRating,
     this.genres = const [],
+    this.status,
+    this.releasedAt,
     this.cast = const [],
     this.director = const [],
     this.runtime,
@@ -84,6 +88,8 @@ class MovieDetail {
       year: year ?? this.year,
       imdbRating: imdbRating ?? this.imdbRating,
       genres: genres ?? this.genres,
+      status: status,
+      releasedAt: releasedAt,
       cast: cast ?? this.cast,
       director: director ?? this.director,
       runtime: runtime ?? this.runtime,
@@ -105,7 +111,12 @@ class MovieDetail {
       description: json['description']?.toString(),
       year: json['releaseInfo']?.toString() ?? json['year']?.toString(),
       imdbRating: json['imdbRating']?.toString(),
-      genres: _parseStringList(json['genres']),
+      genres: _parseStringList(json['genres'] ?? json['genre']),
+      status: json['status']?.toString(),
+      releasedAt: DateTime.tryParse(
+        (json['released'] ?? json['firstAired'] ?? json['release_date'] ?? '')
+            .toString(),
+      ),
       cast: _parseStringList(json['cast']),
       director: _parseStringList(json['director']),
       runtime: json['runtime']?.toString(),

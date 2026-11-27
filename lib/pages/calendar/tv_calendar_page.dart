@@ -1,3 +1,4 @@
+import '../../widgets/common/desktop_caption_area.dart';
 import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -300,28 +301,32 @@ class _TvCalendarPageState extends State<TvCalendarPage> {
 
           // Title & (non-mobile) subtitle
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  l10nOf(context).auxTvCalendarPageTvShowsAiringCalendar,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: ZplayType.titleLarge.toStyle(
-                    color: tokens.textPrimary,
-                  ),
-                ),
-                if (!isMobile)
+            child: DesktopCaptionDrag(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
                   Text(
-                    l10nOf(
-                      context,
-                    ).auxTvCalendarPageUpcomingBroadcastStreamingEpisodesWithLiveNetwork,
+                    l10nOf(context).auxTvCalendarPageTvShowsAiringCalendar,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: ZplayType.bodySmall.toStyle(color: tokens.textMuted),
+                    style: ZplayType.titleLarge.toStyle(
+                      color: tokens.textPrimary,
+                    ),
                   ),
-              ],
+                  if (!isMobile)
+                    Text(
+                      l10nOf(
+                        context,
+                      ).auxTvCalendarPageUpcomingBroadcastStreamingEpisodesWithLiveNetwork,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: ZplayType.bodySmall.toStyle(
+                        color: tokens.textMuted,
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
 

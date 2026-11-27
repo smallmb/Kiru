@@ -77,6 +77,41 @@ class AnimeMetadataService implements AnimeMetadataProvider {
     ),
   );
 
+  /// Unified search must distinguish unavailable sources from empty matches.
+  Future<List<AnimeMedia>> searchUnifiedAnime(
+    String query, {
+    int perPage = 35,
+    String? genre,
+    int? year,
+    String? season,
+    String? format,
+    String? status,
+    String sort = 'SEARCH_MATCH',
+  }) => _route(
+    (provider) => provider is AnilistService
+        ? provider.searchAnime(
+            query,
+            perPage: perPage,
+            genre: genre,
+            year: year,
+            season: season,
+            format: format,
+            status: status,
+            sort: sort,
+            throwOnFailure: true,
+          )
+        : provider.searchAnime(
+            query,
+            perPage: perPage,
+            genre: genre,
+            year: year,
+            season: season,
+            format: format,
+            status: status,
+            sort: sort,
+          ),
+  );
+
   /// Use native Bangumi fields and enrich with AniList-only playback and cast
   /// fields, without replacing the original title/identity.
   @override

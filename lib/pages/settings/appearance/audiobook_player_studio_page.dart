@@ -1,3 +1,4 @@
+import '../../../widgets/common/desktop_caption_area.dart';
 import '../../../widgets/ui/kiru_tappable.dart';
 import '../../../widgets/ui/kiru_toast.dart';
 import '../../../widgets/ui/kiru_controls.dart';
@@ -82,6 +83,7 @@ class _AudiobookPlayerStudioPageState extends State<AudiobookPlayerStudioPage>
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
+          flexibleSpace: const DesktopCaptionDrag(),
           // Transparent, no hairline: the page's own canvas is the band, exactly
           // as `SettingsAppBar` does it for the pages that share a bare header.
           // This page only hand-rolls its bar because its title carries a second
@@ -94,56 +96,58 @@ class _AudiobookPlayerStudioPageState extends State<AudiobookPlayerStudioPage>
             icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 18),
             onPressed: () => Navigator.pop(context),
           ),
-          title: screenW < 600
-              ? Text(
-                  l10nOf(context).auxAudiobookPlayerStudioPagePlayerStudio,
-                  style: ZplayType.title.toStyle(color: tokens.textPrimary),
-                )
-              : Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(7),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [palette.primaryColor, palette.accentColor],
+          title: DesktopCaptionDrag(
+            child: screenW < 600
+                ? Text(
+                    l10nOf(context).auxAudiobookPlayerStudioPagePlayerStudio,
+                    style: ZplayType.title.toStyle(color: tokens.textPrimary),
+                  )
+                : Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(7),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [palette.primaryColor, palette.accentColor],
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.dashboard_customize_rounded,
+                          color: tokens.onAccent,
+                          size: 18,
                         ),
                       ),
-                      child: Icon(
-                        Icons.dashboard_customize_rounded,
-                        color: tokens.onAccent,
-                        size: 18,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Flexible(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            l10nOf(
-                              context,
-                            ).auxAudiobookPlayerStudioPageCustomAudiobookPlayerStudio,
-                            style: ZplayType.title.toStyle(
-                              color: tokens.textPrimary,
+                      const SizedBox(width: 12),
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              l10nOf(
+                                context,
+                              ).auxAudiobookPlayerStudioPageCustomAudiobookPlayerStudio,
+                              style: ZplayType.title.toStyle(
+                                color: tokens.textPrimary,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          Text(
-                            l10nOf(
-                              context,
-                            ).auxAudiobookPlayerStudioPageDragComponentsTransformSeekbarsCustomizeButtonPhysics,
-                            style: ZplayType.caption.toStyle(
-                              color: tokens.textSecondary,
+                            Text(
+                              l10nOf(
+                                context,
+                              ).auxAudiobookPlayerStudioPageDragComponentsTransformSeekbarsCustomizeButtonPhysics,
+                              style: ZplayType.caption.toStyle(
+                                color: tokens.textSecondary,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+          ),
           actions: [
             if (screenW < 520)
               KiruIconButton(

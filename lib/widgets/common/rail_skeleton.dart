@@ -1,3 +1,4 @@
+import '../immersive/immersive_content_layout.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/theme/design_tokens.dart';
@@ -58,6 +59,7 @@ class _RailSkeletonState extends State<RailSkeleton>
   @override
   Widget build(BuildContext context) {
     final tokens = ZplayTokens.of(context);
+    final gutter = ImmersiveContentLayout.maybeOf(context)?.gutter;
 
     // One controller and one FadeTransition for the whole rail rather than one
     // per block: the blocks then breathe together, and a six-card rail costs a
@@ -72,10 +74,10 @@ class _RailSkeletonState extends State<RailSkeleton>
           // lands, which is the jump this widget exists to prevent.
           if (widget.showHeader)
             Padding(
-              padding: const EdgeInsets.fromLTRB(
-                ZplaySpacing.s16,
+              padding: EdgeInsets.fromLTRB(
+                gutter ?? ZplaySpacing.s16,
                 ZplaySpacing.s8,
-                ZplaySpacing.s16,
+                gutter ?? ZplaySpacing.s16,
                 ZplaySpacing.s0,
               ),
               child: SizedBox(
@@ -93,7 +95,7 @@ class _RailSkeletonState extends State<RailSkeleton>
               scrollDirection: Axis.horizontal,
               physics: const NeverScrollableScrollPhysics(),
               padding: EdgeInsets.symmetric(
-                horizontal: widget.sizing.sidePadding,
+                horizontal: gutter ?? widget.sizing.sidePadding,
               ),
               itemCount: widget.count,
               itemBuilder: (context, index) => Padding(

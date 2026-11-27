@@ -1,3 +1,4 @@
+import '../immersive/immersive_content_layout.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/layout/form_factor.dart';
@@ -166,6 +167,8 @@ class PillButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final isPrimary = variant == PillVariant.primary;
+    final immersive = ImmersiveContentLayout.maybeOf(context) != null;
+    final radius = immersive ? BorderRadius.circular(24) : _radius;
     final foreground = isPrimary ? tokens.bg : tokens.textPrimary;
 
     // **A `MainAxisSize.min` row, not a flexible one.** `Flexible` inside a
@@ -234,8 +237,14 @@ class PillButton extends StatelessWidget {
               // hairline it used to need.
               color: isPrimary
                   ? tokens.textPrimary
-                  : Colors.white.withValues(alpha: state.hovered ? 0.28 : 0.2),
-              borderRadius: _radius,
+                  : Colors.white.withValues(
+                      alpha: state.hovered
+                          ? 0.28
+                          : immersive
+                          ? 0.12
+                          : 0.2,
+                    ),
+              borderRadius: radius,
             ),
             // The label is inset by the padding, so the pill is as wide as its
             // content plus 48 dp and exactly as tall as [heightFor].
@@ -252,7 +261,7 @@ class PillButton extends StatelessWidget {
         // own ring would be the second indicator in the app.
         return CardFocusRing(
           focused: state.focused,
-          radius: _radius,
+          radius: radius,
           child: pill,
         );
       },

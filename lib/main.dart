@@ -288,12 +288,15 @@ class _ZPlayAppState extends State<ZPlayApp> with WidgetsBindingObserver {
                 // `MediaQuery` and the render viewport agree, so a page sized from
                 // `MediaQuery` fits the screen it is drawn into.
                 builder: (context, child) {
-                  final app = KiruForuiTheme.wrap(
+                  final app = child ?? const SizedBox.shrink();
+                  return KiruForuiTheme.wrap(
                     context,
-                    DesktopCaptionArea(child: child ?? const SizedBox.shrink()),
+                    DesktopCaptionArea(
+                      child: kDebugMode
+                          ? Stack(children: [app, const PerfHud()])
+                          : app,
+                    ),
                   );
-                  if (!kDebugMode) return app;
-                  return Stack(children: [app, const PerfHud()]);
                 },
               ),
             );

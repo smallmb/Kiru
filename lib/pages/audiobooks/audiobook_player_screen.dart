@@ -1,3 +1,4 @@
+import '../../widgets/common/desktop_caption_area.dart';
 import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
@@ -884,60 +885,62 @@ class _AudiobookPlayerScreenState extends State<AudiobookPlayerScreen>
           ),
           SizedBox(width: isMobile ? 8 : 14),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  widget.audiobook.title,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: isMobile ? 14.5 : 16,
-                    fontWeight: FontWeight.bold,
+            child: DesktopCaptionDrag(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    widget.audiobook.title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: isMobile ? 14.5 : 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Builder(
-                  builder: (context) {
-                    final isTorrent = widget.audiobook.source
-                        .toLowerCase()
-                        .contains('audiobookbay');
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (isTorrent) ...[
-                          // #FFB74D is the Material Amber 300 warning shade, the same
-                          // role `tokens.warning` carries — the source badge is a
-                          // status, not an accent, so it stays palette-independent.
-                          Icon(
-                            Icons.warning_amber_rounded,
-                            color: context.tokens.warning,
-                            size: 11,
-                          ),
-                          const SizedBox(width: 3),
-                        ],
-                        Flexible(
-                          child: Text(
-                            isTorrent
-                                ? 'AUDIOBOOKBAY (TORRENT)'
-                                : widget.audiobook.source.toUpperCase(),
-                            style: TextStyle(
-                              color: isTorrent
-                                  ? context.tokens.warning
-                                  : context.tokens.accent,
-                              fontSize: isMobile ? 9.5 : 11,
-                              fontWeight: FontWeight.w600,
+                  Builder(
+                    builder: (context) {
+                      final isTorrent = widget.audiobook.source
+                          .toLowerCase()
+                          .contains('audiobookbay');
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (isTorrent) ...[
+                            // #FFB74D is the Material Amber 300 warning shade, the same
+                            // role `tokens.warning` carries — the source badge is a
+                            // status, not an accent, so it stays palette-independent.
+                            Icon(
+                              Icons.warning_amber_rounded,
+                              color: context.tokens.warning,
+                              size: 11,
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                            const SizedBox(width: 3),
+                          ],
+                          Flexible(
+                            child: Text(
+                              isTorrent
+                                  ? 'AUDIOBOOKBAY (TORRENT)'
+                                  : widget.audiobook.source.toUpperCase(),
+                              style: TextStyle(
+                                color: isTorrent
+                                    ? context.tokens.warning
+                                    : context.tokens.accent,
+                                fontSize: isMobile ? 9.5 : 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ],
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
           SizedBox(width: isMobile ? 6 : 10),

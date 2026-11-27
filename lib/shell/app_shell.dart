@@ -370,7 +370,7 @@ class _AppShellState extends State<AppShell> {
   /// compile here until it has a destination, which is the only guard that keeps
   /// the enum and the stack in step.
   Widget _pageFor(ShellSlot slot) => switch (slot) {
-    ShellSlot.home => const HomePage(),
+    ShellSlot.home => const HomePage(curated: true),
     ShellSlot.browse => const BrowsePage(),
     ShellSlot.search => const SearchPage(),
     ShellSlot.library => const LibraryPage(),
@@ -414,6 +414,7 @@ class _AppShellState extends State<AppShell> {
       browseVertical: _controller.browseVertical,
       onBrowseVertical: _controller.goBrowseVertical,
       onSearchSubmitted: _controller.searchFromHeader,
+      searchText: _controller.searchText,
     );
     if (!handOverDown) return rail;
     return _TopChromeHandover(onDown: _handOverDownToPage, child: rail);

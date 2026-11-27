@@ -1,3 +1,4 @@
+import '../../widgets/immersive/immersive_content_layout.dart';
 import 'package:zplay/l10n/anime_titles.dart';
 import 'package:zplay/l10n/media_labels.dart';
 import '../../l10n/l10n.dart';
@@ -24,33 +25,32 @@ import '../../widgets/common/focusable_card.dart';
 import '../../widgets/common/hero_meta_line.dart';
 import '../../widgets/common/pill_button.dart';
 import '../../widgets/common/rail_skeleton.dart';
-import '../../widgets/common/segmented_tabs.dart';
-import '../../widgets/ui/kiru_controls.dart';
 import '../../widgets/common/slider_arrow.dart';
 import '../../widgets/home/continue_watching_slider.dart';
 import '../../widgets/movie/movie_card.dart';
 import 'anime_details_page.dart';
 import 'anime_stream_sheet.dart';
-import 'anime_search_page.dart';
 import '../anime_arabic/anime_arabic_details_page.dart';
 import '../anime_arabic/anime_arabic_stream_sheet.dart';
 import '../../services/storage/app_image_cache.dart';
 
 class AnimePage extends StatefulWidget {
-  const AnimePage({super.key});
+  const AnimePage({super.key, this.metadata});
+
+  final AnimeMetadataService? metadata;
 
   @override
   State<AnimePage> createState() => _AnimePageState();
 }
 
 class _AnimePageState extends State<AnimePage> {
-  final AnimeMetadataService _metadata = AnimeMetadataService.instance;
+  AnimeMetadataService get _metadata =>
+      widget.metadata ?? AnimeMetadataService.instance;
   int _loadRevision = 0;
   final AnimeLibraryService _libraryService = AnimeLibraryService.instance;
   final AnimeArabicService _arabicService = AnimeArabicService.instance;
   final ScrollController _scrollController = ScrollController();
 
-  bool _isArabicMode = false;
   bool _loading = true;
   String? _error;
 
@@ -64,10 +64,6 @@ class _AnimePageState extends State<AnimePage> {
   List<AnimeMedia> _fantasyAnime = [];
   List<AnimeMedia> _sciFiAnime = [];
 
-  // Arabic Anime data
-  HomeFeed? _arabicFeed;
-  final Map<int, ArabicAnimeCard> _arabicCards = {};
-
   @override
   void initState() {
     super.initState();
@@ -79,7 +75,7 @@ class _AnimePageState extends State<AnimePage> {
   }
 
   void _onSourceChanged() {
-    if (mounted && !_isArabicMode) _loadAnimeData();
+    if (mounted) _loadAnimeData();
   }
 
   @override
@@ -108,44 +104,6 @@ class _AnimePageState extends State<AnimePage> {
       _loading = true;
       _error = null;
     });
-
-    if (_isArabicMode) {
-      try {
-        final feed = await _arabicService.getHome();
-        _arabicCards.clear();
-        void registerCards(List<ArabicAnimeCard> list) {
-          for (final c in list) {
-            _arabicCards[c.slug.hashCode.abs()] = c;
-          }
-        }
-
-        registerCards(feed.spotlight);
-        registerCards(feed.recentEpisodes);
-        registerCards(feed.trending);
-        registerCards(feed.popularMovies);
-        registerCards(feed.topSeasonal);
-        registerCards(feed.seasonal);
-        registerCards(feed.legendary);
-        registerCards(feed.upcoming);
-
-        if (mounted && revision == _loadRevision) {
-          setState(() {
-            _arabicFeed = feed;
-            _loading = false;
-          });
-        }
-      } catch (e) {
-        debugPrint('Error loading Arabic Anime data: $e');
-        if (mounted && revision == _loadRevision) {
-          setState(() {
-            _error =
-                'Failed to load Arabic Anime catalog. Check your internet connection.';
-            _loading = false;
-          });
-        }
-      }
-      return;
-    }
 
     try {
       final trendingFut = _metadata.fetchTrendingAnime(perPage: 18);
@@ -200,25 +158,15 @@ class _AnimePageState extends State<AnimePage> {
     }
   }
 
-  void _onModeChanged(bool arabic) {
-    if (_isArabicMode == arabic) return;
-    setState(() {
-      _isArabicMode = arabic;
-    });
-    _loadAnimeData();
-  }
-
   void _playEpisode(AnimeMedia anime, int episodeNumber) {
-    if (_isArabicMode || anime.isArabic || _arabicCards.containsKey(anime.id)) {
-      final card =
-          _arabicCards[anime.id] ??
-          ArabicAnimeCard(
-            slug: (anime.slug != null && anime.slug!.isNotEmpty)
-                ? anime.slug!
-                : anime.titleEnglish.toLowerCase().replaceAll(' ', '-'),
-            title: anime.displayTitle,
-            cover: anime.coverUrl,
-          );
+    if (anime.isArabic) {
+      final card = ArabicAnimeCard(
+        slug: (anime.slug != null && anime.slug!.isNotEmpty)
+            ? anime.slug!
+            : anime.titleEnglish.toLowerCase().replaceAll(' ', '-'),
+        title: anime.displayTitle,
+        cover: anime.coverUrl,
+      );
       _arabicService.getDetails(card.slug).then((details) {
         if (!mounted) return;
         final ep = details.episodes.firstWhere(
@@ -261,16 +209,14 @@ class _AnimePageState extends State<AnimePage> {
   }
 
   void _openDetails(AnimeMedia anime, [int? preferredEpisode]) {
-    if (_isArabicMode || anime.isArabic || _arabicCards.containsKey(anime.id)) {
-      final card =
-          _arabicCards[anime.id] ??
-          ArabicAnimeCard(
-            slug: (anime.slug != null && anime.slug!.isNotEmpty)
-                ? anime.slug!
-                : anime.titleEnglish.toLowerCase().replaceAll(' ', '-'),
-            title: anime.displayTitle,
-            cover: anime.coverUrl,
-          );
+    if (anime.isArabic) {
+      final card = ArabicAnimeCard(
+        slug: (anime.slug != null && anime.slug!.isNotEmpty)
+            ? anime.slug!
+            : anime.titleEnglish.toLowerCase().replaceAll(' ', '-'),
+        title: anime.displayTitle,
+        cover: anime.coverUrl,
+      );
       final epNum =
           preferredEpisode ??
           (anime.totalEpisodes > 0 ? anime.totalEpisodes : null);
@@ -292,267 +238,162 @@ class _AnimePageState extends State<AnimePage> {
     );
   }
 
-  void _navigateToSearch() {
-    Navigator.push(
-      context,
-      FadeThroughRoute(page: AnimeSearchPage(initialArabicMode: _isArabicMode)),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     // The shell reports its overlay height as top padding.
     final topPadding = MediaQuery.paddingOf(context).top;
+    // Pointer chrome is painted over the page, just as on Home. Spend
+    // its inset inside the artwork rather than reserving an opaque strip.
+    final factor = FormFactorService.of(context);
+    final bleedTop =
+        factor == FormFactor.medium || factor == FormFactor.expanded
+        ? topPadding
+        : 0.0;
+    final reservedTop = topPadding - bleedTop;
     final immersive = _animeImmersive(context);
     final size = MediaQuery.sizeOf(context);
     final heroOverlap = immersive ? 112.0 : 0.0;
-    final heroHeight = _AnimeHeroCarousel.heightFor(
-      size.width,
-      size.height,
-      immersive: immersive,
-    );
+    final heroHeight =
+        _AnimeHeroCarousel.heightFor(
+          size.width,
+          size.height,
+          immersive: immersive,
+        ) +
+        bleedTop;
     final tokens = context.tokens;
     // The palette needs no listener of its own here: it decides the app's
     // `ThemeData` (main.dart), `context.tokens` is read off that theme, and a
     // themed widget rebuilds when it changes.
-    final hasContent = _isArabicMode
-        ? _arabicFeed != null
-        : _trending.isNotEmpty;
+    final hasContent = _trending.isNotEmpty;
 
     final backgroundContent = AnimatedAmbientBackground(
       child: Stack(
         children: [
           // Main scrollable content
           if (_loading && !hasContent)
-            const _AnimeSkeleton()
+            _AnimeSkeleton(heroHeight: heroHeight)
           else if (_error != null && !hasContent)
-            ErrorView(
-              title: l10nOf(context).animeLoadFailed,
-              error: _error,
-              onRetry: _loadAnimeData,
+            Padding(
+              padding: EdgeInsets.only(top: bleedTop),
+              child: ErrorView(
+                title: l10nOf(context).animeLoadFailed,
+                error: _error,
+                onRetry: _loadAnimeData,
+              ),
             )
           else
             RefreshIndicator(
               color: tokens.accent,
               backgroundColor: tokens.surface,
               onRefresh: _loadAnimeData,
+              edgeOffset: bleedTop,
               child: ListView(
                 controller: _scrollController,
                 clipBehavior: Clip.none,
-                padding: EdgeInsets.zero,
+                padding: EdgeInsets.only(top: hasContent ? 0 : bleedTop),
                 physics: const BouncingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
                 ),
                 children: [
-                  if (_isArabicMode) ...[
-                    // 1. Arabic Hero Carousel (Matching Home Page)
-                    if (_arabicFeed != null &&
-                        (_arabicFeed!.spotlight.isNotEmpty ||
-                            _arabicFeed!.trending.isNotEmpty))
+                  // 1. Full Bleed Hero Carousel (Matching Home Page)
+                  if (_trending.isNotEmpty)
+                    if (immersive)
+                      Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          _AnimeHeroCarousel(
+                            height: heroHeight,
+                            topInset: bleedTop,
+                            animeList: _trending.take(6).toList(),
+                            onWatchNow: (anime) => _playEpisode(anime, 1),
+                            onDetailsTap: _openDetails,
+                            overlap: heroOverlap,
+                          ),
+                          Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(height: heroHeight - heroOverlap),
+                              AnimeSliderSection(
+                                title: l10nOf(context).animeTrending,
+                                animeList: _trending,
+                                onAnimeTap: _openDetails,
+                              ),
+                            ],
+                          ),
+                        ],
+                      )
+                    else
                       _AnimeHeroCarousel(
-                        animeList:
-                            (_arabicFeed!.spotlight.isNotEmpty
-                                    ? _arabicFeed!.spotlight
-                                    : _arabicFeed!.trending)
-                                .take(6)
-                                .map((c) => c.toAnimeMedia())
-                                .toList(),
+                        height: heroHeight,
+                        topInset: bleedTop,
+                        animeList: _trending.take(6).toList(),
                         onWatchNow: (anime) => _playEpisode(anime, 1),
                         onDetailsTap: _openDetails,
                       ),
 
-                    const SizedBox(height: ZplaySpacing.s16),
+                  const SizedBox(height: ZplaySpacing.s16),
 
-                    // 2. Anime Continue Watching Slider
-                    ContinueWatchingSlider(
-                      typeFilter: 'arabic_anime',
-                      title: l10nOf(context).arabicSectionContinueWatching0,
-                    ),
+                  // 2. Anime Continue Watching Slider
+                  ContinueWatchingSlider(
+                    typeFilter: 'general_anime',
+                    title: l10nOf(context).animeContinueWatching,
+                  ),
 
-                    const SizedBox(height: ZplaySpacing.s8),
+                  const SizedBox(height: ZplaySpacing.s8),
 
-                    // 3. Arabic Sliders with Desktop Scroll Arrows
-                    if (_arabicFeed != null) ...[
-                      if (_arabicFeed!.recentEpisodes.isNotEmpty)
-                        AnimeSliderSection(
-                          title: l10nOf(context).arabicSectionLatestEpisodes1,
-                          subtitle: l10nOf(
-                            context,
-                          ).arabicSectionLatestEpisodesWithArabicSubtitles2,
-                          animeList: _arabicFeed!.recentEpisodes
-                              .map((c) => c.toAnimeMedia())
-                              .toList(),
-                          onAnimeTap: (anime) => _openDetails(
-                            anime,
-                            anime.totalEpisodes > 0
-                                ? anime.totalEpisodes
-                                : null,
-                          ),
-                        ),
-                      if (_arabicFeed!.trending.isNotEmpty)
-                        AnimeSliderSection(
-                          title: l10nOf(context).arabicSectionTrending3,
-                          subtitle: l10nOf(
-                            context,
-                          ).arabicSectionMostWatchedAnimeRightNow4,
-                          animeList: _arabicFeed!.trending
-                              .map((c) => c.toAnimeMedia())
-                              .toList(),
-                          onAnimeTap: _openDetails,
-                        ),
-                      if (_arabicFeed!.popularMovies.isNotEmpty)
-                        AnimeSliderSection(
-                          title: l10nOf(context).arabicSectionPopularFilms5,
-                          subtitle: l10nOf(
-                            context,
-                          ).arabicSectionFeaturedAnimeFilms6,
-                          animeList: _arabicFeed!.popularMovies
-                              .map((c) => c.toAnimeMedia())
-                              .toList(),
-                          onAnimeTap: _openDetails,
-                        ),
-                      if (_arabicFeed!.topSeasonal.isNotEmpty)
-                        AnimeSliderSection(
-                          title: l10nOf(context).arabicSectionTopRatedAnime7,
-                          subtitle: l10nOf(
-                            context,
-                          ).arabicSectionHighlyRatedAnime8,
-                          animeList: _arabicFeed!.topSeasonal
-                              .map((c) => c.toAnimeMedia())
-                              .toList(),
-                          onAnimeTap: _openDetails,
-                        ),
-                      if (_arabicFeed!.seasonal.isNotEmpty)
-                        AnimeSliderSection(
-                          title: l10nOf(context).arabicSectionSeasonalAnime9,
-                          subtitle: l10nOf(
-                            context,
-                          ).arabicSectionCurrentSeasonShows10,
-                          animeList: _arabicFeed!.seasonal
-                              .map((c) => c.toAnimeMedia())
-                              .toList(),
-                          onAnimeTap: _openDetails,
-                        ),
-                      if (_arabicFeed!.legendary.isNotEmpty)
-                        AnimeSliderSection(
-                          title: l10nOf(context).arabicSectionClassicAnime11,
-                          subtitle: l10nOf(
-                            context,
-                          ).arabicSectionTimelessAnimeClassics12,
-                          animeList: _arabicFeed!.legendary
-                              .map((c) => c.toAnimeMedia())
-                              .toList(),
-                          onAnimeTap: _openDetails,
-                        ),
-                      if (_arabicFeed!.upcoming.isNotEmpty)
-                        AnimeSliderSection(
-                          title: l10nOf(context).arabicSectionComingSoon13,
-                          subtitle: l10nOf(
-                            context,
-                          ).arabicSectionUpcomingAnime14,
-                          animeList: _arabicFeed!.upcoming
-                              .map((c) => c.toAnimeMedia())
-                              .toList(),
-                          onAnimeTap: _openDetails,
-                        ),
-                    ],
-                  ] else ...[
-                    // 1. Full Bleed Hero Carousel (Matching Home Page)
-                    if (_trending.isNotEmpty)
-                      if (immersive)
-                        Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            _AnimeHeroCarousel(
-                              animeList: _trending.take(6).toList(),
-                              onWatchNow: (anime) => _playEpisode(anime, 1),
-                              onDetailsTap: _openDetails,
-                              overlap: heroOverlap,
-                            ),
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(height: heroHeight - heroOverlap),
-                                AnimeSliderSection(
-                                  title: l10nOf(context).animeTrending,
-                                  animeList: _trending,
-                                  onAnimeTap: _openDetails,
-                                ),
-                              ],
-                            ),
-                          ],
-                        )
-                      else
-                        _AnimeHeroCarousel(
-                          animeList: _trending.take(6).toList(),
-                          onWatchNow: (anime) => _playEpisode(anime, 1),
-                          onDetailsTap: _openDetails,
-                        ),
-
-                    const SizedBox(height: ZplaySpacing.s16),
-
-                    // 2. Anime Continue Watching Slider
-                    ContinueWatchingSlider(
-                      typeFilter: 'general_anime',
-                      title: l10nOf(context).animeContinueWatching,
-                    ),
-
-                    const SizedBox(height: ZplaySpacing.s8),
-
-                    // 3. Sliders with Desktop Scroll Arrows
-                    if (!immersive)
-                      AnimeSliderSection(
-                        title: l10nOf(context).animeTrending,
-                        subtitle: l10nOf(context).animeTrendingDescription,
-                        animeList: _trending,
-                        onAnimeTap: _openDetails,
-                      ),
+                  // 3. Sliders with Desktop Scroll Arrows
+                  if (!immersive)
                     AnimeSliderSection(
-                      title: l10nOf(context).animeSeasonPopular,
-                      subtitle: l10nOf(context)
-                          .dynamicAnimePageCurrentlyAiringHits(
-                            mediaLabel(context, AnilistService.currentSeason()),
-                          ),
-                      animeList: _popularSeason,
+                      title: l10nOf(context).animeTrending,
+                      subtitle: l10nOf(context).animeTrendingDescription,
+                      animeList: _trending,
                       onAnimeTap: _openDetails,
                     ),
-                    AnimeSliderSection(
-                      title: l10nOf(context).animeMasterpieces,
-                      subtitle: l10nOf(context).animeMasterpiecesDescription,
-                      animeList: _topRated,
-                      onAnimeTap: _openDetails,
-                    ),
-                    AnimeSliderSection(
-                      title: l10nOf(context).animeNextSeason,
-                      subtitle: l10nOf(context).animeNextSeasonDescription,
-                      animeList: _upcoming,
-                      onAnimeTap: _openDetails,
-                    ),
-                    AnimeSliderSection(
-                      title: l10nOf(context).animeAction,
-                      subtitle: l10nOf(context).animeActionDescription,
-                      animeList: _actionAnime,
-                      onAnimeTap: _openDetails,
-                    ),
-                    AnimeSliderSection(
-                      title: l10nOf(context).animeRomance,
-                      subtitle: l10nOf(context).animeRomanceDescription,
-                      animeList: _romanceAnime,
-                      onAnimeTap: _openDetails,
-                    ),
-                    AnimeSliderSection(
-                      title: l10nOf(context).animeFantasy,
-                      subtitle: l10nOf(context).animeFantasyDescription,
-                      animeList: _fantasyAnime,
-                      onAnimeTap: _openDetails,
-                    ),
-                    AnimeSliderSection(
-                      title: l10nOf(context).animeSciFi,
-                      subtitle: l10nOf(context).animeSciFiDescription,
-                      animeList: _sciFiAnime,
-                      onAnimeTap: _openDetails,
-                    ),
-                  ],
+                  AnimeSliderSection(
+                    title: l10nOf(context).animeSeasonPopular,
+                    subtitle: l10nOf(context)
+                        .dynamicAnimePageCurrentlyAiringHits(
+                          mediaLabel(context, AnilistService.currentSeason()),
+                        ),
+                    animeList: _popularSeason,
+                    onAnimeTap: _openDetails,
+                  ),
+                  AnimeSliderSection(
+                    title: l10nOf(context).animeMasterpieces,
+                    subtitle: l10nOf(context).animeMasterpiecesDescription,
+                    animeList: _topRated,
+                    onAnimeTap: _openDetails,
+                  ),
+                  AnimeSliderSection(
+                    title: l10nOf(context).animeNextSeason,
+                    subtitle: l10nOf(context).animeNextSeasonDescription,
+                    animeList: _upcoming,
+                    onAnimeTap: _openDetails,
+                  ),
+                  AnimeSliderSection(
+                    title: l10nOf(context).animeAction,
+                    subtitle: l10nOf(context).animeActionDescription,
+                    animeList: _actionAnime,
+                    onAnimeTap: _openDetails,
+                  ),
+                  AnimeSliderSection(
+                    title: l10nOf(context).animeRomance,
+                    subtitle: l10nOf(context).animeRomanceDescription,
+                    animeList: _romanceAnime,
+                    onAnimeTap: _openDetails,
+                  ),
+                  AnimeSliderSection(
+                    title: l10nOf(context).animeFantasy,
+                    subtitle: l10nOf(context).animeFantasyDescription,
+                    animeList: _fantasyAnime,
+                    onAnimeTap: _openDetails,
+                  ),
+                  AnimeSliderSection(
+                    title: l10nOf(context).animeSciFi,
+                    subtitle: l10nOf(context).animeSciFiDescription,
+                    animeList: _sciFiAnime,
+                    onAnimeTap: _openDetails,
+                  ),
 
                   // Trailing gap only: the dock used to reserve 110 px of clearance here.
                   SizedBox(
@@ -571,16 +412,19 @@ class _AnimePageState extends State<AnimePage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          SizedBox(height: topPadding),
-          _AnimeToolbar(
-            isArabicMode: _isArabicMode,
-            onModeChanged: _onModeChanged,
-            onSearchTap: _navigateToSearch,
-          ),
+          SizedBox(height: reservedTop),
           Expanded(
             child: ClipRect(
               key: const ValueKey('kiru-anime-content'),
-              child: RepaintBoundary(child: backgroundContent),
+              child: RepaintBoundary(
+                child: immersive
+                    ? ImmersiveContentLayout(
+                        gutter: ImmersiveContentLayout.gutterFor(size.width),
+                        overlap: heroOverlap,
+                        child: backgroundContent,
+                      )
+                    : backgroundContent,
+              ),
             ),
           ),
         ],
@@ -597,7 +441,8 @@ class _AnimePageState extends State<AnimePage> {
 /// hero band this page actually draws and rails at the geometry the real cards
 /// arrive at, so nothing moves when they land.
 class _AnimeSkeleton extends StatelessWidget {
-  const _AnimeSkeleton();
+  const _AnimeSkeleton({required this.heroHeight});
+  final double heroHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -611,11 +456,7 @@ class _AnimeSkeleton extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            height: _AnimeHeroCarousel.heightFor(
-              size.width,
-              size.height,
-              immersive: _animeImmersive(context),
-            ),
+            height: heroHeight,
             width: double.infinity,
             child: ColoredBox(color: tokens.surface),
           ),
@@ -630,85 +471,6 @@ class _AnimeSkeleton extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-/// Dedicated toolbar: the catalogue scrolls only in the viewport beneath it.
-class _AnimeToolbar extends StatelessWidget {
-  const _AnimeToolbar({
-    required this.isArabicMode,
-    required this.onModeChanged,
-    required this.onSearchTap,
-  });
-  final bool isArabicMode;
-  final ValueChanged<bool> onModeChanged;
-  final VoidCallback onSearchTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final tokens = context.tokens;
-    final compact = FormFactorService.of(context) == FormFactor.compact;
-    final target = compact ? 40.0 : 48.0;
-    final gutter = compact ? 12.0 : 32.0;
-    return ColoredBox(
-      key: const ValueKey('kiru-anime-toolbar'),
-      color: tokens.bg,
-      child: Padding(
-        padding: EdgeInsetsDirectional.fromSTEB(gutter, 4, gutter, 4),
-        child: LayoutBuilder(
-          builder: (context, bounds) {
-            final wide = bounds.maxWidth >= 560;
-            final l10n = l10nOf(context);
-            return Row(
-              children: [
-                Expanded(
-                  child: Align(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: SegmentedTabs<bool>(
-                      options: [
-                        SegmentedTabOption(
-                          value: false,
-                          label: wide ? l10n.finalAnimePageGeneral : 'JP',
-                        ),
-                        SegmentedTabOption(
-                          value: true,
-                          label: wide ? l10n.finalAnimePageArabicAnime : 'SA',
-                        ),
-                      ],
-                      selected: isArabicMode,
-                      onSelected: onModeChanged,
-                      semanticsLabel: l10n.auxAnimePageAnimeCatalogue,
-                      height: target,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                if (wide)
-                  KiruButton(
-                    key: const ValueKey('kiru-anime-search'),
-                    kind: KiruButtonKind.ghost,
-                    onPressed: onSearchTap,
-                    icon: const Icon(Icons.search_rounded, size: 20),
-                    child: Text(l10n.finalAnimePageSearchAnime),
-                  )
-                else
-                  KiruIconButton(
-                    key: const ValueKey('kiru-anime-search'),
-                    onPressed: onSearchTap,
-                    tooltip: l10n.finalAnimePageSearchAnime,
-                    icon: const Icon(Icons.search_rounded),
-                    constraints: BoxConstraints.tightFor(
-                      width: target,
-                      height: target,
-                    ),
-                    padding: EdgeInsets.zero,
-                  ),
-              ],
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
 bool _animeImmersive(BuildContext context) {
   final size = MediaQuery.sizeOf(context);
   final factor = FormFactorService.of(context);
@@ -718,12 +480,16 @@ bool _animeImmersive(BuildContext context) {
 }
 
 class _AnimeHeroCarousel extends StatefulWidget {
+  final double height;
+  final double topInset;
   final double overlap;
   final List<AnimeMedia> animeList;
   final Function(AnimeMedia) onWatchNow;
   final Function(AnimeMedia) onDetailsTap;
 
   const _AnimeHeroCarousel({
+    required this.height,
+    required this.topInset,
     required this.animeList,
     required this.onWatchNow,
     required this.onDetailsTap,
@@ -804,12 +570,7 @@ class _AnimeHeroCarouselState extends State<_AnimeHeroCarousel> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final screenWidth = MediaQuery.sizeOf(context).width;
-    final screenHeight = MediaQuery.sizeOf(context).height;
-    final heroHeight = _AnimeHeroCarousel.heightFor(
-      screenWidth,
-      screenHeight,
-      immersive: widget.overlap > 0,
-    );
+    final heroHeight = widget.height;
 
     if (widget.animeList.isEmpty) return SizedBox(height: heroHeight);
 
@@ -823,6 +584,7 @@ class _AnimeHeroCarouselState extends State<_AnimeHeroCarousel> {
         _startTimer();
       },
       child: SizedBox(
+        key: const ValueKey('kiru-anime-hero'),
         height: heroHeight,
         width: double.infinity,
         child: Stack(
@@ -837,7 +599,8 @@ class _AnimeHeroCarouselState extends State<_AnimeHeroCarousel> {
                 return _AnimeHeroSlide(
                   anime: anime,
                   screenWidth: screenWidth,
-                  compactHeight: heroHeight < 400,
+                  compactHeight: heroHeight - widget.topInset < 400,
+                  topInset: widget.topInset,
                   overlap: widget.overlap,
                   onWatchNow: () => widget.onWatchNow(anime),
                   onDetailsTap: () => widget.onDetailsTap(anime),
@@ -906,7 +669,7 @@ class _AnimeHeroCarouselState extends State<_AnimeHeroCarousel> {
               if (_index > 0)
                 Positioned(
                   left: 24,
-                  top: 0,
+                  top: widget.topInset,
                   bottom: 0,
                   child: Center(
                     child: SliderArrow(
@@ -918,7 +681,7 @@ class _AnimeHeroCarouselState extends State<_AnimeHeroCarousel> {
               if (_index < widget.animeList.length - 1)
                 Positioned(
                   right: 24,
-                  top: 0,
+                  top: widget.topInset,
                   bottom: 0,
                   child: Center(
                     child: SliderArrow(
@@ -936,6 +699,7 @@ class _AnimeHeroCarouselState extends State<_AnimeHeroCarousel> {
 }
 
 class _AnimeHeroSlide extends StatelessWidget {
+  final double topInset;
   final AnimeMedia anime;
   final double screenWidth;
   final double overlap;
@@ -949,6 +713,7 @@ class _AnimeHeroSlide extends StatelessWidget {
   final VoidCallback onDetailsTap;
 
   const _AnimeHeroSlide({
+    required this.topInset,
     required this.anime,
     required this.screenWidth,
     required this.compactHeight,
@@ -1085,7 +850,7 @@ class _AnimeHeroSlide extends StatelessWidget {
                         )
                       else
                         Positioned(
-                          top: 40,
+                          top: 40 + topInset,
                           bottom: isCompact ? 70 : 60,
                           right: isCompact ? 24 : 72,
                           child: AspectRatio(
@@ -1151,7 +916,9 @@ class _AnimeHeroSlide extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.center,
                 colors: [
-                  tokens.bg.withValues(alpha: overlap > 0 ? 0.32 : 0.75),
+                  tokens.bg.withValues(
+                    alpha: overlap > 0 || topInset > 0 ? 0.32 : 0.75,
+                  ),
                   Colors.transparent,
                 ],
               ),
@@ -1181,8 +948,12 @@ class _AnimeHeroSlide extends StatelessWidget {
 
         // Content Overlay
         Positioned(
-          left: isCompact ? ZplaySpacing.s20 : ZplaySpacing.s48,
-          right: isCompact ? ZplaySpacing.s20 : ZplaySpacing.s48,
+          left:
+              ImmersiveContentLayout.maybeOf(context)?.gutter ??
+              (isCompact ? ZplaySpacing.s20 : ZplaySpacing.s48),
+          right:
+              ImmersiveContentLayout.maybeOf(context)?.gutter ??
+              (isCompact ? ZplaySpacing.s20 : ZplaySpacing.s48),
           bottom: overlap + (compactHeight ? 24 : (isCompact ? 36 : 56)),
           child: Align(
             alignment: Alignment.bottomLeft,
@@ -1279,7 +1050,9 @@ class _AnimeHeroSlide extends StatelessWidget {
                         ? ZplaySpacing.s12
                         : (isCompact ? ZplaySpacing.s20 : ZplaySpacing.s24),
                   ),
-                  Row(
+                  Wrap(
+                    spacing: isCompact ? ZplaySpacing.s8 : ZplaySpacing.s12,
+                    runSpacing: ZplaySpacing.s8,
                     children: [
                       // The shared pill, so this band's calls to action are the
                       // same shape as Home's hero and the details page's Play.
@@ -1292,10 +1065,8 @@ class _AnimeHeroSlide extends StatelessWidget {
                           label: l10nOf(context).auxAnimePageWatchS1E1,
                           icon: Icons.play_arrow_rounded,
                           onPressed: onWatchNow,
+                          expand: isCompact,
                         ),
-                      ),
-                      SizedBox(
-                        width: isCompact ? ZplaySpacing.s8 : ZplaySpacing.s12,
                       ),
                       // The qualifier beside the affirmative, so the row is two
                       // pills of one height and one shape rather than a pill
@@ -1306,6 +1077,7 @@ class _AnimeHeroSlide extends StatelessWidget {
                           icon: Icons.info_outline_rounded,
                           variant: PillVariant.secondary,
                           onPressed: onDetailsTap,
+                          expand: isCompact,
                         ),
                       ),
                     ],

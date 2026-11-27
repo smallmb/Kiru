@@ -9,11 +9,14 @@ import 'anime_source_settings.dart';
 /// Public Bangumi requests only. Optional user-specified mirror and HTTP proxy.
 /// No login tokens or other provider credentials are forwarded.
 class BangumiClient {
-  BangumiClient({http.Client? client}) : _client = client ?? _newClient();
+  BangumiClient({http.Client? client})
+    : _client = client ?? createNetworkClient();
   final http.Client _client;
   final _cache = <String, ({Object data, DateTime at})>{};
   final _pending = <String, Future<Object>>{};
-  static http.Client _newClient() {
+
+  /// Shared transport for official Bangumi metadata and artwork.
+  static http.Client createNetworkClient() {
     final client = HttpClient()
       ..connectionTimeout = const Duration(seconds: 6)
       ..idleTimeout = const Duration(seconds: 3);

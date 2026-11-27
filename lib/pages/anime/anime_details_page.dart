@@ -1,3 +1,4 @@
+import '../../widgets/common/desktop_caption_area.dart';
 import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/anime_titles.dart';
 import 'package:zplay/services/metadata/anime_chinese_synopsis.dart';
@@ -418,6 +419,13 @@ class _AnimeDetailsPageState extends State<AnimeDetailsPage>
             ),
 
             // Floating Frosted Back Button (Top Left)
+            if (isDesktop)
+              const Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: DesktopCaptionBand(height: 24),
+              ),
             Positioned(
               top: isDesktop ? ZplaySpacing.s24 : (topInset + 10),
               left: isDesktop ? ZplaySpacing.s48 : ZplaySpacing.s16,

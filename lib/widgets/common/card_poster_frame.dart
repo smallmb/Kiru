@@ -1,3 +1,4 @@
+import '../immersive/immersive_content_layout.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -185,42 +186,50 @@ class CardPosterFrame extends StatelessWidget {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     final hasArtwork = imageUrl != null && imageUrl!.isNotEmpty;
+    final immersive = ImmersiveContentLayout.maybeOf(context) != null;
+    final radius = immersive
+        ? BorderRadius.circular(ImmersiveContentLayout.artworkRadius)
+        : ZplayRadius.cardAll;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 170),
       curve: Curves.easeOutCubic,
       decoration: BoxDecoration(
-        borderRadius: ZplayRadius.cardAll,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: highlighted ? 0.60 : 0.34),
-            blurRadius: highlighted ? 32 : 20,
-            offset: Offset(0, highlighted ? 18 : 10),
-          ),
-          // The card is raised by a painted copy, never by moving this box, so
-          // the second drop is what carries the height. Focus only - the hover
-          // bloom below stays a pointer affordance, and these shadows follow the
-          // existing black-drop convention rather than a palette colour.
-          if (focused && raisedOnFocus)
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.42),
-              blurRadius: 48,
-              offset: const Offset(0, 26),
-            ),
-          // The accent bloom is a pointer affordance only. On focus the ring is
-          // the single mark; an accent shadow under a crisp 2 dp border reads as
-          // a second, softer edge around it.
-          if (hovered && accentBloomAlpha != null)
-            BoxShadow(
-              color: tokens.accent.withValues(alpha: accentBloomAlpha!),
-              blurRadius: 34,
-              spreadRadius: 1,
-              offset: const Offset(0, 8),
-            ),
-        ],
+        borderRadius: radius,
+        boxShadow: immersive
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(
+                    alpha: highlighted ? 0.60 : 0.34,
+                  ),
+                  blurRadius: highlighted ? 32 : 20,
+                  offset: Offset(0, highlighted ? 18 : 10),
+                ),
+                // The card is raised by a painted copy, never by moving this box, so
+                // the second drop is what carries the height. Focus only - the hover
+                // bloom below stays a pointer affordance, and these shadows follow the
+                // existing black-drop convention rather than a palette colour.
+                if (focused && raisedOnFocus)
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.42),
+                    blurRadius: 48,
+                    offset: const Offset(0, 26),
+                  ),
+                // The accent bloom is a pointer affordance only. On focus the ring is
+                // the single mark; an accent shadow under a crisp 2 dp border reads as
+                // a second, softer edge around it.
+                if (hovered && accentBloomAlpha != null)
+                  BoxShadow(
+                    color: tokens.accent.withValues(alpha: accentBloomAlpha!),
+                    blurRadius: 34,
+                    spreadRadius: 1,
+                    offset: const Offset(0, 8),
+                  ),
+              ],
       ),
       child: ClipRRect(
-        borderRadius: ZplayRadius.cardAll,
+        borderRadius: radius,
         child: Stack(
           fit: StackFit.expand,
           children: [

@@ -1,3 +1,4 @@
+import '../immersive/immersive_content_layout.dart';
 import '../ui/kiru_tappable.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/media_labels.dart';
@@ -119,6 +120,7 @@ class _MovieSliderSectionState extends State<MovieSliderSection>
   @override
   Widget build(BuildContext context) {
     final tokens = context.tokens;
+    final layout = ImmersiveContentLayout.maybeOf(context);
     final sizing = MovieCardSizing.fromWidth(
       MediaQuery.sizeOf(context).width,
       availableHeight: widget.maxHeight,
@@ -126,12 +128,19 @@ class _MovieSliderSectionState extends State<MovieSliderSection>
     );
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: ZplaySpacing.s24),
+      padding: EdgeInsets.only(
+        bottom: layout == null
+            ? ZplaySpacing.s24
+            : ImmersiveContentLayout.railGap,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SectionHeader(
-            title: configLabel(context, mediaLabel(context, widget.section.title)),
+            title: configLabel(
+              context,
+              mediaLabel(context, widget.section.title),
+            ),
             count: widget.section.movies.length,
             subtitle: configLabel(context, widget.section.subtitle),
             trailing: widget.showCalendarButton
@@ -193,7 +202,9 @@ class _MovieSliderSectionState extends State<MovieSliderSection>
           // is all the rail needs to let it happen.
           HoverScrollRail(
             height: sizing.totalHeight,
-            padding: EdgeInsets.symmetric(horizontal: sizing.sidePadding),
+            padding: EdgeInsets.symmetric(
+              horizontal: layout?.gutter ?? sizing.sidePadding,
+            ),
             spacing: sizing.spacing,
             edgeTolerance: HoverScrollRail.exactEdgeTolerance,
             arrowStyle: RailArrowStyle.focusable,

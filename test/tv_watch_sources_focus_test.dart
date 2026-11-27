@@ -44,6 +44,9 @@
 ///    column, which is what the row's own comment claims.
 library;
 
+import 'dart:io';
+import 'package:zplay/services/window/window_service.dart';
+
 import 'package:flutter/material.dart';
 import 'package:zplay/widgets/player/player_forui.dart';
 import 'package:flutter/services.dart';
@@ -291,6 +294,36 @@ void main() {
       ),
     );
   }
+
+  testWidgets('watch sources has its own draggable top band', (tester) async {
+    final window = WindowService.instance;
+    final old = window.isFullscreenNotifier.value;
+    window.isFullscreenNotifier.value = false;
+    addTearDown(() => window.isFullscreenNotifier.value = old);
+    const channel = MethodChannel('window_manager');
+    final messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    final calls = <String>[];
+    messenger.setMockMethodCallHandler(channel, (call) async {
+      calls.add(call.method);
+      return call.method == 'isFullScreen' ? false : null;
+    });
+    addTearDown(() => messenger.setMockMethodCallHandler(channel, null));
+    await pumpWatchSources(tester);
+    await tester.pump(const Duration(milliseconds: 350));
+    final band = find.byKey(const ValueKey('kiru-watch-caption-drag'));
+    expect(band, findsOneWidget);
+    final rect = tester.getRect(band);
+    await tester.dragFrom(rect.center, const Offset(50, 0));
+    await tester.pump();
+    expect(calls.where((m) => m == 'startDragging'), hasLength(1));
+    window.isFullscreenNotifier.value = true;
+    await tester.pump();
+    await tester.dragFrom(rect.center, const Offset(50, 0));
+    await tester.pump();
+    expect(calls.where((m) => m == 'startDragging'), hasLength(1));
+    expect(tester.takeException(), isNull);
+  }, skip: !Platform.isWindows);
 
   testWidgets('the screen opens with the remote on the first source row', (
     tester,

@@ -1,3 +1,4 @@
+import '../../widgets/common/desktop_caption_area.dart';
 import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -562,13 +563,15 @@ class _EpubReaderPageState extends State<EpubReaderPage> {
 
             // Book Title & Chapter Subtitle
             Expanded(
-              child: Text(
-                '${widget.book.displayTitle} · $chapterTitle',
-                style: ZplayType.label
-                    .copyWith(weight: FontWeight.w600)
-                    .toStyle(color: ReaderTokens.textPrimary),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+              child: DesktopCaptionDrag(
+                child: Text(
+                  '${widget.book.displayTitle} · $chapterTitle',
+                  style: ZplayType.label
+                      .copyWith(weight: FontWeight.w600)
+                      .toStyle(color: ReaderTokens.textPrimary),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ),
 

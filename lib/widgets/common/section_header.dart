@@ -1,3 +1,4 @@
+import '../immersive/immersive_content_layout.dart';
 import 'package:zplay/l10n/l10n.dart';
 
 import 'package:flutter/material.dart';
@@ -45,12 +46,13 @@ class SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tokens = ZplayTokens.of(context);
+    final layout = ImmersiveContentLayout.maybeOf(context);
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        ZplaySpacing.s16,
+      padding: EdgeInsets.fromLTRB(
+        layout?.gutter ?? ZplaySpacing.s16,
         ZplaySpacing.s8,
-        ZplaySpacing.s16,
+        layout?.gutter ?? ZplaySpacing.s16,
         0,
       ),
       child: Row(
@@ -74,9 +76,11 @@ class SectionHeader extends StatelessWidget {
                             title,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: ZplayType.title.toStyle(
-                              color: tokens.textPrimary,
-                            ),
+                            style:
+                                (layout == null
+                                        ? ZplayType.title
+                                        : ZplayType.title.copyWith(size: 21))
+                                    .toStyle(color: tokens.textPrimary),
                           ),
                         ),
                       ],

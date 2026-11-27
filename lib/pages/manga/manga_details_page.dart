@@ -1,3 +1,4 @@
+import '../../widgets/common/desktop_caption_area.dart';
 import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
@@ -181,7 +182,16 @@ class _MangaDetailsPageState extends State<MangaDetailsPage> {
           // Main Scrollable Content
           Stack(
             fit: StackFit.expand,
-            children: [_buildScrollableContent(displayManga), _buildAppBar()],
+            children: [
+              _buildScrollableContent(displayManga),
+              const Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: DesktopCaptionBand(height: 24),
+              ),
+              _buildAppBar(),
+            ],
           ),
         ],
       ),

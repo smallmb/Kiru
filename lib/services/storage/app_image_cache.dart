@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'artwork_file_service.dart';
 
 /// Shared disk cache for the artwork/metadata images the UI streams from addons,
 /// TMDB and user catalogs.
@@ -36,6 +37,7 @@ class AppImageCache {
       cacheKey,
       maxNrOfCacheObjects: maxCachedObjects,
       stalePeriod: stalePeriod,
+      fileService: ArtworkFileService(),
     ),
   );
 

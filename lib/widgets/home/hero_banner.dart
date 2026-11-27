@@ -1,3 +1,4 @@
+import '../immersive/immersive_content_layout.dart';
 import '../movie/localized_movie_title.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -17,7 +18,6 @@ import '../../services/hero/hero_art_quality.dart';
 import '../../services/hero/hero_media_resolver.dart';
 import '../../services/home/home_page_settings.dart';
 import '../../services/layout/form_factor.dart';
-import '../../services/layout/surface_budget.dart';
 import '../../services/metadata/art_quality.dart';
 import '../../services/metadata/metadata_service.dart';
 import '../../services/metadata/metahub_art.dart';
@@ -25,7 +25,6 @@ import '../../services/metadata/trailer_resolver.dart';
 import '../../services/storage/app_image_cache.dart';
 import '../../services/theme/app_theme_service.dart';
 import '../../services/theme/design_tokens.dart';
-import '../../shell/app_shell_scope.dart';
 import '../../utils/navigation/route_transitions.dart';
 import '../common/baked_gradient.dart';
 import '../common/focusable_card.dart';
@@ -328,7 +327,8 @@ class _HeroArtworkState extends State<HeroArtwork> {
       fit: BoxFit.cover,
       alignment: Alignment.topCenter,
       filterQuality: FilterQuality.medium,
-      fadeInDuration: const Duration(milliseconds: 300),
+      fadeInDuration: Duration.zero,
+      fadeOutDuration: Duration.zero,
       // Nothing behind the scrim but the page background, so a failed decode
       // leaves a clean band rather than a grey rectangle.
       placeholder: (_, __) => const SizedBox.shrink(),
@@ -366,6 +366,7 @@ class HeroBanner extends StatefulWidget {
   /// canvas. Set on a television, where a 540 dp screen cannot afford a hero that
   /// is 43% of it and a usable row of posters at the same time.
   final bool compact;
+  final bool active;
 
   const HeroBanner({
     super.key,
@@ -373,6 +374,7 @@ class HeroBanner extends StatefulWidget {
     this.onHeightChanged,
     this.onBackdropChanged,
     this.compact = false,
+    this.active = true,
   });
 
   @override
@@ -534,8 +536,7 @@ class _HeroBannerState extends State<HeroBanner> {
   bool get _rotationHeld =>
       _isHovering || (_isFocused && FormFactorService.hasRemoteInput);
 
-  /// Honors the platform reduced-motion request. Slide changes jump instead
-  /// of animating and the artwork drift parks (see `_HeroSlideState`).
+  /// Keep automatic rotation disabled when the platform requests reduced motion.
   bool get _reducedMotion =>
       MediaQuery.maybeOf(context)?.disableAnimations ?? false;
 
@@ -701,6 +702,7 @@ class _HeroBannerState extends State<HeroBanner> {
   @override
   void didUpdateWidget(covariant HeroBanner oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.active != widget.active) _startTimer();
     if (!_sameSlides(oldWidget.movies, widget.movies)) {
       _index = 0;
       _detailsCache.clear();
@@ -756,7 +758,7 @@ class _HeroBannerState extends State<HeroBanner> {
 
   void _startTimer() {
     _timer?.cancel();
-    if (!HomePageSettings.heroAutoRotate.value) return;
+    if (!widget.active || !HomePageSettings.heroAutoRotate.value) return;
     // The rotation waits while a hand or a remote is on the hero; which of those
     // a focused hero means is [_rotationHeld]'s business.
     if (_rotationHeld) return;
@@ -769,13 +771,7 @@ class _HeroBannerState extends State<HeroBanner> {
       if (!mounted || !_pageController.hasClients) return;
       if (_rotationHeld) return;
       final next = (_index + 1) % _totalSlideCount;
-      _pageController.animateToPage(
-        next,
-        // One slow crossfade. The 700 ms emphasized slide this replaces read
-        // as movement; `base` + easeOutCubic is a dissolve between stills.
-        duration: ZplayMotion.base,
-        curve: ZplayMotion.standard,
-      );
+      _goTo(next);
     });
   }
 
@@ -787,13 +783,13 @@ class _HeroBannerState extends State<HeroBanner> {
   /// The timer already waits for a hand or a remote on the hero - hover for a
   /// pointer, traversal focus for a remote - but a finger on a touch screen is
   /// neither, and a tick there is destructive rather than distracting:
-  /// `PageController.animateToPage` ends the drag activity, so the slide runs
+  /// `PageController.jumpToPage` ends the drag activity, so the slide runs
   /// off and the finger is left pulling at a carousel that has left without it.
   /// A drag is therefore the third reason to wait, and the end of the hero's
   /// own scroll is when the countdown comes back - which for a swipe is after
   /// the page it landed on has reported itself through [_onPageChanged].
   ///
-  /// `dragDetails` is what keeps those apart: the timer's own `animateToPage`
+  /// `dragDetails` is what keeps those apart: the timer's own `jumpToPage`
   /// and a tap on a dash both start a scroll here, and neither is a hand on the
   /// hero. Only a gesture that is dragging counts, and only that same gesture
   /// restarts the countdown.
@@ -816,16 +812,7 @@ class _HeroBannerState extends State<HeroBanner> {
 
   void _goTo(int index) {
     if (!_pageController.hasClients) return;
-    if (_reducedMotion) {
-      _pageController.jumpToPage(index);
-      _reportBackdrop();
-      return;
-    }
-    _pageController.animateToPage(
-      index,
-      duration: ZplayMotion.base,
-      curve: ZplayMotion.standard,
-    );
+    _pageController.jumpToPage(index);
   }
 
   Future<void> _fetchDetail(Movie movie) async {
@@ -1036,8 +1023,15 @@ class _HeroBannerState extends State<HeroBanner> {
     // room than 236 dp - but the band is sized by what it must leave for the
     // first rail, and the rail's own reserve is computed against this exact
     // number. See `_heroCompactHeight`.
+    final layout = ImmersiveContentLayout.maybeOf(context);
+    final overlap = widget.compact ? 0.0 : layout?.overlap ?? 0.0;
     final heroHeight = widget.compact
         ? _heroCompactHeight
+        : overlap > 0
+        ? layout!.heroBandHeight(
+            Size(screenWidth, screenHeight),
+            homeTopInsetFor(context),
+          )
         : _heroHeight(screenWidth, screenHeight);
     final tokens = context.tokens;
     final totalSlides = _totalSlideCount;
@@ -1213,9 +1207,7 @@ class _HeroBannerState extends State<HeroBanner> {
                       final active = i == _index;
                       return FocusableCard(
                         onTap: () => _goTo(i),
-                        builder: (_, state) => AnimatedContainer(
-                          duration: ZplayMotion.base,
-                          curve: ZplayMotion.standard,
+                        builder: (_, state) => Container(
                           margin: const EdgeInsets.symmetric(
                             horizontal: ZplaySpacing.s2,
                           ),
@@ -1360,15 +1352,8 @@ class HeroSlide extends StatefulWidget {
   State<HeroSlide> createState() => _HeroSlideState();
 }
 
-/// The slide's state, and the owner of its Ken Burns drift.
-///
-/// The controller belongs to the slide rather than to the carousel: one per
-/// slide on screen, driving a scale on the artwork alone. [AnimatedBuilder]
-/// rebuilds only its own transform subtree per tick, so the drift never
-/// rebuilds the slide - let alone the page - and it is time driven rather than
-/// scroll driven, so scrolling the rails past the hero costs nothing.
-class _HeroSlideState extends State<HeroSlide>
-    with SingleTickerProviderStateMixin {
+/// State for a static hero artwork and its optional trailer preview.
+class _HeroSlideState extends State<HeroSlide> {
   /// Band height at which the title stops being the display size: the title,
   /// its gaps, the metadata line, the two buttons and the bottom inset. The
   /// name is the one thing a hero cannot lose, so on a short band it gives way
@@ -1376,16 +1361,6 @@ class _HeroSlideState extends State<HeroSlide>
   /// estimated - the first version of the chrome-aware hero used a single
   /// 228 dp floor for the whole column and clipped the title.
   static const double _titleShrinkBudget = 300;
-
-  /// Slow ambient drift on the artwork: roughly 1.0 -> 1.06 across a slide's
-  /// lifetime.
-  ///
-  /// The span is the slide's lifetime - the auto-rotate interval
-  /// (`HomePageSettings.heroRotateSeconds`) - and not a `ZplayMotion` duration:
-  /// those (120/200/320 ms) are interactive feedback times, and a 6% scale at
-  /// that speed is a pop, not a drift. The indicator's own transitions stay on
-  /// `ZplayMotion` as they always were.
-  late final AnimationController _kenBurns;
 
   /// The live trailer preview, so the sound control in the action row can ask
   /// it to turn the sound on or off.
@@ -1415,67 +1390,6 @@ class _HeroSlideState extends State<HeroSlide>
     final gate = _previewKey.currentState;
     if (gate == null) return;
     await gate.toggleSound();
-  }
-
-  /// The shell this page is mounted inside, or null when it is mounted alone -
-  /// the cheap answer to "is Home the slot on screen", which is what pauses the
-  /// drift.
-  AppShellController? _shell;
-
-  @override
-  void initState() {
-    super.initState();
-    _kenBurns = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: HomePageSettings.heroRotateSeconds.value),
-    );
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final controller = AppShellScope.of(context);
-    if (!identical(controller, _shell)) {
-      _shell?.current.removeListener(_onShellSlotChanged);
-      _shell = controller;
-      _shell?.current.addListener(_onShellSlotChanged);
-    }
-    _onShellSlotChanged();
-  }
-
-  /// Runs the drift only while Home is the slot on screen.
-  ///
-  /// The shell's `IndexedStack` already mutes tickers for hidden slots; this is
-  /// the observable that actually says "nobody is looking at this", and it
-  /// costs one listener. A completed drift parks at its end value rather than
-  /// restarting on every rebuild.
-  void _onShellSlotChanged() {
-    if (!mounted) return;
-    // The platform reduced-motion request parks the drift: a still hero is
-    // the calm answer, and the crossfade between slides already jumps (see
-    // `_HeroBannerState._reducedMotion`).
-    final reduceMotion =
-        MediaQuery.maybeOf(context)?.disableAnimations ?? false;
-    // A large surface parks it too: the drift repaints the band every frame
-    // for the whole slide, and above the surface budget that is frames the
-    // window cannot spare (see [SurfaceBudget]).
-    if (reduceMotion || !SurfaceBudget.allowsAmbientMotion(context)) {
-      _kenBurns.stop();
-      return;
-    }
-    final atHome = _shell == null || _shell!.current.value == ShellSlot.home;
-    if (atHome) {
-      if (!_kenBurns.isAnimating && !_kenBurns.isCompleted) _kenBurns.forward();
-    } else {
-      _kenBurns.stop();
-    }
-  }
-
-  @override
-  void dispose() {
-    _shell?.current.removeListener(_onShellSlotChanged);
-    _kenBurns.dispose();
-    super.dispose();
   }
 
   void _openDetails(BuildContext context) {
@@ -1531,6 +1445,8 @@ class _HeroSlideState extends State<HeroSlide>
     // structure hidden behind an opaque bar. That is what the top scrim below is
     // for, and the shell's bar carries its own scrim above it.
     final bleedTop = homeTopInsetFor(context);
+    final layout = ImmersiveContentLayout.maybeOf(context);
+    final overlap = layout?.overlap ?? 0.0;
 
     return Stack(
       fit: StackFit.expand,
@@ -1545,24 +1461,12 @@ class _HeroSlideState extends State<HeroSlide>
             left: 0,
             right: 0,
             top: -bleedTop,
-            bottom: 0,
+            bottom: -overlap,
             child: ClipRect(
-              child: AnimatedBuilder(
-                // The drift rebuilds only this transform; the image below is
-                // the `child`, so it is built once and never rebuilt per tick.
-                animation: _kenBurns,
-                child: HeroArtwork(
-                  candidates: artwork,
-                  onActiveUrlChanged: widget.onArtworkChanged,
-                  onRejected: widget.onArtworkRejected,
-                ),
-                builder: (context, child) => Transform.scale(
-                  // 1.0 -> 1.06 across the slide's lifetime. The `ClipRect`
-                  // above is the crop the zoom happens inside, so the drift
-                  // never paints past the art's own region.
-                  scale: 1.0 + 0.06 * _kenBurns.value,
-                  child: child,
-                ),
+              child: HeroArtwork(
+                candidates: artwork,
+                onActiveUrlChanged: widget.onArtworkChanged,
+                onRejected: widget.onArtworkRejected,
               ),
             ),
           ),
@@ -1591,7 +1495,7 @@ class _HeroSlideState extends State<HeroSlide>
           left: 0,
           right: 0,
           top: -bleedTop,
-          bottom: 0,
+          bottom: -overlap,
           child: ClipRect(
             child: TrailerPreviewGate(
               key: _previewKey,
@@ -1632,7 +1536,7 @@ class _HeroSlideState extends State<HeroSlide>
           top: -bleedTop,
           left: 0,
           right: 0,
-          bottom: 0,
+          bottom: -overlap,
           child: LayoutBuilder(
             builder: (context, constraints) {
               // The stops below are the ones the band-only gradient used, in
@@ -1652,15 +1556,17 @@ class _HeroSlideState extends State<HeroSlide>
               return BakedGradient(
                 axis: Axis.vertical,
                 gradient: LinearGradient(
-                  stops: [0.0, stop(0.12), stop(0.42), 1.0],
+                  stops: overlap > 0
+                      ? [0.0, stop(0.12), stop(0.58), 1.0]
+                      : [0.0, stop(0.12), stop(0.42), 1.0],
                   colors: [
                     // 桌面顶部的导航已提供独立的文字遮罩，这里减轻暗幕以保留海报原色。
                     tokens.bg.withValues(alpha: topScrimAlpha),
                     tokens.bg.withValues(alpha: 0.0),
-                    tokens.bg.withValues(alpha: 0.55),
+                    tokens.bg.withValues(alpha: overlap > 0 ? 0.30 : 0.55),
                     // Ends where Home's backdrop band starts (0.90), so the
                     // hero dissolves into the page without a step.
-                    tokens.bg.withValues(alpha: 0.90),
+                    tokens.bg.withValues(alpha: layout == null ? 0.90 : 1.0),
                   ],
                 ),
               );
@@ -1671,7 +1577,7 @@ class _HeroSlideState extends State<HeroSlide>
           top: -bleedTop,
           left: 0,
           right: 0,
-          bottom: 0,
+          bottom: -overlap,
           child: BakedGradient(
             axis: Axis.horizontal,
             gradient: LinearGradient(
@@ -1702,8 +1608,12 @@ class _HeroSlideState extends State<HeroSlide>
         // them - a control that vanished while the user was looking at it
         // would be a control that disappeared from the traversal order.
         Positioned(
-          left: isCompact ? ZplaySpacing.s20 : ZplaySpacing.s48,
-          right: isCompact ? ZplaySpacing.s20 : ZplaySpacing.s48,
+          left:
+              layout?.gutter ??
+              (isCompact ? ZplaySpacing.s20 : ZplaySpacing.s48),
+          right:
+              layout?.gutter ??
+              (isCompact ? ZplaySpacing.s20 : ZplaySpacing.s48),
           bottom: isCompact
               ? (heroStyle == HeroStyle.minimalist
                     ? ZplaySpacing.s16

@@ -612,6 +612,24 @@ void main() {
     await _disarmRotation(tester);
   });
 
+  testWidgets('automatic hero rotation jumps directly to the next page', (
+    tester,
+  ) async {
+    final shell = _shellReportingHome();
+    await _mountHome(tester, shell);
+    await _settleAtHero(tester);
+    final page = tester
+        .widget<PageView>(find.byType(PageView).first)
+        .controller!;
+    expect(page.page, 0);
+    _armRotation();
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    expect(page.page, 1);
+    expect(page.position.isScrollingNotifier.value, isFalse);
+    await _disarmRotation(tester);
+  });
+
   testWidgets('a pointer hero rotates while its own call to action has focus', (
     tester,
   ) async {

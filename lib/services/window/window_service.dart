@@ -70,8 +70,12 @@ class WindowService with WindowListener {
 
   /// 从自绘导航空白区域拖动无标题栏窗口。
   Future<void> startDragging() async {
-    if (!usesCustomCaptionBar || isFullscreen) return;
-    await windowManager.startDragging();
+    if (!usesCustomCaptionBar || isFullscreen || _isTransitioning) return;
+    try {
+      await windowManager.startDragging();
+    } catch (e) {
+      debugPrint('[WindowService] startDragging error: ' + e.toString());
+    }
   }
 
   void dispose() {

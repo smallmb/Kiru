@@ -24,7 +24,12 @@ import '../anime_arabic/anime_arabic_details_page.dart';
 class AnimeSearchPage extends StatefulWidget {
   final bool initialArabicMode;
 
-  const AnimeSearchPage({super.key, this.initialArabicMode = false});
+  const AnimeSearchPage({
+    super.key,
+    this.initialArabicMode = false,
+    this.initialQuery = '',
+  });
+  final String initialQuery;
 
   @override
   State<AnimeSearchPage> createState() => _AnimeSearchPageState();
@@ -128,6 +133,8 @@ class _AnimeSearchPageState extends State<AnimeSearchPage> {
     _scrollController.addListener(_syncBand);
     AnimeSourceSettings.revision.addListener(_onSourceChanged);
     _loadInitialSliders();
+    _searchController.text = widget.initialQuery;
+    if (widget.initialQuery.trim().isNotEmpty) _performSearch();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
     });

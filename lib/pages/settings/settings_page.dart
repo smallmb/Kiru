@@ -1,3 +1,4 @@
+import '../../widgets/common/desktop_caption_area.dart';
 import '../../widgets/ui/kiru_toast.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'dart:io';
@@ -830,6 +831,7 @@ class _SettingsPageState extends State<SettingsPage> {
   /// the height `AppBar` reports itself.
   PreferredSizeWidget _appBar(BuildContext context, ZplayTokens tokens) {
     final bar = AppBar(
+      flexibleSpace: const DesktopCaptionDrag(),
       // Transparent, no hairline: Settings is a shell slot, and the shell's nav
       // blends over every slot now. An opaque palette band pinned across the
       // strip the nav rests on is the seam that blend exists to remove - the
@@ -840,9 +842,11 @@ class _SettingsPageState extends State<SettingsPage> {
       scrolledUnderElevation: 0,
       // No explicit leading: the framework already gates the back button on canPop,
       // so it vanishes in the shell and returns if this page is pushed.
-      title: Text(
-        l10nOf(context).settingsTitle,
-        style: ZplayType.titleLarge.toStyle(color: tokens.textPrimary),
+      title: DesktopCaptionDrag(
+        child: Text(
+          l10nOf(context).settingsTitle,
+          style: ZplayType.titleLarge.toStyle(color: tokens.textPrimary),
+        ),
       ),
     );
 

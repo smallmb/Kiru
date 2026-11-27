@@ -1,3 +1,4 @@
+import '../../widgets/common/desktop_caption_area.dart';
 import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/config_labels.dart';
 import 'package:zplay/l10n/l10n.dart';
@@ -1101,28 +1102,30 @@ class _MangaReaderPageState extends State<MangaReaderPage> {
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.manga.title,
-                  style: ZplayType.subtitle
-                      .copyWith(weight: FontWeight.w700)
-                      .toStyle(color: tokens.textPrimary)
-                      // The wash is down to about a fifth of its strength by the
-                      // time it reaches this line, which is not enough to hold a
-                      // light glyph on a white manga page on its own.
-                      .copyWith(shadows: const [_glyphShadow]),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  title,
-                  style: ZplayType.bodySmall
-                      .toStyle(color: tokens.textEmphasis)
-                      .copyWith(shadows: const [_glyphShadow]),
-                ),
-              ],
+            child: DesktopCaptionDrag(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.manga.title,
+                    style: ZplayType.subtitle
+                        .copyWith(weight: FontWeight.w700)
+                        .toStyle(color: tokens.textPrimary)
+                        // The wash is down to about a fifth of its strength by the
+                        // time it reaches this line, which is not enough to hold a
+                        // light glyph on a white manga page on its own.
+                        .copyWith(shadows: const [_glyphShadow]),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    title,
+                    style: ZplayType.bodySmall
+                        .toStyle(color: tokens.textEmphasis)
+                        .copyWith(shadows: const [_glyphShadow]),
+                  ),
+                ],
+              ),
             ),
           ),
           _MangaChromeAction(

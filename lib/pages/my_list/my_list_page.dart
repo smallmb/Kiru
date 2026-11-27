@@ -1,3 +1,5 @@
+import '../../widgets/immersive/library_chrome.dart';
+import '../../widgets/common/desktop_caption_area.dart';
 import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -16,7 +18,9 @@ import '../../widgets/common/tab_strip.dart';
 import '../../widgets/movie/movie_card.dart';
 
 class MyListPage extends StatefulWidget {
-  const MyListPage({super.key});
+  const MyListPage({super.key, this.embedded = false, this.libraryTabs});
+  final Widget? libraryTabs;
+  final bool embedded;
 
   @override
   State<MyListPage> createState() => _MyListPageState();
@@ -38,10 +42,12 @@ class _MyListPageState extends State<MyListPage> {
     var filtered = allItems.where((item) {
       // 1. Filter by media type
       if (_filterType == 'movie' && item.type != 'movie') return false;
+      if (_filterType == 'anime' && item.type != 'anime') return false;
       if (_filterType == 'series' &&
           item.type != 'series' &&
-          item.type != 'anime')
+          (widget.libraryTabs != null || item.type != 'anime')) {
         return false;
+      }
 
       // 2. Filter by search query
       if (_searchQuery.trim().isNotEmpty) {
@@ -71,6 +77,9 @@ class _MyListPageState extends State<MyListPage> {
 
   int _getCrossAxisCount(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    if (widget.embedded) {
+      return ((width - 2 * libraryGutter(context)) / 180).floor().clamp(2, 10);
+    }
     if (width < 600) return 2;
     if (width < 900) return 3;
     if (width < 1200) return 4;
@@ -90,7 +99,7 @@ class _MyListPageState extends State<MyListPage> {
   double _gridChildAspectRatio(BuildContext context) {
     final crossAxisCount = _getCrossAxisCount(context);
     const spacing = ZplaySpacing.s12;
-    const gutter = ZplaySpacing.s16;
+    final gutter = widget.embedded ? libraryGutter(context) : ZplaySpacing.s16;
     final available =
         MediaQuery.sizeOf(context).width -
         gutter * 2 -
@@ -184,7 +193,9 @@ class _MyListPageState extends State<MyListPage> {
   Widget build(BuildContext context) {
     final tokens = context.tokens;
     return Scaffold(
-      backgroundColor: tokens.bg,
+      backgroundColor: widget.libraryTabs != null
+          ? Colors.transparent
+          : tokens.bg,
       body: Stack(
         children: [
           // ── Ambient canvas ──
@@ -203,45 +214,48 @@ class _MyListPageState extends State<MyListPage> {
           // for either. The colours are the accent and only the accent: the
           // palette primary and `tokens.info` this used to mix were the second
           // accent the design audit flagged.
-          Positioned(
-            top: -100,
-            left: -100,
-            child: Container(
-              width: 350,
-              height: 350,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: tokens.accent.withValues(alpha: 0.15),
-                    blurRadius: 120,
-                    spreadRadius: 40,
-                  ),
-                ],
+          if (widget.libraryTabs == null)
+            Positioned(
+              top: -100,
+              left: -100,
+              child: Container(
+                width: 350,
+                height: 350,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: tokens.accent.withValues(alpha: 0.15),
+                      blurRadius: 120,
+                      spreadRadius: 40,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          Positioned(
-            bottom: -150,
-            right: -100,
-            child: Container(
-              width: 400,
-              height: 400,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: tokens.accent.withValues(alpha: 0.08),
-                    blurRadius: 140,
-                    spreadRadius: 50,
-                  ),
-                ],
+          if (widget.libraryTabs == null)
+            Positioned(
+              bottom: -150,
+              right: -100,
+              child: Container(
+                width: 400,
+                height: 400,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: tokens.accent.withValues(alpha: 0.08),
+                      blurRadius: 140,
+                      spreadRadius: 50,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
 
           // ── Main Content ──
           SafeArea(
+            top: !widget.embedded,
             child: AnimatedBuilder(
               animation: Listenable.merge([
                 MyListService.items,
@@ -259,6 +273,107 @@ class _MyListPageState extends State<MyListPage> {
                 final television =
                     FormFactorService.of(context) == FormFactor.television;
 
+                if (widget.embedded) {
+                  Widget scroll(double inset) => CustomScrollView(
+                    key: const PageStorageKey('kiru-library-saved-scroll'),
+                    primary: false,
+                    slivers: [
+                      SliverToBoxAdapter(child: SizedBox(height: inset)),
+                      if (widget.libraryTabs == null) ...[
+                        SliverToBoxAdapter(
+                          child: _buildHeader(
+                            context,
+                            allItems.length,
+                            movieCount,
+                            seriesCount,
+                          ),
+                        ),
+                        SliverToBoxAdapter(
+                          child: _buildFilterToolbar(television: television),
+                        ),
+                      ] else
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: libraryGutter(context),
+                              vertical: 8,
+                            ),
+                            child: Text(
+                              Localizations.localeOf(context).languageCode ==
+                                      'zh'
+                                  ? '${allItems.length} \u90e8\u5df2\u6536\u85cf'
+                                  : '${allItems.length} saved titles',
+                              style: ZplayType.caption.toStyle(
+                                color: tokens.textMuted,
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (displayedItems.isEmpty)
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: _buildEmptyState(allItems.isEmpty),
+                        )
+                      else
+                        SliverPadding(
+                          padding: EdgeInsets.fromLTRB(
+                            libraryGutter(context),
+                            12,
+                            libraryGutter(context),
+                            24,
+                          ),
+                          sliver: SliverGrid(
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: _getCrossAxisCount(context),
+                                  childAspectRatio: _gridChildAspectRatio(
+                                    context,
+                                  ),
+                                  crossAxisSpacing: ZplaySpacing.s12,
+                                  mainAxisSpacing: ZplaySpacing.s16,
+                                ),
+                            delegate: SliverChildBuilderDelegate((
+                              context,
+                              index,
+                            ) {
+                              final item = displayedItems[index];
+                              return GestureDetector(
+                                onLongPress: () => _confirmRemove(item),
+                                child: MovieCard(
+                                  movie: _movieFor(item),
+                                  onTap: () => _navigateToDetail(item),
+                                ),
+                              );
+                            }, childCount: displayedItems.length),
+                          ),
+                        ),
+                    ],
+                  );
+                  if (widget.libraryTabs == null) {
+                    return scroll(MediaQuery.paddingOf(context).top);
+                  }
+                  return LibraryChrome(
+                    tabs: widget.libraryTabs!,
+                    actions: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (MediaQuery.sizeOf(context).width >= 760) ...[
+                          SizedBox(
+                            width: 220,
+                            child: _buildSearchField(tokens),
+                          ),
+                          const SizedBox(width: 12),
+                        ],
+                        _librarySync(tokens),
+                      ],
+                    ),
+                    filters: _buildFilterToolbar(
+                      television: television,
+                      unified: true,
+                    ),
+                    contentBuilder: scroll,
+                  );
+                }
                 return Column(
                   children: [
                     // ── Header Bar ──
@@ -337,6 +452,10 @@ class _MyListPageState extends State<MyListPage> {
   /// the quieter reading: the numbers are context, not three more shapes on the
   /// row that holds the controls.
   String _savedSummary(int total, int movies, int series) {
+    if (widget.embedded &&
+        Localizations.localeOf(context).languageCode == 'zh') {
+      return '$total \u90e8\u5df2\u6536\u85cf \u00b7 $movies \u90e8\u7535\u5f71 \u00b7 $series \u90e8\u5267\u96c6';
+    }
     final titles = total == 1 ? '1 saved title' : '$total saved titles';
     if (total == 0) return titles;
     return '$titles · $movies ${movies == 1 ? 'movie' : 'movies'}'
@@ -366,7 +485,7 @@ class _MyListPageState extends State<MyListPage> {
         children: [
           // My List is a tab of the library shell slot, not a pushed overlay, so the
           // back button only belongs here when there is genuinely a route underneath.
-          if (Navigator.of(context).canPop())
+          if (!widget.embedded && Navigator.of(context).canPop())
             KiruIconButton(
               onPressed: () => Navigator.pop(context),
               icon: Icon(
@@ -377,24 +496,27 @@ class _MyListPageState extends State<MyListPage> {
             ),
           const SizedBox(width: ZplaySpacing.s12),
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10nOf(context).uiMyListPageMyList,
-                  style: ZplayType.titleLarge.toStyle(
-                    color: tokens.textPrimary,
+            child: DesktopCaptionDrag(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (!widget.embedded)
+                    Text(
+                      l10nOf(context).uiMyListPageMyList,
+                      style: ZplayType.titleLarge.toStyle(
+                        color: tokens.textPrimary,
+                      ),
+                    ),
+                  Text(
+                    _savedSummary(totalCount, movieCount, seriesCount),
+                    style: ZplayType.bodySmall.toStyle(
+                      color: tokens.textSecondary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                ),
-                Text(
-                  _savedSummary(totalCount, movieCount, seriesCount),
-                  style: ZplayType.bodySmall.toStyle(
-                    color: tokens.textSecondary,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           const SizedBox(width: ZplaySpacing.s8),
@@ -433,7 +555,12 @@ class _MyListPageState extends State<MyListPage> {
                   Text(
                     isSyncing
                         ? l10nOf(context).finalMyListPageSyncing
-                        : 'Cloud Synced',
+                        : (widget.embedded
+                              ? (Localizations.localeOf(context).languageCode ==
+                                        'zh'
+                                    ? '\u540c\u6b65\u7247\u5355'
+                                    : 'Sync list')
+                              : 'Cloud Synced'),
                     style: ZplayType.caption.toStyle(
                       color: tokens.textSecondary,
                     ),
@@ -458,8 +585,41 @@ class _MyListPageState extends State<MyListPage> {
     );
   }
 
-  Widget _buildFilterToolbar({required bool television}) {
+  Widget _librarySync(ZplayTokens tokens) => ValueListenableBuilder<bool>(
+    valueListenable: MyListService.isSyncing,
+    builder: (context, syncing, _) => syncing
+        ? const SizedBox(
+            width: 32,
+            height: 32,
+            child: Center(
+              child: SizedBox(
+                width: 16,
+                height: 16,
+                child: KiruLoader(strokeWidth: 2),
+              ),
+            ),
+          )
+        : KiruIconButton(
+            icon: Icon(
+              Icons.refresh_rounded,
+              color: tokens.textSecondary,
+              size: 20,
+            ),
+            tooltip: Localizations.localeOf(context).languageCode == 'zh'
+                ? '\u540c\u6b65\u7247\u5355'
+                : 'Sync list',
+            onPressed: MyListService.syncAll,
+          ),
+  );
+
+  Widget _buildFilterToolbar({required bool television, bool unified = false}) {
     final tokens = context.tokens;
+    final inline =
+        (!unified && television) ||
+        (widget.embedded && MediaQuery.sizeOf(context).width >= 760);
+    final narrow =
+        widget.embedded &&
+        MediaQuery.sizeOf(context).width < (unified ? 760 : 600);
     // On a television the filter strip and the search field share one row.
     //
     // Stacked, they cost 111 + 53 = 164 dp - 30% of a 540 dp screen - and on an
@@ -470,11 +630,49 @@ class _MyListPageState extends State<MyListPage> {
     // The same merge Browse got, for the same reason: one row, same controls,
     // same focus order. The search field goes last in that row rather than
     // disappearing, so a list of 200 titles is still searchable from a sofa.
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: ZplaySpacing.s16,
-        vertical: ZplaySpacing.s8,
+    final sort = Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: ZplaySpacing.s12,
+        vertical: unified ? 0 : ZplaySpacing.s2,
       ),
+      decoration: widget.embedded
+          ? null
+          : BoxDecoration(
+              color: tokens.surface,
+              borderRadius: ZplayRadius.smAll,
+              border: Border.fromBorderSide(tokens.hairlineStrong),
+            ),
+      child: DropdownButtonHideUnderline(
+        child: KiruDropdown<String>(
+          value: _sortBy,
+          dropdownColor: tokens.surfaceOverlay,
+          style: ZplayType.bodySmall.toStyle(color: tokens.textPrimary),
+          icon: Icon(Icons.sort_rounded, color: tokens.accent, size: 16),
+          items: [
+            DropdownMenuItem(
+              value: 'recent',
+              child: Text(l10nOf(context).uiMyListPageRecentlyAdded),
+            ),
+            DropdownMenuItem(
+              value: 'title',
+              child: Text(l10nOf(context).uiMyListPageAlphabetical),
+            ),
+            DropdownMenuItem(
+              value: 'year',
+              child: Text(l10nOf(context).uiMyListPageReleaseYear),
+            ),
+          ],
+          onChanged: (v) => setState(() => _sortBy = v!),
+        ),
+      ),
+    );
+    return Padding(
+      padding: unified
+          ? EdgeInsets.zero
+          : const EdgeInsets.symmetric(
+              horizontal: ZplaySpacing.s16,
+              vertical: ZplaySpacing.s8,
+            ),
       child: Column(
         children: [
           Row(
@@ -502,6 +700,11 @@ class _MyListPageState extends State<MyListPage> {
                       value: 'series',
                       label: l10nOf(context).uiMyListPageTvShows,
                     ),
+                    if (unified)
+                      TabStripOption(
+                        value: 'anime',
+                        label: l10nOf(context).mediaTypeAnime,
+                      ),
                   ],
                   selected: _filterType,
                   onSelected: (type) => setState(() => _filterType = type),
@@ -516,63 +719,31 @@ class _MyListPageState extends State<MyListPage> {
               // searching from a sofa, and a control that is merely *hidden* on
               // TV is a control the remote can never reach. It is the same
               // field, in the same row, after the sort control.
-              if (television) ...[
+              if (inline && !unified) ...[
                 const SizedBox(width: ZplaySpacing.s16),
                 SizedBox(width: 220, child: _buildSearchField(tokens)),
               ],
 
-              const SizedBox(width: ZplaySpacing.s16),
-
-              // Sort Dropdown
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: ZplaySpacing.s12,
-                  vertical: ZplaySpacing.s2,
-                ),
-                decoration: BoxDecoration(
-                  color: tokens.surface,
-                  borderRadius: ZplayRadius.smAll,
-                  border: Border.fromBorderSide(tokens.hairlineStrong),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: KiruDropdown<String>(
-                    value: _sortBy,
-                    dropdownColor: tokens.surfaceOverlay,
-                    style: ZplayType.bodySmall.toStyle(
-                      color: tokens.textPrimary,
-                    ),
-                    icon: Icon(
-                      Icons.sort_rounded,
-                      color: tokens.accent,
-                      size: 16,
-                    ),
-                    items: [
-                      DropdownMenuItem(
-                        value: 'recent',
-                        child: Text(l10nOf(context).uiMyListPageRecentlyAdded),
-                      ),
-                      DropdownMenuItem(
-                        value: 'title',
-                        child: Text(l10nOf(context).uiMyListPageAlphabetical),
-                      ),
-                      DropdownMenuItem(
-                        value: 'year',
-                        child: Text(l10nOf(context).uiMyListPageReleaseYear),
-                      ),
-                    ],
-                    onChanged: (v) => setState(() => _sortBy = v!),
-                  ),
-                ),
-              ),
+              if (!narrow) const SizedBox(width: ZplaySpacing.s16),
+              if (!narrow) sort,
             ],
           ),
           // On a television the search field shares the pill row, so the block
           // is one row rather than two. See the note on this method.
-          if (!television) ...[
+          if (!inline) ...[
             const SizedBox(height: ZplaySpacing.s8),
 
             // Search Field
-            _buildSearchField(tokens),
+            if (narrow)
+              Row(
+                children: [
+                  Expanded(child: _buildSearchField(tokens)),
+                  const SizedBox(width: 8),
+                  sort,
+                ],
+              )
+            else
+              _buildSearchField(tokens),
           ],
         ],
       ),
@@ -585,9 +756,13 @@ class _MyListPageState extends State<MyListPage> {
     return Container(
       height: 40,
       decoration: BoxDecoration(
-        color: tokens.surface,
-        borderRadius: ZplayRadius.smAll,
-        border: Border.fromBorderSide(tokens.hairline),
+        color: widget.embedded
+            ? tokens.surface.withValues(alpha: .65)
+            : tokens.surface,
+        borderRadius: widget.embedded
+            ? BorderRadius.circular(20)
+            : ZplayRadius.smAll,
+        border: widget.embedded ? null : Border.fromBorderSide(tokens.hairline),
       ),
       child: KiruFormField(
         controller: _searchController,

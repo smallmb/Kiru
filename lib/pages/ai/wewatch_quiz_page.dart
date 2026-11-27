@@ -1,3 +1,4 @@
+import '../../widgets/common/desktop_caption_area.dart';
 import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
 
@@ -359,11 +360,13 @@ class _WeWatchQuizPageState extends State<WeWatchQuizPage> {
           Icon(Icons.auto_awesome_rounded, size: 16, color: tokens.accent),
           const SizedBox(width: ZplaySpacing.s8),
           Expanded(
-            child: Text(
-              l10nOf(context).auxWewatchQuizPageRecommendationQuiz,
-              style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            child: DesktopCaptionDrag(
+              child: Text(
+                l10nOf(context).auxWewatchQuizPageRecommendationQuiz,
+                style: ZplayType.subtitle.toStyle(color: tokens.textPrimary),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
           if (_recommendations != null)

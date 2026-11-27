@@ -1,3 +1,4 @@
+import '../../widgets/common/desktop_caption_area.dart';
 import '../../widgets/ui/kiru_toast.dart';
 import '../../widgets/ui/kiru_controls.dart';
 import 'package:zplay/l10n/l10n.dart';
@@ -660,11 +661,13 @@ class _GenerateAudiobookScreenState extends State<GenerateAudiobookScreen>
               Icon(Icons.auto_stories_rounded, color: tokens.accent, size: 22),
               const SizedBox(width: 10),
               Expanded(
-                child: Text(
-                  l10nOf(
-                    context,
-                  ).auxGenerateAudiobookScreenAudiobookStudioGenerator,
-                  style: ZplayType.title.toStyle(color: tokens.textPrimary),
+                child: DesktopCaptionDrag(
+                  child: Text(
+                    l10nOf(
+                      context,
+                    ).auxGenerateAudiobookScreenAudiobookStudioGenerator,
+                    style: ZplayType.title.toStyle(color: tokens.textPrimary),
+                  ),
                 ),
               ),
             ],

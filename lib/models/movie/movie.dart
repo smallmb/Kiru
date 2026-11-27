@@ -8,6 +8,8 @@ class Movie {
   final String type;
   final String addonBaseUrl;
   final String? imdbRating;
+  final List<String> genres;
+  final String? status;
 
   /// Wide artwork for the hero band, when the catalog supplied one.
   ///
@@ -45,6 +47,8 @@ class Movie {
     required this.type,
     required this.addonBaseUrl,
     this.imdbRating,
+    this.genres = const [],
+    this.status,
     this.backdrop,
     this.trailerKey,
     this.releasedAt,
@@ -84,6 +88,8 @@ class Movie {
       type: json['type']?.toString() ?? 'movie',
       addonBaseUrl: addonBaseUrl,
       imdbRating: ratingStr,
+      genres: parseGenres(json['genres'] ?? json['genre']),
+      status: json['status']?.toString(),
       backdrop: json['background']?.toString(),
       // The catalog names the trailer itself, in `trailerStreams` or
       // `trailers`. Reading it here is what gives every card a trailer
@@ -102,9 +108,46 @@ class Movie {
     type: type,
     addonBaseUrl: addonBaseUrl,
     imdbRating: imdbRating,
+    genres: genres,
+    status: status,
     backdrop: backdrop ?? this.backdrop,
     trailerKey: trailerKey ?? this.trailerKey,
     releasedAt: releasedAt,
+    latestEpisodeAt: latestEpisodeAt,
+    latestEpisodeIsPremiere: latestEpisodeIsPremiere,
+  );
+
+  static List<String> parseGenres(Object? raw) {
+    if (raw is List)
+      return raw.whereType<String>().where((s) => s.trim().isNotEmpty).toList();
+    if (raw is String && raw.trim().isNotEmpty)
+      return raw
+          .split(',')
+          .map((s) => s.trim())
+          .where((s) => s.isNotEmpty)
+          .toList();
+    return const [];
+  }
+
+  Movie withSearchMetadata({
+    List<String>? genres,
+    String? status,
+    DateTime? releasedAt,
+    String? year,
+    String? imdbRating,
+  }) => Movie(
+    id: id,
+    name: name,
+    poster: poster,
+    type: type,
+    addonBaseUrl: addonBaseUrl,
+    year: this.year ?? year,
+    imdbRating: this.imdbRating ?? imdbRating,
+    genres: this.genres.isNotEmpty ? this.genres : genres ?? const [],
+    status: this.status ?? status,
+    releasedAt: this.releasedAt ?? releasedAt,
+    backdrop: backdrop,
+    trailerKey: trailerKey,
     latestEpisodeAt: latestEpisodeAt,
     latestEpisodeIsPremiere: latestEpisodeIsPremiere,
   );

@@ -1,3 +1,17 @@
+import '../../services/home/home_discovery_sections.dart';
+import '../../services/search/film_search_filters.dart';
+import '../../services/search/unified_search_result.dart';
+import '../../services/anime/anime_metadata_service.dart';
+import '../../services/anime/anime_source_settings.dart';
+import '../../models/anime/anime_media.dart';
+import '../../services/content/navigation_settings.dart';
+import '../../widgets/anime/anime_slider_section.dart';
+import '../../widgets/common/section_header.dart';
+import '../../utils/navigation/route_transitions.dart';
+import '../anime/anime_details_page.dart';
+import '../browse/browse_page.dart';
+import '../discover/discover_page.dart';
+import '../../widgets/immersive/immersive_content_layout.dart';
 import '../../widgets/ui/kiru_controls.dart';
 import '../../l10n/l10n.dart';
 
@@ -60,7 +74,9 @@ const double _televisionControlHeight = 28;
 const double _pointerControlHeight = 44;
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, this.curated = false, this.filmHub = false});
+  final bool curated;
+  final bool filmHub;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -113,6 +129,68 @@ class _HomePageState extends State<HomePage> {
   /// needed to spot a *return* to Home rather than any other switch.
   AppShellController? _shellController;
   ShellSlot? _lastSlot;
+  bool _filmLoaded = false;
+  bool _filmWasVisible = false;
+  List<MovieSection> _varietySections = [];
+  List<AnimeMedia> _animePicks = [];
+  int _discoveryRevision = 0;
+
+  String _discoveryLabel(HomeDiscoveryKind kind) {
+    final zh = Localizations.localeOf(context).languageCode == 'zh';
+    return switch (kind) {
+      HomeDiscoveryKind.popularMovies =>
+        zh ? '\u8fd1\u671f\u70ed\u95e8\u7535\u5f71' : 'Popular movies',
+      HomeDiscoveryKind.popularSeries =>
+        zh ? '\u70ed\u64ad\u7535\u89c6\u5267' : 'Popular series',
+      HomeDiscoveryKind.topTen =>
+        zh ? '\u70ed\u95e8\u7535\u5f71 TOP 10' : 'Top 10 movies',
+      HomeDiscoveryKind.recent =>
+        zh ? '\u6700\u8fd1\u4e0a\u6620' : 'Recently released',
+      HomeDiscoveryKind.variety =>
+        zh ? '\u70ed\u95e8\u7efc\u827a' : 'Variety shows',
+      HomeDiscoveryKind.highRated =>
+        zh ? '\u9ad8\u5206\u4f73\u4f5c' : 'Highly rated',
+      HomeDiscoveryKind.personalized =>
+        zh ? '\u4e3a\u4f60\u63a8\u8350' : 'Recommended for you',
+    };
+  }
+
+  Future<void> _loadDiscoveryExtras() async {
+    if (!widget.curated) return;
+    final revision = ++_discoveryRevision;
+    try {
+      final variety = FilmSearchCatalogs.browse(
+        SearchCategory.variety,
+        const FilmSearchFilters(),
+      );
+      final anime = NavigationSettings.isEnabled('anime')
+          ? AnimeMetadataService.instance
+                .fetchTrendingAnime(perPage: 18)
+                .timeout(const Duration(seconds: 10))
+                .catchError((Object _) => <AnimeMedia>[])
+          : Future.value(<AnimeMedia>[]);
+      unawaited(
+        variety
+            .then((items) {
+              if (mounted && revision == _discoveryRevision) {
+                setState(() => _varietySections = items);
+              }
+            })
+            .catchError((Object _) {}),
+      );
+      final items = await anime;
+      if (mounted && revision == _discoveryRevision) {
+        setState(
+          () => _animePicks = items
+              .where((a) => !a.isAdult && !a.isArabic)
+              .toList(),
+        );
+      }
+    } catch (_) {}
+  }
+
+  void _openFilmCatalog() =>
+      Navigator.push(context, FadeThroughRoute(page: const DiscoverPage()));
 
   List<MovieSection> get _visibleSections => visibleHomeSections(
     _sections,
@@ -164,7 +242,7 @@ class _HomePageState extends State<HomePage> {
   /// move.
   void _publishChromeEntry() {
     final shell = _shellController;
-    if (shell == null) return;
+    if (shell == null || widget.filmHub || !_isHomeVisible) return;
     final entry = _chromeEntry;
     if (identical(shell.pageTopChrome, entry)) return;
     shell.pageTopChrome = entry;
@@ -538,9 +616,14 @@ class _HomePageState extends State<HomePage> {
     CollectionsService.collections.addListener(_onCollectionsChanged);
     FocusManager.instance.addListener(_onPrimaryFocusChanged);
 
-    _resolveIntro();
-
-    _loadHome();
+    if (!widget.filmHub) {
+      _resolveIntro();
+      _loadHome();
+    }
+    if (widget.curated) {
+      AnimeSourceSettings.revision.addListener(_loadDiscoveryExtras);
+      NavigationSettings.enabled.addListener(_loadDiscoveryExtras);
+    }
   }
 
   /// Decides whether this launch gets the splash, then starts or skips it.
@@ -583,7 +666,12 @@ class _HomePageState extends State<HomePage> {
 
   bool get _isHomeVisible {
     final controller = _shellController;
-    return controller == null || controller.current.value == ShellSlot.home;
+    if (controller == null) return true;
+    if (widget.filmHub) {
+      return controller.current.value == ShellSlot.browse &&
+          controller.browseVertical.value == BrowseVertical.moviesAndTv;
+    }
+    return controller.current.value == ShellSlot.home;
   }
 
   @override
@@ -596,13 +684,22 @@ class _HomePageState extends State<HomePage> {
     final controller = AppShellScope.of(context);
     if (!identical(controller, _shellController)) {
       _shellController?.current.removeListener(_onSlotChanged);
+      _shellController?.browseVertical.removeListener(_onFilmVisibility);
       _shellController = controller;
       _lastSlot = controller?.current.value;
       controller?.current.addListener(_onSlotChanged);
+      if (widget.filmHub) {
+        controller?.browseVertical.addListener(_onFilmVisibility);
+      }
     }
     // Also re-run on a resize (this reads the form factor through MediaQuery),
     // so a window dragged across the tablet/phone line moves the actions.
     _publishPageActions();
+    if (widget.filmHub && !_filmLoaded && _isHomeVisible) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _onFilmVisibility();
+      });
+    }
   }
 
   /// Lends the AI quiz and the airing calendar to the shell's nav capsule on
@@ -611,7 +708,7 @@ class _HomePageState extends State<HomePage> {
   /// slot; anything else clears them.
   void _publishPageActions() {
     final shell = _shellController;
-    if (shell == null) return;
+    if (shell == null || widget.filmHub) return;
     final pointer = switch (FormFactorService.of(context)) {
       FormFactor.medium || FormFactor.expanded => true,
       _ => false,
@@ -651,13 +748,32 @@ class _HomePageState extends State<HomePage> {
   /// the time the user comes back. The shell keeps every slot alive in an
   /// IndexedStack, so returning to Home rebuilds nothing on its own and this
   /// notification is the only cue that a reload is due.
+  void _onFilmVisibility() {
+    if (!mounted || !widget.filmHub) return;
+    final visible = _isHomeVisible;
+    final returned = visible && !_filmWasVisible;
+    _filmWasVisible = visible;
+    if (visible && (!_filmLoaded || (returned && !_loading))) {
+      _filmLoaded = true;
+      _loadHome();
+    } else {
+      setState(() {});
+    }
+  }
+
   void _onSlotChanged() {
+    if (widget.filmHub) {
+      _onFilmVisibility();
+      return;
+    }
     final slot = _shellController?.current.value;
     if (mounted) _publishPageActions();
     final returnedHome = slot == ShellSlot.home && _lastSlot != ShellSlot.home;
     _lastSlot = slot;
     if (returnedHome && mounted) {
       _loadHome();
+    } else if (mounted) {
+      setState(() {});
     }
   }
 
@@ -743,11 +859,18 @@ class _HomePageState extends State<HomePage> {
     CollectionsService.showOnHome.removeListener(_onCollectionsChanged);
     CollectionsService.collections.removeListener(_onCollectionsChanged);
     _shellController?.current.removeListener(_onSlotChanged);
+    _shellController?.browseVertical.removeListener(_onFilmVisibility);
+    if (widget.curated) {
+      AnimeSourceSettings.revision.removeListener(_loadDiscoveryExtras);
+      NavigationSettings.enabled.removeListener(_loadDiscoveryExtras);
+    }
     // Cleared before the nodes die, because the bar's hand-over reads this at
     // key time and the shell outlives this page: a handle left behind would be a
     // disposed node the remote could be sent to.
-    _shellController?.pageTopChrome = null;
-    _shellController?.pageActions.value = const <ShellPageAction>[];
+    if (!widget.filmHub) {
+      _shellController?.pageTopChrome = null;
+      _shellController?.pageActions.value = const <ShellPageAction>[];
+    }
     _quizFocus.dispose();
     _calendarFocus.dispose();
     _scrollController.dispose();
@@ -969,8 +1092,12 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  bool _homeLoadInFlight = false;
+
   Future<void> _loadHome() async {
-    if (!mounted) return;
+    if (!mounted || _homeLoadInFlight) return;
+    _homeLoadInFlight = true;
+    if (widget.curated) unawaited(_loadDiscoveryExtras());
     setState(() {
       _loading = true;
       _error = null;
@@ -1052,6 +1179,8 @@ class _HomePageState extends State<HomePage> {
         _error = e.toString();
         _loading = false;
       });
+    } finally {
+      _homeLoadInFlight = false;
     }
   }
 
@@ -1068,7 +1197,38 @@ class _HomePageState extends State<HomePage> {
     final tokens = context.tokens;
     final visibleSections = _visibleSections;
 
-    final featured = _visibleFeaturedMovies;
+    final curatedRails = widget.curated
+        ? organizeHomeDiscovery(
+            [...visibleSections, ..._varietySections],
+            now: DateTime.now(),
+            label: _discoveryLabel,
+          )
+        : <HomeDiscoveryRail>[];
+    final filmFeatured = widget.curated
+        ? visibleSections
+              .map(
+                (s) => MovieSection(
+                  title: s.title,
+                  subtitle: s.subtitle,
+                  contentType: s.contentType,
+                  addonBaseUrl: s.addonBaseUrl,
+                  catalog: s.catalog,
+                  movies: s.movies
+                      .where(
+                        (m) => [
+                          SearchCategory.movie,
+                          SearchCategory.series,
+                        ].contains(UnifiedSearchResult.movie(m).category),
+                      )
+                      .toList(),
+                ),
+              )
+              .where((s) => s.movies.isNotEmpty)
+              .toList()
+        : visibleSections;
+    final featured = widget.curated
+        ? pickFeatured(filmFeatured, limit: 10)
+        : _visibleFeaturedMovies;
     final hasContent = visibleSections.isNotEmpty;
 
     // Whether this page is being drawn for a television. The hero is a band on a
@@ -1077,6 +1237,17 @@ class _HomePageState extends State<HomePage> {
     // arithmetic drift apart, which is how the posters came to be 37% smaller
     // than the design intended.
     final television = homeIsTelevision(context);
+    final immersive =
+        !television &&
+        (FormFactorService.of(context) == FormFactor.medium ||
+            FormFactorService.of(context) == FormFactor.expanded);
+    final viewport = MediaQuery.sizeOf(context);
+    final overlap =
+        immersive &&
+            HomePageSettings.enableSpotlight.value &&
+            HomePageSettings.heroStyle.value == HeroStyle.immersive
+        ? ImmersiveContentLayout.overlapFor(viewport)
+        : 0.0;
 
     // The page's control row is a `Positioned` overlay, so the space it occupies
     // has to be the scroll view's *top padding* - not a spacer widget at the head
@@ -1128,6 +1299,7 @@ class _HomePageState extends State<HomePage> {
         HeroBanner(
           key: _heroKey,
           movies: featured,
+          active: _isHomeVisible,
           compact: true,
           onHeightChanged: (height) {
             if (mounted && height != _heroBandHeight) {
@@ -1140,6 +1312,7 @@ class _HomePageState extends State<HomePage> {
         HeroBanner(
           key: _heroKey,
           movies: featured,
+          active: _isHomeVisible,
           onHeightChanged: (height) {
             if (mounted && height != _heroBandHeight) {
               setState(() => _heroBandHeight = height);
@@ -1171,74 +1344,137 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-      // Top 10: the first ten of the popular-films catalog, ranked. Cinemeta
-      // sorts that catalog by popularity, so the order is the catalog's own.
-      if (_topTenSource(visibleSections) case final top?)
-        MovieSliderSection(
-          section: MovieSection(
-            title: l10nOf(context).homeTopTenMovies,
-            subtitle: '',
-            contentType: top.contentType,
-            addonBaseUrl: top.addonBaseUrl,
-            catalog: top.catalog,
-            movies: top.movies.take(10).toList(),
+      if (widget.filmHub)
+        SectionHeader(
+          title: Localizations.localeOf(context).languageCode == 'zh'
+              ? '\u5f71\u89c6\u7247\u5e93'
+              : 'Film & TV library',
+          trailing: KiruButton(
+            key: const ValueKey('kiru-film-catalog-entry'),
+            kind: KiruButtonKind.ghost,
+            onPressed: _openFilmCatalog,
+            child: Text(
+              Localizations.localeOf(context).languageCode == 'zh'
+                  ? '\u5168\u90e8\u7247\u5e93 \u203a'
+                  : 'Browse all >',
+            ),
           ),
-          ranked: true,
-          artwork: FormFactorService.of(context) == FormFactor.television
-              ? CardArtwork.landscape
-              : CardArtwork.poster,
-          maxHeight: _railHeightFor(context),
         ),
-      for (var i = 0; i < visibleSections.length; i++)
-        ValueListenableBuilder<bool>(
-          valueListenable: HomePageSettings.enableCalendar,
-          builder: (context, calEnabled, _) {
-            return MovieSliderSection(
-              section: visibleSections[i],
-              // A pointer rail is a poster with its name and metadata, not an
-              // anonymous thumbnail. Landscape stays the television shape: at
-              // ten feet the row's heading identifies the category and the
-              // extra cards across matter more than a caption nobody can read.
-              // On desktop and mobile the viewer scans a rail with a mouse or
-              // thumb, so removing the poster's text block removed the only
-              // way to tell one title from another without opening it.
-              artwork: FormFactorService.of(context) == FormFactor.television
-                  ? CardArtwork.landscape
-                  : CardArtwork.poster,
-              showCalendarButton:
-                  calEnabled && i >= (visibleSections.length - 2),
-              // A Trakt public rail's catalog is synthetic - `trakt_trending` is
-              // not an addon endpoint, so See All would open a CatalogPage that
-              // asks Cinemeta for a catalog that does not exist. Curated rails
-              // are synthetic for the same reason.
-              showSeeAll:
-                  !visibleSections[i].catalog.id.startsWith('curated_') &&
-                  !visibleSections[i].catalog.id.startsWith('trakt_'),
-              // What is left below the hero, minus this row's own header. The
-              // hero already reserves a peek at a rail; this is the rest of the
-              // truth, and without it the card is sized to its natural 326.5 dp
-              // and runs 114 dp off the bottom of a 540 dp screen - which is
-              // where the chopped-off movie title came from.
-              maxHeight: _railHeightFor(context),
-            );
-          },
-        ),
+      if (widget.curated) ...[
+        for (final rail in curatedRails.where(
+          (r) => r.kind != HomeDiscoveryKind.personalized,
+        ))
+          MovieSliderSection(
+            key: ValueKey(rail.kind),
+            section: rail.section,
+            showSeeAll: false,
+            ranked: rail.kind == HomeDiscoveryKind.topTen,
+            artwork: television ? CardArtwork.landscape : CardArtwork.poster,
+            maxHeight: _railHeightFor(context),
+          ),
+        if (NavigationSettings.isEnabled('anime') && _animePicks.isNotEmpty)
+          AnimeSliderSection(
+            title: Localizations.localeOf(context).languageCode == 'zh'
+                ? '\u52a8\u6f2b\u7cbe\u9009'
+                : 'Anime picks',
+            animeList: _animePicks,
+            onAnimeTap: (a) => Navigator.push(
+              context,
+              CinematicSlideRoute(page: AnimeDetailsPage(anime: a)),
+            ),
+            onSeeAll: () => AppShellScope.of(
+              context,
+            )?.goBrowseVertical(BrowseVertical.anime),
+          ),
+        for (final rail in curatedRails.where(
+          (r) => r.kind == HomeDiscoveryKind.personalized,
+        ))
+          MovieSliderSection(
+            key: ValueKey(rail.kind),
+            section: rail.section,
+            showSeeAll: false,
+            artwork: television ? CardArtwork.landscape : CardArtwork.poster,
+            maxHeight: _railHeightFor(context),
+          ),
+      ] else ...[
+        // Top 10: the first ten of the popular-films catalog, ranked. Cinemeta
+        // sorts that catalog by popularity, so the order is the catalog's own.
+        if (_topTenSource(visibleSections) case final top?)
+          MovieSliderSection(
+            section: MovieSection(
+              title: l10nOf(context).homeTopTenMovies,
+              subtitle: '',
+              contentType: top.contentType,
+              addonBaseUrl: top.addonBaseUrl,
+              catalog: top.catalog,
+              movies: top.movies.take(10).toList(),
+            ),
+            ranked: true,
+            artwork: FormFactorService.of(context) == FormFactor.television
+                ? CardArtwork.landscape
+                : CardArtwork.poster,
+            maxHeight: _railHeightFor(context),
+          ),
+        for (var i = 0; i < visibleSections.length; i++)
+          ValueListenableBuilder<bool>(
+            valueListenable: HomePageSettings.enableCalendar,
+            builder: (context, calEnabled, _) {
+              return MovieSliderSection(
+                section: visibleSections[i],
+                // A pointer rail is a poster with its name and metadata, not an
+                // anonymous thumbnail. Landscape stays the television shape: at
+                // ten feet the row's heading identifies the category and the
+                // extra cards across matter more than a caption nobody can read.
+                // On desktop and mobile the viewer scans a rail with a mouse or
+                // thumb, so removing the poster's text block removed the only
+                // way to tell one title from another without opening it.
+                artwork: FormFactorService.of(context) == FormFactor.television
+                    ? CardArtwork.landscape
+                    : CardArtwork.poster,
+                showCalendarButton:
+                    calEnabled && i >= (visibleSections.length - 2),
+                // A Trakt public rail's catalog is synthetic - `trakt_trending` is
+                // not an addon endpoint, so See All would open a CatalogPage that
+                // asks Cinemeta for a catalog that does not exist. Curated rails
+                // are synthetic for the same reason.
+                showSeeAll:
+                    !visibleSections[i].catalog.id.startsWith('curated_') &&
+                    !visibleSections[i].catalog.id.startsWith('trakt_'),
+                // What is left below the hero, minus this row's own header. The
+                // hero already reserves a peek at a rail; this is the rest of the
+                // truth, and without it the card is sized to its natural 326.5 dp
+                // and runs 114 dp off the bottom of a 540 dp screen - which is
+                // where the chopped-off movie title came from.
+                maxHeight: _railHeightFor(context),
+              );
+            },
+          ),
+      ],
       // The shell reserves its own chrome's space, so the old 110px dock
       // clearance collapses to one gap; a phone still has a gesture bar, so the
       // safe-area term stays.
       SizedBox(height: ZplaySpacing.s24 + MediaQuery.paddingOf(context).bottom),
     ];
 
-    final backgroundContent = AnimatedAmbientBackground(
-      child: Stack(
-        children: [
-          // ── Hero backdrop band ──
-          //
-          // First child of the *content* stack, which is what puts it behind
-          // the rails and behind the opaque control row: the bar is a sibling
-          // overlay painted above this whole stack (see `_buildBody`), so a band
-          // drawn in here cannot bleed through it. See `_HeroBackdropBand` for
-          // why that ordering is load-bearing rather than incidental.
+    final scrollSlots = overlap > 0
+        ? <Widget>[
+            ImmersiveHeroGroup(
+              hero: slots.first,
+              leadingSections: slots.skip(1).take(2).toList(),
+            ),
+            ...slots.skip(3),
+          ]
+        : slots;
+    final feed = Stack(
+      children: [
+        // ── Hero backdrop band ──
+        //
+        // First child of the *content* stack, which is what puts it behind
+        // the rails and behind the opaque control row: the bar is a sibling
+        // overlay painted above this whole stack (see `_buildBody`), so a band
+        // drawn in here cannot bleed through it. See `_HeroBackdropBand` for
+        // why that ordering is load-bearing rather than incidental.
+        if (!immersive)
           _HeroBackdropBand(
             url: _heroBackdropUrl,
             chromeTop: switch (FormFactorService.of(context)) {
@@ -1246,64 +1482,70 @@ class _HomePageState extends State<HomePage> {
               _ => appBarInset,
             },
           ),
-          // ── Main scrollable content ──
-          // The skeleton tracks the *unfiltered* load, not the visible
-          // sections.
-          //
-          // It used to be `_sections.isEmpty`, which is false the moment any
-          // section arrives - even if the Movies filter has just removed every
-          // one of them. Switching to Movies during the first load therefore
-          // showed neither skeleton nor content: a blank page, which on a
-          // television reads as a dead app. Filtering an empty list is still an
-          // empty list, so the skeleton is the honest thing to show.
-          if (_loading && !_showIntro && _sections.isEmpty)
-            // The same inset the loaded page uses, so the skeleton's hero
-            // placeholder sits exactly where the hero lands and nothing jumps
-            // when the first section arrives.
-            _HomeSkeleton(topInset: appBarInset)
-          else if (_error != null && _sections.isEmpty)
-            ErrorView(error: _error, onRetry: _loadHome)
-          else
-            RefreshIndicator(
-              color: tokens.accent,
-              backgroundColor: tokens.surface,
-              onRefresh: _loadHome,
-              child: PageScrollPulse(
-                notifier: _pageScrollPulse,
-                child: ListView.builder(
-                  key: _pageKey,
-                  controller: _scrollController,
-                  clipBehavior: Clip.none,
-                  // Top padding rather than a leading spacer - see `appBarInset`.
-                  padding: EdgeInsets.only(top: appBarInset),
-                  physics: const BouncingScrollPhysics(
-                    parent: AlwaysScrollableScrollPhysics(),
-                  ),
-                  itemCount: slots.length,
-                  itemBuilder: (context, index) => slots[index],
+        // ── Main scrollable content ──
+        // The skeleton tracks the *unfiltered* load, not the visible
+        // sections.
+        //
+        // It used to be `_sections.isEmpty`, which is false the moment any
+        // section arrives - even if the Movies filter has just removed every
+        // one of them. Switching to Movies during the first load therefore
+        // showed neither skeleton nor content: a blank page, which on a
+        // television reads as a dead app. Filtering an empty list is still an
+        // empty list, so the skeleton is the honest thing to show.
+        if (_loading && !_showIntro && _sections.isEmpty)
+          // The same inset the loaded page uses, so the skeleton's hero
+          // placeholder sits exactly where the hero lands and nothing jumps
+          // when the first section arrives.
+          _HomeSkeleton(topInset: appBarInset)
+        else if (_error != null && _sections.isEmpty)
+          ErrorView(error: _error, onRetry: _loadHome)
+        else
+          RefreshIndicator(
+            color: tokens.accent,
+            backgroundColor: tokens.surface,
+            onRefresh: _loadHome,
+            child: PageScrollPulse(
+              notifier: _pageScrollPulse,
+              child: ListView.builder(
+                key: _pageKey,
+                controller: _scrollController,
+                clipBehavior: Clip.none,
+                // Top padding rather than a leading spacer - see `appBarInset`.
+                padding: EdgeInsets.only(top: appBarInset),
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
                 ),
+                itemCount: scrollSlots.length,
+                itemBuilder: (context, index) => scrollSlots[index],
               ),
             ),
+          ),
 
-          // ── Television hero ──
-          //
-          // **Deliberately absent.**
-          //
-          // The obvious way to stop the hero stealing the rail's height is to
-          // draw it *over* the first rail. That was tried and it is wrong: a
-          // 260 dp artwork band over a 260 dp poster row is two focal points at
-          // the same size, and the artwork washes out the posters underneath it.
-          // That is the opposite of the one-focal-point rule the whole change is
-          // built on - it just moves the fight from the layout to the paint.
-          //
-          // So on a television the featured title is a *row*, not a band. The
-          // spotlight carousel still exists and is still reachable - it is the
-          // first thing in the scroll, in its own compact form - and the rails
-          // below it get their full 260 dp poster because nothing is displacing
-          // them.
-        ],
-      ),
+        // ── Television hero ──
+        //
+        // **Deliberately absent.**
+        //
+        // The obvious way to stop the hero stealing the rail's height is to
+        // draw it *over* the first rail. That was tried and it is wrong: a
+        // 260 dp artwork band over a 260 dp poster row is two focal points at
+        // the same size, and the artwork washes out the posters underneath it.
+        // That is the opposite of the one-focal-point rule the whole change is
+        // built on - it just moves the fight from the layout to the paint.
+        //
+        // So on a television the featured title is a *row*, not a band. The
+        // spotlight carousel still exists and is still reachable - it is the
+        // first thing in the scroll, in its own compact form - and the rails
+        // below it get their full 260 dp poster because nothing is displacing
+        // them.
+      ],
     );
+    final backgroundContent = immersive
+        ? ImmersiveContentLayout(
+            gutter: ImmersiveContentLayout.gutterFor(viewport.width),
+            overlap: overlap,
+            child: feed,
+          )
+        : AnimatedAmbientBackground(child: feed);
 
     // The shell's bar hands DOWN into this page's own top row through the handle
     // published here. Deferred one frame because the row it names is built by
